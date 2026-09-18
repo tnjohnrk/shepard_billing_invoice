@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build Outputs
+dist/
+dist_electron/
+build/
+
+# SQLite Databases & Local Storage
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs & AppData Scratch
+logs/
+*.log
+npm-debug.log*
+
+# OS & IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

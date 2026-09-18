@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{DOC_TYPE}} - {{INVOICE_NUMBER}}</title>
+  <style>
+    {{CSS_CONTENT}}
+  </style>
+</head>
+<body>
+  <div class="invoice-box">
+    <!-- Header -->
+    <table class="header-table">
+      <tr>
+        <td style="width: 60%;">
+          <div class="company-title">{{COMPANY_NAME}}</div>
+          <div class="company-details">
+            {{COMPANY_ADDRESS}}<br>
+            Phone: {{COMPANY_PHONE}} | Email: {{COMPANY_EMAIL}}<br>
+            <strong>GSTIN: {{COMPANY_GSTIN}}</strong> | State Code: {{COMPANY_STATE_CODE}} ({{COMPANY_STATE}})
+          </div>
+        </td>
+        <td class="doc-badge" style="width: 40%;">
+          <div class="doc-type-title">{{DOC_TYPE}}</div>
+          <div class="copy-badge">{{COPY_TYPE_LABEL}}</div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Buyer & Document Reference Grid -->
+    <table class="meta-grid">
+      <tr>
+        <td>
+          <div class="section-label">Billed To (Buyer / Recipient):</div>
+          <div class="buyer-name">{{BUYER_NAME}}</div>
+          <div style="margin-top: 2px;">{{BUYER_ADDRESS}}</div>
+          <div style="margin-top: 4px;">
+            <strong>GSTIN / UIN:</strong> {{BUYER_GSTIN}}<br>
+            <strong>State:</strong> {{BUYER_STATE}} (Code: {{BUYER_STATE_CODE}})
+          </div>
+        </td>
+        <td>
+          <div class="meta-row">
+            <span class="meta-label">{{DOC_NUM_LABEL}}:</span>
+            <span class="meta-val"><strong>{{INVOICE_NUMBER}}</strong></span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Date:</span>
+            <span class="meta-val">{{INVOICE_DATE}}</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Transport Mode:</span>
+            <span class="meta-val">{{TRANSPORTATION_MODE}}</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Vehicle No:</span>
+            <span class="meta-val">{{VEHICLE_NUMBER}}</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">PO / SO No & Date:</span>
+            <span class="meta-val">{{SO_PO_INFO}}</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">GEMC No:</span>
+            <span class="meta-val">{{GEMC_NUMBER}}</span>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Line Items Table -->
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th class="text-center" style="width: 5%;">#</th>
+          <th style="width: 45%;">Description of Goods / Services</th>
+          <th class="text-center" style="width: 12%;">HSN/SAC</th>
+          <th class="text-right" style="width: 10%;">Qty</th>
+          <th class="text-right" style="width: 13%;">Rate (₹)</th>
+          <th class="text-right" style="width: 15%;">Amount (₹)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ITEM_ROWS}}
+      </tbody>
+    </table>
+
+    <!-- Totals & Words -->
+    <table class="totals-grid">
+      <tr>
+        <td class="words-column">
+          <div class="section-label">Amount Chargeable (in words):</div>
+          <div style="font-weight: bold; font-size: 11px; margin-top: 4px; color: #0f172a;">
+            {{AMOUNT_IN_WORDS}}
+          </div>
+          {{NOTES_SECTION}}
+        </td>
+        <td class="amounts-column">
+          <table class="amount-row-table">
+            <tr>
+              <td>Subtotal</td>
+              <td class="text-right">₹{{SUBTOTAL}}</td>
+            </tr>
+            {{TAX_ROWS}}
+            {{ROUND_OFF_ROW}}
+            <tr>
+              <td>Grand Total</td>
+              <td class="text-right">₹{{GRAND_TOTAL}}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Footer: Terms, Bank Details, Signature -->
+    <table class="footer-grid">
+      <tr>
+        <td>
+          <div class="section-label">Bank Account Details:</div>
+          <table class="bank-table">
+            <tr><td style="font-weight: bold;">Bank Name:</td><td>{{BANK_NAME}}</td></tr>
+            <tr><td style="font-weight: bold;">Account No:</td><td>{{ACCOUNT_NUMBER}}</td></tr>
+            <tr><td style="font-weight: bold;">IFSC Code:</td><td>{{IFSC_CODE}}</td></tr>
+            <tr><td style="font-weight: bold;">Branch:</td><td>{{BRANCH_NAME}}</td></tr>
+          </table>
+          <div class="section-label" style="margin-top: 8px;">Terms & Conditions:</div>
+          <div style="font-size: 9px; color: #475569;">
+            {{TERMS_AND_CONDITIONS}}
+          </div>
+        </td>
+        <td>
+          <div class="signature-box">
+            <div class="section-label">Declaration:</div>
+            <div style="font-size: 9px; color: #475569; margin-top: 2px;">
+              {{DECLARATION}}
+            </div>
+            <div style="margin-top: 20px;">
+              <div style="font-size: 10px; font-weight: bold;">{{AUTHORIZED_SIGNATORY_LABEL}}</div>
+              <div style="height: 40px;"></div>
+              <div style="font-size: 9px; color: #64748b;">(Authorized Signatory)</div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

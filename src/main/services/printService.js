@@ -1,0 +1,50 @@
+import { BrowserWindow } from 'electron';
+import { renderInvoiceHtml } from '../templates/invoice/invoiceRenderer.js';
+
+export async function printInvoiceDocument(invoiceData, options = {}) {
+  const htmlContent = renderInvoiceHtml(invoiceData);
+
+  const printWin = new BrowserWindow({
+    show: false,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true
+    }
+  });
+
+  const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`;
+  await printWin.loadURL(dataUrl);
+
+  return new Promise((resolve, reject) => {
+    printWin.webContents.print(
+      {
+        silent: options.silent || false,
+        printBackground: true,
+        deviceName: options.deviceName || '',
+        pageSize: 'A4'
+      },
+      (success, errorType) => {
+        if (!printWin.isDestroyed()) {
+          printWin.close();
+        }
+        if (!success) {
+          reject(new Error(`Physical printing failed: ${errorType}`));
+        } else {
+          resolve(true);
+        }
+      }
+    );
+  });
+}
+
+export async function getAvailablePrinters() {
+  const dummyWin = new BrowserWindow({ show: false });
+  try {
+    const list = await dummyWin.webContents.getPrintersAsync();
+    return list;
+  } finally {
+    if (!dummyWin.isDestroyed()) {
+      dummyWin.close();
+    }
+  }
+}

@@ -1,0 +1,15 @@
+export const COMPANY_CONFIG = {
+  name: 'SHEPHERD ENTERPRISES PRIVATE LIMITED',
+  address: 'Plot No. 42, Shepherd Industrial Estate, MIDC Area, Thane, Maharashtra - 400604',
+  phone: '+91 98765 43210',
+  email: 'billing@shepherdenterprises.com',
+  gstin: '27AAACS1234F1Z5',
+  state: 'Maharashtra',
+  state_code: '27',
+  bank_name: 'HDFC Bank Ltd.',
+  account_number: '50200012345678',
+  ifsc_code: 'HDFC0001234',
+  branch_name: 'Thane Industrial Estate Branch',
+  upi_id: 'shepherd@hdfcbank',
+  backup_email: 'tnjohnrk@gmail.com'
+};

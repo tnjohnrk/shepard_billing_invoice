@@ -1,0 +1,13 @@
+export const PROFORMA_STATUSES = {
+  DRAFT: 'DRAFT',
+  PENDING: 'PENDING',
+  CONFIRMED_UNCHANGED: 'CONFIRMED_UNCHANGED',
+  CONFIRMED_CHANGED: 'CONFIRMED_CHANGED'
+};
+
+export const PROFORMA_STATUS_LABELS = {
+  DRAFT: 'Draft',
+  PENDING: 'Pending Confirmation',
+  CONFIRMED_UNCHANGED: 'Converted (Unchanged)',
+  CONFIRMED_CHANGED: 'Converted (Modified)'
+};
