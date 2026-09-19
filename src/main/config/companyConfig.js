@@ -1,8 +1,8 @@
 export const COMPANY_CONFIG = {
   name: 'SHEPHERD ENTERPRISES PRIVATE LIMITED',
   address: 'No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062',
-  phone: '+91 98765 43210',
-  email: 'billing@shepherdenterprises.com',
+  phone: '+91 9025812298 / +91 8438435681',
+  email: 'shepheredenterprisespvtltd@gmail.com',
   gstin: '27AAACS1234F1Z5',
   state: 'Maharashtra',
   state_code: '27',
@@ -13,3 +13,4 @@ export const COMPANY_CONFIG = {
   upi_id: 'shepherd@hdfcbank',
   backup_email: 'tnjohnrk@gmail.com'
 };
+

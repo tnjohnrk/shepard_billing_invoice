@@ -1,11 +1,14 @@
 import React from 'react';
+import companyLogo from '../../assets/logo.png';
 
 export function SplashScreen() {
   return (
     <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center text-slate-100 select-none">
-      <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center text-white font-black text-3xl shadow-2xl shadow-indigo-600/50 mb-6 animate-pulse">
-        S
-      </div>
+      <img
+        src={companyLogo}
+        alt="Shepherd Enterprises"
+        className="w-20 h-20 object-contain rounded-full border-2 border-amber-600/40 shadow-2xl shadow-amber-900/30 mb-6 animate-pulse"
+      />
 
       <h1 className="text-xl font-bold uppercase tracking-wider text-slate-100">
         Shepherd Enterprises

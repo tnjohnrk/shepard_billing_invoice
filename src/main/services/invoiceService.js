@@ -1,4 +1,15 @@
-import { createInvoice, getInvoiceById, getInvoiceByNumber, listInvoices, generateNextInvoiceNumber, updateInvoicePdfPath } from '../repositories/invoiceRepository.js';
+import { 
+  createInvoice, 
+  getInvoiceById, 
+  getInvoiceByNumber, 
+  listInvoices, 
+  generateNextInvoiceNumber, 
+  updateInvoicePdfPath,
+  softDeleteInvoice as repoSoftDelete,
+  restoreInvoice as repoRestore,
+  permanentlyDeleteInvoice as repoPermanentDelete,
+  listDeletedInvoices as repoListDeleted
+} from '../repositories/invoiceRepository.js';
 import { saveOrUpdateCustomer } from '../repositories/customerRepository.js';
 import { computeCompleteInvoiceTotals } from '../../shared/utils/sharedCalculations.js';
 import { COMPANY_CONFIG } from '../config/companyConfig.js';
@@ -135,4 +146,20 @@ export function duplicateExistingInvoice(id) {
     created_at: undefined,
     updated_at: undefined
   };
+}
+
+export function softDeleteInvoice(id) {
+  return repoSoftDelete(id);
+}
+
+export function restoreInvoice(id) {
+  return repoRestore(id);
+}
+
+export function permanentlyDeleteInvoice(id) {
+  return repoPermanentDelete(id);
+}
+
+export function getDeletedInvoices() {
+  return repoListDeleted();
 }

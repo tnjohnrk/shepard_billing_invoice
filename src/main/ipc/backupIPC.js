@@ -3,22 +3,26 @@ import { createManualBackup, restoreFromBackup } from '../services/backupService
 
 export function registerBackupIPC() {
   ipcMain.handle('backup:createManual', async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({
-      title: 'Select Destination Directory for Backup',
-      properties: ['openDirectory']
+    const timestamp = new Date().toISOString().split('T')[0];
+    const defaultName = `Shepherd_Data_Migration_${timestamp}.zip`;
+
+    const { canceled, filePath } = await dialog.showSaveDialog({
+      title: 'Export Complete Data Package (For Backup / PC Migration)',
+      defaultPath: defaultName,
+      filters: [{ name: 'Zip Backup Archive', extensions: ['zip'] }]
     });
 
-    if (canceled || filePaths.length === 0) {
+    if (canceled || !filePath) {
       return { canceled: true };
     }
 
-    const backupPath = createManualBackup(filePaths[0]);
-    return { canceled: false, backupPath };
+    const result = createManualBackup(filePath);
+    return { canceled: false, backupPath: result.destinationPath, stats: result.stats };
   });
 
   ipcMain.handle('backup:restore', async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
-      title: 'Select Shepherd Invoice Backup Zip File',
+      title: 'Select Shepherd Invoice Migration / Backup Zip File',
       filters: [{ name: 'Zip Backup Files', extensions: ['zip'] }],
       properties: ['openFile']
     });

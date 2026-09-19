@@ -81,6 +81,8 @@ export function runMigrations(db) {
           grand_total REAL NOT NULL,
           amount_in_words TEXT NOT NULL,
           notes TEXT,
+          is_deleted INTEGER DEFAULT 0,
+          deleted_at DATETIME,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
@@ -125,6 +127,8 @@ export function runMigrations(db) {
           amount_in_words TEXT NOT NULL,
           notes TEXT,
           pdf_path TEXT,
+          is_deleted INTEGER DEFAULT 0,
+          deleted_at DATETIME,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
@@ -160,6 +164,28 @@ export function runMigrations(db) {
 
     db.exec(sqlContent);
     db.prepare('INSERT INTO schema_migrations (version) VALUES (1)').run();
+  }
+
+  // Migration 2: Soft delete Recycle Bin columns
+  const version2Count = db.prepare('SELECT COUNT(*) as count FROM schema_migrations WHERE version = 2').get().count;
+  if (version2Count === 0) {
+    const invoiceCols = db.prepare("PRAGMA table_info(invoices)").all().map(c => c.name);
+    if (!invoiceCols.includes('is_deleted')) {
+      db.exec("ALTER TABLE invoices ADD COLUMN is_deleted INTEGER DEFAULT 0;");
+    }
+    if (!invoiceCols.includes('deleted_at')) {
+      db.exec("ALTER TABLE invoices ADD COLUMN deleted_at DATETIME;");
+    }
+
+    const proformaCols = db.prepare("PRAGMA table_info(proformas)").all().map(c => c.name);
+    if (!proformaCols.includes('is_deleted')) {
+      db.exec("ALTER TABLE proformas ADD COLUMN is_deleted INTEGER DEFAULT 0;");
+    }
+    if (!proformaCols.includes('deleted_at')) {
+      db.exec("ALTER TABLE proformas ADD COLUMN deleted_at DATETIME;");
+    }
+
+    db.prepare('INSERT INTO schema_migrations (version) VALUES (2)').run();
   }
 
   // Seed default company details if not present or sync address

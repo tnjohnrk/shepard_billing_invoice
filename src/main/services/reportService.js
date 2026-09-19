@@ -4,8 +4,8 @@ export function getDailyReport(dateStr) {
   const db = getDatabase();
   const date = dateStr || new Date().toISOString().split('T')[0];
 
-  const invoices = db.prepare('SELECT * FROM invoices WHERE invoice_date = ? ORDER BY created_at ASC').all(date);
-  const proformas = db.prepare('SELECT * FROM proformas WHERE proforma_date = ? ORDER BY created_at ASC').all(date);
+  const invoices = db.prepare('SELECT * FROM invoices WHERE invoice_date = ? AND (is_deleted = 0 OR is_deleted IS NULL) ORDER BY created_at ASC').all(date);
+  const proformas = db.prepare('SELECT * FROM proformas WHERE proforma_date = ? AND (is_deleted = 0 OR is_deleted IS NULL) ORDER BY created_at ASC').all(date);
 
   const stats = calculateAggregateStats(invoices, proformas);
   return {
@@ -20,8 +20,8 @@ export function getMonthlyReport(year, month) {
   const db = getDatabase();
   const monthStr = `${year}-${String(month).padStart(2, '0')}`;
 
-  const invoices = db.prepare('SELECT * FROM invoices WHERE strftime("%Y-%m", invoice_date) = ? ORDER BY invoice_date ASC').all(monthStr);
-  const proformas = db.prepare('SELECT * FROM proformas WHERE strftime("%Y-%m", proforma_date) = ? ORDER BY proforma_date ASC').all(monthStr);
+  const invoices = db.prepare('SELECT * FROM invoices WHERE strftime("%Y-%m", invoice_date) = ? AND (is_deleted = 0 OR is_deleted IS NULL) ORDER BY invoice_date ASC').all(monthStr);
+  const proformas = db.prepare('SELECT * FROM proformas WHERE strftime("%Y-%m", proforma_date) = ? AND (is_deleted = 0 OR is_deleted IS NULL) ORDER BY proforma_date ASC').all(monthStr);
 
   const stats = calculateAggregateStats(invoices, proformas);
   return {
@@ -40,8 +40,8 @@ export function getFinancialYearReport(startYear) {
   const startDate = `${sYear}-04-01`;
   const endDate = `${sYear + 1}-03-31`;
 
-  const invoices = db.prepare('SELECT * FROM invoices WHERE invoice_date >= ? AND invoice_date <= ? ORDER BY invoice_date ASC').all(startDate, endDate);
-  const proformas = db.prepare('SELECT * FROM proformas WHERE proforma_date >= ? AND proforma_date <= ? ORDER BY proforma_date ASC').all(startDate, endDate);
+  const invoices = db.prepare('SELECT * FROM invoices WHERE invoice_date >= ? AND invoice_date <= ? AND (is_deleted = 0 OR is_deleted IS NULL) ORDER BY invoice_date ASC').all(startDate, endDate);
+  const proformas = db.prepare('SELECT * FROM proformas WHERE proforma_date >= ? AND proforma_date <= ? AND (is_deleted = 0 OR is_deleted IS NULL) ORDER BY proforma_date ASC').all(startDate, endDate);
 
   const stats = calculateAggregateStats(invoices, proformas);
   return {
@@ -65,6 +65,7 @@ export function getCustomerSummaryReport() {
       SUM(cgst_amount + sgst_amount + igst_amount) as total_tax,
       SUM(grand_total) as total_billing
     FROM invoices
+    WHERE (is_deleted = 0 OR is_deleted IS NULL)
     GROUP BY buyer_name
     ORDER BY total_billing DESC
   `).all();

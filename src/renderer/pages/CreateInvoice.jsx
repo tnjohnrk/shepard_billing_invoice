@@ -29,7 +29,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
 
     transportation_mode: '',
     vehicle_number: '',
-    date_of_supply: '',
+    date_of_supply: new Date().toISOString().split('T')[0],
     delivery_address: '',
 
     buyer_name: '',
@@ -136,6 +136,19 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
   const validateCurrentStep = () => {
     const newErrors = {};
 
+    if (step === 2) {
+      if (!formData.date_of_supply || !String(formData.date_of_supply).trim()) {
+        newErrors.date_of_supply = 'Date of supply is mandatory';
+        toast('error', 'Date of Supply is mandatory.');
+      }
+      if (isProforma && (!formData.proforma_number || !formData.proforma_number.trim())) {
+        newErrors.proforma_number = 'Proforma number is required';
+      }
+      if (!isProforma && (!formData.invoice_number || !formData.invoice_number.trim())) {
+        newErrors.invoice_number = 'Invoice number is required';
+      }
+    }
+
     if (step === 3) {
       if (!formData.buyer_name || !formData.buyer_name.trim()) {
         newErrors.buyer_name = 'Buyer name is required';
@@ -193,6 +206,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
             <InvoiceDetailsForm
               formData={formData}
               onChange={handleFieldChange}
+              errors={errors}
               isProforma={isProforma}
             />
           )}

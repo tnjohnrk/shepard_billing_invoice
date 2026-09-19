@@ -3,7 +3,7 @@ import { getDatabase } from '../database/connection.js';
 export function createInvoice(invoiceData, items) {
   const db = getDatabase();
   const insertTransaction = db.transaction(() => {
-    const existing = db.prepare('SELECT id FROM invoices WHERE invoice_number = ?').get(invoiceData.invoice_number);
+    const existing = db.prepare('SELECT id FROM invoices WHERE invoice_number = ? AND (is_deleted = 0 OR is_deleted IS NULL)').get(invoiceData.invoice_number);
     if (existing) {
       throw new Error(`Invoice number "${invoiceData.invoice_number}" already exists. Overwriting historical invoices is strictly prohibited.`);
     }
@@ -15,14 +15,14 @@ export function createInvoice(invoiceData, items) {
         buyer_name, buyer_address, customer_gstin, customer_state, customer_state_code,
         so_po_number, so_po_date, gemc_number, additional_reference,
         subtotal, cgst_rate, cgst_amount, sgst_rate, sgst_amount, igst_rate, igst_amount,
-        grand_total, amount_in_words, notes, pdf_path
+        grand_total, amount_in_words, notes, pdf_path, is_deleted
       ) VALUES (
         @invoice_number, @invoice_type, @invoice_date, @copy_type, @proforma_id,
         @transportation_mode, @vehicle_number, @date_of_supply, @delivery_address,
         @buyer_name, @buyer_address, @customer_gstin, @customer_state, @customer_state_code,
         @so_po_number, @so_po_date, @gemc_number, @additional_reference,
         @subtotal, @cgst_rate, @cgst_amount, @sgst_rate, @sgst_amount, @igst_rate, @igst_amount,
-        @grand_total, @amount_in_words, @notes, @pdf_path
+        @grand_total, @amount_in_words, @notes, @pdf_path, 0
       )
     `).run({
       ...invoiceData,
@@ -88,12 +88,17 @@ export function listInvoices({
   startDate = '',
   endDate = '',
   minAmount = null,
-  maxAmount = null
+  maxAmount = null,
+  includeDeleted = false
 } = {}) {
   const db = getDatabase();
   const offset = (page - 1) * limit;
   let whereClauses = [];
   let params = [];
+
+  if (!includeDeleted) {
+    whereClauses.push('(is_deleted = 0 OR is_deleted IS NULL)');
+  }
 
   if (search && search.trim()) {
     const q = `%${search.trim()}%`;
@@ -136,13 +141,54 @@ export function listInvoices({
     LIMIT ? OFFSET ?
   `).all(...params, limit, offset);
 
+  const itemStmt = db.prepare('SELECT * FROM invoice_items WHERE invoice_id = ? ORDER BY sort_order ASC');
+  const invoicesWithItems = rows.map(inv => ({
+    ...inv,
+    items: itemStmt.all(inv.id)
+  }));
+
   return {
-    data: rows,
+    data: invoicesWithItems,
     total: totalRow ? totalRow.count : 0,
     page,
     limit,
     totalPages: Math.ceil((totalRow ? totalRow.count : 0) / limit)
   };
+}
+
+export function softDeleteInvoice(id) {
+  const db = getDatabase();
+  return db.prepare('UPDATE invoices SET is_deleted = 1, deleted_at = CURRENT_TIMESTAMP WHERE id = ?').run(id);
+}
+
+export function restoreInvoice(id) {
+  const db = getDatabase();
+  return db.prepare('UPDATE invoices SET is_deleted = 0, deleted_at = NULL WHERE id = ?').run(id);
+}
+
+export function permanentlyDeleteInvoice(id) {
+  const db = getDatabase();
+  const delTransaction = db.transaction(() => {
+    db.prepare('DELETE FROM invoice_items WHERE invoice_id = ?').run(id);
+    db.prepare('DELETE FROM email_queue WHERE invoice_id = ?').run(id);
+    db.prepare('DELETE FROM invoices WHERE id = ?').run(id);
+  });
+  return delTransaction();
+}
+
+export function listDeletedInvoices() {
+  const db = getDatabase();
+  const rows = db.prepare(`
+    SELECT * FROM invoices 
+    WHERE is_deleted = 1 
+    ORDER BY deleted_at DESC, id DESC
+  `).all();
+
+  const itemStmt = db.prepare('SELECT * FROM invoice_items WHERE invoice_id = ? ORDER BY sort_order ASC');
+  return rows.map(inv => ({
+    ...inv,
+    items: itemStmt.all(inv.id)
+  }));
 }
 
 export function generateNextInvoiceNumber() {

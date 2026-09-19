@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import { COMPANY_CONFIG } from '../../config/companyConfig.js';
 import { TEMPLATE_CONFIG } from './templateConfig.js';
-import { COPY_TYPE_LABELS, getCopyTypeLabel } from '../../../shared/constants/copyTypes.js';
+import { getCopyTypeLabel } from '../../../shared/constants/copyTypes.js';
 
 export function renderInvoiceHtml(invoiceData) {
   const htmlPath = path.join(__dirname, 'invoiceTemplate.html');
@@ -16,55 +16,100 @@ export function renderInvoiceHtml(invoiceData) {
   let cssContent = fs.readFileSync(cssPath, 'utf8');
 
   const isProforma = String(invoiceData.invoice_type).toUpperCase() === 'PROFORMA';
-  const docType = isProforma ? TEMPLATE_CONFIG.proformaHeaderTitle : TEMPLATE_CONFIG.headerTitle;
-  const docNumLabel = isProforma ? 'Proforma No' : 'Invoice No';
+  const docType = isProforma ? 'PROFORMA INVOICE' : 'INVOICE';
   const docNum = isProforma ? (invoiceData.proforma_number || '') : (invoiceData.invoice_number || '');
   const docDate = (isProforma ? invoiceData.proforma_date : invoiceData.invoice_date) || '';
   const copyTypeLabel = getCopyTypeLabel(invoiceData.copy_type, isProforma);
 
+  // Read and encode company logo to base64 Data URI
+  const logoPath = path.join(__dirname, 'logo.png');
+  let logoHtml = '';
+  if (fs.existsSync(logoPath)) {
+    const logoBase64 = fs.readFileSync(logoPath).toString('base64');
+    logoHtml = `<img src="data:image/png;base64,${logoBase64}" alt="Shepherd Enterprises" class="header-logo-img" />`;
+  }
+
+  // Build reference block string for line items (S.O. No, GEMC No, Ref)
+  const refs = [];
+  if (invoiceData.so_po_number) {
+    let soText = `S.O. No: ${escapeHtml(invoiceData.so_po_number)}`;
+    if (invoiceData.so_po_date) {
+      soText += ` Dt: ${escapeHtml(invoiceData.so_po_date)}`;
+    }
+    refs.push(soText);
+  }
+  if (invoiceData.gemc_number) {
+    refs.push(`GEMC - ${escapeHtml(invoiceData.gemc_number)}`);
+  }
+  if (invoiceData.reference_number) {
+    refs.push(`Ref: ${escapeHtml(invoiceData.reference_number)}`);
+  }
+
+  const refsHtml = refs.length > 0
+    ? `<div class="item-refs-block">${refs.join('<br>')}</div>`
+    : '';
+
   // Build Item Rows HTML
   const items = invoiceData.items || [];
-  let itemRowsHtml = items.map((item, idx) => `
-    <tr>
-      <td class="text-center">${idx + 1}</td>
-      <td><strong>${escapeHtml(item.description)}</strong></td>
-      <td class="text-center">${escapeHtml(item.hsn_sac || '-')}</td>
-      <td class="text-right">${item.quantity}</td>
-      <td class="text-right">${formatCurrency(item.rate)}</td>
-      <td class="text-right">${formatCurrency(item.amount)}</td>
-    </tr>
-  `).join('');
+  let itemRowsHtml = '';
 
-  // Add min empty rows to fill page height cleanly
-  const minRows = 6;
-  if (items.length < minRows) {
-    for (let i = items.length; i < minRows; i++) {
-      itemRowsHtml += `
-        <tr class="empty-row">
-          <td></td><td></td><td></td><td></td><td></td><td></td>
-        </tr>
-      `;
-    }
+  if (items.length === 0) {
+    itemRowsHtml = `
+      <tr>
+        <td class="col-desc">
+          <div class="item-desc-text">-</div>
+          ${refsHtml}
+        </td>
+        <td class="col-hsn">-</td>
+        <td class="col-qty">-</td>
+        <td class="col-rate">-</td>
+        <td class="col-amount">-</td>
+      </tr>
+    `;
+  } else {
+    itemRowsHtml = items.map((item, idx) => `
+      <tr>
+        <td class="col-desc">
+          <div class="item-desc-text">${escapeHtml(item.description)}</div>
+          ${idx === 0 ? refsHtml : ''}
+        </td>
+        <td class="col-hsn">${escapeHtml(item.hsn_sac || '-')}</td>
+        <td class="col-qty">${item.quantity}</td>
+        <td class="col-rate">${formatCurrency(item.rate)}</td>
+        <td class="col-amount">${formatCurrency(item.amount || (item.quantity * item.rate))}</td>
+      </tr>
+    `).join('');
   }
+
+  // Add min spacer row to stretch table body nicely
+  itemRowsHtml += `
+    <tr class="items-table-spacer">
+      <td class="col-desc"></td>
+      <td class="col-hsn"></td>
+      <td class="col-qty"></td>
+      <td class="col-rate"></td>
+      <td class="col-amount"></td>
+    </tr>
+  `;
 
   // Build Tax Rows HTML
   let taxRowsHtml = '';
   if (invoiceData.cgst_amount > 0 || invoiceData.sgst_amount > 0) {
     taxRowsHtml += `
       <tr>
-        <td>CGST @ ${invoiceData.cgst_rate || 9}%</td>
-        <td class="text-right">₹${formatCurrency(invoiceData.cgst_amount)}</td>
+        <td class="tax-title-col">ADD CGST: ${invoiceData.cgst_rate || 9}%</td>
+        <td class="tax-num-col">${formatCurrency(invoiceData.cgst_amount)}</td>
       </tr>
       <tr>
-        <td>SGST @ ${invoiceData.sgst_rate || 9}%</td>
-        <td class="text-right">₹${formatCurrency(invoiceData.sgst_amount)}</td>
+        <td class="tax-title-col">ADD SGST: ${invoiceData.sgst_rate || 9}%</td>
+        <td class="tax-num-col">${formatCurrency(invoiceData.sgst_amount)}</td>
       </tr>
     `;
   } else if (invoiceData.igst_amount > 0) {
     taxRowsHtml += `
       <tr>
-        <td>IGST @ ${invoiceData.igst_rate || 18}%</td>
-        <td class="text-right">₹${formatCurrency(invoiceData.igst_amount)}</td>
+        <td class="tax-title-col">ADD IGST: ${invoiceData.igst_rate || 18}%</td>
+        <td class="tax-num-col">${formatCurrency(invoiceData.igst_amount)}</td>
       </tr>
     `;
   }
@@ -74,19 +119,10 @@ export function renderInvoiceHtml(invoiceData) {
   if (invoiceData.roundOff && invoiceData.roundOff !== 0) {
     roundOffHtml = `
       <tr>
-        <td>Round Off</td>
-        <td class="text-right">${invoiceData.roundOff > 0 ? '+' : ''}${formatCurrency(invoiceData.roundOff)}</td>
+        <td class="tax-title-col">ROUND OFF</td>
+        <td class="tax-num-col">${invoiceData.roundOff > 0 ? '+' : ''}${formatCurrency(invoiceData.roundOff)}</td>
       </tr>
     `;
-  }
-
-  // PO/SO string
-  let soPoInfo = '-';
-  if (invoiceData.so_po_number) {
-    soPoInfo = invoiceData.so_po_number;
-    if (invoiceData.so_po_date) {
-      soPoInfo += ` (${invoiceData.so_po_date})`;
-    }
   }
 
   // Terms HTML list
@@ -96,16 +132,21 @@ export function renderInvoiceHtml(invoiceData) {
   let notesHtml = '';
   if (invoiceData.notes) {
     notesHtml = `
-      <div class="section-label" style="margin-top: 8px;">Notes / Remarks:</div>
-      <div style="font-size: 10px; color: #334155;">${escapeHtml(invoiceData.notes)}</div>
+      <div style="font-size: 8.5px; color: #1f2937; margin-top: 4px;">
+        <strong>Notes:</strong> ${escapeHtml(invoiceData.notes)}
+      </div>
     `;
   }
+
+  const deliveryAddress = invoiceData.delivery_address || invoiceData.buyer_address || '';
 
   // Perform replacements
   let rendered = htmlTemplate
     .replace('{{CSS_CONTENT}}', cssContent)
+    .replace('{{COMPANY_LOGO_HTML}}', logoHtml)
+    .replace('{{COMPANY_NAME_SHORT}}', 'SHEPHERD ENTERPRISES')
+    .replace('{{COMPANY_UPI_ID}}', COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'hdfcbank'}` : '@hdfcbank')
     .replace(/{{DOC_TYPE}}/g, docType)
-    .replace('{{DOC_NUM_LABEL}}', docNumLabel)
     .replace(/{{INVOICE_NUMBER}}/g, docNum)
     .replace('{{COPY_TYPE_LABEL}}', copyTypeLabel)
     .replace('{{COMPANY_NAME}}', COMPANY_CONFIG.name)
@@ -117,14 +158,14 @@ export function renderInvoiceHtml(invoiceData) {
     .replace('{{COMPANY_STATE_CODE}}', COMPANY_CONFIG.state_code)
     .replace('{{BUYER_NAME}}', escapeHtml(invoiceData.buyer_name || ''))
     .replace('{{BUYER_ADDRESS}}', escapeHtml(invoiceData.buyer_address || ''))
+    .replace('{{DELIVERY_ADDRESS}}', escapeHtml(deliveryAddress))
     .replace('{{BUYER_GSTIN}}', escapeHtml(invoiceData.customer_gstin || 'N/A'))
     .replace('{{BUYER_STATE}}', escapeHtml(invoiceData.customer_state || ''))
     .replace('{{BUYER_STATE_CODE}}', escapeHtml(invoiceData.customer_state_code || ''))
     .replace('{{INVOICE_DATE}}', docDate)
+    .replace('{{DATE_OF_SUPPLY}}', escapeHtml(invoiceData.date_of_supply || docDate || '-'))
     .replace('{{TRANSPORTATION_MODE}}', escapeHtml(invoiceData.transportation_mode || '-'))
     .replace('{{VEHICLE_NUMBER}}', escapeHtml(invoiceData.vehicle_number || '-'))
-    .replace('{{SO_PO_INFO}}', escapeHtml(soPoInfo))
-    .replace('{{GEMC_NUMBER}}', escapeHtml(invoiceData.gemc_number || '-'))
     .replace('{{ITEM_ROWS}}', itemRowsHtml)
     .replace('{{AMOUNT_IN_WORDS}}', invoiceData.amount_in_words || '')
     .replace('{{SUBTOTAL}}', formatCurrency(invoiceData.subtotal))
@@ -137,8 +178,8 @@ export function renderInvoiceHtml(invoiceData) {
     .replace('{{IFSC_CODE}}', COMPANY_CONFIG.ifsc_code)
     .replace('{{BRANCH_NAME}}', COMPANY_CONFIG.branch_name)
     .replace('{{TERMS_AND_CONDITIONS}}', termsHtml)
-    .replace('{{DECLARATION}}', TEMPLATE_CONFIG.footerDeclaration)
-    .replace('{{AUTHORIZED_SIGNATORY_LABEL}}', TEMPLATE_CONFIG.authorizedSignatoryLabel);
+    .replace('{{DECLARATION}}', 'CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT')
+    .replace('{{AUTHORIZED_SIGNATORY_LABEL}}', `For ${COMPANY_CONFIG.name}`);
 
   return rendered;
 }
@@ -159,3 +200,4 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+

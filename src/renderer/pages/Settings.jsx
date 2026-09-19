@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { PageContainer } from '../components/layout/PageContainer';
 import { AppearanceSettings } from '../components/settings/AppearanceSettings';
 import { BackupRestore } from '../components/settings/BackupRestore';
+import { RecycleBin } from '../components/settings/RecycleBin';
 import { PinSettings } from '../components/settings/PinSettings';
 import { About } from '../components/settings/About';
-import { Palette, HardDrive, Shield, Info } from 'lucide-react';
+import { Palette, HardDrive, Trash2, Shield, Info } from 'lucide-react';
 
 export function Settings({ toast }) {
   const [activeTab, setActiveTab] = useState('backup');
 
   const tabs = [
     { id: 'backup', label: 'Backup & Restore', icon: HardDrive },
-    { id: 'pin', label: 'Security PIN Lock', icon: Shield },
+    { id: 'bin', label: 'Recycle Bin', icon: Trash2 },
+    { id: 'pin', label: 'Security Password Lock', icon: Shield },
     { id: 'appearance', label: 'Appearance', icon: Palette },
     { id: 'about', label: 'About & Policy', icon: Info }
   ];
@@ -44,6 +46,7 @@ export function Settings({ toast }) {
         {/* Settings Content Area */}
         <div className="flex-1">
           {activeTab === 'backup' && <BackupRestore toast={toast} />}
+          {activeTab === 'bin' && <RecycleBin toast={toast} />}
           {activeTab === 'pin' && <PinSettings toast={toast} />}
           {activeTab === 'appearance' && <AppearanceSettings />}
           {activeTab === 'about' && <About />}

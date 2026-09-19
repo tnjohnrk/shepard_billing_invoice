@@ -3,7 +3,7 @@ import { Input } from '../common/Input';
 import { Select } from '../common/Select';
 import { COPY_TYPES } from '../../../shared/constants/copyTypes';
 
-export function InvoiceDetailsForm({ formData, onChange, isProforma }) {
+export function InvoiceDetailsForm({ formData, onChange, errors = {}, isProforma }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -11,6 +11,7 @@ export function InvoiceDetailsForm({ formData, onChange, isProforma }) {
           label={isProforma ? 'Proforma Number' : 'Invoice Number'}
           value={isProforma ? formData.proforma_number : formData.invoice_number}
           onChange={(e) => onChange(isProforma ? 'proforma_number' : 'invoice_number', e.target.value)}
+          error={errors?.invoice_number || errors?.proforma_number}
           required
         />
 
@@ -19,6 +20,7 @@ export function InvoiceDetailsForm({ formData, onChange, isProforma }) {
           type="date"
           value={isProforma ? formData.proforma_date : formData.invoice_date}
           onChange={(e) => onChange(isProforma ? 'proforma_date' : 'invoice_date', e.target.value)}
+          error={errors?.invoice_date || errors?.proforma_date}
           required
         />
 
@@ -54,10 +56,12 @@ export function InvoiceDetailsForm({ formData, onChange, isProforma }) {
           />
 
           <Input
-            label="Date of Supply"
+            label="Date of Supply *"
             type="date"
             value={formData.date_of_supply || ''}
             onChange={(e) => onChange('date_of_supply', e.target.value)}
+            error={errors?.date_of_supply}
+            required
           />
         </div>
 

@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { AppLayout } from './components/layout/AppLayout';
 import { SplashScreen } from './components/splash/SplashScreen';
+import { LockScreen } from './components/auth/LockScreen';
 import { Toast } from './components/common/Toast';
-import { Modal } from './components/common/Modal';
-import { Input } from './components/common/Input';
-import { Button } from './components/common/Button';
 import { Dashboard } from './pages/Dashboard';
 import { CreateInvoice } from './pages/CreateInvoice';
 import { History } from './pages/History';
 import { Reports } from './pages/Reports';
 import { Settings } from './pages/Settings';
 import { ipcClient } from './services/ipcClient';
-import { Lock } from 'lucide-react';
 
 export default function App() {
   const [isInitializing, setIsInitializing] = useState(true);
@@ -19,10 +16,8 @@ export default function App() {
   const [toastState, setToastState] = useState(null);
   const [createInitialData, setCreateInitialData] = useState(null);
 
-  // PIN Protection state
+  // Security Password Protection state
   const [isLocked, setIsLocked] = useState(false);
-  const [pinInput, setPinInput] = useState('');
-  const [pinError, setPinError] = useState('');
 
   useEffect(() => {
     bootstrapApp();
@@ -35,11 +30,11 @@ export default function App() {
         setIsLocked(true);
       }
     } catch (e) {
-      console.error('Error checking PIN status:', e);
+      console.error('Error checking security lock status:', e);
     } finally {
       setTimeout(() => {
         setIsInitializing(false);
-      }, 1200);
+      }, 1000);
     }
   };
 
@@ -47,21 +42,21 @@ export default function App() {
     setToastState({ type, message });
   };
 
-  const handlePinUnlock = async (e) => {
-    e.preventDefault();
+  const handleUnlock = async (enteredPassword) => {
     try {
-      const isValid = await ipcClient.verifyPin(pinInput);
+      const isValid = await ipcClient.verifyPin(enteredPassword);
       if (isValid) {
         setIsLocked(false);
-        setPinInput('');
-        setPinError('');
-      } else {
-        setPinError('Incorrect 4-digit security PIN.');
+        showToast('success', 'Security verification successful. Welcome!');
+        return true;
       }
+      return false;
     } catch (err) {
-      setPinError('PIN verification failed.');
+      return false;
     }
   };
+
+  const [historySelectedInvoice, setHistorySelectedInvoice] = useState(null);
 
   const handleDuplicateInvoice = (invoiceData) => {
     setCreateInitialData(invoiceData);
@@ -83,12 +78,27 @@ export default function App() {
     return <SplashScreen />;
   }
 
+  if (isLocked) {
+    return (
+      <>
+        <LockScreen onUnlock={handleUnlock} />
+        {toastState && (
+          <Toast
+            type={toastState.type}
+            message={toastState.message}
+            onClose={() => setToastState(null)}
+          />
+        )}
+      </>
+    );
+  }
+
   const tabTitles = {
     dashboard: { title: 'Dashboard Analytics', subtitle: 'Shepherd Enterprises Private Limited Billing Control Panel' },
     create: { title: 'Create Invoice', subtitle: 'Step-by-step invoice creation wizard' },
     history: { title: 'Invoice History & Search', subtitle: 'Search, filter, print, and export historical invoice records' },
     reports: { title: 'Financial & Tax Reports', subtitle: 'Daily, Monthly, Financial Year (Apr-Mar) and Customer Billing summaries' },
-    settings: { title: 'Application Settings', subtitle: 'Backup, restore, and security lock configuration' }
+    settings: { title: 'Application Settings', subtitle: 'Backup, restore, data migration, and security lock configuration' }
   };
 
   return (
@@ -97,6 +107,7 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={(tab) => {
           if (tab !== 'create') setCreateInitialData(null);
+          if (tab !== 'history') setHistorySelectedInvoice(null);
           setActiveTab(tab);
         }}
         title={tabTitles[activeTab]?.title}
@@ -106,6 +117,7 @@ export default function App() {
         {activeTab === 'dashboard' && (
           <Dashboard
             onViewInvoice={(inv) => {
+              setHistorySelectedInvoice(inv);
               setActiveTab('history');
             }}
             onNavigateCreate={() => setActiveTab('create')}
@@ -128,6 +140,7 @@ export default function App() {
 
         {activeTab === 'history' && (
           <History
+            initialInvoice={historySelectedInvoice}
             toast={showToast}
             onNavigateCreate={() => setActiveTab('create')}
             onDuplicateInvoice={handleDuplicateInvoice}
@@ -139,32 +152,6 @@ export default function App() {
 
         {activeTab === 'settings' && <Settings toast={showToast} />}
       </AppLayout>
-
-      {/* Security PIN Lock Modal Overlay */}
-      <Modal isOpen={isLocked} onClose={() => {}} title="Security PIN Lock Required" maxWidth="max-w-md">
-        <form onSubmit={handlePinUnlock} className="space-y-4 py-2">
-          <div className="flex flex-col items-center justify-center p-4 text-center">
-            <div className="p-3 rounded-full bg-amber-950/80 border border-amber-800/60 text-amber-400 mb-2">
-              <Lock className="w-8 h-8" />
-            </div>
-            <p className="text-xs text-slate-300">Enter your 4-digit security PIN to unlock the billing application.</p>
-          </div>
-
-          <Input
-            type="password"
-            maxLength={4}
-            placeholder="Enter 4-digit PIN"
-            value={pinInput}
-            onChange={(e) => setPinInput(e.target.value)}
-            error={pinError}
-            autoFocus
-          />
-
-          <Button type="submit" variant="primary" className="w-full">
-            Unlock Application
-          </Button>
-        </form>
-      </Modal>
 
       {/* Global Toast Notification */}
       {toastState && (

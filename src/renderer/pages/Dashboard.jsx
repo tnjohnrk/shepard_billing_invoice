@@ -34,7 +34,32 @@ export function Dashboard({ onViewInvoice, onNavigateCreate }) {
       const totalProformas = proResult?.total || 0;
 
       const invoices = invResult?.data || [];
-      setRecentInvoices(invoices.slice(0, 5));
+      const proformas = proResult?.data || [];
+
+      // Combine both Normal (Tax) Invoices and Proforma Invoices for Recent list
+      const rawInvoices = invoices.map(i => ({
+        ...i,
+        invoice_type: i.invoice_type || 'NORMAL',
+        doc_date: i.invoice_date,
+        doc_number: i.invoice_number
+      }));
+
+      const rawProformas = proformas.map(p => ({
+        ...p,
+        invoice_type: 'PROFORMA',
+        doc_date: p.proforma_date || p.invoice_date,
+        doc_number: p.proforma_number || p.invoice_number,
+        invoice_number: p.proforma_number || p.invoice_number,
+        invoice_date: p.proforma_date || p.invoice_date
+      }));
+
+      const allCombined = [...rawInvoices, ...rawProformas].sort((a, b) => {
+        const dateA = a.created_at || a.doc_date || '';
+        const dateB = b.created_at || b.doc_date || '';
+        return dateB.localeCompare(dateA);
+      });
+
+      setRecentInvoices(allCombined.slice(0, 6));
 
       // Calculate current month stats
       const now = new Date();
@@ -51,7 +76,6 @@ export function Dashboard({ onViewInvoice, onNavigateCreate }) {
       });
 
       // Real monthly aggregation from actual invoice and proforma records
-      const proformas = proResult?.data || [];
       const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       
       // Trailing 6 months up to current month
@@ -99,45 +123,45 @@ export function Dashboard({ onViewInvoice, onNavigateCreate }) {
 
   return (
     <PageContainer>
-      {/* Top Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* Top 4 KPI Metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Total Tax Invoices"
           value={stats.totalInvoices}
-          subtitle="Saved to SQLite"
+          subtitle="Tax invoices issued"
           icon={FileText}
           color="indigo"
         />
         <StatCard
           title="Total Proformas"
           value={stats.totalProformas}
-          subtitle="Estimates / Quotations"
+          subtitle="Estimates / quotations"
           icon={FileSpreadsheet}
           color="cyan"
         />
         <StatCard
           title="This Month Revenue"
           value={`₹${stats.monthlyBilling.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`}
-          subtitle="Current Billing Month"
+          subtitle={`${stats.monthlyCount} invoices this month`}
           icon={DollarSign}
           color="emerald"
         />
         <StatCard
-          title="This Month Invoices"
-          value={stats.monthlyCount}
-          subtitle="New Invoices Created"
+          title="Monthly Activity"
+          value={`${stats.monthlyCount} Docs`}
+          subtitle="Current month volume"
           icon={Calendar}
           color="amber"
         />
       </div>
 
-      {/* Visual Analytics Charts */}
+      {/* Analytics Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <InvoiceActivityChart data={activityChartData} />
         <BillingAmountChart data={revenueChartData} />
       </div>
 
-      {/* Recent Activity Table */}
+      {/* Recent Invoices & Proformas Combined Table */}
       <RecentInvoices invoices={recentInvoices} onViewInvoice={onViewInvoice} />
     </PageContainer>
   );

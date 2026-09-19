@@ -12,6 +12,7 @@ import { registerReportIPC } from './ipc/reportIPC.js';
 import { registerBackupIPC } from './ipc/backupIPC.js';
 import { registerPrintIPC } from './ipc/printIPC.js';
 import { registerSettingsIPC } from './ipc/settingsIPC.js';
+import { registerRecycleBinIPC } from './ipc/recycleBinIPC.js';
 import { registerAppIPC } from './ipc/appIPC.js';
 import { initializeAutoUpdater } from './services/updateService.js';
 import { processPendingEmailQueue } from './services/emailQueueService.js';
@@ -126,6 +127,17 @@ function createMainWindow() {
     });
   }
 
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    if ((input.control && input.shift && input.key.toLowerCase() === 'i') || input.key === 'F12') {
+      mainWindow.webContents.toggleDevTools();
+      event.preventDefault();
+    }
+    if ((input.control && input.key.toLowerCase() === 'r') || input.key === 'F5') {
+      mainWindow.reload();
+      event.preventDefault();
+    }
+  });
+
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
@@ -161,6 +173,7 @@ if (!gotTheLock) {
     registerBackupIPC();
     registerPrintIPC();
     registerSettingsIPC();
+    registerRecycleBinIPC();
     registerAppIPC();
 
     // 3. Process pending offline email queue in background

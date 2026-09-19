@@ -2,7 +2,7 @@ import React from 'react';
 import { Table } from '../common/Table';
 import { HistoryActions } from './HistoryActions';
 
-export function HistoryTable({ invoices = [], onView, onPrint, onPdf, onExcel, onDuplicate, onConvert }) {
+export function HistoryTable({ invoices = [], onView, onPrint, onPdf, onExcel, onDuplicate, onConvert, onDelete }) {
   const headers = [
     { label: 'Doc Number' },
     { label: 'Date' },
@@ -52,6 +52,7 @@ export function HistoryTable({ invoices = [], onView, onPrint, onPdf, onExcel, o
                 onExcel={onExcel}
                 onDuplicate={onDuplicate}
                 onConvert={onConvert}
+                onDelete={onDelete}
               />
             </td>
           </tr>

@@ -33,6 +33,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   createManualBackup: () => ipcRenderer.invoke('backup:createManual'),
   restoreBackup: () => ipcRenderer.invoke('backup:restore'),
 
+  // Recycle Bin & Deletion
+  deleteInvoice: (id) => ipcRenderer.invoke('invoice:delete', id),
+  deleteProforma: (id) => ipcRenderer.invoke('proforma:delete', id),
+  getRecycleBin: () => ipcRenderer.invoke('bin:list'),
+  restoreFromBin: (id, type) => ipcRenderer.invoke('bin:restore', { id, type }),
+  deletePermanentlyFromBin: (id, type) => ipcRenderer.invoke('bin:deletePermanent', { id, type }),
+  emptyRecycleBin: () => ipcRenderer.invoke('bin:empty'),
+
   // Settings & Profile
   getAllSettings: () => ipcRenderer.invoke('settings:getAll'),
   setSetting: (key, value) => ipcRenderer.invoke('settings:set', { key, value }),

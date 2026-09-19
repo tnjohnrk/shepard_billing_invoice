@@ -7,17 +7,26 @@ import { InvoicePreview } from '../components/invoice/InvoicePreview';
 import { Loading } from '../components/common/Loading';
 import { EmptyState } from '../components/common/EmptyState';
 import { Button } from '../components/common/Button';
+import { Dialog } from '../components/common/Dialog';
 import { ChevronLeft, ChevronRight, History as HistoryIcon } from 'lucide-react';
 import { ipcClient } from '../services/ipcClient';
 
-export function History({ toast, onNavigateCreate, onDuplicateInvoice, onConvertProforma }) {
+export function History({ initialInvoice = null, toast, onNavigateCreate, onDuplicateInvoice, onConvertProforma }) {
   const [loading, setLoading] = useState(true);
   const [invoices, setInvoices] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState({ invoiceType: '', startDate: '', endDate: '' });
-  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [selectedInvoice, setSelectedInvoice] = useState(initialInvoice);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    if (initialInvoice) {
+      handleViewInvoice(initialInvoice);
+    }
+  }, [initialInvoice]);
 
   useEffect(() => {
     loadInvoices();
@@ -26,24 +35,79 @@ export function History({ toast, onNavigateCreate, onDuplicateInvoice, onConvert
   const loadInvoices = async () => {
     setLoading(true);
     try {
-      const isProformaSearch = filters.invoiceType === 'PROFORMA';
-      let result;
+      if (filters.invoiceType === 'PROFORMA') {
+        const result = await ipcClient.listProformas({ page, limit: 15, search, status: '' });
+        let data = (result?.data || []).map(p => ({
+          ...p,
+          invoice_type: 'PROFORMA',
+          invoice_number: p.proforma_number || p.invoice_number,
+          invoice_date: p.proforma_date || p.invoice_date
+        }));
 
-      if (isProformaSearch) {
-        result = await ipcClient.listProformas({ page, limit: 15, search, status: '' });
-      } else {
-        result = await ipcClient.listInvoices({
+        if (filters.startDate) {
+          data = data.filter(p => (p.proforma_date || p.invoice_date || '') >= filters.startDate);
+        }
+        if (filters.endDate) {
+          data = data.filter(p => (p.proforma_date || p.invoice_date || '') <= filters.endDate);
+        }
+
+        setInvoices(data);
+        setTotalPages(result?.totalPages || 1);
+      } else if (filters.invoiceType === 'NORMAL') {
+        const result = await ipcClient.listInvoices({
           page,
           limit: 15,
           search,
-          invoiceType: filters.invoiceType,
+          invoiceType: 'NORMAL',
           startDate: filters.startDate,
           endDate: filters.endDate
         });
-      }
+        const data = (result?.data || []).map(i => ({
+          ...i,
+          invoice_type: i.invoice_type || 'NORMAL'
+        }));
+        setInvoices(data);
+        setTotalPages(result?.totalPages || 1);
+      } else {
+        // ALL Document Types: Combine both Normal (Tax) Invoices and Proformas
+        const [invRes, proRes] = await Promise.all([
+          ipcClient.listInvoices({ page: 1, limit: 1000, search, startDate: filters.startDate, endDate: filters.endDate }),
+          ipcClient.listProformas({ page: 1, limit: 1000, search, status: '' })
+        ]);
 
-      setInvoices(result?.data || []);
-      setTotalPages(result?.totalPages || 1);
+        const rawInvoices = (invRes?.data || []).map(i => ({
+          ...i,
+          invoice_type: i.invoice_type || 'NORMAL'
+        }));
+
+        let rawProformas = (proRes?.data || []).map(p => ({
+          ...p,
+          invoice_type: 'PROFORMA',
+          invoice_number: p.proforma_number || p.invoice_number,
+          invoice_date: p.proforma_date || p.invoice_date
+        }));
+
+        if (filters.startDate) {
+          rawProformas = rawProformas.filter(p => (p.proforma_date || p.invoice_date || '') >= filters.startDate);
+        }
+        if (filters.endDate) {
+          rawProformas = rawProformas.filter(p => (p.proforma_date || p.invoice_date || '') <= filters.endDate);
+        }
+
+        const combined = [...rawInvoices, ...rawProformas].sort((a, b) => {
+          const dateA = a.created_at || a.invoice_date || a.proforma_date || '';
+          const dateB = b.created_at || b.invoice_date || b.proforma_date || '';
+          return dateB.localeCompare(dateA);
+        });
+
+        const limit = 15;
+        const total = combined.length;
+        const calculatedTotalPages = Math.max(1, Math.ceil(total / limit));
+        const paginatedData = combined.slice((page - 1) * limit, page * limit);
+
+        setInvoices(paginatedData);
+        setTotalPages(calculatedTotalPages);
+      }
     } catch (err) {
       toast('error', err.message || 'Failed to fetch invoice history.');
     } finally {
@@ -95,6 +159,48 @@ export function History({ toast, onNavigateCreate, onDuplicateInvoice, onConvert
     if (onConvertProforma) onConvertProforma(inv);
   };
 
+  const handleDeleteClick = (inv) => {
+    setDeleteTarget(inv);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      const isProforma = String(deleteTarget.invoice_type).toUpperCase() === 'PROFORMA';
+      const docNum = isProforma 
+        ? (deleteTarget.proforma_number || deleteTarget.invoice_number)
+        : (deleteTarget.invoice_number || deleteTarget.proforma_number);
+
+      if (isProforma) {
+        await ipcClient.deleteProforma(deleteTarget.id);
+      } else {
+        await ipcClient.deleteInvoice(deleteTarget.id);
+      }
+
+      toast('success', `${isProforma ? 'Proforma' : 'Invoice'} ${docNum} moved to Recycle Bin.`);
+      setDeleteTarget(null);
+      await loadInvoices();
+    } catch (e) {
+      toast('error', e.message || 'Failed to move invoice to Recycle Bin.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleViewInvoice = async (inv) => {
+    try {
+      const isProforma = String(inv.invoice_type).toUpperCase() === 'PROFORMA';
+      let full = null;
+      if (inv.id) {
+        full = isProforma ? await ipcClient.getProforma(inv.id) : await ipcClient.getInvoice(inv.id);
+      }
+      setSelectedInvoice(full || inv);
+    } catch {
+      setSelectedInvoice(inv);
+    }
+  };
+
   if (selectedInvoice) {
     return (
       <PageContainer>
@@ -107,11 +213,17 @@ export function History({ toast, onNavigateCreate, onDuplicateInvoice, onConvert
     );
   }
 
+  const deleteDocNum = deleteTarget 
+    ? (String(deleteTarget.invoice_type).toUpperCase() === 'PROFORMA'
+        ? (deleteTarget.proforma_number || deleteTarget.invoice_number)
+        : (deleteTarget.invoice_number || deleteTarget.proforma_number))
+    : '';
+
   return (
     <PageContainer>
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-        <HistorySearch search={search} setSearch={setSearch} />
-        <HistoryFilters filters={filters} setFilters={setFilters} />
+        <HistorySearch search={search} setSearch={(val) => { setSearch(val); setPage(1); }} />
+        <HistoryFilters filters={filters} setFilters={(f) => { setFilters(f); setPage(1); }} />
       </div>
 
       {loading ? (
@@ -131,12 +243,13 @@ export function History({ toast, onNavigateCreate, onDuplicateInvoice, onConvert
         <div className="space-y-4">
           <HistoryTable
             invoices={invoices}
-            onView={(inv) => setSelectedInvoice(inv)}
+            onView={handleViewInvoice}
             onPrint={handlePrint}
             onPdf={handlePdf}
             onExcel={handleExcel}
             onDuplicate={handleDuplicate}
             onConvert={handleConvert}
+            onDelete={handleDeleteClick}
           />
 
           {/* Pagination Bar */}
@@ -165,6 +278,19 @@ export function History({ toast, onNavigateCreate, onDuplicateInvoice, onConvert
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => !isDeleting && setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Move to Recycle Bin?"
+        message={`Are you sure you want to move document "${deleteDocNum}" (Buyer: ${deleteTarget?.buyer_name || 'N/A'}) to the Recycle Bin? You can restore it anytime in Settings > Recycle Bin.`}
+        confirmText="Move to Bin"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={isDeleting}
+      />
     </PageContainer>
   );
 }

@@ -7,13 +7,15 @@ import { Loading } from '../components/common/Loading';
 import { Button } from '../components/common/Button';
 import { Input } from '../components/common/Input';
 import { Select } from '../components/common/Select';
-import { FileSpreadsheet } from 'lucide-react';
+import { Table } from '../components/common/Table';
+import { FileSpreadsheet, Download, Users, FileText } from 'lucide-react';
 import { ipcClient } from '../services/ipcClient';
 
 export function Reports({ toast }) {
   const [reportType, setReportType] = useState('daily');
   const [loading, setLoading] = useState(false);
   const [reportData, setReportData] = useState(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   // Filter params
   const [dailyDate, setDailyDate] = useState(new Date().toISOString().split('T')[0]);
@@ -46,28 +48,65 @@ export function Reports({ toast }) {
   };
 
   const handleExportExcel = async () => {
+    if (!reportData) return;
+    setIsExporting(true);
     try {
-      const title = `${reportType.toUpperCase()} Report`;
-      const targetPath = `Report_${reportType}_${Date.now()}.xlsx`;
-      await ipcClient.exportReportExcel({ reportData, title, targetPath });
-      toast('success', 'Report exported to Excel successfully!');
+      const typeLabels = {
+        daily: `Shepherd_Daily_Report_${dailyDate}`,
+        monthly: `Shepherd_Monthly_Report_${monthYear.year}_${String(monthYear.month).padStart(2, '0')}`,
+        financialYear: `Shepherd_FY_Report_${startFyYear}_${startFyYear + 1}`,
+        customer: `Shepherd_Customer_Billing_Summary`
+      };
+      const title = typeLabels[reportType] || `Shepherd_${reportType.toUpperCase()}_Report`;
+      
+      const res = await ipcClient.exportReportExcel({ 
+        reportData, 
+        title, 
+        reportType 
+      });
+
+      if (res && !res.canceled && res.path) {
+        toast('success', `Excel spreadsheet saved successfully to: ${res.path}`);
+      }
     } catch (e) {
+      console.error('Export error:', e);
       toast('error', e.message || 'Excel export failed.');
+    } finally {
+      setIsExporting(false);
     }
   };
+
+  const isCustomerReport = reportType === 'customer';
+  const customerList = isCustomerReport ? (Array.isArray(reportData) ? reportData : []) : [];
+
+  const customerHeaders = [
+    { label: '#' },
+    { label: 'Buyer / Customer Name' },
+    { label: 'GSTIN' },
+    { label: 'Invoices', align: 'center' },
+    { label: 'Taxable Value (₹)', align: 'right' },
+    { label: 'GST Tax (₹)', align: 'right' },
+    { label: 'Total Billed (₹)', align: 'right' }
+  ];
 
   return (
     <PageContainer>
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <ReportSelector activeType={reportType} onSelectType={setReportType} />
 
-        <Button variant="accent" icon={FileSpreadsheet} onClick={handleExportExcel} disabled={!reportData}>
-          Export Report to Excel
+        <Button 
+          variant="success" 
+          icon={FileSpreadsheet} 
+          onClick={handleExportExcel} 
+          disabled={!reportData || loading}
+          isLoading={isExporting}
+        >
+          Download Excel Spreadsheet (.xlsx)
         </Button>
       </div>
 
       {/* Date controls per report type */}
-      <div className="p-4 glass-panel rounded-xl border border-slate-800 flex flex-wrap items-center gap-4 text-xs">
+      <div className="p-4 glass-panel rounded-xl border border-slate-800 flex flex-wrap items-center gap-4 text-xs shadow-sm">
         {reportType === 'daily' && (
           <div className="w-48">
             <Input
@@ -81,7 +120,7 @@ export function Reports({ toast }) {
 
         {reportType === 'monthly' && (
           <div className="flex gap-4">
-            <div className="w-32">
+            <div className="w-36">
               <Select
                 label="Month"
                 value={monthYear.month}
@@ -106,23 +145,60 @@ export function Reports({ toast }) {
         )}
 
         {reportType === 'financialYear' && (
-          <div className="w-48">
+          <div className="w-56">
             <Select
               label="Financial Year (April 1 to March 31)"
               value={startFyYear}
               onChange={(e) => setStartFyYear(parseInt(e.target.value, 10))}
               options={[
-                { value: 2026, label: '2026 - 2027' },
-                { value: 2025, label: '2025 - 2026' },
-                { value: 2024, label: '2024 - 2025' }
+                { value: 2026, label: 'FY 2026 - 2027' },
+                { value: 2025, label: 'FY 2025 - 2026' },
+                { value: 2024, label: 'FY 2024 - 2025' },
+                { value: 2023, label: 'FY 2023 - 2024' }
               ]}
             />
+          </div>
+        )}
+
+        {reportType === 'customer' && (
+          <div className="flex items-center gap-2 text-xs text-slate-400">
+            <Users className="w-4 h-4 text-indigo-400" />
+            <span>Aggregated billing summary across all registered client accounts.</span>
           </div>
         )}
       </div>
 
       {loading ? (
         <Loading text="Generating Financial Report..." />
+      ) : isCustomerReport ? (
+        <div className="space-y-4">
+          <div className="p-5 glass-panel rounded-xl border border-slate-800 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-slate-100">Customer Account Summary</h3>
+              <span className="text-xs text-slate-400">{customerList.length} Clients Recorded</span>
+            </div>
+
+            {customerList.length === 0 ? (
+              <div className="text-xs text-slate-400 text-center py-8">No customer billing records found.</div>
+            ) : (
+              <Table headers={customerHeaders}>
+                {customerList.map((c, idx) => (
+                  <tr key={idx} className="hover:bg-slate-800/40 text-xs">
+                    <td className="px-4 py-3 text-slate-400 font-mono">{idx + 1}</td>
+                    <td className="px-4 py-3 font-semibold text-slate-100">{c.buyer_name}</td>
+                    <td className="px-4 py-3 font-mono text-slate-400">{c.customer_gstin || 'N/A'}</td>
+                    <td className="px-4 py-3 text-center font-bold text-indigo-400">{c.total_invoices}</td>
+                    <td className="px-4 py-3 text-right">₹{Number(c.total_taxable || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                    <td className="px-4 py-3 text-right text-slate-400">₹{Number(c.total_tax || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                    <td className="px-4 py-3 text-right font-bold text-emerald-400">
+                      ₹{Number(c.total_billing || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    </td>
+                  </tr>
+                ))}
+              </Table>
+            )}
+          </div>
+        </div>
       ) : (
         <div className="space-y-6">
           <ReportSummary stats={reportData?.stats} />

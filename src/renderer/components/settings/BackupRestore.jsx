@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HardDriveDownload, RotateCcw, Mail, RefreshCw, Save } from 'lucide-react';
+import { HardDriveDownload, RotateCcw, Mail, RefreshCw, Save, Laptop, ArrowRight, CheckCircle2, ShieldCheck, HelpCircle } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { Dialog } from '../common/Dialog';
@@ -105,8 +105,9 @@ export function BackupRestore({ toast }) {
     setIsBackingUp(true);
     try {
       const res = await ipcClient.createManualBackup();
-      if (!res.canceled) {
-        toast('success', `Backup saved to: ${res.backupPath}`);
+      if (!res.canceled && res.backupPath) {
+        const statsMsg = res.stats ? ` (${res.stats.invoices} Invoices, ${res.stats.proformas} Proformas, ${res.stats.customers} Customers)` : '';
+        toast('success', `Migration package saved to: ${res.backupPath}${statsMsg}`);
       }
     } catch (err) {
       toast('error', err.message || 'Backup creation failed.');
@@ -121,8 +122,11 @@ export function BackupRestore({ toast }) {
     try {
       const res = await ipcClient.restoreBackup();
       if (!res.canceled) {
-        toast('success', `Database restored successfully! Safety snapshot created at ${res.safetySnapshot}`);
-        window.location.reload();
+        const statsMsg = res.stats ? ` (${res.stats.invoices} Invoices, ${res.stats.proformas} Proformas)` : '';
+        toast('success', `Database migrated & restored successfully!${statsMsg}`);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1200);
       }
     } catch (err) {
       toast('error', err.message || 'Restore failed.');
@@ -133,20 +137,68 @@ export function BackupRestore({ toast }) {
 
   return (
     <div className="space-y-6">
-      {/* Manual Backup & Restore Section */}
-      <div className="p-5 glass-panel rounded-xl border border-slate-800 space-y-4">
-        <h3 className="text-sm font-semibold text-slate-200">Manual Database Backup & Restore</h3>
-        <p className="text-xs text-slate-400 leading-relaxed">
-          Create complete zipped backups of your SQLite database or restore from a previously saved backup archive file. Automatic backups are also performed seamlessly on every invoice creation.
-        </p>
+      {/* System Migration & Transfer Card */}
+      <div className="p-6 glass-panel rounded-xl border border-indigo-500/30 bg-indigo-950/20 space-y-5">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              <Laptop className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-slate-100">Data Migration & Computer Transfer</h3>
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 uppercase">
+                  System Transfer
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 mt-1">
+                Easily move 100% of your billing data (all Tax Invoices, Proformas, Customers, and Settings) from this computer to any new computer or laptop.
+              </p>
+            </div>
+          </div>
+        </div>
 
+        {/* 3-Step Migration Guide */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+          <div className="p-3.5 rounded-lg bg-slate-900/60 border border-slate-800 space-y-1">
+            <div className="flex items-center gap-2 text-xs font-bold text-indigo-400">
+              <span className="w-5 h-5 rounded-full bg-indigo-500/20 flex items-center justify-center text-[10px]">1</span>
+              <span>Export on Old PC</span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-snug">
+              Click <strong>Export Migration Package</strong> to save your full database to a USB drive or cloud folder.
+            </p>
+          </div>
+
+          <div className="p-3.5 rounded-lg bg-slate-900/60 border border-slate-800 space-y-1">
+            <div className="flex items-center gap-2 text-xs font-bold text-indigo-400">
+              <span className="w-5 h-5 rounded-full bg-indigo-500/20 flex items-center justify-center text-[10px]">2</span>
+              <span>Install on New PC</span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-snug">
+              Install the Shepherd Invoice application on the new computer and plug in your USB drive.
+            </p>
+          </div>
+
+          <div className="p-3.5 rounded-lg bg-slate-900/60 border border-slate-800 space-y-1">
+            <div className="flex items-center gap-2 text-xs font-bold text-emerald-400">
+              <span className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px]">3</span>
+              <span>Import on New PC</span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-snug">
+              Open <strong>Settings &gt; Backup</strong> on the new PC and click <strong>Import &amp; Restore</strong>. All data will load instantly!
+            </p>
+          </div>
+        </div>
+
+        {/* Action Buttons for Migration */}
         <div className="flex flex-wrap gap-4 pt-2">
           <Button variant="primary" icon={HardDriveDownload} onClick={handleCreateBackup} isLoading={isBackingUp}>
-            Create Manual Backup
+            Export Migration Package (.zip)
           </Button>
 
           <Button variant="danger" icon={RotateCcw} onClick={() => setShowRestoreConfirm(true)} isLoading={isRestoring}>
-            Restore Database from Backup File
+            Import &amp; Restore on this PC
           </Button>
         </div>
       </div>
@@ -155,11 +207,11 @@ export function BackupRestore({ toast }) {
       <div className="p-5 glass-panel rounded-xl border border-slate-800 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-semibold text-slate-200">Email Backup & SMTP Configuration</h3>
-            <p className="text-xs text-slate-400">Configure recipient email and SMTP server for automatic database backup emails.</p>
+            <h3 className="text-sm font-semibold text-slate-200">Off-Site Email Backup (Automated SMTP)</h3>
+            <p className="text-xs text-slate-400">Automatically send a compressed SQLite backup copy to your email address every time an invoice is created.</p>
           </div>
           <Button variant="secondary" size="sm" icon={RefreshCw} onClick={handleRetryQueue} isLoading={isProcessingQueue}>
-            Retry Email Queue Now
+            Retry Email Queue
           </Button>
         </div>
 
@@ -208,7 +260,7 @@ export function BackupRestore({ toast }) {
           <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800 text-[11px] text-slate-300 space-y-1">
             <div className="font-semibold text-slate-200">💡 Google / Gmail Setup Instructions:</div>
             <div>• Use <strong>smtp.gmail.com</strong> on port <strong>587</strong> (TLS) or <strong>465</strong> (SSL).</div>
-            <div>• Google requires a <strong>16-character App Password</strong> (not your standard email password).</div>
+            <div>• Google requires a <strong>16-character App Password</strong> (not your regular account password).</div>
             <div>• Generate one via: <em>Google Account &gt; Security &gt; 2-Step Verification &gt; App Passwords</em>.</div>
           </div>
 
@@ -228,11 +280,13 @@ export function BackupRestore({ toast }) {
         isOpen={showRestoreConfirm}
         onClose={() => setShowRestoreConfirm(false)}
         onConfirm={handleRestore}
-        title="Confirm Database Restoration"
-        message="Restoring from a backup will replace your current active SQLite database. An automatic safety snapshot of your current database will be created first before replacing. Are you sure you want to proceed?"
-        confirmText="Select Backup & Restore"
+        title="Confirm Database Migration & Restore"
+        message="Importing and restoring a migration package will replace the active SQLite database on this computer with the backup archive. An automatic safety snapshot of your current database will be saved before replacing. Would you like to select the backup file now?"
+        confirmText="Select Backup Archive (.zip)"
+        cancelText="Cancel"
         variant="danger"
       />
     </div>
   );
 }
+

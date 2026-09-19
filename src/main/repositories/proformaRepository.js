@@ -10,14 +10,14 @@ export function createProforma(proformaData, items) {
         buyer_name, buyer_address, customer_gstin, customer_state, customer_state_code,
         so_po_number, so_po_date, gemc_number, additional_reference,
         subtotal, cgst_rate, cgst_amount, sgst_rate, sgst_amount, igst_rate, igst_amount,
-        grand_total, amount_in_words, notes
+        grand_total, amount_in_words, notes, is_deleted
       ) VALUES (
         @proforma_number, @proforma_date, @status,
         @transportation_mode, @vehicle_number, @date_of_supply, @delivery_address,
         @buyer_name, @buyer_address, @customer_gstin, @customer_state, @customer_state_code,
         @so_po_number, @so_po_date, @gemc_number, @additional_reference,
         @subtotal, @cgst_rate, @cgst_amount, @sgst_rate, @sgst_amount, @igst_rate, @igst_amount,
-        @grand_total, @amount_in_words, @notes
+        @grand_total, @amount_in_words, @notes, 0
       )
     `).run({
       ...proformaData,
@@ -73,13 +73,17 @@ export function getProformaByNumber(number) {
   return { ...proforma, items };
 }
 
-export function listProformas({ page = 1, limit = 20, search = '', status = '' } = {}) {
+export function listProformas({ page = 1, limit = 20, search = '', status = '', includeDeleted = false } = {}) {
   const db = getDatabase();
   const offset = (page - 1) * limit;
   let whereClauses = [];
   let params = [];
 
-  if (search.trim()) {
+  if (!includeDeleted) {
+    whereClauses.push('(is_deleted = 0 OR is_deleted IS NULL)');
+  }
+
+  if (search && search.trim()) {
     const q = `%${search.trim()}%`;
     whereClauses.push('(proforma_number LIKE ? OR buyer_name LIKE ? OR customer_gstin LIKE ?)');
     params.push(q, q, q);
@@ -96,17 +100,57 @@ export function listProformas({ page = 1, limit = 20, search = '', status = '' }
   const rows = db.prepare(`
     SELECT * FROM proformas 
     ${whereSql} 
-    ORDER BY created_at DESC 
+    ORDER BY created_at DESC, id DESC 
     LIMIT ? OFFSET ?
   `).all(...params, limit, offset);
 
+  const itemStmt = db.prepare('SELECT * FROM proforma_items WHERE proforma_id = ? ORDER BY sort_order ASC');
+  const proformasWithItems = rows.map(pro => ({
+    ...pro,
+    items: itemStmt.all(pro.id)
+  }));
+
   return {
-    data: rows,
+    data: proformasWithItems,
     total: totalRow ? totalRow.count : 0,
     page,
     limit,
     totalPages: Math.ceil((totalRow ? totalRow.count : 0) / limit)
   };
+}
+
+export function softDeleteProforma(id) {
+  const db = getDatabase();
+  return db.prepare('UPDATE proformas SET is_deleted = 1, deleted_at = CURRENT_TIMESTAMP WHERE id = ?').run(id);
+}
+
+export function restoreProforma(id) {
+  const db = getDatabase();
+  return db.prepare('UPDATE proformas SET is_deleted = 0, deleted_at = NULL WHERE id = ?').run(id);
+}
+
+export function permanentlyDeleteProforma(id) {
+  const db = getDatabase();
+  const delTransaction = db.transaction(() => {
+    db.prepare('DELETE FROM proforma_items WHERE proforma_id = ?').run(id);
+    db.prepare('DELETE FROM proformas WHERE id = ?').run(id);
+  });
+  return delTransaction();
+}
+
+export function listDeletedProformas() {
+  const db = getDatabase();
+  const rows = db.prepare(`
+    SELECT * FROM proformas 
+    WHERE is_deleted = 1 
+    ORDER BY deleted_at DESC, id DESC
+  `).all();
+
+  const itemStmt = db.prepare('SELECT * FROM proforma_items WHERE proforma_id = ? ORDER BY sort_order ASC');
+  return rows.map(pro => ({
+    ...pro,
+    items: itemStmt.all(pro.id)
+  }));
 }
 
 export function generateNextProformaNumber() {

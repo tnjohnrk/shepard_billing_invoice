@@ -2,11 +2,17 @@
 
 @layer base {
   body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* Custom Scrollbars */
+/* ========================================================================= */
+/* Custom Scrollbars                                                         */
+/* ========================================================================= */
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -18,21 +24,443 @@
 
 ::-webkit-scrollbar-thumb {
   background: rgba(51, 65, 85, 0.8);
-  border-radius: 3px;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(71, 85, 105, 1);
 }
 
-/* Glassmorphism utilities */
+/* ========================================================================= */
+/* Animations & Interactive Micro-Effects                                    */
+/* ========================================================================= */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes progressPulse {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-progress {
+  animation: progressPulse 1.8s ease-in-out infinite;
+}
+
+.animate-shake {
+  animation: shake 0.35s ease-in-out;
+}
+
+/* ========================================================================= */
+/* Glassmorphism & Card Utilities (Dark Mode Default)                        */
+/* ========================================================================= */
+
 .glass-panel {
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(12px);
+  background: rgba(30, 41, 59, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.25);
 }
 
 .glass-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.3);
+}
+
+/* Smooth button press feedback */
+button {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* ========================================================================= */
+/* LIGHT MODE THEME SYSTEM (Executive Enterprise Styling)                    */
+/* ========================================================================= */
+
+.light {
+  color-scheme: light;
+}
+
+.light body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* Layout Root & Backgrounds in Light Mode */
+.light .bg-slate-900,
+.light .bg-slate-950,
+.light [class*="bg-slate-900"],
+.light [class*="bg-slate-950"] {
+  background-color: #f8fafc !important;
+}
+
+.light .bg-slate-800,
+.light [class*="bg-slate-800"] {
+  background-color: #ffffff !important;
+}
+
+.light .bg-gradient-to-b {
+  background-image: linear-gradient(to bottom, #f8fafc, #f1f5f9, #e2e8f0) !important;
+}
+
+/* Sidebar & Navigation in Light Mode */
+.light aside {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 2px 0 12px -3px rgba(0, 0, 0, 0.04);
+}
+
+.light aside nav button:not(.bg-indigo-600) {
+  color: #475569 !important;
+}
+
+.light aside nav button:not(.bg-indigo-600):hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.light aside nav button.bg-indigo-600 {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px -2px rgba(79, 70, 229, 0.3) !important;
+  border-color: #4338ca !important;
+}
+
+/* Header in Light Mode */
+.light header {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.03);
+}
+
+.light header button {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+.light header button:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light header .bg-slate-800\/60 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+/* Footer / Status Bar in Light Mode */
+.light footer {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #64748b !important;
+}
+
+/* Glass Panels and Cards in Light Mode */
+.light .glass-panel {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03) !important;
+}
+
+.light .glass-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 6px 24px -4px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Typography / Text Colors in Light Mode */
+.light .text-slate-100,
+.light .text-slate-200 {
+  color: #0f172a !important;
+}
+
+.light .text-slate-300 {
+  color: #334155 !important;
+}
+
+.light .text-slate-400 {
+  color: #64748b !important;
+}
+
+.light .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+/* Borders in Light Mode */
+.light .border-slate-900,
+.light .border-slate-800,
+.light .border-slate-700,
+.light [class*="border-slate-900"],
+.light [class*="border-slate-800"],
+.light [class*="border-slate-700"] {
+  border-color: #e2e8f0 !important;
+}
+
+.light .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+.light .divide-slate-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e2e8f0 !important;
+}
+
+/* Form Controls (Inputs, Selects, Textareas) in Light Mode */
+.light input:not([type="checkbox"]):not([type="radio"]),
+.light select,
+.light textarea {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+.light input:not([type="checkbox"]):not([type="radio"]):focus,
+.light select:focus,
+.light textarea:focus {
+  border-color: #4f46e5 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
+}
+
+.light input::placeholder,
+.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* ========================================================================= */
+/* Buttons in Light Mode                                                     */
+/* ========================================================================= */
+
+.light .btn-primary {
+  background-color: #4f46e5 !important;
+  border-color: #4338ca !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px 0 rgba(79, 70, 229, 0.25) !important;
+}
+
+.light .btn-primary:hover {
+  background-color: #4338ca !important;
+  box-shadow: 0 4px 10px 0 rgba(79, 70, 229, 0.35) !important;
+}
+
+.light .btn-secondary {
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.light .btn-secondary:hover {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+.light .btn-ghost {
+  color: #475569 !important;
+}
+
+.light .btn-ghost:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.light .btn-accent {
+  background-color: #0891b2 !important;
+  border-color: #0e7490 !important;
+  color: #ffffff !important;
+}
+
+.light .btn-accent:hover {
+  background-color: #0e7490 !important;
+}
+
+.light .btn-success {
+  background-color: #059669 !important;
+  border-color: #047857 !important;
+  color: #ffffff !important;
+}
+
+.light .btn-success:hover {
+  background-color: #047857 !important;
+}
+
+.light .btn-danger {
+  background-color: #e11d48 !important;
+  border-color: #be123c !important;
+  color: #ffffff !important;
+}
+
+.light .btn-danger:hover {
+  background-color: #be123c !important;
+}
+
+/* Generic Fallback for Buttons styled with slate in Light Mode */
+.light button.bg-slate-800:not(.bg-indigo-600):not(.bg-emerald-600):not(.bg-rose-600):not(.bg-cyan-600) {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light button.bg-slate-800:not(.bg-indigo-600):not(.bg-emerald-600):not(.bg-rose-600):not(.bg-cyan-600):hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* ========================================================================= */
+/* Badges & Color Tints in Light Mode                                        */
+/* ========================================================================= */
+
+.light [class*="bg-indigo-950"] {
+  background-color: #eef2ff !important;
+  border-color: #c7d2fe !important;
+  color: #4338ca !important;
+}
+
+.light [class*="bg-cyan-950"] {
+  background-color: #ecfeff !important;
+  border-color: #a5f3fc !important;
+  color: #0e7490 !important;
+}
+
+.light [class*="bg-emerald-950"] {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+.light [class*="bg-amber-950"] {
+  background-color: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #b45309 !important;
+}
+
+.light [class*="bg-rose-950"] {
+  background-color: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+  color: #e11d48 !important;
+}
+
+/* ========================================================================= */
+/* Tables in Light Mode                                                      */
+/* ========================================================================= */
+
+.light table {
+  background-color: #ffffff !important;
+}
+
+.light thead tr {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light thead th {
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+
+.light tbody tr {
+  border-color: #f1f5f9 !important;
+}
+
+.light tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* History Row Action Buttons in Light Mode */
+.light button[title="View / Preview"] {
+  color: #475569 !important;
+}
+.light button[title="View / Preview"]:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.light button[title="Print Document"] {
+  color: #4f46e5 !important;
+}
+.light button[title="Print Document"]:hover {
+  background-color: #eef2ff !important;
+  color: #4338ca !important;
+}
+
+.light button[title="Export PDF"] {
+  color: #0891b2 !important;
+}
+.light button[title="Export PDF"]:hover {
+  background-color: #ecfeff !important;
+  color: #0e7490 !important;
+}
+
+.light button[title="Export Excel"] {
+  color: #059669 !important;
+}
+.light button[title="Export Excel"]:hover {
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+.light button[title="Duplicate Invoice"] {
+  color: #d97706 !important;
+}
+.light button[title="Duplicate Invoice"]:hover {
+  background-color: #fffbeb !important;
+  color: #b45309 !important;
+}
+
+.light button[title="Delete (Move to Recycle Bin)"],
+.light button[title="Delete Permanently"] {
+  color: #e11d48 !important;
+}
+.light button[title="Delete (Move to Recycle Bin)"]:hover,
+.light button[title="Delete Permanently"]:hover {
+  background-color: #fff1f2 !important;
+  color: #be123c !important;
+}
+
+/* Modals & Dialogs in Light Mode */
+.light .fixed .glass-panel,
+.light .fixed .bg-slate-900,
+.light .fixed .bg-slate-800 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Scrollbars in Light Mode */
+.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

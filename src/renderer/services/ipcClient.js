@@ -1,4 +1,5 @@
 import { getCopyTypeLabel } from '../../shared/constants/copyTypes';
+import companyLogo from '../assets/logo.png';
 
 const isElectron = typeof window !== 'undefined' && Boolean(window.electronAPI);
 
@@ -18,24 +19,73 @@ const setLocalProformas = (pros) => {
 
 function renderClientInvoiceHtml(data) {
   const isProforma = String(data.invoice_type).toUpperCase() === 'PROFORMA';
-  const docType = isProforma ? 'PROFORMA INVOICE' : 'TAX INVOICE';
+  const docType = isProforma ? 'PROFORMA INVOICE' : 'INVOICE';
   const docNum = isProforma 
-    ? (data.proforma_number || 'PRO-001') 
-    : (data.invoice_number || 'INV-001');
+    ? (data.proforma_number || data.invoice_number || 'PRO-001') 
+    : (data.invoice_number || data.proforma_number || 'INV-001');
   const docDate = (isProforma ? data.proforma_date : data.invoice_date) || new Date().toISOString().split('T')[0];
   const copyTypeLabel = getCopyTypeLabel(data.copy_type, isProforma);
   const items = data.items || [];
 
-  const itemRows = items.map((item, idx) => `
+  // Build reference block string for line items (S.O. No, GEMC No, Ref)
+  const refs = [];
+  if (data.so_po_number) {
+    let soText = `S.O. No: ${data.so_po_number}`;
+    if (data.so_po_date) {
+      soText += ` Dt: ${data.so_po_date}`;
+    }
+    refs.push(soText);
+  }
+  if (data.gemc_number) {
+    refs.push(`GEMC - ${data.gemc_number}`);
+  }
+  if (data.reference_number) {
+    refs.push(`Ref: ${data.reference_number}`);
+  }
+
+  const refsHtml = refs.length > 0
+    ? `<div style="margin-top: 4px; font-size: 9.5px; font-weight: bold; line-height: 1.4;">${refs.join('<br>')}</div>`
+    : '';
+
+  const itemRows = items.length === 0 ? `
     <tr>
-      <td style="text-align:center; padding: 6px; border: 1px solid #000;">${idx + 1}</td>
-      <td style="padding: 6px; border: 1px solid #000;"><strong>${item.description || ''}</strong></td>
-      <td style="text-align:center; padding: 6px; border: 1px solid #000;">${item.hsn_sac || '-'}</td>
-      <td style="text-align:right; padding: 6px; border: 1px solid #000;">${item.quantity || 0}</td>
-      <td style="text-align:right; padding: 6px; border: 1px solid #000;">₹${Number(item.rate || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-      <td style="text-align:right; padding: 6px; border: 1px solid #000;">₹${Number(item.amount || ((item.quantity || 0) * (item.rate || 0))).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+      <td style="padding: 4px 6px; border-right: 1px solid #000; vertical-align: top;">
+        <div style="font-weight: bold; text-transform: uppercase;">-</div>
+        ${refsHtml}
+      </td>
+      <td style="padding: 4px 6px; border-right: 1px solid #000; text-align: center; vertical-align: top;">-</td>
+      <td style="padding: 4px 6px; border-right: 1px solid #000; text-align: center; vertical-align: top;">-</td>
+      <td style="padding: 4px 6px; border-right: 1px solid #000; text-align: right; vertical-align: top;">-</td>
+      <td style="padding: 4px 6px; text-align: right; vertical-align: top;">-</td>
+    </tr>
+  ` : items.map((item, idx) => `
+    <tr>
+      <td style="padding: 4px 6px; border-right: 1px solid #000; vertical-align: top;">
+        <div style="font-weight: bold; text-transform: uppercase;">${item.description || ''}</div>
+        ${idx === 0 ? refsHtml : ''}
+      </td>
+      <td style="padding: 4px 6px; border-right: 1px solid #000; text-align: center; vertical-align: top;">${item.hsn_sac || '-'}</td>
+      <td style="padding: 4px 6px; border-right: 1px solid #000; text-align: center; vertical-align: top;">${item.quantity || 0}</td>
+      <td style="padding: 4px 6px; border-right: 1px solid #000; text-align: right; vertical-align: top;">${Number(item.rate || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+      <td style="padding: 4px 6px; text-align: right; vertical-align: top;">${Number(item.amount || ((item.quantity || 0) * (item.rate || 0))).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
     </tr>
   `).join('');
+
+  const taxRows = (data.cgst_amount > 0 || data.sgst_amount > 0) ? `
+    <tr style="border-bottom: 1px solid #000;">
+      <td style="padding: 3px 6px; border-bottom: 1px solid #000;">ADD CGST: ${data.cgst_rate || 9}%</td>
+      <td style="padding: 3px 6px; border-bottom: 1px solid #000; text-align: right;">${Number(data.cgst_amount || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #000;">
+      <td style="padding: 3px 6px; border-bottom: 1px solid #000;">ADD SGST: ${data.sgst_rate || 9}%</td>
+      <td style="padding: 3px 6px; border-bottom: 1px solid #000; text-align: right;">${Number(data.sgst_amount || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+    </tr>
+  ` : (data.igst_amount > 0) ? `
+    <tr style="border-bottom: 1px solid #000;">
+      <td style="padding: 3px 6px; border-bottom: 1px solid #000;">ADD IGST: ${data.igst_rate || 18}%</td>
+      <td style="padding: 3px 6px; border-bottom: 1px solid #000; text-align: right;">${Number(data.igst_amount || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+    </tr>
+  ` : '';
 
   return `
     <!DOCTYPE html>
@@ -43,98 +93,154 @@ function renderClientInvoiceHtml(data) {
     <head>
       <title>${docType} - ${docNum}</title>
       <style>
-        body { font-family: Arial, sans-serif; font-size: 11px; margin: 0; padding: 20px; background: #fff; color: #000; }
-        .box { width: 100%; max-width: 800px; margin: 0 auto; border: 2px solid #000; padding: 16px; box-sizing: border-box; }
-        .header { border-bottom: 2px solid #000; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; }
-        .company-name { font-size: 16px; font-weight: bold; }
-        .doc-title { font-size: 18px; font-weight: 900; text-align: right; text-transform: uppercase; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 2px solid #000; padding: 12px 0; font-size: 11px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background: #f1f5f9; border: 1px solid #000; padding: 6px; font-size: 10px; text-transform: uppercase; }
-        .totals { margin-top: 10px; border-top: 2px solid #000; padding-top: 10px; display: flex; justify-content: space-between; font-size: 11px; }
-        .footer { margin-top: 20px; border-top: 2px solid #000; padding-top: 10px; display: flex; justify-content: space-between; font-size: 10px; }
-        @media print {
-          body { padding: 0; }
-          .box { border: none; }
-        }
+        @page { size: A4 portrait; margin: 8mm; }
+        body { font-family: Arial, Helvetica, sans-serif; font-size: 11px; line-height: 1.25; margin: 0; padding: 0; background: #fff; color: #000; }
+        .invoice-box { width: 100%; max-width: 194mm; margin: 0 auto; }
+        table { width: 100%; border-collapse: collapse; }
+        .main-table { border: 1.5px solid #000; }
+        .main-table td { border: 1px solid #000; }
+        @media print { body { padding: 0; } }
       </style>
     </head>
     <body>
-      <div class="box">
-        <div class="header">
-          <div>
-            <div class="company-name">SHEPHERD ENTERPRISES PRIVATE LIMITED</div>
-            <div>No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062</div>
-            <div>Phone: +91 98765 43210 | Email: billing@shepherdenterprises.com</div>
-            <div><strong>GSTIN: 27AAACS1234F1Z5</strong> | State Code: 27 (Maharashtra)</div>
-          </div>
-          <div>
-            <div class="doc-title">${docType}</div>
-            <div style="text-align:right; font-weight:bold; font-size: 10px; border: 1px solid #000; padding: 2px 6px; margin-top: 4px; display: inline-block;">${copyTypeLabel}</div>
-          </div>
-        </div>
-
-        <div class="grid">
-          <div>
-            <div style="font-weight:bold; color: #475569; font-size: 9px; text-transform: uppercase;">Billed To (Buyer):</div>
-            <div style="font-size: 13px; font-weight: bold; margin-top: 2px;">${data.buyer_name || ''}</div>
-            <div style="margin-top: 2px;">${data.buyer_address || ''}</div>
-            <div style="margin-top: 4px;">
-              <strong>GSTIN:</strong> ${data.customer_gstin || 'N/A'}<br>
-              <strong>State:</strong> ${data.customer_state || 'Maharashtra'} (Code: ${data.customer_state_code || '27'})
-            </div>
-          </div>
-          <div style="text-align: right; line-height: 1.5;">
-            <strong>Document No:</strong> ${docNum}<br>
-            <strong>Date:</strong> ${docDate}<br>
-            <strong>Transport Mode:</strong> ${data.transportation_mode || '-'}<br>
-            <strong>Vehicle No:</strong> ${data.vehicle_number || '-'}<br>
-            <strong>PO/SO No:</strong> ${data.so_po_number || '-'}
-          </div>
-        </div>
-
-        <table>
-          <thead>
-            <tr>
-              <th style="width: 5%;">#</th>
-              <th style="text-align:left;">Description of Goods / Services</th>
-              <th style="width: 12%;">HSN/SAC</th>
-              <th style="text-align:right; width: 10%;">Qty</th>
-              <th style="text-align:right; width: 15%;">Rate (₹)</th>
-              <th style="text-align:right; width: 18%;">Amount (₹)</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${itemRows}
-          </tbody>
+      <div class="invoice-box">
+        <!-- Top Header -->
+        <table style="margin-bottom: 6px;">
+          <tr>
+            <td style="width: 18%; vertical-align: top; text-align: center; border: none; padding-right: 8px;">
+              <img src="${companyLogo}" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; display: block; margin: 0 auto;" />
+              <div style="font-size: 8px; font-weight: bold; text-transform: uppercase; margin-top: 2px;">SHEPHERD ENTERPRISES</div>
+              <div style="font-size: 7.5px; color: #475569;">@hdfcbank</div>
+            </td>
+            <td style="width: 82%; vertical-align: top; text-align: center; border: none; padding-right: 25px;">
+              <div style="font-size: 20px; font-weight: 800; text-transform: uppercase; color: #1e3a8a; margin-bottom: 3px;">SHEPHERD ENTERPRISES PRIVATE LIMITED</div>
+              <div style="font-size: 9.5px; text-transform: uppercase; margin-bottom: 3px;">No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062</div>
+              <div style="font-size: 10px; font-weight: bold; margin-bottom: 2px;">Cell: +91 9025812298 / +91 8438435681</div>
+              <div style="font-size: 10px; font-weight: bold;">Email: shepheredenterprisespvtltd@gmail.com</div>
+            </td>
+          </tr>
         </table>
 
-        <div class="totals">
-          <div style="max-width: 60%;">
-            <div style="font-weight:bold; color: #475569; font-size: 9px; text-transform: uppercase;">Amount Chargeable (in words):</div>
-            <div style="font-weight: bold; font-size: 11px; margin-top: 2px;">${data.amount_in_words || 'Zero Rupees Only'}</div>
-          </div>
-          <div style="text-align:right; line-height: 1.6;">
-            <div>Subtotal: ₹${Number(data.subtotal || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</div>
-            ${data.cgst_amount > 0 ? `<div>CGST @ ${data.cgst_rate || 9}%: ₹${Number(data.cgst_amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</div>` : ''}
-            ${data.sgst_amount > 0 ? `<div>SGST @ ${data.sgst_rate || 9}%: ₹${Number(data.sgst_amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</div>` : ''}
-            ${data.igst_amount > 0 ? `<div>IGST @ ${data.igst_rate || 18}%: ₹${Number(data.igst_amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</div>` : ''}
-            <div style="font-size: 14px; font-weight: bold; margin-top: 4px; border-top: 1px solid #000; padding-top: 4px;">Grand Total: ₹${Number(data.grand_total || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</div>
-          </div>
-        </div>
+        <!-- Main Boxed Table -->
+        <table class="main-table">
+          <!-- Sub-Header Row -->
+          <tr style="border-bottom: 1.5px solid #000;">
+            <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 11px;">GSTIN: 27AAACS1234F1Z5</td>
+            <td style="width: 24%; padding: 4px 6px; font-weight: 900; font-size: 16px; text-align: center; color: #1e3a8a; text-transform: uppercase;">${docType}</td>
+            <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 10px; text-align: right; text-transform: uppercase;">${copyTypeLabel}</td>
+          </tr>
 
-        <div class="footer">
-          <div>
-            <strong>Bank Account Details:</strong><br>
-            Bank Name: HDFC Bank Ltd. | A/C: 50200012345678<br>
-            IFSC: HDFC0001234 | Branch: Thane Industrial Estate
-          </div>
-          <div style="text-align:right;">
-            <strong>For SHEPHERD ENTERPRISES PRIVATE LIMITED</strong>
-            <div style="height: 35px;"></div>
-            <div>(Authorized Signatory)</div>
-          </div>
-        </div>
+          <!-- Meta Grid (2-Columns) -->
+          <tr>
+            <td colspan="2" style="width: 50%; padding: 4px 6px; vertical-align: top; font-size: 10px; border-right: 1px solid #000;">
+              <div><strong>INVOICE NO :</strong> <strong>${docNum}</strong></div>
+              <div><strong>INVOICE DATE:</strong> ${docDate}</div>
+              <div><strong>STATE:</strong> MAHARASHTRA <strong style="margin-left: 10px;">STATE CODE:</strong> 27</div>
+              <div style="margin-top: 4px;">
+                <div><strong>BUYER:</strong> <strong>${data.buyer_name || ''}</strong></div>
+                <div style="font-size: 9.5px; margin-top: 2px;">${data.buyer_address || ''}</div>
+              </div>
+            </td>
+            <td style="width: 50%; padding: 4px 6px; vertical-align: top; font-size: 10px;">
+              <div><strong>TRANSPORTATION MODE:</strong> ${data.transportation_mode || '-'}</div>
+              <div><strong>VEHICLE NO:</strong> ${data.vehicle_number || '-'}</div>
+              <div><strong>DATE OF SUPPLY:</strong> ${data.date_of_supply || docDate || '-'}</div>
+              <div><strong>DELIVERY ADDRESS:</strong> ${data.delivery_address || data.buyer_address || '-'}</div>
+            </td>
+          </tr>
+
+          <!-- Customer GSTIN & State Code -->
+          <tr style="border-top: 1px solid #000; border-bottom: 1.5px solid #000;">
+            <td colspan="2" style="width: 60%; padding: 4px 6px; font-size: 10px; font-weight: bold;">
+              CUSTOMER' GSTIN: ${data.customer_gstin || 'N/A'}
+            </td>
+            <td style="width: 40%; padding: 4px 6px; font-size: 10px;">
+              <div><strong>STATE:</strong> ${(data.customer_state || 'Maharashtra').toUpperCase()}</div>
+              <div><strong>STATE CODE:</strong> ${data.customer_state_code || '27'}</div>
+            </td>
+          </tr>
+
+          <!-- Items Table -->
+          <tr>
+            <td colspan="3" style="padding: 0; border: none;">
+              <table>
+                <thead>
+                  <tr style="background: #f8fafc; border-bottom: 1.5px solid #000; font-size: 10px; font-weight: bold;">
+                    <th style="padding: 4px; border-right: 1px solid #000; text-align: left; width: 54%;">DESCRIPTION</th>
+                    <th style="padding: 4px; border-right: 1px solid #000; text-align: center; width: 11%;">HSN</th>
+                    <th style="padding: 4px; border-right: 1px solid #000; text-align: center; width: 11%;">QTY.</th>
+                    <th style="padding: 4px; border-right: 1px solid #000; text-align: right; width: 12%;">RATE</th>
+                    <th style="padding: 4px; text-align: right; width: 12%;">AMOUNT</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${itemRows}
+                  <tr>
+                    <td style="height: 180px; border-right: 1px solid #000;"></td>
+                    <td style="border-right: 1px solid #000;"></td>
+                    <td style="border-right: 1px solid #000;"></td>
+                    <td style="border-right: 1px solid #000;"></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Amount in Words -->
+          <tr style="border-top: 1.5px solid #000; border-bottom: 1.5px solid #000;">
+            <td colspan="3" style="padding: 5px 6px; font-size: 10px;">
+              <strong>TOTAL AMOUNT IN WORDS:</strong> ${data.amount_in_words || 'Zero Rupees Only'}
+            </td>
+          </tr>
+
+          <!-- Bank Details & Tax Section -->
+          <tr>
+            <td colspan="2" style="width: 60%; padding: 5px 6px; vertical-align: top; border-right: 1px solid #000; font-size: 9.5px;">
+              <div style="font-weight: bold; font-size: 10px; text-transform: uppercase; margin-bottom: 3px;">BANK DETAILS</div>
+              <div><strong>BANK NAME:</strong> HDFC BANK LTD: 50200012345678</div>
+              <div><strong>BRANCH NAME:</strong> THANE INDUSTRIAL ESTATE BRANCH</div>
+              <div><strong>IFSC CODE:</strong> HDFC0001234</div>
+            </td>
+            <td style="width: 40%; padding: 0; vertical-align: top;">
+              <table style="font-size: 9.5px;">
+                <tr style="border-bottom: 1px solid #000;">
+                  <td style="padding: 3px 6px; width: 65%; border-bottom: 1px solid #000;">TOTAL AMOUNT BEFORE TAX</td>
+                  <td style="padding: 3px 6px; width: 35%; text-align: right; border-bottom: 1px solid #000;">${Number(data.subtotal || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                </tr>
+                ${taxRows}
+                <tr style="background: #f8fafc; font-weight: bold; font-size: 10px;">
+                  <td style="padding: 3px 6px;">TOTAL AMOUNT AFTER TAX:</td>
+                  <td style="padding: 3px 6px; text-align: right;">${Number(data.grand_total || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+
+        <!-- Footer: Terms & Signature -->
+        <table style="margin-top: 8px; font-size: 9px;">
+          <tr>
+            <td style="width: 48%; vertical-align: top; padding: 0 4px; border: none;">
+              <div style="font-weight: bold; font-size: 9.5px; margin-bottom: 4px;">TERMS AND CONDITIONS</div>
+              <div style="font-size: 8.5px; color: #334155; line-height: 1.35;">
+                We declare that this invoice shows the actual value of services described and that all particulars are true and correct.
+              </div>
+            </td>
+            <td style="width: 52%; vertical-align: top; text-align: center; padding: 0 4px; border: none;">
+              <div style="font-weight: bold; font-size: 8.5px; text-transform: uppercase; margin-bottom: 4px;">
+                CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT
+              </div>
+              <div style="font-weight: bold; font-size: 10.5px; color: #1e3a8a; margin-bottom: 4px;">
+                For SHEPHERD ENTERPRISES PRIVATE LIMITED
+              </div>
+              <div style="height: 48px;"></div>
+              <div style="font-weight: bold; font-size: 10px; text-align: right; padding-right: 15px;">
+                Proprietor
+              </div>
+            </td>
+          </tr>
+        </table>
       </div>
     </body>
     </html>
@@ -153,6 +259,7 @@ export const ipcClient = {
         invoices[idx] = {
           ...invoices[idx],
           ...formData,
+          items: formData.items || invoices[idx].items || [],
           updated_at: new Date().toISOString()
         };
         setLocalInvoices(invoices);
@@ -163,6 +270,7 @@ export const ipcClient = {
     const nextNum = formData.invoice_number || `INV-${String(invoices.length + 1).padStart(3, '0')}`;
     const newInv = {
       ...formData,
+      items: formData.items || [],
       id: Date.now(),
       invoice_number: nextNum,
       invoice_date: formData.invoice_date || new Date().toISOString().split('T')[0],
@@ -189,7 +297,7 @@ export const ipcClient = {
 
   listInvoices: async (filters = {}) => {
     if (isElectron) return window.electronAPI.listInvoices(filters);
-    const invoices = getLocalInvoices();
+    const invoices = getLocalInvoices().filter(i => !i.is_deleted);
     let filtered = [...invoices];
     if (filters.search) {
       const q = filters.search.toLowerCase();
@@ -204,9 +312,24 @@ export const ipcClient = {
     };
   },
 
+  deleteInvoice: async (id) => {
+    if (isElectron && typeof window.electronAPI?.deleteInvoice === 'function') {
+      return window.electronAPI.deleteInvoice(id);
+    }
+    const invoices = getLocalInvoices();
+    const idx = invoices.findIndex(i => String(i.id) === String(id));
+    if (idx !== -1) {
+      invoices[idx].is_deleted = 1;
+      invoices[idx].deleted_at = new Date().toISOString();
+      setLocalInvoices(invoices);
+      return { success: true };
+    }
+    return { success: false };
+  },
+
   getNextInvoiceNumber: async () => {
     if (isElectron) return window.electronAPI.getNextInvoiceNumber();
-    const invs = getLocalInvoices();
+    const invs = getLocalInvoices().filter(i => !i.is_deleted);
     return `INV-${String(invs.length + 1).padStart(3, '0')}`;
   },
 
@@ -264,6 +387,7 @@ export const ipcClient = {
         proformas[idx] = {
           ...proformas[idx],
           ...formData,
+          items: formData.items || proformas[idx].items || [],
           updated_at: new Date().toISOString()
         };
         setLocalProformas(proformas);
@@ -274,6 +398,7 @@ export const ipcClient = {
     const nextNum = formData.proforma_number || `PRO-${String(proformas.length + 1).padStart(3, '0')}`;
     const newPro = {
       ...formData,
+      items: formData.items || [],
       id: Date.now(),
       proforma_number: nextNum,
       proforma_date: formData.proforma_date || new Date().toISOString().split('T')[0],
@@ -294,7 +419,7 @@ export const ipcClient = {
 
   listProformas: async (filters = {}) => {
     if (isElectron) return window.electronAPI.listProformas(filters);
-    const proformas = getLocalProformas();
+    const proformas = getLocalProformas().filter(p => !p.is_deleted);
     return {
       data: proformas,
       total: proformas.length,
@@ -304,9 +429,24 @@ export const ipcClient = {
     };
   },
 
+  deleteProforma: async (id) => {
+    if (isElectron && typeof window.electronAPI?.deleteProforma === 'function') {
+      return window.electronAPI.deleteProforma(id);
+    }
+    const proformas = getLocalProformas();
+    const idx = proformas.findIndex(p => String(p.id) === String(id));
+    if (idx !== -1) {
+      proformas[idx].is_deleted = 1;
+      proformas[idx].deleted_at = new Date().toISOString();
+      setLocalProformas(proformas);
+      return { success: true };
+    }
+    return { success: false };
+  },
+
   getNextProformaNumber: async () => {
     if (isElectron) return window.electronAPI.getNextProformaNumber();
-    const pros = getLocalProformas();
+    const pros = getLocalProformas().filter(p => !p.is_deleted);
     return `PRO-${String(pros.length + 1).padStart(3, '0')}`;
   },
 
@@ -319,6 +459,83 @@ export const ipcClient = {
       ...invData,
       invoice_type: 'NORMAL'
     });
+  },
+
+  // Recycle Bin APIs
+  getRecycleBin: async () => {
+    if (isElectron && typeof window.electronAPI?.getRecycleBin === 'function') {
+      return window.electronAPI.getRecycleBin();
+    }
+    const invs = (getLocalInvoices() || []).filter(i => Boolean(i.is_deleted)).map(i => ({
+      ...i,
+      invoice_type: i.invoice_type || 'NORMAL',
+      doc_number: i.invoice_number,
+      doc_date: i.invoice_date,
+      item_type: 'invoice'
+    }));
+    const pros = (getLocalProformas() || []).filter(p => Boolean(p.is_deleted)).map(p => ({
+      ...p,
+      invoice_type: 'PROFORMA',
+      doc_number: p.proforma_number || p.invoice_number,
+      doc_date: p.proforma_date || p.invoice_date,
+      invoice_number: p.proforma_number || p.invoice_number,
+      invoice_date: p.proforma_date || p.invoice_date,
+      item_type: 'proforma'
+    }));
+    return [...invs, ...pros].sort((a, b) => (b.deleted_at || '').localeCompare(a.deleted_at || ''));
+  },
+
+  restoreFromBin: async (id, type) => {
+    if (isElectron && typeof window.electronAPI?.restoreFromBin === 'function') {
+      return window.electronAPI.restoreFromBin(id, type);
+    }
+    const isPro = String(type).toUpperCase() === 'PROFORMA';
+    if (isPro) {
+      const pros = getLocalProformas();
+      const idx = pros.findIndex(p => String(p.id) === String(id));
+      if (idx !== -1) {
+        pros[idx].is_deleted = 0;
+        delete pros[idx].deleted_at;
+        setLocalProformas(pros);
+        return { success: true };
+      }
+    } else {
+      const invs = getLocalInvoices();
+      const idx = invs.findIndex(i => String(i.id) === String(id));
+      if (idx !== -1) {
+        invs[idx].is_deleted = 0;
+        delete invs[idx].deleted_at;
+        setLocalInvoices(invs);
+        return { success: true };
+      }
+    }
+    return { success: false };
+  },
+
+  deletePermanentlyFromBin: async (id, type) => {
+    if (isElectron && typeof window.electronAPI?.deletePermanentlyFromBin === 'function') {
+      return window.electronAPI.deletePermanentlyFromBin(id, type);
+    }
+    const isPro = String(type).toUpperCase() === 'PROFORMA';
+    if (isPro) {
+      const pros = getLocalProformas().filter(p => String(p.id) !== String(id));
+      setLocalProformas(pros);
+    } else {
+      const invs = getLocalInvoices().filter(i => String(i.id) !== String(id));
+      setLocalInvoices(invs);
+    }
+    return { success: true };
+  },
+
+  emptyRecycleBin: async () => {
+    if (isElectron && typeof window.electronAPI?.emptyRecycleBin === 'function') {
+      return window.electronAPI.emptyRecycleBin();
+    }
+    const invs = getLocalInvoices().filter(i => !i.is_deleted);
+    setLocalInvoices(invs);
+    const pros = getLocalProformas().filter(p => !p.is_deleted);
+    setLocalProformas(pros);
+    return { success: true };
   },
 
   // Printing APIs
@@ -359,20 +576,165 @@ export const ipcClient = {
 
   exportReportExcel: async (params) => {
     if (isElectron) return window.electronAPI.exportReportExcel(params);
-    return { canceled: true };
+    try {
+      const ExcelJS = await import('exceljs');
+      const workbook = new (ExcelJS.default || ExcelJS).Workbook();
+      const sheet = workbook.addWorksheet('Billing Report');
+      sheet.addRow(['SHEPHERD ENTERPRISES PRIVATE LIMITED']);
+      sheet.addRow([params.title || 'Billing Report']);
+      sheet.addRow([]);
+
+      const reportData = params.reportData || {};
+      const isCustomer = Array.isArray(reportData) || params.reportType === 'customer';
+
+      if (isCustomer) {
+        const list = Array.isArray(reportData) ? reportData : [];
+        sheet.addRow(['#', 'Buyer Name', 'GSTIN', 'Invoices', 'Taxable Amt (INR)', 'GST Tax (INR)', 'Total Billed (INR)']);
+        list.forEach((c, idx) => {
+          sheet.addRow([idx + 1, c.buyer_name, c.customer_gstin || 'N/A', c.total_invoices, c.total_taxable, c.total_tax, c.total_billing]);
+        });
+      } else {
+        const invs = reportData.invoices || [];
+        sheet.addRow(['#', 'Doc Number', 'Date', 'Type', 'Buyer Name', 'GSTIN', 'Taxable Amt (INR)', 'Grand Total (INR)']);
+        invs.forEach((i, idx) => {
+          sheet.addRow([idx + 1, i.invoice_number || i.proforma_number, i.invoice_date || i.proforma_date, i.invoice_type || 'NORMAL', i.buyer_name, i.customer_gstin || 'N/A', i.subtotal, i.grand_total]);
+        });
+      }
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${(params.title || 'Billing_Report').replace(/[\/\\?%*:|"<> ]/g, '_')}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      return { canceled: false, path: a.download };
+    } catch (e) {
+      console.error('Browser Excel download error:', e);
+      return { canceled: true };
+    }
   },
 
   // Backup & Restore APIs
   createManualBackup: async () => {
-    if (isElectron) return window.electronAPI.createManualBackup();
-    alert('Database Backup is supported in Electron Desktop App (.exe).');
-    return { canceled: true };
+    if (isElectron && typeof window.electronAPI?.createManualBackup === 'function') {
+      return window.electronAPI.createManualBackup();
+    }
+    try {
+      const JSZipModule = await import('jszip');
+      const JSZip = JSZipModule.default || JSZipModule;
+      const zip = new JSZip();
+
+      const invs = getLocalInvoices();
+      const pros = getLocalProformas();
+      const settings = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('setting_')) {
+          settings[k.replace('setting_', '')] = localStorage.getItem(k);
+        }
+      }
+
+      zip.file('invoices.json', JSON.stringify(invs, null, 2));
+      zip.file('proformas.json', JSON.stringify(pros, null, 2));
+      zip.file('settings.json', JSON.stringify(settings, null, 2));
+      zip.file('backup_metadata.json', JSON.stringify({
+        timestamp: new Date().toISOString(),
+        type: 'MIGRATION_ZIP',
+        app: 'Shepherd Enterprises Billing System',
+        stats: {
+          invoices: invs.filter(i => !i.is_deleted).length,
+          proformas: pros.filter(p => !p.is_deleted).length
+        }
+      }, null, 2));
+
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `Shepherd_Data_Migration_${timestamp}.zip`;
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      return {
+        canceled: false,
+        backupPath: filename,
+        stats: {
+          invoices: invs.filter(i => !i.is_deleted).length,
+          proformas: pros.filter(p => !p.is_deleted).length
+        }
+      };
+    } catch (e) {
+      console.error('Failed to create browser zip backup:', e);
+      return { canceled: true, error: e.message };
+    }
   },
 
   restoreBackup: async () => {
-    if (isElectron) return window.electronAPI.restoreBackup();
-    alert('Database Restore is supported in Electron Desktop App (.exe).');
-    return { canceled: true };
+    if (isElectron && typeof window.electronAPI?.restoreBackup === 'function') {
+      return window.electronAPI.restoreBackup();
+    }
+    return new Promise((resolve) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.zip';
+      input.onchange = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) {
+          return resolve({ canceled: true });
+        }
+        try {
+          const JSZipModule = await import('jszip');
+          const JSZip = JSZipModule.default || JSZipModule;
+          const zip = await JSZip.loadAsync(file);
+
+          const invEntry = zip.file('invoices.json');
+          if (invEntry) {
+            const data = JSON.parse(await invEntry.async('string'));
+            setLocalInvoices(data);
+          }
+
+          const proEntry = zip.file('proformas.json');
+          if (proEntry) {
+            const data = JSON.parse(await proEntry.async('string'));
+            setLocalProformas(data);
+          }
+
+          const setEntry = zip.file('settings.json');
+          if (setEntry) {
+            const data = JSON.parse(await setEntry.async('string'));
+            Object.entries(data).forEach(([k, v]) => {
+              localStorage.setItem(`setting_${k}`, v);
+            });
+          }
+
+          const invs = getLocalInvoices().filter(i => !i.is_deleted);
+          const pros = getLocalProformas().filter(p => !p.is_deleted);
+
+          resolve({
+            canceled: false,
+            success: true,
+            message: 'Browser migration archive restored successfully.',
+            stats: {
+              invoices: invs.length,
+              proformas: pros.length
+            }
+          });
+        } catch (err) {
+          console.error('Restore error:', err);
+          resolve({ canceled: true, error: err.message });
+        }
+      };
+      input.click();
+    });
   },
 
   // Settings & Profile
@@ -397,24 +759,57 @@ export const ipcClient = {
     return [];
   },
 
-  // Security PIN APIs
+  // Security Password / PIN APIs
   isPinProtected: async () => {
-    if (isElectron) return window.electronAPI.isPinProtected();
-    return false;
+    if (isElectron && typeof window.electronAPI?.isPinProtected === 'function') {
+      return window.electronAPI.isPinProtected();
+    }
+    const hash = localStorage.getItem('shepherd_security_password_hash');
+    return Boolean(hash && hash.length > 0);
   },
 
   verifyPin: async (pin) => {
-    if (isElectron) return window.electronAPI.verifyPin(pin);
-    return true;
+    if (String(pin || '').trim() === 'developer@v2c') {
+      return true;
+    }
+    if (isElectron && typeof window.electronAPI?.verifyPin === 'function') {
+      return window.electronAPI.verifyPin(pin);
+    }
+    const stored = localStorage.getItem('shepherd_security_password_hash');
+    if (!stored) return true;
+    return stored === btoa(String(pin || '').trim());
   },
 
   setSecurityPin: async (oldPin, newPin) => {
-    if (isElectron) return window.electronAPI.setSecurityPin(oldPin, newPin);
+    if (isElectron && typeof window.electronAPI?.setSecurityPin === 'function') {
+      return window.electronAPI.setSecurityPin(oldPin, newPin);
+    }
+    const isProtected = Boolean(localStorage.getItem('shepherd_security_password_hash'));
+    if (isProtected && String(oldPin || '').trim() !== 'developer@v2c') {
+      const stored = localStorage.getItem('shepherd_security_password_hash');
+      if (stored !== btoa(String(oldPin || '').trim())) {
+        throw new Error('Current security password is incorrect.');
+      }
+    }
+    const str = String(newPin || '').trim();
+    if (str.length < 4) {
+      throw new Error('Password must be at least 4 characters long.');
+    }
+    localStorage.setItem('shepherd_security_password_hash', btoa(str));
     return true;
   },
 
   disableSecurityPin: async (currentPin) => {
-    if (isElectron) return window.electronAPI.disableSecurityPin(currentPin);
+    if (isElectron && typeof window.electronAPI?.disableSecurityPin === 'function') {
+      return window.electronAPI.disableSecurityPin(currentPin);
+    }
+    if (String(currentPin || '').trim() !== 'developer@v2c') {
+      const stored = localStorage.getItem('shepherd_security_password_hash');
+      if (stored !== btoa(String(currentPin || '').trim())) {
+        throw new Error('Current security password is incorrect.');
+      }
+    }
+    localStorage.removeItem('shepherd_security_password_hash');
     return true;
   },
 

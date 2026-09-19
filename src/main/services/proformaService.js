@@ -1,4 +1,14 @@
-import { createProforma, getProformaById, listProformas, generateNextProformaNumber, updateProformaStatus } from '../repositories/proformaRepository.js';
+import { 
+  createProforma, 
+  getProformaById, 
+  listProformas, 
+  generateNextProformaNumber, 
+  updateProformaStatus,
+  softDeleteProforma as repoSoftDelete,
+  restoreProforma as repoRestore,
+  permanentlyDeleteProforma as repoPermanentDelete,
+  listDeletedProformas as repoListDeleted
+} from '../repositories/proformaRepository.js';
 import { generateNextInvoiceNumber } from '../repositories/invoiceRepository.js';
 import { saveOrUpdateCustomer } from '../repositories/customerRepository.js';
 import { computeCompleteInvoiceTotals } from '../../shared/utils/sharedCalculations.js';
@@ -121,4 +131,20 @@ export async function convertProformaToTaxInvoice(proformaId, modifiedFormData =
 
   const savedInvoice = await saveNewInvoice(newInvoicePayload);
   return savedInvoice;
+}
+
+export function softDeleteProforma(id) {
+  return repoSoftDelete(id);
+}
+
+export function restoreProforma(id) {
+  return repoRestore(id);
+}
+
+export function permanentlyDeleteProforma(id) {
+  return repoPermanentDelete(id);
+}
+
+export function getDeletedProformas() {
+  return repoListDeleted();
 }

@@ -8,138 +8,146 @@
   </style>
 </head>
 <body>
-  <div class="invoice-box">
-    <!-- Header -->
+  <div class="invoice-container">
+    <!-- Header Section -->
     <table class="header-table">
       <tr>
-        <td style="width: 60%;">
-          <div class="company-title">{{COMPANY_NAME}}</div>
-          <div class="company-details">
-            {{COMPANY_ADDRESS}}<br>
-            Phone: {{COMPANY_PHONE}} | Email: {{COMPANY_EMAIL}}<br>
-            <strong>GSTIN: {{COMPANY_GSTIN}}</strong> | State Code: {{COMPANY_STATE_CODE}} ({{COMPANY_STATE}})
-          </div>
+        <td class="header-left-col">
+          {{COMPANY_LOGO_HTML}}
+          <div class="company-sub-brand">{{COMPANY_NAME_SHORT}}</div>
+          <div class="company-upi-tag">{{COMPANY_UPI_ID}}</div>
         </td>
-        <td class="doc-badge" style="width: 40%;">
-          <div class="doc-type-title">{{DOC_TYPE}}</div>
-          <div class="copy-badge">{{COPY_TYPE_LABEL}}</div>
-        </td>
-      </tr>
-    </table>
-
-    <!-- Buyer & Document Reference Grid -->
-    <table class="meta-grid">
-      <tr>
-        <td>
-          <div class="section-label">Billed To (Buyer / Recipient):</div>
-          <div class="buyer-name">{{BUYER_NAME}}</div>
-          <div style="margin-top: 2px;">{{BUYER_ADDRESS}}</div>
-          <div style="margin-top: 4px;">
-            <strong>GSTIN / UIN:</strong> {{BUYER_GSTIN}}<br>
-            <strong>State:</strong> {{BUYER_STATE}} (Code: {{BUYER_STATE_CODE}})
-          </div>
-        </td>
-        <td>
-          <div class="meta-row">
-            <span class="meta-label">{{DOC_NUM_LABEL}}:</span>
-            <span class="meta-val"><strong>{{INVOICE_NUMBER}}</strong></span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-label">Date:</span>
-            <span class="meta-val">{{INVOICE_DATE}}</span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-label">Transport Mode:</span>
-            <span class="meta-val">{{TRANSPORTATION_MODE}}</span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-label">Vehicle No:</span>
-            <span class="meta-val">{{VEHICLE_NUMBER}}</span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-label">PO / SO No & Date:</span>
-            <span class="meta-val">{{SO_PO_INFO}}</span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-label">GEMC No:</span>
-            <span class="meta-val">{{GEMC_NUMBER}}</span>
-          </div>
+        <td class="header-center-col">
+          <div class="company-name">{{COMPANY_NAME}}</div>
+          <div class="company-address">{{COMPANY_ADDRESS}}</div>
+          <div class="company-cell">Cell: {{COMPANY_PHONE}}</div>
+          <div class="company-email">Email: {{COMPANY_EMAIL}}</div>
         </td>
       </tr>
     </table>
 
-    <!-- Line Items Table -->
-    <table class="items-table">
-      <thead>
-        <tr>
-          <th class="text-center" style="width: 5%;">#</th>
-          <th style="width: 45%;">Description of Goods / Services</th>
-          <th class="text-center" style="width: 12%;">HSN/SAC</th>
-          <th class="text-right" style="width: 10%;">Qty</th>
-          <th class="text-right" style="width: 13%;">Rate (₹)</th>
-          <th class="text-right" style="width: 15%;">Amount (₹)</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{ITEM_ROWS}}
-      </tbody>
-    </table>
-
-    <!-- Totals & Words -->
-    <table class="totals-grid">
-      <tr>
-        <td class="words-column">
-          <div class="section-label">Amount Chargeable (in words):</div>
-          <div style="font-weight: bold; font-size: 11px; margin-top: 4px; color: #0f172a;">
-            {{AMOUNT_IN_WORDS}}
-          </div>
-          {{NOTES_SECTION}}
+    <!-- Main Boxed Grid Table -->
+    <table class="main-invoice-table">
+      <!-- 3-Way Sub-Header Row: GSTIN | INVOICE | COPY TYPE -->
+      <tr class="sub-header-row">
+        <td class="cell-gstin">
+          GSTIN: {{COMPANY_GSTIN}}
         </td>
-        <td class="amounts-column">
-          <table class="amount-row-table">
+        <td class="cell-doc-title">
+          {{DOC_TYPE}}
+        </td>
+        <td class="cell-copy-type">
+          {{COPY_TYPE_LABEL}}
+        </td>
+      </tr>
+
+      <!-- Meta Grid: Invoice Details & Logistics (2 Columns) -->
+      <tr class="meta-row">
+        <!-- Left Meta Column -->
+        <td colspan="2" class="meta-left-cell">
+          <div class="meta-field"><span class="meta-lbl font-bold">INVOICE NO :</span> <span class="meta-txt font-bold">{{INVOICE_NUMBER}}</span></div>
+          <div class="meta-field"><span class="meta-lbl font-bold">INVOICE DATE:</span> <span class="meta-txt">{{INVOICE_DATE}}</span></div>
+          <div class="meta-field">
+            <span class="meta-lbl font-bold">STATE:</span> <span class="meta-txt uppercase">{{COMPANY_STATE}}</span>
+            <span class="meta-lbl font-bold" style="margin-left: 10px;">STATE CODE:</span> <span class="meta-txt">{{COMPANY_STATE_CODE}}</span>
+          </div>
+          <div class="buyer-block">
+            <div class="meta-field"><span class="meta-lbl font-bold">BUYER:</span> <span class="meta-txt font-bold">{{BUYER_NAME}}</span></div>
+            <div class="buyer-address-text">{{BUYER_ADDRESS}}</div>
+          </div>
+        </td>
+        <!-- Right Meta Column -->
+        <td class="meta-right-cell">
+          <div class="meta-field"><span class="meta-lbl font-bold">TRANSPORTATION MODE:</span> <span class="meta-txt">{{TRANSPORTATION_MODE}}</span></div>
+          <div class="meta-field"><span class="meta-lbl font-bold">VEHICLE NO:</span> <span class="meta-txt">{{VEHICLE_NUMBER}}</span></div>
+          <div class="meta-field"><span class="meta-lbl font-bold">DATE OF SUPPLY:</span> <span class="meta-txt">{{DATE_OF_SUPPLY}}</span></div>
+          <div class="meta-field">
+            <span class="meta-lbl font-bold">DELIVERY ADDRESS:</span>
+            <span class="meta-txt">{{DELIVERY_ADDRESS}}</span>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Customer GSTIN & State Code Row -->
+      <tr class="customer-info-row">
+        <td colspan="2" class="cust-gstin-cell">
+          <span class="font-bold">CUSTOMER' GSTIN:</span> {{BUYER_GSTIN}}
+        </td>
+        <td class="cust-state-cell">
+          <div class="meta-field"><span class="meta-lbl font-bold">STATE:</span> <span class="meta-txt uppercase">{{BUYER_STATE}}</span></div>
+          <div class="meta-field" style="margin-top: 2px;"><span class="meta-lbl font-bold">STATE CODE:</span> <span class="meta-txt">{{BUYER_STATE_CODE}}</span></div>
+        </td>
+      </tr>
+
+      <!-- Line Items Section -->
+      <tr>
+        <td colspan="3" class="items-container-cell">
+          <table class="items-table">
+            <thead>
+              <tr class="items-head-row">
+                <th class="col-desc">DESCRIPTION</th>
+                <th class="col-hsn">HSN</th>
+                <th class="col-qty">QTY.</th>
+                <th class="col-rate">RATE</th>
+                <th class="col-amount">AMOUNT</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{ITEM_ROWS}}
+            </tbody>
+          </table>
+        </td>
+      </tr>
+
+      <!-- Amount in Words Strip -->
+      <tr class="amount-words-row">
+        <td colspan="3" class="amount-words-cell">
+          <span class="font-bold">TOTAL AMOUNT IN WORDS:</span> {{AMOUNT_IN_WORDS}}
+        </td>
+      </tr>
+
+      <!-- Bank Details & Tax Totals Section -->
+      <tr class="bank-tax-row">
+        <!-- Left: Bank Details Box -->
+        <td colspan="2" class="bank-details-cell">
+          <div class="bank-heading font-bold">BANK DETAILS</div>
+          <div class="bank-item"><span class="font-bold">BANK NAME:</span> {{BANK_NAME}}: {{ACCOUNT_NUMBER}}</div>
+          <div class="bank-item"><span class="font-bold">BRANCH NAME:</span> {{BRANCH_NAME}}</div>
+          <div class="bank-item"><span class="font-bold">IFSC CODE:</span> {{IFSC_CODE}}</div>
+        </td>
+        <!-- Right: Tax Summary Breakdown -->
+        <td class="tax-summary-cell">
+          <table class="tax-breakdown-table">
             <tr>
-              <td>Subtotal</td>
-              <td class="text-right">₹{{SUBTOTAL}}</td>
+              <td class="tax-title-col">TOTAL AMOUNT BEFORE TAX</td>
+              <td class="tax-num-col">{{SUBTOTAL}}</td>
             </tr>
             {{TAX_ROWS}}
             {{ROUND_OFF_ROW}}
-            <tr>
-              <td>Grand Total</td>
-              <td class="text-right">₹{{GRAND_TOTAL}}</td>
+            <tr class="total-after-tax-line">
+              <td class="tax-title-col font-bold">TOTAL AMOUNT AFTER TAX:</td>
+              <td class="tax-num-col font-bold">{{GRAND_TOTAL}}</td>
             </tr>
           </table>
         </td>
       </tr>
     </table>
 
-    <!-- Footer: Terms, Bank Details, Signature -->
-    <table class="footer-grid">
+    <!-- Footer: Terms and Conditions & Signatory -->
+    <table class="footer-layout-table">
       <tr>
-        <td>
-          <div class="section-label">Bank Account Details:</div>
-          <table class="bank-table">
-            <tr><td style="font-weight: bold;">Bank Name:</td><td>{{BANK_NAME}}</td></tr>
-            <tr><td style="font-weight: bold;">Account No:</td><td>{{ACCOUNT_NUMBER}}</td></tr>
-            <tr><td style="font-weight: bold;">IFSC Code:</td><td>{{IFSC_CODE}}</td></tr>
-            <tr><td style="font-weight: bold;">Branch:</td><td>{{BRANCH_NAME}}</td></tr>
-          </table>
-          <div class="section-label" style="margin-top: 8px;">Terms & Conditions:</div>
-          <div style="font-size: 9px; color: #475569;">
+        <td class="footer-terms-col">
+          <div class="terms-title font-bold">TERMS AND CONDITIONS</div>
+          <div class="terms-list">
             {{TERMS_AND_CONDITIONS}}
           </div>
+          {{NOTES_SECTION}}
         </td>
-        <td>
-          <div class="signature-box">
-            <div class="section-label">Declaration:</div>
-            <div style="font-size: 9px; color: #475569; margin-top: 2px;">
-              {{DECLARATION}}
-            </div>
-            <div style="margin-top: 20px;">
-              <div style="font-size: 10px; font-weight: bold;">{{AUTHORIZED_SIGNATORY_LABEL}}</div>
-              <div style="height: 40px;"></div>
-              <div style="font-size: 9px; color: #64748b;">(Authorized Signatory)</div>
-            </div>
-          </div>
+        <td class="footer-sign-col">
+          <div class="certify-text font-bold">{{DECLARATION}}</div>
+          <div class="company-sign-title font-bold">{{AUTHORIZED_SIGNATORY_LABEL}}</div>
+          <div class="signature-space"></div>
+          <div class="signatory-label font-bold">Proprietor</div>
         </td>
       </tr>
     </table>

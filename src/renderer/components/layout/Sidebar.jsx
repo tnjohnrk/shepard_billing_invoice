@@ -1,5 +1,6 @@
 import React from 'react';
 import { LayoutDashboard, FilePlus, History, BarChart3, Settings, ShieldCheck } from 'lucide-react';
+import companyLogo from '../../assets/logo.png';
 
 export function Sidebar({ activeTab, setActiveTab }) {
   const navItems = [
@@ -15,9 +16,11 @@ export function Sidebar({ activeTab, setActiveTab }) {
       <div>
         {/* Company Branding Header */}
         <div className="p-5 border-b border-slate-800/80 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-indigo-600/30">
-            S
-          </div>
+          <img
+            src={companyLogo}
+            alt="Shepherd Enterprises"
+            className="w-10 h-10 object-contain rounded-full border border-slate-700 shadow-md flex-shrink-0"
+          />
           <div>
             <h1 className="text-xs font-bold uppercase tracking-wider text-slate-100 leading-tight">
               Shepherd Enterprises
