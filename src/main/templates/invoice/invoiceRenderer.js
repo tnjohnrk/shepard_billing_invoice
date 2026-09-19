@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import { COMPANY_CONFIG } from '../../config/companyConfig.js';
 import { TEMPLATE_CONFIG } from './templateConfig.js';
-import { COPY_TYPE_LABELS } from '../../../shared/constants/copyTypes.js';
+import { COPY_TYPE_LABELS, getCopyTypeLabel } from '../../../shared/constants/copyTypes.js';
 
 export function renderInvoiceHtml(invoiceData) {
   const htmlPath = path.join(__dirname, 'invoiceTemplate.html');
@@ -20,7 +20,7 @@ export function renderInvoiceHtml(invoiceData) {
   const docNumLabel = isProforma ? 'Proforma No' : 'Invoice No';
   const docNum = isProforma ? (invoiceData.proforma_number || '') : (invoiceData.invoice_number || '');
   const docDate = (isProforma ? invoiceData.proforma_date : invoiceData.invoice_date) || '';
-  const copyTypeLabel = COPY_TYPE_LABELS[invoiceData.copy_type] || COPY_TYPE_LABELS.ORIGINAL;
+  const copyTypeLabel = getCopyTypeLabel(invoiceData.copy_type, isProforma);
 
   // Build Item Rows HTML
   const items = invoiceData.items || [];

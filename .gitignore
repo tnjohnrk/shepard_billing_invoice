@@ -23,3 +23,8 @@ npm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Exported user test documents
+*.xlsx
+*.pdf
+

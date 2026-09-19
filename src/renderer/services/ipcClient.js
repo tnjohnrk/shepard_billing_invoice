@@ -1,4 +1,4 @@
-// Client wrapper over window.electronAPI contextBridge with browser preview fallback
+import { getCopyTypeLabel } from '../../shared/constants/copyTypes';
 
 const isElectron = typeof window !== 'undefined' && Boolean(window.electronAPI);
 
@@ -23,6 +23,7 @@ function renderClientInvoiceHtml(data) {
     ? (data.proforma_number || 'PRO-001') 
     : (data.invoice_number || 'INV-001');
   const docDate = (isProforma ? data.proforma_date : data.invoice_date) || new Date().toISOString().split('T')[0];
+  const copyTypeLabel = getCopyTypeLabel(data.copy_type, isProforma);
   const items = data.items || [];
 
   const itemRows = items.map((item, idx) => `
@@ -69,7 +70,7 @@ function renderClientInvoiceHtml(data) {
           </div>
           <div>
             <div class="doc-title">${docType}</div>
-            <div style="text-align:right; font-weight:bold; font-size: 10px; border: 1px solid #000; padding: 2px 6px; margin-top: 4px; display: inline-block;">Original for Recipient</div>
+            <div style="text-align:right; font-weight:bold; font-size: 10px; border: 1px solid #000; padding: 2px 6px; margin-top: 4px; display: inline-block;">${copyTypeLabel}</div>
           </div>
         </div>
 

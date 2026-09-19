@@ -1,6 +1,7 @@
 import React from 'react';
 import { computeCompleteInvoiceTotals } from '../../../shared/utils/sharedCalculations';
 import { SHEPHERD_DEFAULT_STATE_CODE } from '../../../shared/constants/application';
+import { getCopyTypeLabel } from '../../../shared/constants/copyTypes';
 
 export function InvoiceReview({ formData, isProforma }) {
   const totals = computeCompleteInvoiceTotals(
@@ -15,11 +16,17 @@ export function InvoiceReview({ formData, isProforma }) {
 
   return (
     <div className="space-y-6">
-      <div className="p-4 rounded-xl bg-indigo-950/40 border border-indigo-800/40 text-xs flex justify-between items-center">
+      <div className="p-4 rounded-xl bg-indigo-950/40 border border-indigo-800/40 text-xs flex flex-wrap gap-4 justify-between items-center">
         <div>
           <span className="text-slate-400">Document Type: </span>
           <span className="font-bold text-indigo-300">{isProforma ? 'Proforma Invoice' : 'Tax Invoice'}</span>
         </div>
+        {!isProforma && (
+          <div>
+            <span className="text-slate-400">Copy Type: </span>
+            <span className="font-bold text-amber-300">{getCopyTypeLabel(formData.copy_type)}</span>
+          </div>
+        )}
         <div>
           <span className="text-slate-400">Document No: </span>
           <span className="font-bold text-slate-100">{isProforma ? formData.proforma_number : formData.invoice_number}</span>

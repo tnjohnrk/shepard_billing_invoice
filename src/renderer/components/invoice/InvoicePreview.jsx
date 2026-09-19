@@ -4,6 +4,7 @@ import { Button } from '../common/Button';
 import { ipcClient } from '../../services/ipcClient';
 import { computeCompleteInvoiceTotals } from '../../../shared/utils/sharedCalculations';
 import { SHEPHERD_DEFAULT_STATE_CODE } from '../../../shared/constants/application';
+import { getCopyTypeLabel } from '../../../shared/constants/copyTypes';
 
 export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toast }) {
   const [isSaving, setIsSaving] = useState(false);
@@ -32,8 +33,10 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
     igst_amount: totals.igstAmount,
     grand_total: totals.grandTotal,
     amount_in_words: totals.amountInWords,
-    roundOff: totals.roundOff
+    round_off: totals.roundOff
   };
+
+  const copyTypeBadge = getCopyTypeLabel(formData.copy_type || fullData.copy_type, isProforma);
 
   const ensureSaved = async () => {
     if (savedInvoice) return savedInvoice;
@@ -165,7 +168,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                 {formData.invoice_type === 'PROFORMA' ? 'PROFORMA INVOICE' : 'TAX INVOICE'}
               </h2>
               <span className="inline-block px-2 py-0.5 border border-black text-[9px] font-bold uppercase mt-1 bg-slate-100">
-                Original for Recipient
+                {copyTypeBadge}
               </span>
             </div>
           </div>
