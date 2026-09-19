@@ -63,7 +63,7 @@ function renderClientInvoiceHtml(data) {
         <div class="header">
           <div>
             <div class="company-name">SHEPHERD ENTERPRISES PRIVATE LIMITED</div>
-            <div>Plot No. 42, Shepherd Industrial Estate, MIDC Area, Thane, Maharashtra - 400604</div>
+            <div>No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062</div>
             <div>Phone: +91 98765 43210 | Email: billing@shepherdenterprises.com</div>
             <div><strong>GSTIN: 27AAACS1234F1Z5</strong> | State Code: 27 (Maharashtra)</div>
           </div>
@@ -135,9 +135,6 @@ function renderClientInvoiceHtml(data) {
           </div>
         </div>
       </div>
-      <script>
-        window.onload = function() { window.print(); };
-      </script>
     </body>
     </html>
   `;
@@ -227,18 +224,27 @@ export const ipcClient = {
   },
 
   exportInvoicePdf: async (invoiceData) => {
-    if (isElectron) return window.electronAPI.exportInvoicePdf(invoiceData);
-    
-    // Render full invoice document in printable window for PDF download
-    const docHtml = renderClientInvoiceHtml(invoiceData);
-    const printWin = window.open('', '_blank');
-    if (printWin) {
-      printWin.document.write(docHtml);
-      printWin.document.close();
-      return { canceled: false, path: 'Downloads/Full_Invoice_Document.pdf' };
+    if (typeof window !== 'undefined' && window.electronAPI?.exportInvoicePdf) {
+      return await window.electronAPI.exportInvoicePdf(invoiceData);
     }
-    window.print();
-    return { canceled: false, path: 'Downloads/Full_Invoice_Document.pdf' };
+    
+    // Web fallback (browser preview): Open dedicated print window with isolated CSS (no Tailwind oklch)
+    // This opens the browser's native PDF export dialog cleanly without html2canvas parsing errors
+    const docHtml = renderClientInvoiceHtml(invoiceData);
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(docHtml);
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => {
+        try {
+          printWindow.print();
+        } catch {}
+      }, 250);
+      return { canceled: false, path: 'Browser Print / Save-as-PDF dialog opened' };
+    }
+    return { canceled: true };
   },
 
   exportInvoiceExcel: async (invoiceData) => {

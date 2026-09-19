@@ -1,4 +1,5 @@
-import { autoUpdater } from 'electron-updater';
+import electronUpdater from 'electron-updater';
+const { autoUpdater } = electronUpdater;
 
 export function initializeAutoUpdater(webContents) {
   autoUpdater.autoDownload = false;

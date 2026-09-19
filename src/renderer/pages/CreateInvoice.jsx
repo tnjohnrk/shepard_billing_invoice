@@ -15,7 +15,7 @@ import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 import { ipcClient } from '../services/ipcClient';
 import { SHEPHERD_DEFAULT_STATE_CODE } from '../../shared/constants/application';
 
-export function CreateInvoice({ initialData = null, toast, onInvoiceSaved }) {
+export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNavigateHome }) {
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
 
@@ -84,6 +84,14 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved }) {
   };
 
   const handleTypeSelect = async (type) => {
+    // Immediately set selected type and advance to next step (Invoice Details)
+    setFormData(prev => ({
+      ...prev,
+      invoice_type: type,
+      ...(type === 'PROFORMA' ? { invoice_number: '' } : { proforma_number: '' })
+    }));
+    setStep(2);
+
     try {
       if (type === 'PROFORMA') {
         const proNum = await ipcClient.getNextProformaNumber();
@@ -103,11 +111,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved }) {
         }));
       }
     } catch (e) {
-      setFormData(prev => ({
-        ...prev,
-        invoice_type: type,
-        ...(type === 'PROFORMA' ? { invoice_number: '' } : { proforma_number: '' })
-      }));
+      console.error('Error fetching sequence number on type select:', e);
     }
   };
 
@@ -244,6 +248,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved }) {
               formData={formData}
               onBack={() => setStep(7)}
               onSaveSuccess={onInvoiceSaved}
+              onGoHome={onNavigateHome}
               toast={toast}
             />
           )}

@@ -1,6 +1,6 @@
 export const COMPANY_CONFIG = {
   name: 'SHEPHERD ENTERPRISES PRIVATE LIMITED',
-  address: 'Plot No. 42, Shepherd Industrial Estate, MIDC Area, Thane, Maharashtra - 400604',
+  address: 'No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062',
   phone: '+91 98765 43210',
   email: 'billing@shepherdenterprises.com',
   gstin: '27AAACS1234F1Z5',

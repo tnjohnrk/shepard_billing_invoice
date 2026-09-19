@@ -1,19 +1,9 @@
 import path from 'path';
 import fs from 'fs';
 
-let app = null;
-try {
-  const electron = require('electron');
-  app = electron.app;
-} catch (e) {
-  app = null;
-}
-
 export function getAppDataPath() {
-  const baseDir = app && typeof app.getPath === 'function' 
-    ? app.getPath('userData') 
-    : path.join(process.env.LOCALAPPDATA || process.env.HOME || '.', 'ShepherdInvoice');
-  return baseDir;
+  const localAppData = process.env.LOCALAPPDATA || (process.env.HOME ? path.join(process.env.HOME, 'AppData', 'Local') : '.');
+  return path.join(localAppData, 'ShepherdInvoice');
 }
 
 export function ensureDirectoriesExist() {

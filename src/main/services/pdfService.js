@@ -23,11 +23,12 @@ export async function generateInvoicePdf(invoiceData, targetFilePathOverride = n
     }
   }
 
-  // Create offscreen BrowserWindow for crisp PDF rendering
+  // Create hidden BrowserWindow with A4 dimensions for PDF rendering
   const win = new BrowserWindow({
+    width: 1200,
+    height: 1600,
     show: false,
     webPreferences: {
-      offscreen: true,
       nodeIntegration: false,
       contextIsolation: true
     }
@@ -37,11 +38,22 @@ export async function generateInvoicePdf(invoiceData, targetFilePathOverride = n
     const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`;
     await win.loadURL(dataUrl);
 
+    // Wait until document layout, images, and fonts are completely rendered
+    await win.webContents.executeJavaScript(`
+      new Promise(resolve => {
+        if (document.readyState === 'complete') {
+          setTimeout(resolve, 250);
+        } else {
+          window.addEventListener('load', () => setTimeout(resolve, 250));
+        }
+      })
+    `);
+
     const pdfBuffer = await win.webContents.printToPDF({
-      marginsType: 1, // No margins, handled by CSS
       pageSize: 'A4',
       printBackground: true,
-      landscape: false
+      landscape: false,
+      preferCSSPageSize: true
     });
 
     fs.writeFileSync(pdfPath, pdfBuffer);

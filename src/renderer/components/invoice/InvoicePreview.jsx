@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Printer, FileDown, FileSpreadsheet, Save, ArrowLeft } from 'lucide-react';
+import { Printer, FileDown, FileSpreadsheet, Save, ArrowLeft, Home } from 'lucide-react';
 import { Button } from '../common/Button';
 import { ipcClient } from '../../services/ipcClient';
 import { computeCompleteInvoiceTotals } from '../../../shared/utils/sharedCalculations';
 import { SHEPHERD_DEFAULT_STATE_CODE } from '../../../shared/constants/application';
 
-export function InvoicePreview({ formData, onBack, onSaveSuccess, toast }) {
+export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toast }) {
   const [isSaving, setIsSaving] = useState(false);
   const [savedInvoice, setSavedInvoice] = useState(formData.id ? formData : null);
 
@@ -102,13 +102,25 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, toast }) {
     }
   };
 
+  const handleGoHome = () => {
+    if (onGoHome) {
+      onGoHome();
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Action Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 glass-panel rounded-xl border border-slate-800">
-        <Button variant="secondary" icon={ArrowLeft} onClick={onBack}>
-          Back to Edit
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button variant="secondary" icon={ArrowLeft} onClick={onBack}>
+            Back to Edit
+          </Button>
+
+          <Button variant="primary" icon={Home} onClick={handleGoHome}>
+            Home Dashboard
+          </Button>
+        </div>
 
         <div className="flex flex-wrap items-center gap-3">
           {!savedInvoice ? (
@@ -116,12 +128,12 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, toast }) {
               Save Invoice
             </Button>
           ) : (
-            <span className="px-3 py-1.5 rounded-lg bg-emerald-950 text-emerald-400 border border-emerald-800/50 text-xs font-bold">
-              ✓ Saved to SQLite
+            <span className="px-3 py-1.5 rounded-lg bg-emerald-950 text-emerald-400 border border-emerald-800/50 text-xs font-bold flex items-center gap-1.5">
+              <span>✓</span> Saved to SQLite
             </span>
           )}
 
-          <Button variant="primary" icon={Printer} onClick={handlePrint}>
+          <Button variant="secondary" icon={Printer} onClick={handlePrint}>
             Print
           </Button>
 
@@ -137,13 +149,13 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, toast }) {
 
       {/* Developer-Locked Fixed Template Visual Frame */}
       <div className="bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-2xl flex justify-center overflow-x-auto">
-        <div className="w-[190mm] min-h-[270mm] bg-white text-black p-6 rounded shadow-lg border border-slate-300 text-left font-sans text-xs">
+        <div id="invoice-preview-sheet" className="w-[190mm] min-h-[270mm] bg-white text-black p-6 rounded shadow-lg border border-slate-300 text-left font-sans text-xs">
           {/* Header */}
           <div className="border-b-2 border-black pb-3 flex justify-between items-start">
             <div>
               <h1 className="text-lg font-bold uppercase tracking-wide text-slate-950">SHEPHERD ENTERPRISES PRIVATE LIMITED</h1>
               <p className="text-[10px] text-slate-700 mt-0.5">
-                Plot No. 42, Shepherd Industrial Estate, MIDC Area, Thane, Maharashtra - 400604<br />
+                No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062<br />
                 Phone: +91 98765 43210 | Email: billing@shepherdenterprises.com<br />
                 <strong>GSTIN: 27AAACS1234F1Z5</strong> | State Code: 27 (Maharashtra)
               </p>
@@ -271,6 +283,39 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, toast }) {
               <div className="text-[9px] text-slate-500">(Authorized Signatory)</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Bottom Action Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 glass-panel rounded-xl border border-slate-800">
+        <div className="flex items-center gap-3">
+          <Button variant="secondary" icon={ArrowLeft} onClick={onBack}>
+            Back to Edit
+          </Button>
+
+          <Button variant="primary" icon={Home} onClick={handleGoHome}>
+            Home Dashboard
+          </Button>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          {!savedInvoice && (
+            <Button variant="success" icon={Save} onClick={handleSave} isLoading={isSaving}>
+              Save Invoice
+            </Button>
+          )}
+
+          <Button variant="secondary" icon={Printer} onClick={handlePrint}>
+            Print
+          </Button>
+
+          <Button variant="secondary" icon={FileDown} onClick={handleExportPdf}>
+            Export PDF
+          </Button>
+
+          <Button variant="accent" icon={FileSpreadsheet} onClick={handleExportExcel}>
+            Export Excel
+          </Button>
         </div>
       </div>
     </div>

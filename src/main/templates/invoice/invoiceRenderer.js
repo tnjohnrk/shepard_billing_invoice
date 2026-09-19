@@ -1,5 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import { COMPANY_CONFIG } from '../../config/companyConfig.js';
 import { TEMPLATE_CONFIG } from './templateConfig.js';
 import { COPY_TYPE_LABELS } from '../../../shared/constants/copyTypes.js';

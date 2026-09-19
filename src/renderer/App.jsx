@@ -118,8 +118,10 @@ export default function App() {
             toast={showToast}
             onInvoiceSaved={(inv) => {
               setCreateInitialData(null);
+            }}
+            onNavigateHome={() => {
+              setCreateInitialData(null);
               setActiveTab('dashboard');
-              showToast('success', `Invoice ${inv.invoice_number || inv.proforma_number} saved! Returned to Dashboard.`);
             }}
           />
         )}

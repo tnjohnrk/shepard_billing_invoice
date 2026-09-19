@@ -1,5 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import { COMPANY_CONFIG } from '../../config/companyConfig.js';
 
 export function runMigrations(db) {
@@ -158,7 +162,7 @@ export function runMigrations(db) {
     db.prepare('INSERT INTO schema_migrations (version) VALUES (1)').run();
   }
 
-  // Seed default company details if not present
+  // Seed default company details if not present or sync address
   const companyCount = db.prepare('SELECT COUNT(*) as count FROM companies').get().count;
   if (companyCount === 0) {
     db.prepare(`
@@ -169,6 +173,10 @@ export function runMigrations(db) {
         @name, @address, @phone, @email, @gstin, @state, @state_code,
         @bank_name, @account_number, @ifsc_code, @branch_name, @upi_id, @backup_email
       )
+    `).run(COMPANY_CONFIG);
+  } else {
+    db.prepare(`
+      UPDATE companies SET address = @address WHERE id = 1 OR id = (SELECT id FROM companies LIMIT 1)
     `).run(COMPANY_CONFIG);
   }
 }

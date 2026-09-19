@@ -4,6 +4,8 @@ Professional, reliable, offline-first Windows desktop invoice billing applicatio
 
 Built with **Electron + React + Vite + SQLite (`better-sqlite3`) + Tailwind CSS**.
 
+> 📖 **Developer Guide & Architecture**: For an exhaustive file-by-file breakdown, system architecture, and onboarding instructions, see **[PROJECT_DOCUMENTATION.md](file:///d:/billing_system/PROJECT_DOCUMENTATION.md)**.
+
 ## Key Features
 
 - **Proforma & Tax Invoices**: Step-by-step creation wizard for Proforma and Tax Invoices with GST tax splits (CGST + SGST vs IGST).
@@ -20,11 +22,12 @@ Built with **Electron + React + Vite + SQLite (`better-sqlite3`) + Tailwind CSS*
 # 1. Install dependencies
 npm install
 
-# 2. Run React renderer dev server (Vite)
-npm run dev
+# Option A: Start both Vite and Electron together (Recommended)
+npm run dev:all
 
-# 3. Start Electron desktop application
-npm run electron:dev
+# Option B: Run separately in two terminals
+npm run dev          # Terminal 1: React renderer (Vite)
+npm run electron:dev # Terminal 2: Electron desktop shell
 ```
 
 ## Running Unit Tests

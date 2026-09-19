@@ -7,7 +7,7 @@ function getSmtpConfig(overrideSettings = {}) {
   const smtpPort = parseInt(overrideSettings.smtp_port ?? getSetting('smtp_port', '587'), 10);
   const smtpUser = overrideSettings.smtp_user ?? getSetting('smtp_user', '');
   const smtpPass = overrideSettings.smtp_pass ?? getSetting('smtp_pass', '');
-  const recipient = overrideSettings.backup_email ?? getSetting('backup_email', '') || COMPANY_CONFIG.backup_email;
+  const recipient = overrideSettings.backup_email || getSetting('backup_email', '') || COMPANY_CONFIG.backup_email;
 
   return { smtpHost, smtpPort, smtpUser, smtpPass, recipient };
 }
