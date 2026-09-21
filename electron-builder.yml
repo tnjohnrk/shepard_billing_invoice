@@ -1,10 +1,10 @@
 appId: com.shepherdenterprises.billing
 productName: Shepherd Enterprises Billing System
-copyright: Copyright © 2026 Shepherd Enterprises Private Limited
+copyright: Copyright © 2026 Shepherd Enterprises Private Limited | Powered by Vibe2Code
 
 directories:
   output: dist_electron
-  buildResources: assets
+  buildResources: build
 
 files:
   - src/main/**/*
@@ -14,18 +14,32 @@ files:
 
 win:
   target:
-    - nsis
-    - portable
-  icon: assets/icons/app-icon.ico
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+  icon: src/renderer/assets/logo.png
 
 nsis:
   oneClick: false
+  perMachine: false
+  allowElevation: true
   allowToChangeInstallationDirectory: true
+  installerSidebar: src/renderer/assets/v2c.jpeg
+  uninstallerSidebar: src/renderer/assets/v2c.jpeg
+  installerHeader: src/renderer/assets/v2c.jpeg
+  installerHeaderIcon: src/renderer/assets/logo.png
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: Shepherd Invoice Billing
+  license: installer/INSTALL_INSTRUCTIONS.txt
+  include: installer/installer.nsh
+  runAfterFinish: true
 
 publish:
   provider: github
   owner: shepherd-enterprises
   repo: shepherd-invoice
+

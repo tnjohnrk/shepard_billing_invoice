@@ -24,8 +24,15 @@ export function About() {
           <div><strong>GSTIN:</strong> {COMPANY_CONFIG.gstin}</div>
           <div><strong>State Code:</strong> {COMPANY_CONFIG.state_code} ({COMPANY_CONFIG.state})</div>
           <div><strong>Bank:</strong> {COMPANY_CONFIG.bank_name}</div>
+          <div><strong>A/C No:</strong> {COMPANY_CONFIG.account_number}</div>
           <div><strong>IFSC:</strong> {COMPANY_CONFIG.ifsc_code}</div>
+          <div><strong>Branch:</strong> {COMPANY_CONFIG.branch_name}</div>
         </div>
+      </div>
+
+      <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-1">
+        <span>Powered by <strong className="text-indigo-600 dark:text-indigo-400">Vibe2Code</strong></span>
+        <span>Website: <strong className="text-slate-700 dark:text-slate-300">vibe2code.in</strong></span>
       </div>
     </div>
   );

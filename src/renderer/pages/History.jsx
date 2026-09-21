@@ -122,9 +122,17 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
 
   const handlePrint = async (inv) => {
     try {
-      await ipcClient.printInvoice(inv, {});
+      const res = await ipcClient.printInvoice(inv, {});
+      if (res && res.canceled) {
+        toast('info', 'Print canceled.');
+        return;
+      }
       toast('info', `Print command sent for ${inv.invoice_number || inv.proforma_number}`);
     } catch (e) {
+      if (e.message?.toLowerCase().includes('cancel')) {
+        toast('info', 'Print canceled.');
+        return;
+      }
       toast('error', e.message || 'Printing failed.');
     }
   };

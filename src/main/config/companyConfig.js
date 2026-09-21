@@ -3,14 +3,14 @@ export const COMPANY_CONFIG = {
   address: 'No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062',
   phone: '+91 9025812298 / +91 8438435681',
   email: 'shepheredenterprisespvtltd@gmail.com',
-  gstin: '27AAACS1234F1Z5',
-  state: 'Maharashtra',
-  state_code: '27',
-  bank_name: 'HDFC Bank Ltd.',
-  account_number: '50200012345678',
-  ifsc_code: 'HDFC0001234',
-  branch_name: 'Thane Industrial Estate Branch',
-  upi_id: 'shepherd@hdfcbank',
+  gstin: '33ABUCS2217H1Z8',
+  state: 'Tamil Nadu',
+  state_code: '33',
+  bank_name: 'ICICI BANK',
+  account_number: '404205000920',
+  ifsc_code: 'ICIC0004042',
+  branch_name: 'Ambattur - Officer Colony',
+  upi_id: 'shepherd@icici',
   backup_email: 'tnjohnrk@gmail.com'
 };
 

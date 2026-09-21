@@ -37,6 +37,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteInvoice: (id) => ipcRenderer.invoke('invoice:delete', id),
   deleteProforma: (id) => ipcRenderer.invoke('proforma:delete', id),
   getRecycleBin: () => ipcRenderer.invoke('bin:list'),
+  listRecycleBin: () => ipcRenderer.invoke('bin:list'),
   restoreFromBin: (id, type) => ipcRenderer.invoke('bin:restore', { id, type }),
   deletePermanentlyFromBin: (id, type) => ipcRenderer.invoke('bin:deletePermanent', { id, type }),
   emptyRecycleBin: () => ipcRenderer.invoke('bin:empty'),
@@ -57,6 +58,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // App & Updates
   getAppVersion: () => ipcRenderer.invoke('app:getVersion'),
+  openExternal: (url) => ipcRenderer.invoke('app:openExternal', url),
   checkForUpdates: () => ipcRenderer.invoke('app:checkForUpdates'),
   downloadUpdate: () => ipcRenderer.invoke('app:downloadUpdate'),
   retryEmailQueue: () => ipcRenderer.invoke('app:retryEmailQueue'),

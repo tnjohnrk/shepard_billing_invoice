@@ -28,9 +28,13 @@ export async function printInvoiceDocument(invoiceData, options = {}) {
           printWin.close();
         }
         if (!success) {
-          reject(new Error(`Physical printing failed: ${errorType}`));
+          if (errorType === 'Print job canceled' || String(errorType).toLowerCase().includes('cancel')) {
+            resolve({ success: false, canceled: true });
+          } else {
+            reject(new Error(`Physical printing failed: ${errorType}`));
+          }
         } else {
-          resolve(true);
+          resolve({ success: true, canceled: false });
         }
       }
     );

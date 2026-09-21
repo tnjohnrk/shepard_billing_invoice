@@ -43,4 +43,4 @@ export const INDIAN_STATES = [
   { code: '38', name: 'Ladakh' }
 ];
 
-export const SHEPHERD_DEFAULT_STATE_CODE = '27'; // Maharashtra
+export const SHEPHERD_DEFAULT_STATE_CODE = '33'; // Tamil Nadu

@@ -5,6 +5,7 @@ import { ipcClient } from '../../services/ipcClient';
 import { computeCompleteInvoiceTotals } from '../../../shared/utils/sharedCalculations';
 import { SHEPHERD_DEFAULT_STATE_CODE } from '../../../shared/constants/application';
 import { getCopyTypeLabel } from '../../../shared/constants/copyTypes';
+import { COMPANY_CONFIG } from '../../../main/config/companyConfig';
 import companyLogo from '../../assets/logo.avif';
 
 export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toast }) {
@@ -119,9 +120,17 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
   const handlePrint = async () => {
     try {
       const doc = await ensureSaved();
-      await ipcClient.printInvoice(doc || fullData, {});
+      const res = await ipcClient.printInvoice(doc || fullData, {});
+      if (res && res.canceled) {
+        toast('info', 'Print canceled.');
+        return;
+      }
       toast('info', 'Print command sent.');
     } catch (e) {
+      if (e.message?.toLowerCase().includes('cancel')) {
+        toast('info', 'Print canceled.');
+        return;
+      }
       toast('error', e.message || 'Printing failed.');
     }
   };
@@ -257,7 +266,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                     SHEPHERD ENTERPRISES
                   </div>
                   <div className="text-[7.5px] text-slate-600">
-                    @hdfcbank
+                    {COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'icici'}` : '@icici'}
                   </div>
                 </td>
                 <td className="w-[82%] align-top text-center pr-6">
@@ -284,7 +293,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
               {/* 3-Way Sub-Header Row */}
               <tr className="border-b-[1.5px] border-black">
                 <td className="w-[38%] p-1.5 font-bold border-r border-black align-middle text-[11px]">
-                  GSTIN: 27AAACS1234F1Z5
+                  GSTIN: {COMPANY_CONFIG.gstin || '33AAACS1234F1Z5'}
                 </td>
                 <td className="w-[24%] p-1.5 font-black text-center text-blue-900 text-sm tracking-wider uppercase border-r border-black align-middle">
                   {isProforma ? 'PROFORMA INVOICE' : 'INVOICE'}
@@ -308,9 +317,9 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                   </div>
                   <div className="leading-tight">
                     <span className="font-bold">STATE: </span>
-                    <span className="uppercase">MAHARASHTRA </span>
+                    <span className="uppercase">{COMPANY_CONFIG.state || 'TAMIL NADU'} </span>
                     <span className="font-bold ml-2">STATE CODE: </span>
-                    <span>27</span>
+                    <span>{COMPANY_CONFIG.state_code || '33'}</span>
                   </div>
                   <div className="pt-1">
                     <div className="leading-tight">
@@ -352,11 +361,11 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                 <td className="w-[40%] p-1.5 align-middle space-y-0.5">
                   <div>
                     <span className="font-bold">STATE: </span>
-                    <span className="uppercase">{fullData.customer_state || 'Maharashtra'}</span>
+                    <span className="uppercase">{fullData.customer_state || 'Tamil Nadu'}</span>
                   </div>
                   <div>
                     <span className="font-bold">STATE CODE: </span>
-                    <span>{fullData.customer_state_code || '27'}</span>
+                    <span>{fullData.customer_state_code || '33'}</span>
                   </div>
                 </td>
               </tr>
@@ -466,9 +475,9 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                 {/* Left: Bank Details */}
                 <td colSpan={2} className="w-[60%] p-1.5 border-r border-black align-top space-y-0.5 text-[9.5px]">
                   <div className="font-bold text-[10px] uppercase text-slate-900 mb-1">BANK DETAILS</div>
-                  <div><span className="font-bold">BANK NAME: </span>HDFC BANK LTD: 50200012345678</div>
-                  <div><span className="font-bold">BRANCH NAME: </span>THANE INDUSTRIAL ESTATE BRANCH</div>
-                  <div><span className="font-bold">IFSC CODE: </span>HDFC0001234</div>
+                  <div><span className="font-bold">BANK NAME: </span>{COMPANY_CONFIG.bank_name}: {COMPANY_CONFIG.account_number}</div>
+                  <div><span className="font-bold">BRANCH NAME: </span>{(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
+                  <div><span className="font-bold">IFSC CODE: </span>{COMPANY_CONFIG.ifsc_code}</div>
                 </td>
 
                 {/* Right: Tax Breakdown */}

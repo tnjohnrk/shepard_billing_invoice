@@ -37,7 +37,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
     buyer_name: '',
     buyer_address: '',
     customer_gstin: '',
-    customer_state: 'Maharashtra',
+    customer_state: 'Tamil Nadu',
     customer_state_code: SHEPHERD_DEFAULT_STATE_CODE,
 
     so_po_number: '',
@@ -87,7 +87,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
   };
 
   const handleTypeSelect = async (type) => {
-    // Set selected document type and fetch sequence number without auto-jumping
+    // Set selected document type and fetch sequence number
     setFormData(prev => ({
       ...prev,
       invoice_type: type,
@@ -115,6 +115,9 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
     } catch (e) {
       console.error('Error fetching sequence number on type select:', e);
     }
+
+    // Automatically advance to Step 2 (Invoice Details)
+    setStep(2);
   };
 
   const steps = [

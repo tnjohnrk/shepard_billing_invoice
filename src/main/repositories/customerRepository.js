@@ -43,8 +43,8 @@ export function searchCustomers(query = '') {
           name: c.name.trim(),
           address: c.address || '',
           gstin: c.gstin ? c.gstin.trim().toUpperCase() : '',
-          state: c.state || 'Maharashtra',
-          state_code: c.state_code || '27'
+          state: c.state || 'Tamil Nadu',
+          state_code: c.state_code || '33'
         });
       } else {
         // Enrich existing entry if richer fields are available
@@ -81,8 +81,8 @@ export function saveOrUpdateCustomer(customerData) {
       name,
       address: customerData.address || '',
       gstin: gstin || null,
-      state: customerData.state || 'Maharashtra',
-      state_code: customerData.state_code || '27',
+      state: customerData.state || 'Tamil Nadu',
+      state_code: customerData.state_code || '33',
       id: existing.id
     });
     return existing.id;
@@ -94,8 +94,8 @@ export function saveOrUpdateCustomer(customerData) {
       name,
       address: customerData.address || '',
       gstin: gstin || null,
-      state: customerData.state || 'Maharashtra',
-      state_code: customerData.state_code || '27'
+      state: customerData.state || 'Tamil Nadu',
+      state_code: customerData.state_code || '33'
     });
     return res.lastInsertRowid;
   }

@@ -145,7 +145,7 @@ export function renderInvoiceHtml(invoiceData) {
     .replace('{{CSS_CONTENT}}', cssContent)
     .replace('{{COMPANY_LOGO_HTML}}', logoHtml)
     .replace('{{COMPANY_NAME_SHORT}}', 'SHEPHERD ENTERPRISES')
-    .replace('{{COMPANY_UPI_ID}}', COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'hdfcbank'}` : '@hdfcbank')
+    .replace('{{COMPANY_UPI_ID}}', COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'icici'}` : '@icici')
     .replace(/{{DOC_TYPE}}/g, docType)
     .replace(/{{INVOICE_NUMBER}}/g, docNum)
     .replace('{{COPY_TYPE_LABEL}}', copyTypeLabel)

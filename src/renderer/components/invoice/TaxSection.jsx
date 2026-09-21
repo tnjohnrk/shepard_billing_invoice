@@ -250,7 +250,7 @@ export function TaxSection({
                 : `Inter-State Supply (IGST ${totals.igstRate}%)`}
             </span>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Supplier State: 27 (Maharashtra) | Buyer State: {customerStateCode || '27'}
+              Supplier State: {SHEPHERD_DEFAULT_STATE_CODE} (Tamil Nadu) | Buyer State: {customerStateCode || SHEPHERD_DEFAULT_STATE_CODE}
             </div>
           </div>
 

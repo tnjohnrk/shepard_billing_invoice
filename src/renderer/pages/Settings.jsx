@@ -5,8 +5,9 @@ import { AppearanceSettings } from '../components/settings/AppearanceSettings';
 import { BackupRestore } from '../components/settings/BackupRestore';
 import { RecycleBin } from '../components/settings/RecycleBin';
 import { PinSettings } from '../components/settings/PinSettings';
+import { Support } from '../components/settings/Support';
 import { About } from '../components/settings/About';
-import { Palette, HardDrive, Trash2, Shield, Info } from 'lucide-react';
+import { Palette, HardDrive, Trash2, Shield, Info, Headphones } from 'lucide-react';
 
 export function Settings({ toast }) {
   const [activeTab, setActiveTab] = useState('backup');
@@ -16,6 +17,7 @@ export function Settings({ toast }) {
     { id: 'bin', label: 'Recycle Bin', icon: Trash2 },
     { id: 'pin', label: 'Security Password Lock', icon: Shield },
     { id: 'appearance', label: 'Appearance', icon: Palette },
+    { id: 'support', label: 'Support', icon: Headphones },
     { id: 'about', label: 'About & Policy', icon: Info }
   ];
 
@@ -47,6 +49,7 @@ export function Settings({ toast }) {
           {activeTab === 'bin' && <RecycleBin toast={toast} />}
           {activeTab === 'pin' && <PinSettings toast={toast} />}
           {activeTab === 'appearance' && <AppearanceSettings />}
+          {activeTab === 'support' && <Support toast={toast} />}
           {activeTab === 'about' && <About />}
         </div>
       </div>

@@ -23,7 +23,7 @@ export function Header({ title, subtitle, onLockApp }) {
         {/* Company GSTIN Badge */}
         <div className="h-9 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 font-medium shadow-none">
           <Building2 className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400 shrink-0" />
-          <span className="font-mono font-semibold tracking-wide">GSTIN: {COMPANY_CONFIG?.gstin || '27AAACS1234F1Z5'}</span>
+          <span className="font-mono font-semibold tracking-wide">GSTIN: {COMPANY_CONFIG?.gstin || '33ABUCS2217H1Z8'}</span>
         </div>
 
         {/* Theme Toggle Button */}

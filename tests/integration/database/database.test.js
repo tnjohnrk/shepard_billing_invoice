@@ -32,7 +32,7 @@ describe('SQLite Repositories Integration Tests', () => {
     const company = getCompanyDetails();
     expect(company).not.toBeNull();
     expect(company.name).toBe('SHEPHERD ENTERPRISES PRIVATE LIMITED');
-    expect(company.gstin).toBe('27AAACS1234F1Z5');
+    expect(company.gstin).toBe('33ABUCS2217H1Z8');
   });
 
   it('creates and retrieves a proforma invoice with items', () => {

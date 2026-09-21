@@ -105,8 +105,8 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
             name: trimmed,
             address: formData.buyer_address || '',
             gstin: formData.customer_gstin || '',
-            state: formData.customer_state || 'Maharashtra',
-            state_code: formData.customer_state_code || '27'
+            state: formData.customer_state || 'Tamil Nadu',
+            state_code: formData.customer_state_code || '33'
           }).catch(() => {});
         }
       } catch {}
@@ -166,8 +166,8 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
             name: formData.buyer_name,
             address: formData.buyer_address || '',
             gstin: upper,
-            state: formData.customer_state || 'Maharashtra',
-            state_code: formData.customer_state_code || '27'
+            state: formData.customer_state || 'Tamil Nadu',
+            state_code: formData.customer_state_code || '33'
           }).catch(() => {});
         }
       } catch {}
@@ -343,7 +343,7 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
 
         <Select
           label="Place of Supply / State Code"
-          value={formData.customer_state_code || '27'}
+          value={formData.customer_state_code || SHEPHERD_DEFAULT_STATE_CODE}
           onChange={handleStateSelect}
           options={INDIAN_STATES.map(s => ({
             value: s.code,

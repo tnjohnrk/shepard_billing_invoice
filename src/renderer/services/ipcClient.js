@@ -87,121 +87,128 @@ function renderClientInvoiceHtml(data) {
     </tr>
   ` : '';
 
-  return `
+  const upiHandle = COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'icici'}` : '@icici';
+
+  const html = `
     <!DOCTYPE html>
     <html>
-    <head>
-      <title>${docType} - ${docNum}</title>
-      <style>
-        @page { size: A4 portrait; margin: 8mm; }
-        body { font-family: Arial, Helvetica, sans-serif; font-size: 11px; line-height: 1.25; margin: 0; padding: 0; background: #fff; color: #000; }
-        .invoice-box { width: 100%; max-width: 194mm; margin: 0 auto; }
-        table { width: 100%; border-collapse: collapse; }
-        .main-table { border: 1.5px solid #000; }
-        .main-table td { border: 1px solid #000; }
-        @media print { body { padding: 0; } }
-      </style>
-    </head>
-    <body>
-      <div class="invoice-box">
-        <!-- Top Header -->
-        <table style="margin-bottom: 6px;">
-          <tr>
-            <td style="width: 18%; vertical-align: top; text-align: center; border: none; padding-right: 8px;">
-              <img src="${companyLogo}" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; display: block; margin: 0 auto;" />
-              <div style="font-size: 8px; font-weight: bold; text-transform: uppercase; margin-top: 2px;">SHEPHERD ENTERPRISES</div>
-              <div style="font-size: 7.5px; color: #475569;">@hdfcbank</div>
-            </td>
-            <td style="width: 82%; vertical-align: top; text-align: center; border: none; padding-right: 25px;">
-              <div style="font-size: 20px; font-weight: 800; text-transform: uppercase; color: #1e3a8a; margin-bottom: 3px;">SHEPHERD ENTERPRISES PRIVATE LIMITED</div>
-              <div style="font-size: 9.5px; text-transform: uppercase; margin-bottom: 3px;">No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062</div>
-              <div style="font-size: 10px; font-weight: bold; margin-bottom: 2px;">Cell: +91 9025812298 / +91 8438435681</div>
-              <div style="font-size: 10px; font-weight: bold;">Email: shepheredenterprisespvtltd@gmail.com</div>
-            </td>
-          </tr>
-        </table>
+      <head>
+        <meta charset="utf-8" />
+        <title>${docType} ${docNum}</title>
+        <style>
+          @page { size: A4 portrait; margin: 8mm; }
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; color: #000; font-size: 10px; }
+          .invoice-box { width: 100%; box-sizing: border-box; }
+          table { width: 100%; border-collapse: collapse; }
+          td, th { vertical-align: middle; }
+          .main-table { border: 1.5px solid #000; }
+          .main-table td { border-bottom: 1px solid #000; }
+          .main-table td:not(:last-child) { border-right: 1px solid #000; }
+          .item-table th { background-color: #f1f5f9; border-bottom: 1px solid #000; font-weight: bold; padding: 4px 3px; font-size: 9.5px; text-transform: uppercase; }
+          .item-table td { padding: 4px 3px; font-size: 9.5px; border-bottom: 1px solid #cbd5e1; }
+          .noborder td { border: none !important; }
+        </style>
+      </head>
+      <body>
+        <div class="invoice-box">
+          <!-- Top Header -->
+          <table class="noborder" style="margin-bottom: 6px;">
+            <tr>
+              <td style="width: 18%; vertical-align: top; text-align: center; border: none; padding-right: 8px;">
+                <img src="${companyLogo}" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; display: block; margin: 0 auto;" />
+                <div style="font-size: 8px; font-weight: bold; text-transform: uppercase; margin-top: 2px;">SHEPHERD ENTERPRISES</div>
+                <div style="font-size: 7.5px; color: #475569;">${upiHandle}</div>
+              </td>
+              <td style="width: 82%; vertical-align: top; text-align: center; border: none; padding-right: 25px;">
+                <div style="font-size: 20px; font-weight: 800; text-transform: uppercase; color: #1e3a8a; margin-bottom: 3px;">${COMPANY_CONFIG.name}</div>
+                <div style="font-size: 9.5px; text-transform: uppercase; margin-bottom: 3px;">${COMPANY_CONFIG.address}</div>
+                <div style="font-size: 10px; font-weight: bold; margin-bottom: 2px;">Cell: ${COMPANY_CONFIG.phone}</div>
+                <div style="font-size: 10px; font-weight: bold;">Email: ${COMPANY_CONFIG.email}</div>
+              </td>
+            </tr>
+          </table>
 
-        <!-- Main Boxed Table -->
-        <table class="main-table">
-          <!-- Sub-Header Row -->
-          <tr style="border-bottom: 1.5px solid #000;">
-            <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 11px;">GSTIN: 27AAACS1234F1Z5</td>
-            <td style="width: 24%; padding: 4px 6px; font-weight: 900; font-size: 16px; text-align: center; color: #1e3a8a; text-transform: uppercase;">${docType}</td>
-            <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 10px; text-align: right; text-transform: uppercase;">${copyTypeLabel}</td>
-          </tr>
+          <!-- Main Boxed Table -->
+          <table class="main-table">
+            <!-- Sub-Header Row -->
+            <tr style="border-bottom: 1.5px solid #000;">
+              <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 11px;">GSTIN: ${COMPANY_CONFIG.gstin}</td>
+              <td style="width: 24%; padding: 4px 6px; font-weight: 900; font-size: 16px; text-align: center; color: #1e3a8a; text-transform: uppercase;">${docType}</td>
+              <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 10px; text-align: right; text-transform: uppercase;">${copyTypeLabel}</td>
+            </tr>
 
-          <!-- Meta Grid (2-Columns) -->
-          <tr>
-            <td colspan="2" style="width: 50%; padding: 4px 6px; vertical-align: top; font-size: 10px; border-right: 1px solid #000;">
-              <div><strong>INVOICE NO :</strong> <strong>${docNum}</strong></div>
-              <div><strong>INVOICE DATE:</strong> ${docDate}</div>
-              <div><strong>STATE:</strong> MAHARASHTRA <strong style="margin-left: 10px;">STATE CODE:</strong> 27</div>
-              <div style="margin-top: 4px;">
-                <div><strong>BUYER:</strong> <strong>${data.buyer_name || ''}</strong></div>
-                <div style="font-size: 9.5px; margin-top: 2px;">${data.buyer_address || ''}</div>
-              </div>
-            </td>
-            <td style="width: 50%; padding: 4px 6px; vertical-align: top; font-size: 10px;">
-              <div><strong>TRANSPORTATION MODE:</strong> ${data.transportation_mode || '-'}</div>
-              <div><strong>VEHICLE NO:</strong> ${data.vehicle_number || '-'}</div>
-              <div><strong>DATE OF SUPPLY:</strong> ${data.date_of_supply || docDate || '-'}</div>
-              <div><strong>DELIVERY ADDRESS:</strong> ${data.delivery_address || data.buyer_address || '-'}</div>
-            </td>
-          </tr>
+            <!-- Meta Grid (2-Columns) -->
+            <tr>
+              <td colspan="2" style="width: 50%; padding: 4px 6px; vertical-align: top; font-size: 10px; border-right: 1px solid #000;">
+                <div><strong>INVOICE NO :</strong> <strong>${docNum}</strong></div>
+                <div><strong>INVOICE DATE:</strong> ${docDate}</div>
+                <div><strong>STATE:</strong> ${(COMPANY_CONFIG.state || 'TAMIL NADU').toUpperCase()} <strong style="margin-left: 10px;">STATE CODE:</strong> ${COMPANY_CONFIG.state_code || '33'}</div>
+                <div style="margin-top: 4px;">
+                  <div><strong>BUYER:</strong> <strong>${data.buyer_name || ''}</strong></div>
+                  <div style="font-size: 9.5px; margin-top: 2px;">${data.buyer_address || ''}</div>
+                </div>
+              </td>
+              <td style="width: 50%; padding: 4px 6px; vertical-align: top; font-size: 10px;">
+                <div><strong>TRANSPORTATION MODE:</strong> ${data.transportation_mode || '-'}</div>
+                <div><strong>VEHICLE NO:</strong> ${data.vehicle_number || '-'}</div>
+                <div><strong>DATE OF SUPPLY:</strong> ${data.date_of_supply || docDate || '-'}</div>
+                <div><strong>DELIVERY ADDRESS:</strong> ${data.delivery_address || data.buyer_address || '-'}</div>
+              </td>
+            </tr>
 
-          <!-- Customer GSTIN & State Code -->
-          <tr style="border-top: 1px solid #000; border-bottom: 1.5px solid #000;">
-            <td colspan="2" style="width: 60%; padding: 4px 6px; font-size: 10px; font-weight: bold;">
-              CUSTOMER' GSTIN: ${data.customer_gstin || 'N/A'}
-            </td>
-            <td style="width: 40%; padding: 4px 6px; font-size: 10px;">
-              <div><strong>STATE:</strong> ${(data.customer_state || 'Maharashtra').toUpperCase()}</div>
-              <div><strong>STATE CODE:</strong> ${data.customer_state_code || '27'}</div>
-            </td>
-          </tr>
+            <!-- Customer GSTIN & State Code -->
+            <tr style="border-top: 1px solid #000; border-bottom: 1.5px solid #000;">
+              <td colspan="2" style="width: 60%; padding: 4px 6px; font-size: 10px; font-weight: bold;">
+                CUSTOMER' GSTIN: ${data.customer_gstin || 'N/A'}
+              </td>
+              <td style="width: 40%; padding: 4px 6px; font-size: 10px;">
+                <div><strong>STATE:</strong> ${(data.customer_state || 'Tamil Nadu').toUpperCase()}</div>
+                <div><strong>STATE CODE:</strong> ${data.customer_state_code || '33'}</div>
+              </td>
+            </tr>
 
-          <!-- Items Table -->
-          <tr>
-            <td colspan="3" style="padding: 0; border: none;">
-              <table>
-                <thead>
-                  <tr style="background: #f8fafc; border-bottom: 1.5px solid #000; font-size: 10px; font-weight: bold;">
-                    <th style="padding: 4px; border-right: 1px solid #000; text-align: left; width: 54%;">DESCRIPTION</th>
-                    <th style="padding: 4px; border-right: 1px solid #000; text-align: center; width: 11%;">HSN</th>
-                    <th style="padding: 4px; border-right: 1px solid #000; text-align: center; width: 11%;">QTY.</th>
-                    <th style="padding: 4px; border-right: 1px solid #000; text-align: right; width: 12%;">RATE</th>
-                    <th style="padding: 4px; text-align: right; width: 12%;">AMOUNT</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${itemRows}
-                  <tr>
-                    <td style="height: 180px; border-right: 1px solid #000;"></td>
-                    <td style="border-right: 1px solid #000;"></td>
-                    <td style="border-right: 1px solid #000;"></td>
-                    <td style="border-right: 1px solid #000;"></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
-          </tr>
+            <!-- Items Table -->
+            <tr>
+              <td colspan="3" style="padding: 0; border: none;">
+                <table>
+                  <thead>
+                    <tr style="background: #f8fafc; border-bottom: 1.5px solid #000; font-size: 10px; font-weight: bold;">
+                      <th style="padding: 4px; border-right: 1px solid #000; text-align: left; width: 54%;">DESCRIPTION</th>
+                      <th style="padding: 4px; border-right: 1px solid #000; text-align: center; width: 11%;">HSN</th>
+                      <th style="padding: 4px; border-right: 1px solid #000; text-align: center; width: 11%;">QTY.</th>
+                      <th style="padding: 4px; border-right: 1px solid #000; text-align: right; width: 12%;">RATE</th>
+                      <th style="padding: 4px; text-align: right; width: 12%;">AMOUNT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${itemRows}
+                    <tr>
+                      <td style="height: 180px; border-right: 1px solid #000;"></td>
+                      <td style="border-right: 1px solid #000;"></td>
+                      <td style="border-right: 1px solid #000;"></td>
+                      <td style="border-right: 1px solid #000;"></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
 
-          <!-- Amount in Words -->
-          <tr style="border-top: 1.5px solid #000; border-bottom: 1.5px solid #000;">
-            <td colspan="3" style="padding: 5px 6px; font-size: 10px;">
-              <strong>TOTAL AMOUNT IN WORDS:</strong> ${data.amount_in_words || 'Zero Rupees Only'}
-            </td>
-          </tr>
+            <!-- Amount in Words -->
+            <tr style="border-top: 1.5px solid #000; border-bottom: 1.5px solid #000;">
+              <td colspan="3" style="padding: 5px 6px; font-size: 10px;">
+                <strong>TOTAL AMOUNT IN WORDS:</strong> ${data.amount_in_words || 'Zero Rupees Only'}
+              </td>
+            </tr>
 
-          <!-- Bank Details & Tax Section -->
-          <tr>
-            <td colspan="2" style="width: 60%; padding: 5px 6px; vertical-align: top; border-right: 1px solid #000; font-size: 9.5px;">
-              <div style="font-weight: bold; font-size: 10px; text-transform: uppercase; margin-bottom: 3px;">BANK DETAILS</div>
-              <div><strong>BANK NAME:</strong> HDFC BANK LTD: 50200012345678</div>
-              <div><strong>BRANCH NAME:</strong> THANE INDUSTRIAL ESTATE BRANCH</div>
-              <div><strong>IFSC CODE:</strong> HDFC0001234</div>
-            </td>
+            <!-- Bank Details & Tax Section -->
+            <tr>
+              <td colspan="2" style="width: 60%; padding: 5px 6px; vertical-align: top; border-right: 1px solid #000; font-size: 9.5px;">
+                <div style="font-weight: bold; font-size: 10px; text-transform: uppercase; margin-bottom: 3px;">BANK DETAILS</div>
+                <div><strong>BANK NAME:</strong> ${COMPANY_CONFIG.bank_name}: ${COMPANY_CONFIG.account_number}</div>
+                <div><strong>BRANCH NAME:</strong> ${(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
+                <div><strong>IFSC CODE:</strong> ${COMPANY_CONFIG.ifsc_code}</div>
+              </td>
             <td style="width: 40%; padding: 0; vertical-align: top;">
               <table style="font-size: 9.5px;">
                 <tr style="border-bottom: 1px solid #000;">
@@ -463,8 +470,9 @@ export const ipcClient = {
 
   // Recycle Bin APIs
   getRecycleBin: async () => {
-    if (isElectron && typeof window.electronAPI?.getRecycleBin === 'function') {
-      return window.electronAPI.getRecycleBin();
+    if (isElectron && (typeof window.electronAPI?.getRecycleBin === 'function' || typeof window.electronAPI?.listRecycleBin === 'function')) {
+      const fn = window.electronAPI.getRecycleBin || window.electronAPI.listRecycleBin;
+      return fn();
     }
     const invs = (getLocalInvoices() || []).filter(i => Boolean(i.is_deleted)).map(i => ({
       ...i,
@@ -483,6 +491,10 @@ export const ipcClient = {
       item_type: 'proforma'
     }));
     return [...invs, ...pros].sort((a, b) => (b.deleted_at || '').localeCompare(a.deleted_at || ''));
+  },
+
+  listRecycleBin: async () => {
+    return ipcClient.getRecycleBin();
   },
 
   restoreFromBin: async (id, type) => {
@@ -830,8 +842,8 @@ export const ipcClient = {
             name: inv.buyer_name.trim(),
             address: inv.buyer_address || '',
             gstin: inv.customer_gstin ? inv.customer_gstin.trim().toUpperCase() : '',
-            state: inv.customer_state || 'Maharashtra',
-            state_code: inv.customer_state_code || '27'
+            state: inv.customer_state || 'Tamil Nadu',
+            state_code: inv.customer_state_code || '33'
           });
         }
       }
@@ -864,8 +876,8 @@ export const ipcClient = {
         name: name,
         address: customerData.address || '',
         gstin: gstin,
-        state: customerData.state || 'Maharashtra',
-        state_code: customerData.state_code || '27',
+        state: customerData.state || 'Tamil Nadu',
+        state_code: customerData.state_code || '33',
         updated_at: new Date().toISOString()
       };
 
@@ -1013,5 +1025,30 @@ export const ipcClient = {
       success: true,
       message: 'Settings saved. Note: In browser preview (npm run dev), actual SMTP transport requires running in desktop mode (npm run electron:dev).'
     };
+  },
+
+  openExternal: async (url) => {
+    if (!url) return false;
+    if (isElectron && typeof window.electronAPI?.openExternal === 'function') {
+      try {
+        const res = await window.electronAPI.openExternal(url);
+        if (res) return true;
+      } catch (e) {
+        console.warn('Electron openExternal IPC failed, falling back to browser window:', e);
+      }
+    }
+    try {
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      return true;
+    } catch {
+      window.open(url, '_blank', 'noopener,noreferrer');
+      return true;
+    }
   }
 };

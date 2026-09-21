@@ -1,0 +1,39 @@
+================================================================================
+  SHEPHERD ENTERPRISES PRIVATE LIMITED - INVOICE BILLING SYSTEM
+  Engineered & Powered by Vibe2Code (https://vibe2code.in)
+================================================================================
+
+INSTALLATION & SYSTEM REQUIREMENTS GUIDE
+
+1. APPLICATION OVERVIEW:
+   * Product: Shepherd Enterprises Billing System
+   * Version: 1.0.0 (Offline-First Edition)
+   * Target Platform: Windows 10 / 11 (64-bit x64)
+   * Engineering & Support: Vibe2Code (vibe2codeteam@gmail.com)
+
+2. SYSTEM REQUIREMENTS:
+   * Operating System: Microsoft Windows 10 / 11 (64-bit)
+   * Processor: Intel Core i3 / AMD Ryzen or equivalent (x64)
+   * Memory (RAM): Minimum 4 GB (8 GB recommended for optimal speed)
+   * Architecture: 64-bit OS required
+   * Display: 1280 x 768 or higher display resolution
+
+3. DISK SPACE & LOCATION ALLOCATION:
+   * Required Disk Space: ~200 MB for application files and database engine
+   * Recommended Free Space: 1 GB or more for invoice PDFs and backups
+   * Destination Folder: You can choose or customize the target directory in the next step.
+   * The installer will verify and display your available disk space before installing.
+
+4. OFFLINE-FIRST ARCHITECTURE:
+   * 100% local SQLite storage for lightning-fast invoice generation and history retrieval.
+   * Works completely offline without requiring internet access.
+   * Automated local backup snapshots created for complete data safety.
+
+5. AUDIT & GST COMPLIANCE:
+   * Company GSTIN: 33ABUCS2217H1Z8
+   * Supplier State Code: 33 (Tamil Nadu)
+   * Official Bank: ICICI BANK (A/C: 404205000920 | IFSC: ICIC0004042)
+   * Support Contact: vibe2codeteam@gmail.com | Website: vibe2code.in
+
+Please click 'I Agree' / 'Next' to choose the destination folder and proceed with the installation.
+================================================================================

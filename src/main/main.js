@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -39,6 +39,15 @@ function createMainWindow() {
       nodeIntegration: false,
       sandbox: false
     }
+  });
+
+  // Open external links and mailto handlers in system default browser / email app
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('https://') || url.startsWith('http://') || url.startsWith('mailto:')) {
+      shell.openExternal(url);
+      return { action: 'deny' };
+    }
+    return { action: 'allow' };
   });
 
   const distPath = path.join(__dirname, '../../dist/renderer/index.html');
