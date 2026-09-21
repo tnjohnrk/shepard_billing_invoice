@@ -25,20 +25,20 @@ export function ItemTable({ items = [], setItems }) {
 
   return (
     <div className="space-y-4">
-      <div className="w-full overflow-x-auto rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg">
+      <div className="w-full overflow-x-auto rounded-2xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-none">
         <table className="w-full text-left border-collapse text-xs">
           <thead>
-            <tr className="bg-slate-800/80 border-b border-slate-700/80 uppercase font-semibold text-slate-400">
-              <th className="px-3 py-3 text-center" style={{ width: '5%' }}>#</th>
-              <th className="px-3 py-3" style={{ width: '40%' }}>Description</th>
-              <th className="px-3 py-3 text-center" style={{ width: '15%' }}>HSN/SAC</th>
-              <th className="px-3 py-3 text-right" style={{ width: '12%' }}>Qty</th>
-              <th className="px-3 py-3 text-right" style={{ width: '13%' }}>Rate (₹)</th>
-              <th className="px-3 py-3 text-right" style={{ width: '15%' }}>Amount (₹)</th>
+            <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-300 dark:border-slate-700 uppercase font-bold text-slate-700 dark:text-slate-300">
+              <th className="px-3 py-3 text-center border-r border-slate-300 dark:border-slate-700" style={{ width: '5%' }}>#</th>
+              <th className="px-3 py-3 border-r border-slate-300 dark:border-slate-700" style={{ width: '40%' }}>Description</th>
+              <th className="px-3 py-3 text-center border-r border-slate-300 dark:border-slate-700" style={{ width: '15%' }}>HSN/SAC</th>
+              <th className="px-3 py-3 text-right border-r border-slate-300 dark:border-slate-700" style={{ width: '12%' }}>Qty</th>
+              <th className="px-3 py-3 text-right border-r border-slate-300 dark:border-slate-700" style={{ width: '13%' }}>Rate (₹)</th>
+              <th className="px-3 py-3 text-right border-r border-slate-300 dark:border-slate-700" style={{ width: '15%' }}>Amount (₹)</th>
               <th className="px-3 py-3 text-center" style={{ width: '5%' }}>Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
             {items.map((item, idx) => (
               <ItemRow
                 key={idx}

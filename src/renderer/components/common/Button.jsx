@@ -21,12 +21,12 @@ export function Button({
   };
 
   const variantStyles = {
-    primary: 'btn-primary bg-sky-100 hover:bg-sky-200 active:bg-sky-300 text-sky-900 border border-sky-300 dark:bg-sky-950/70 dark:hover:bg-sky-900 dark:text-sky-200 dark:border-sky-800',
+    primary: 'btn-primary bg-sky-100 hover:bg-sky-200 active:bg-sky-300 text-sky-900 border border-sky-300 dark:bg-sky-950 dark:hover:bg-sky-900 dark:text-sky-200 dark:border-sky-800',
     secondary: 'btn-secondary bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 border border-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 dark:border-slate-700',
-    accent: 'btn-accent bg-cyan-100 hover:bg-cyan-200 active:bg-cyan-300 text-cyan-900 border border-cyan-300 dark:bg-cyan-950/70 dark:hover:bg-cyan-900 dark:text-cyan-200 dark:border-cyan-800',
-    success: 'btn-success bg-emerald-100 hover:bg-emerald-200 active:bg-emerald-300 text-emerald-900 border border-emerald-300 dark:bg-emerald-950/70 dark:hover:bg-emerald-900 dark:text-emerald-200 dark:border-emerald-800',
-    danger: 'btn-danger bg-rose-100 hover:bg-rose-200 active:bg-rose-300 text-rose-900 border border-rose-300 dark:bg-rose-950/70 dark:hover:bg-rose-900 dark:text-rose-200 dark:border-rose-800',
-    ghost: 'btn-ghost bg-transparent hover:bg-slate-100 active:bg-slate-200 text-slate-700 dark:text-slate-300 dark:hover:bg-slate-800/60 dark:hover:text-white border border-transparent'
+    accent: 'btn-accent bg-cyan-100 hover:bg-cyan-200 active:bg-cyan-300 text-cyan-900 border border-cyan-300 dark:bg-cyan-950 dark:hover:bg-cyan-900 dark:text-cyan-200 dark:border-cyan-800',
+    success: 'btn-success bg-emerald-100 hover:bg-emerald-200 active:bg-emerald-300 text-emerald-900 border border-emerald-300 dark:bg-emerald-950 dark:hover:bg-emerald-900 dark:text-emerald-200 dark:border-emerald-800',
+    danger: 'btn-danger bg-rose-100 hover:bg-rose-200 active:bg-rose-300 text-rose-900 border border-rose-300 dark:bg-rose-950 dark:hover:bg-rose-900 dark:text-rose-200 dark:border-rose-800',
+    ghost: 'btn-ghost bg-transparent hover:bg-slate-100 active:bg-slate-200 text-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white border border-transparent'
   };
 
   return (

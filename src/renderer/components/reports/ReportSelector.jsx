@@ -10,7 +10,7 @@ export function ReportSelector({ activeType, onSelectType }) {
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-2 p-1.5 glass-panel rounded-xl border border-slate-800">
+    <div className="inline-flex flex-wrap items-center gap-2 p-1.5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none w-fit">
       {types.map((t) => (
         <Button
           key={t.id}

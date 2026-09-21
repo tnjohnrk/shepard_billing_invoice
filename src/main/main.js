@@ -20,12 +20,17 @@ import { processPendingEmailQueue } from './services/emailQueueService.js';
 let mainWindow = null;
 
 function createMainWindow() {
+  const iconPathPng = path.join(__dirname, '../renderer/assets/logo.png');
+  const iconPathAvif = path.join(__dirname, '../renderer/assets/logo.avif');
+  const appIcon = fs.existsSync(iconPathPng) ? iconPathPng : (fs.existsSync(iconPathAvif) ? iconPathAvif : undefined);
+
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 850,
     minWidth: 1024,
     minHeight: 700,
     title: 'Shepherd Enterprises Private Limited - Billing System',
+    icon: appIcon,
     show: false,
     autoHideMenuBar: true,
     webPreferences: {

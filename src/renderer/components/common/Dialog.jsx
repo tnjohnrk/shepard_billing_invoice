@@ -16,8 +16,8 @@ export function Dialog({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} maxWidth="max-w-md">
       <div className="flex flex-col gap-4">
-        <p className="text-sm text-slate-300 leading-relaxed">{message}</p>
-        <div className="flex items-center justify-end gap-3 mt-4 pt-4 border-t border-slate-700/60">
+        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{message}</p>
+        <div className="flex items-center justify-end gap-3 mt-4 pt-4 border-t border-slate-200 dark:border-slate-800">
           <Button variant="secondary" onClick={onClose} disabled={isLoading}>
             {cancelText}
           </Button>

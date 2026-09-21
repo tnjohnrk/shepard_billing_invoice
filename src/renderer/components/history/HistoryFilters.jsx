@@ -4,7 +4,7 @@ import { Input } from '../common/Input';
 
 export function HistoryFilters({ filters, setFilters }) {
   return (
-    <div className="flex flex-wrap items-center gap-3 p-4 glass-panel rounded-xl border border-slate-800">
+    <div className="flex flex-wrap items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none">
       <div className="w-40">
         <Select
           value={filters.invoiceType || ''}

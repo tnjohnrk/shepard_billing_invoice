@@ -7,18 +7,18 @@ export function BillingAmountChart({ data = [] }) {
   const isLight = theme === 'light';
 
   return (
-    <div className="p-5 glass-panel rounded-xl border border-slate-800 shadow-lg">
-      <h3 className="text-sm font-semibold text-slate-200 mb-4">Billing Revenue Trend (₹)</h3>
+    <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none">
+      <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-4">Billing Revenue Trend (₹)</h3>
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
             <defs>
               <linearGradient id="billingGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
                 <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke={isLight ? '#e2e8f0' : '#334155'} opacity={0.6} />
+            <CartesianGrid strokeDasharray="3 3" stroke={isLight ? '#e2e8f0' : '#334155'} />
             <XAxis dataKey="month" stroke={isLight ? '#64748b' : '#94a3b8'} fontSize={11} />
             <YAxis stroke={isLight ? '#64748b' : '#94a3b8'} fontSize={11} tickFormatter={(val) => `₹${(val / 1000).toFixed(0)}k`} />
             <Tooltip
@@ -28,7 +28,7 @@ export function BillingAmountChart({ data = [] }) {
                 borderRadius: '8px',
                 color: isLight ? '#0f172a' : '#f8fafc',
                 fontSize: '12px',
-                boxShadow: isLight ? '0 4px 6px -1px rgba(0,0,0,0.1)' : 'none'
+                boxShadow: 'none'
               }}
               formatter={(val) => [`₹${Number(val).toLocaleString('en-IN')}`, 'Billing Amount']}
             />

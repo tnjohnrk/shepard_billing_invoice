@@ -38,15 +38,15 @@ export function StatusBar() {
   }, []);
 
   return (
-    <footer className="h-7 bg-slate-950 border-t border-slate-900 px-4 flex items-center justify-between text-[11px] text-slate-400 select-none">
+    <footer className="h-7 bg-white dark:bg-slate-950 border-t border-slate-300 dark:border-slate-800 px-4 flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400 select-none shadow-none">
       <div className="flex items-center gap-4">
         <span className="flex items-center gap-1.5">
-          <HardDrive className="w-3 h-3 text-emerald-400" />
+          <HardDrive className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
           <span>SQLite Engine Connected</span>
         </span>
-        <span className="text-slate-700">|</span>
+        <span className="text-slate-300 dark:text-slate-700">|</span>
         <span className="flex items-center gap-1.5">
-          <Mail className={`w-3 h-3 ${pendingCount > 0 ? 'text-amber-400' : 'text-cyan-400'}`} />
+          <Mail className={`w-3 h-3 ${pendingCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-sky-600 dark:text-cyan-400'}`} />
           <span>
             {pendingCount > 0 ? `Email Queue: ${pendingCount} Pending` : 'Email Queue: Ready'}
           </span>
@@ -54,16 +54,16 @@ export function StatusBar() {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold ${isOnline ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/40' : 'bg-amber-950 text-amber-400 border border-amber-800/40'}`}>
+        <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold ${isOnline ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800'}`}>
           {isOnline ? (
             <>
               <Wifi className="w-3 h-3" />
-              <span>Online</span>
+              <span>System Online</span>
             </>
           ) : (
             <>
               <WifiOff className="w-3 h-3" />
-              <span>Offline (Queue Enabled)</span>
+              <span>Offline Mode</span>
             </>
           )}
         </div>

@@ -20,8 +20,8 @@ export function getMonthlyReport(year, month) {
   const db = getDatabase();
   const monthStr = `${year}-${String(month).padStart(2, '0')}`;
 
-  const invoices = db.prepare('SELECT * FROM invoices WHERE strftime("%Y-%m", invoice_date) = ? AND (is_deleted = 0 OR is_deleted IS NULL) ORDER BY invoice_date ASC').all(monthStr);
-  const proformas = db.prepare('SELECT * FROM proformas WHERE strftime("%Y-%m", proforma_date) = ? AND (is_deleted = 0 OR is_deleted IS NULL) ORDER BY proforma_date ASC').all(monthStr);
+  const invoices = db.prepare(`SELECT * FROM invoices WHERE strftime('%Y-%m', invoice_date) = ? AND (is_deleted = 0 OR is_deleted IS NULL) ORDER BY invoice_date ASC`).all(monthStr);
+  const proformas = db.prepare(`SELECT * FROM proformas WHERE strftime('%Y-%m', proforma_date) = ? AND (is_deleted = 0 OR is_deleted IS NULL) ORDER BY proforma_date ASC`).all(monthStr);
 
   const stats = calculateAggregateStats(invoices, proformas);
   return {

@@ -5,7 +5,7 @@ import { ipcClient } from '../../services/ipcClient';
 import { computeCompleteInvoiceTotals } from '../../../shared/utils/sharedCalculations';
 import { SHEPHERD_DEFAULT_STATE_CODE } from '../../../shared/constants/application';
 import { getCopyTypeLabel } from '../../../shared/constants/copyTypes';
-import companyLogo from '../../assets/logo.png';
+import companyLogo from '../../assets/logo.avif';
 
 export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toast }) {
   const [isSaving, setIsSaving] = useState(false);
@@ -179,7 +179,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
   return (
     <div className="space-y-6 print:m-0 print:p-0">
       {/* Top Controls Header */}
-      <div className="no-print flex flex-wrap items-center justify-between gap-4 p-4 glass-panel rounded-xl border border-slate-800">
+      <div className="no-print flex flex-wrap items-center justify-between gap-4 p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none">
         <div className="flex items-center gap-3">
           <Button variant="secondary" icon={ArrowLeft} onClick={onBack}>
             Back
@@ -240,8 +240,8 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
       </div>
 
       {/* Developer-Locked Exact Reference Invoice Visual Frame */}
-      <div className="bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-2xl flex justify-center overflow-x-auto print:bg-transparent print:p-0 print:border-none print:shadow-none">
-        <div id="invoice-preview-sheet" className="w-[194mm] min-h-[270mm] bg-white text-black p-6 rounded shadow-lg border border-slate-400 text-left font-sans text-xs print:w-full print:p-0 print:border-none print:shadow-none">
+      <div className="bg-slate-100 dark:bg-slate-950 p-6 rounded-2xl border-2 border-slate-300 dark:border-slate-800 shadow-none flex justify-center overflow-x-auto print:bg-transparent print:p-0 print:border-none print:shadow-none">
+        <div id="invoice-preview-sheet" className="w-[194mm] min-h-[270mm] bg-white text-black p-6 border border-slate-400 shadow-none text-left font-sans text-xs print:w-full print:p-0 print:border-none print:shadow-none">
           
           {/* Top Header */}
           <table className="w-full border-collapse mb-2">

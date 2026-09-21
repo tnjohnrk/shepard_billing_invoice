@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { PageContainer } from '../components/layout/PageContainer';
+import { Button } from '../components/common/Button';
 import { AppearanceSettings } from '../components/settings/AppearanceSettings';
 import { BackupRestore } from '../components/settings/BackupRestore';
 import { RecycleBin } from '../components/settings/RecycleBin';
@@ -20,31 +21,28 @@ export function Settings({ toast }) {
 
   return (
     <PageContainer>
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Settings Navigation Sidebar */}
-        <div className="w-full md:w-64 glass-panel p-2 rounded-xl border border-slate-800 shrink-0 h-fit space-y-1">
+      <div className="space-y-6">
+        {/* Top Horizontal Tab Navigation (Fit to content up to last button) */}
+        <div className="inline-flex flex-wrap items-center gap-2 p-1.5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none w-fit">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
-              <button
+              <Button
                 key={tab.id}
+                variant={isActive ? 'primary' : 'ghost'}
+                size="sm"
+                icon={Icon}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  isActive
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-                }`}
               >
-                <Icon className="w-4 h-4 shrink-0" />
-                <span>{tab.label}</span>
-              </button>
+                {tab.label}
+              </Button>
             );
           })}
         </div>
 
         {/* Settings Content Area */}
-        <div className="flex-1">
+        <div>
           {activeTab === 'backup' && <BackupRestore toast={toast} />}
           {activeTab === 'bin' && <RecycleBin toast={toast} />}
           {activeTab === 'pin' && <PinSettings toast={toast} />}

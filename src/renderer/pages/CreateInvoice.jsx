@@ -87,13 +87,12 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
   };
 
   const handleTypeSelect = async (type) => {
-    // Immediately set selected type and advance to next step (Invoice Details)
+    // Set selected document type and fetch sequence number without auto-jumping
     setFormData(prev => ({
       ...prev,
       invoice_type: type,
       ...(type === 'PROFORMA' ? { invoice_number: '' } : { proforma_number: '' })
     }));
-    setStep(2);
 
     try {
       if (type === 'PROFORMA') {
@@ -272,9 +271,9 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
       <div 
         ref={formContainerRef}
         onKeyDown={handleKeyDown}
-        className="p-6 glass-panel rounded-xl border border-slate-800 min-h-[450px] flex flex-col justify-between"
+        className="p-6 sm:p-8 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 flex flex-col justify-between shadow-none min-h-[380px]"
       >
-        <div>
+        <div className="flex-1">
           {step === 1 && (
             <InvoiceTypeSelector
               selectedType={formData.invoice_type}
@@ -350,7 +349,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
 
         {/* Wizard Bottom Nav */}
         {step < 8 && (
-          <div className="flex items-center justify-between pt-6 border-t border-slate-800 mt-6">
+          <div className="flex items-center justify-between pt-6 border-t border-slate-200 dark:border-slate-800 mt-8">
             <Button
               variant="secondary"
               icon={ArrowLeft}

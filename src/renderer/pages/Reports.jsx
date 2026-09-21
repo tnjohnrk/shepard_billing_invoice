@@ -80,7 +80,7 @@ export function Reports({ toast }) {
   const customerList = isCustomerReport ? (Array.isArray(reportData) ? reportData : []) : [];
 
   const customerHeaders = [
-    { label: '#' },
+    { label: 'S.No', align: 'center' },
     { label: 'Buyer / Customer Name' },
     { label: 'GSTIN' },
     { label: 'Invoices', align: 'center' },
@@ -106,7 +106,7 @@ export function Reports({ toast }) {
       </div>
 
       {/* Date controls per report type */}
-      <div className="p-4 glass-panel rounded-xl border border-slate-800 flex flex-wrap items-center gap-4 text-xs shadow-sm">
+      <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 flex flex-wrap items-center gap-4 text-xs shadow-none">
         {reportType === 'daily' && (
           <div className="w-48">
             <Input
@@ -161,8 +161,8 @@ export function Reports({ toast }) {
         )}
 
         {reportType === 'customer' && (
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <Users className="w-4 h-4 text-indigo-400" />
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
+            <Users className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
             <span>Aggregated billing summary across all registered client accounts.</span>
           </div>
         )}
@@ -172,10 +172,10 @@ export function Reports({ toast }) {
         <Loading text="Generating Financial Report..." />
       ) : isCustomerReport ? (
         <div className="space-y-4">
-          <div className="p-5 glass-panel rounded-xl border border-slate-800 shadow-sm">
+          <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-slate-100">Customer Account Summary</h3>
-              <span className="text-xs text-slate-400">{customerList.length} Clients Recorded</span>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Customer Account Summary</h3>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">{customerList.length} Clients Recorded</span>
             </div>
 
             {customerList.length === 0 ? (
@@ -183,14 +183,14 @@ export function Reports({ toast }) {
             ) : (
               <Table headers={customerHeaders}>
                 {customerList.map((c, idx) => (
-                  <tr key={idx} className="hover:bg-slate-800/40 text-xs">
-                    <td className="px-4 py-3 text-slate-400 font-mono">{idx + 1}</td>
-                    <td className="px-4 py-3 font-semibold text-slate-100">{c.buyer_name}</td>
-                    <td className="px-4 py-3 font-mono text-slate-400">{c.customer_gstin || 'N/A'}</td>
-                    <td className="px-4 py-3 text-center font-bold text-indigo-400">{c.total_invoices}</td>
-                    <td className="px-4 py-3 text-right">₹{Number(c.total_taxable || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                    <td className="px-4 py-3 text-right text-slate-400">₹{Number(c.total_tax || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                    <td className="px-4 py-3 text-right font-bold text-emerald-400">
+                  <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800 text-xs transition-colors">
+                    <td className="px-3 py-3 text-center font-bold text-slate-500 dark:text-slate-400 border-r border-slate-200 dark:border-slate-800">{idx + 1}</td>
+                    <td className="px-4 py-3 font-semibold text-slate-900 dark:text-slate-100 border-r border-slate-200 dark:border-slate-800">{c.buyer_name}</td>
+                    <td className="px-4 py-3 font-mono text-slate-500 dark:text-slate-400 border-r border-slate-200 dark:border-slate-800">{c.customer_gstin || 'N/A'}</td>
+                    <td className="px-4 py-3 text-center font-bold text-slate-900 dark:text-slate-100 border-r border-slate-200 dark:border-slate-800">{c.total_invoices}</td>
+                    <td className="px-4 py-3 text-right text-slate-900 dark:text-slate-100 font-medium border-r border-slate-200 dark:border-slate-800">₹{Number(c.total_taxable || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                    <td className="px-4 py-3 text-right text-slate-500 dark:text-slate-400 border-r border-slate-200 dark:border-slate-800">₹{Number(c.total_tax || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                    <td className="px-4 py-3 text-right font-bold text-slate-900 dark:text-slate-100">
                       ₹{Number(c.total_billing || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </td>
                   </tr>

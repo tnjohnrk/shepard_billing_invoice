@@ -1,5 +1,5 @@
 import { getCopyTypeLabel } from '../../shared/constants/copyTypes';
-import companyLogo from '../assets/logo.png';
+import companyLogo from '../assets/logo.avif';
 
 const isElectron = typeof window !== 'undefined' && Boolean(window.electronAPI);
 

@@ -8,7 +8,8 @@ import { Loading } from '../components/common/Loading';
 import { EmptyState } from '../components/common/EmptyState';
 import { Button } from '../components/common/Button';
 import { Dialog } from '../components/common/Dialog';
-import { ChevronLeft, ChevronRight, History as HistoryIcon } from 'lucide-react';
+import { Pagination } from '../components/common/Pagination';
+import { History as HistoryIcon } from 'lucide-react';
 import { ipcClient } from '../services/ipcClient';
 
 export function History({ initialInvoice = null, toast, onNavigateCreate, onDuplicateInvoice, onConvertProforma }) {
@@ -16,6 +17,7 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
   const [invoices, setInvoices] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState({ invoiceType: '', startDate: '', endDate: '' });
   const [selectedInvoice, setSelectedInvoice] = useState(initialInvoice);
@@ -53,6 +55,7 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
 
         setInvoices(data);
         setTotalPages(result?.totalPages || 1);
+        setTotalCount(result?.total || data.length);
       } else if (filters.invoiceType === 'NORMAL') {
         const result = await ipcClient.listInvoices({
           page,
@@ -68,6 +71,7 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
         }));
         setInvoices(data);
         setTotalPages(result?.totalPages || 1);
+        setTotalCount(result?.total || data.length);
       } else {
         // ALL Document Types: Combine both Normal (Tax) Invoices and Proformas
         const [invRes, proRes] = await Promise.all([
@@ -107,6 +111,7 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
 
         setInvoices(paginatedData);
         setTotalPages(calculatedTotalPages);
+        setTotalCount(total);
       }
     } catch (err) {
       toast('error', err.message || 'Failed to fetch invoice history.');
@@ -271,6 +276,8 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
         <div className="space-y-4">
           <HistoryTable
             invoices={invoices}
+            page={page}
+            pageSize={15}
             onView={handleViewInvoice}
             onPrint={handlePrint}
             onPdf={handlePdf}
@@ -280,30 +287,15 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
             onDelete={handleDeleteClick}
           />
 
-          {/* Pagination Bar */}
-          <div className="flex items-center justify-between px-2 pt-2 text-xs text-slate-400">
-            <div>Page {page} of {totalPages}</div>
-            <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                icon={ChevronLeft}
-                onClick={() => setPage(p => Math.max(p - 1, 1))}
-                disabled={page === 1}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                icon={ChevronRight}
-                onClick={() => setPage(p => Math.min(p + 1, totalPages))}
-                disabled={page >= totalPages}
-              >
-                Next
-              </Button>
-            </div>
-          </div>
+          {/* Proper Complete Pagination Bar */}
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={totalCount}
+            pageSize={15}
+            onPageChange={setPage}
+            itemName="invoices"
+          />
         </div>
       )}
 

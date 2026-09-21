@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, RotateCcw, Search, AlertTriangle, CheckCircle2, FileText, Info } from 'lucide-react';
+import { Trash2, RotateCcw, AlertTriangle, Search, RefreshCw, Trash } from 'lucide-react';
+import { Table } from '../common/Table';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { Dialog } from '../common/Dialog';
-import { Table } from '../common/Table';
-import { EmptyState } from '../common/EmptyState';
 import { Loading } from '../common/Loading';
+import { EmptyState } from '../common/EmptyState';
+import { Pagination } from '../common/Pagination';
 import { ipcClient } from '../../services/ipcClient';
 
 export function RecycleBin({ toast }) {
-  const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const pageSize = 15;
   
   // Action modals state
   const [restoreTarget, setRestoreTarget] = useState(null);
@@ -26,8 +29,9 @@ export function RecycleBin({ toast }) {
   const loadBinItems = async () => {
     setLoading(true);
     try {
-      const data = await ipcClient.getRecycleBin();
+      const data = await ipcClient.listRecycleBin();
       setItems(data || []);
+      setPage(1);
     } catch (err) {
       toast('error', err.message || 'Failed to load recycle bin.');
     } finally {
@@ -94,7 +98,11 @@ export function RecycleBin({ toast }) {
     return docNum.includes(q) || buyer.includes(q) || gstin.includes(q);
   });
 
+  const totalPages = Math.max(1, Math.ceil(filteredItems.length / pageSize));
+  const paginatedItems = filteredItems.slice((page - 1) * pageSize, page * pageSize);
+
   const headers = [
+    { label: 'S.No', align: 'center' },
     { label: 'Doc Number' },
     { label: 'Type' },
     { label: 'Buyer Name' },
@@ -107,133 +115,155 @@ export function RecycleBin({ toast }) {
   return (
     <div className="space-y-6">
       {/* Header & Controls Card */}
-      <div className="glass-panel p-6 rounded-xl border border-slate-800 space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border-2 border-slate-300 dark:border-slate-700 space-y-4 shadow-none">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20">
+            <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
               <Trash2 className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-semibold text-slate-100">Invoice Recycle Bin</h3>
-                {items.length > 0 && (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-rose-950 text-rose-400 border border-rose-800/40">
-                    {items.length} {items.length === 1 ? 'item' : 'items'}
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Manage deleted tax invoices and proformas. Restored items will instantly return to your active history and dashboard.
+              <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">Recycle Bin</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Manage deleted invoices and proforma documents. Restore them back to active state or delete permanently.
               </p>
             </div>
           </div>
 
-          {items.length > 0 && (
+          <div className="flex items-center gap-2">
             <Button
-              variant="danger"
+              variant="secondary"
               size="sm"
-              icon={Trash2}
-              onClick={() => setShowEmptyConfirm(true)}
+              icon={RefreshCw}
+              onClick={loadBinItems}
+              disabled={loading || isProcessing}
             >
-              Empty Recycle Bin
+              Refresh
             </Button>
-          )}
+
+            {items.length > 0 && (
+              <Button
+                variant="danger"
+                size="sm"
+                icon={Trash}
+                onClick={() => setShowEmptyConfirm(true)}
+                disabled={loading || isProcessing}
+              >
+                Empty Recycle Bin ({items.length})
+              </Button>
+            )}
+          </div>
         </div>
 
-        {/* Search Filter */}
-        {items.length > 0 && (
-          <div className="pt-2">
-            <Input
-              placeholder="Search deleted items by number, buyer name, or GSTIN..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              icon={Search}
-            />
-          </div>
-        )}
+        {/* Search Input Filter */}
+        <div className="pt-2">
+          <Input
+            placeholder="Search deleted records by invoice #, buyer name, or GSTIN..."
+            icon={Search}
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+          />
+        </div>
       </div>
 
-      {/* Table Content Area */}
+      {/* Content / Table View */}
       {loading ? (
-        <Loading text="Loading Recycle Bin..." />
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none">
+          <Loading text="Loading Recycle Bin items..." />
+        </div>
       ) : items.length === 0 ? (
-        <div className="glass-panel p-8 rounded-xl border border-slate-800">
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none">
           <EmptyState
-            icon={Trash2}
             title="Recycle Bin is Empty"
-            description="No deleted invoices or proformas. When you delete an invoice from the History page, it will be safely moved here for you to restore anytime."
+            description="There are no deleted invoices or proformas. Deleted documents will appear here for recovery."
+            icon={Trash2}
           />
         </div>
       ) : filteredItems.length === 0 ? (
-        <div className="glass-panel p-8 rounded-xl border border-slate-800 text-center py-10">
-          <p className="text-sm text-slate-400">No deleted records match your search query "{search}".</p>
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border-2 border-slate-300 dark:border-slate-700 text-center py-10 shadow-none">
+          <p className="text-sm text-slate-500 dark:text-slate-400">No deleted records match your search query "{search}".</p>
         </div>
       ) : (
-        <div className="glass-panel rounded-xl border border-slate-800 overflow-hidden shadow-sm">
-          <Table headers={headers}>
-            {filteredItems.map((item) => {
-              const isProforma = String(item.invoice_type || item.item_type).toUpperCase() === 'PROFORMA';
-              const docNum = item.doc_number || item.invoice_number || item.proforma_number;
-              const docDate = item.doc_date || item.invoice_date || item.proforma_date;
-              const deletedDate = item.deleted_at 
-                ? new Date(item.deleted_at).toLocaleString('en-IN', {
-                    dateStyle: 'medium',
-                    timeStyle: 'short'
-                  })
-                : 'Recently';
+        <div className="space-y-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 overflow-hidden shadow-none">
+            <Table headers={headers}>
+              {paginatedItems.map((item, idx) => {
+                const isProforma = String(item.invoice_type || item.item_type).toUpperCase() === 'PROFORMA';
+                const docNum = item.doc_number || item.invoice_number || item.proforma_number;
+                const docDate = item.doc_date || item.invoice_date || item.proforma_date;
+                const serialNo = (page - 1) * pageSize + idx + 1;
+                const deletedDate = item.deleted_at 
+                  ? new Date(item.deleted_at).toLocaleString('en-IN', {
+                      dateStyle: 'medium',
+                      timeStyle: 'short'
+                    })
+                  : 'Recently';
 
-              return (
-                <tr key={`${item.item_type}-${item.id}`} className="hover:bg-slate-800/40 transition-colors">
-                  <td className="px-4 py-3.5 font-bold text-slate-200">
-                    {docNum}
-                  </td>
-                  <td className="px-4 py-3.5">
-                    <span className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
-                      isProforma 
-                        ? 'bg-cyan-950 text-cyan-400 border border-cyan-800/40' 
-                        : 'bg-indigo-950 text-indigo-400 border border-indigo-800/40'
-                    }`}>
-                      {isProforma ? 'PROFORMA' : (item.invoice_type || 'NORMAL')}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3.5 text-slate-300 font-medium">
-                    <div>{item.buyer_name}</div>
-                    {item.customer_gstin && (
-                      <div className="text-[10px] text-slate-400 font-mono">GSTIN: {item.customer_gstin}</div>
-                    )}
-                  </td>
-                  <td className="px-4 py-3.5 text-slate-300 text-xs">{docDate}</td>
-                  <td className="px-4 py-3.5 text-right font-bold text-emerald-400 text-xs">
-                    ₹{Number(item.grand_total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                  </td>
-                  <td className="px-4 py-3.5 text-slate-400 text-xs">
-                    {deletedDate}
-                  </td>
-                  <td className="px-4 py-3.5 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
-                      <button
-                        onClick={() => setRestoreTarget(item)}
-                        className="p-1.5 rounded-lg text-emerald-400 hover:text-emerald-300 hover:bg-emerald-950/60 transition-colors flex items-center gap-1 text-xs font-semibold px-2.5 py-1 border border-emerald-800/40 bg-emerald-950/30"
-                        title="Restore to Active Invoices"
-                      >
-                        <RotateCcw className="w-3.5 h-3.5" />
-                        <span>Restore</span>
-                      </button>
+                return (
+                  <tr key={`${item.item_type}-${item.id}`} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    <td className="px-3 py-3.5 text-center font-bold text-slate-500 dark:text-slate-400 border-r border-slate-200 dark:border-slate-800">{serialNo}</td>
+                    <td className="px-4 py-3.5 font-bold text-slate-900 dark:text-slate-100 border-r border-slate-200 dark:border-slate-800">
+                      {docNum}
+                    </td>
+                    <td className="px-4 py-3.5 border-r border-slate-200 dark:border-slate-800">
+                      <span className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
+                        isProforma 
+                          ? 'bg-cyan-50 dark:bg-cyan-950 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800' 
+                          : 'bg-indigo-50 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
+                      }`}>
+                        {isProforma ? 'PROFORMA' : (item.invoice_type || 'NORMAL')}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3.5 text-slate-900 dark:text-slate-100 font-medium border-r border-slate-200 dark:border-slate-800">
+                      <div>{item.buyer_name}</div>
+                      {item.customer_gstin && (
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono font-bold">GSTIN: {item.customer_gstin}</div>
+                      )}
+                    </td>
+                    <td className="px-4 py-3.5 text-slate-700 dark:text-slate-300 text-xs border-r border-slate-200 dark:border-slate-800">{docDate}</td>
+                    <td className="px-4 py-3.5 text-right font-bold text-slate-900 dark:text-slate-100 text-xs border-r border-slate-200 dark:border-slate-800">
+                      ₹{Number(item.grand_total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    </td>
+                    <td className="px-4 py-3.5 text-slate-500 dark:text-slate-400 text-xs border-r border-slate-200 dark:border-slate-800">
+                      {deletedDate}
+                    </td>
+                    <td className="px-4 py-3.5 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => setRestoreTarget(item)}
+                          className="p-1.5 rounded-lg text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900 transition-colors flex items-center gap-1 text-xs font-semibold px-2.5 py-1 border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950 cursor-pointer shadow-none"
+                          title="Restore to Active Invoices"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          <span>Restore</span>
+                        </button>
 
-                      <button
-                        onClick={() => setPermDeleteTarget(item)}
-                        className="p-1.5 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-950/60 transition-colors flex items-center gap-1 text-xs font-semibold px-2.5 py-1 border border-rose-800/40 bg-rose-950/30"
-                        title="Delete Permanently"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        <span>Delete Forever</span>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </Table>
+                        <button
+                          onClick={() => setPermDeleteTarget(item)}
+                          className="p-1.5 rounded-lg text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900 transition-colors flex items-center gap-1 text-xs font-semibold px-2.5 py-1 border border-rose-300 dark:border-rose-800 bg-rose-50 dark:bg-rose-950 cursor-pointer shadow-none"
+                          title="Delete Permanently"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Delete Forever</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </Table>
+          </div>
+
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={filteredItems.length}
+            pageSize={pageSize}
+            onPageChange={setPage}
+            itemName="deleted items"
+          />
         </div>
       )}
 

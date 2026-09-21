@@ -38,8 +38,8 @@ export function InvoiceDetailsForm({ formData, onChange, errors = {}, isProforma
         )}
       </div>
 
-      <div className="p-4 glass-panel rounded-xl border border-slate-800 space-y-4">
-        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">Transportation & Supply Information</h4>
+      <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 space-y-4 shadow-none">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Transportation & Supply Information</h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Input
             label="Transportation Mode"
