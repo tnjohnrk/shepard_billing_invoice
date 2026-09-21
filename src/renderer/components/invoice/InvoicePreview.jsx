@@ -3,6 +3,7 @@ import { Printer, FileDown, FileSpreadsheet, Save, ArrowLeft, Home, ArrowRightLe
 import { Button } from '../common/Button';
 import { ipcClient } from '../../services/ipcClient';
 import { computeCompleteInvoiceTotals } from '../../../shared/utils/sharedCalculations';
+import { SHEPHERD_DEFAULT_STATE_CODE } from '../../../shared/constants/application';
 import { getCopyTypeLabel } from '../../../shared/constants/copyTypes';
 import { COMPANY_CONFIG } from '../../../main/config/companyConfig';
 import shepherdInvoiceLogo from '../../assets/shepherd_invoice_logo.png';
