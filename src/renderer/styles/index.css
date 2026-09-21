@@ -796,3 +796,69 @@ button:active:not(:disabled) {
     width: 0%;
   }
 }
+
+/* ========================================================================= */
+/* Invoice Sheet Guaranteed Pristine White Paper In All Modes                */
+/* ========================================================================= */
+#invoice-preview-sheet,
+.dark #invoice-preview-sheet,
+.light #invoice-preview-sheet {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+#invoice-preview-sheet *,
+.dark #invoice-preview-sheet *,
+.light #invoice-preview-sheet * {
+  color: #000000 !important;
+}
+
+#invoice-preview-sheet .text-blue-900,
+.dark #invoice-preview-sheet .text-blue-900,
+.light #invoice-preview-sheet .text-blue-900 {
+  color: #1e3a8a !important;
+}
+
+#invoice-preview-sheet table,
+.dark #invoice-preview-sheet table,
+.light #invoice-preview-sheet table {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+#invoice-preview-sheet thead tr,
+.dark #invoice-preview-sheet thead tr,
+.light #invoice-preview-sheet thead tr {
+  background-color: #f8fafc !important;
+  border-color: #000000 !important;
+}
+
+#invoice-preview-sheet thead th,
+.dark #invoice-preview-sheet thead th,
+.light #invoice-preview-sheet thead th {
+  background-color: #f8fafc !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+#invoice-preview-sheet tbody td,
+.dark #invoice-preview-sheet tbody td,
+.light #invoice-preview-sheet tbody td {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+#invoice-preview-sheet .bg-slate-50,
+.dark #invoice-preview-sheet .bg-slate-50,
+.light #invoice-preview-sheet .bg-slate-50 {
+  background-color: #f8fafc !important;
+}
+
+#invoice-preview-sheet tbody tr:hover,
+.dark #invoice-preview-sheet tbody tr:hover,
+.light #invoice-preview-sheet tbody tr:hover {
+  background-color: transparent !important;
+}
+

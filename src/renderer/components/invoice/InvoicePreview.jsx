@@ -3,10 +3,9 @@ import { Printer, FileDown, FileSpreadsheet, Save, ArrowLeft, Home, ArrowRightLe
 import { Button } from '../common/Button';
 import { ipcClient } from '../../services/ipcClient';
 import { computeCompleteInvoiceTotals } from '../../../shared/utils/sharedCalculations';
-import { SHEPHERD_DEFAULT_STATE_CODE } from '../../../shared/constants/application';
 import { getCopyTypeLabel } from '../../../shared/constants/copyTypes';
 import { COMPANY_CONFIG } from '../../../main/config/companyConfig';
-import companyLogo from '../../assets/logo.png';
+import shepherdInvoiceLogo from '../../assets/shepherd_invoice_logo.png';
 
 export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toast }) {
   const [isSaving, setIsSaving] = useState(false);
@@ -249,18 +248,18 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
       </div>
 
       {/* Developer-Locked Exact Reference Invoice Visual Frame */}
-      <div className="bg-slate-100 dark:bg-slate-950 p-6 rounded-2xl border-2 border-slate-300 dark:border-slate-800 shadow-none flex justify-center overflow-x-auto print:bg-transparent print:p-0 print:border-none print:shadow-none">
-        <div id="invoice-preview-sheet" className="w-[194mm] min-h-[270mm] bg-white text-black p-6 border border-slate-400 shadow-none text-left font-sans text-xs print:w-full print:p-0 print:border-none print:shadow-none">
+      <div className="bg-slate-200 dark:bg-slate-900 p-6 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-none flex justify-center overflow-x-auto print:bg-transparent print:p-0 print:border-none print:shadow-none">
+        <div id="invoice-preview-sheet" style={{ backgroundColor: '#ffffff', color: '#000000' }} className="w-[194mm] min-h-[270mm] bg-white text-black p-6 border border-slate-400 shadow-lg text-left font-sans text-xs print:w-full print:p-0 print:border-none print:shadow-none">
           
           {/* Top Header */}
-          <table className="w-full border-collapse mb-2">
+          <table className="w-full border-collapse mb-2" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
             <tbody>
               <tr>
                 <td className="w-[18%] align-top text-center pr-2">
                   <img
-                    src={companyLogo}
+                    src={shepherdInvoiceLogo}
                     alt="Shepherd Enterprises"
-                    className="w-14 h-14 object-contain mx-auto block"
+                    className="w-16 h-16 object-contain mx-auto block"
                   />
                   <div className="text-[8px] font-bold uppercase mt-0.5 text-slate-800 tracking-wider">
                     SHEPHERD ENTERPRISES

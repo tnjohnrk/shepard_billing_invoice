@@ -1,5 +1,5 @@
 import { getCopyTypeLabel } from '../../shared/constants/copyTypes';
-import companyLogo from '../assets/logo.png';
+import shepherdInvoiceLogo from '../assets/shepherd_invoice_logo.png';
 
 const isElectron = typeof window !== 'undefined' && Boolean(window.electronAPI);
 
@@ -115,7 +115,7 @@ function renderClientInvoiceHtml(data) {
           <table class="noborder" style="margin-bottom: 6px;">
             <tr>
               <td style="width: 18%; vertical-align: top; text-align: center; border: none; padding-right: 8px;">
-                <img src="${companyLogo}" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; display: block; margin: 0 auto;" />
+                <img src="${shepherdInvoiceLogo}" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; display: block; margin: 0 auto;" />
                 <div style="font-size: 8px; font-weight: bold; text-transform: uppercase; margin-top: 2px;">SHEPHERD ENTERPRISES</div>
                 <div style="font-size: 7.5px; color: #475569;">${upiHandle}</div>
               </td>
