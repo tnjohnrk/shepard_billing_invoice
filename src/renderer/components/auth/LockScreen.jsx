@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Eye, EyeOff, ShieldCheck, KeyRound, ArrowRight, Wrench } from 'lucide-react';
-import companyLogo from '../../assets/logo.avif';
+import companyLogo from '../../assets/logo.png';
 import { Button } from '../common/Button';
 import { Toast } from '../common/Toast';
 import { ipcClient } from '../../services/ipcClient';

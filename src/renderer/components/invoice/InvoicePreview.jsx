@@ -6,7 +6,7 @@ import { computeCompleteInvoiceTotals } from '../../../shared/utils/sharedCalcul
 import { SHEPHERD_DEFAULT_STATE_CODE } from '../../../shared/constants/application';
 import { getCopyTypeLabel } from '../../../shared/constants/copyTypes';
 import { COMPANY_CONFIG } from '../../../main/config/companyConfig';
-import companyLogo from '../../assets/logo.avif';
+import companyLogo from '../../assets/logo.png';
 
 export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toast }) {
   const [isSaving, setIsSaving] = useState(false);

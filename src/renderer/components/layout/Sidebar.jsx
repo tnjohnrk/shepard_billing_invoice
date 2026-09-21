@@ -1,6 +1,6 @@
 import React from 'react';
 import { LayoutDashboard, FilePlus, History, BarChart3, Settings, ShieldCheck } from 'lucide-react';
-import companyLogo from '../../assets/logo.avif';
+import companyLogo from '../../assets/logo.png';
 
 export function Sidebar({ activeTab, setActiveTab }) {
   const navItems = [
