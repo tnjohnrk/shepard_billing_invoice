@@ -47,6 +47,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   testEmailConnection: (settings) => ipcRenderer.invoke('settings:testEmail', settings),
   getCompanyProfile: () => ipcRenderer.invoke('company:getProfile'),
   searchCustomers: (query) => ipcRenderer.invoke('customers:search', query),
+  saveCustomer: (customerData) => ipcRenderer.invoke('customers:save', customerData),
 
   // Security PIN
   isPinProtected: () => ipcRenderer.invoke('pin:isProtected'),
@@ -58,8 +59,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getAppVersion: () => ipcRenderer.invoke('app:getVersion'),
   checkForUpdates: () => ipcRenderer.invoke('app:checkForUpdates'),
   downloadUpdate: () => ipcRenderer.invoke('app:downloadUpdate'),
-  installUpdate: () => ipcRenderer.invoke('app:installUpdate'),
   retryEmailQueue: () => ipcRenderer.invoke('app:retryEmailQueue'),
+  getEmailQueueSummary: () => ipcRenderer.invoke('emailQueue:getSummary'),
+  sendQueuedEmailBackups: (settings) => ipcRenderer.invoke('emailQueue:sendAll', settings),
+  clearSentEmailQueue: () => ipcRenderer.invoke('emailQueue:clearSent'),
 
   // Listeners
   onUpdateAvailable: (callback) => {

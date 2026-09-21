@@ -539,14 +539,65 @@ export const ipcClient = {
   },
 
   // Printing APIs
-  printInvoice: async (invoiceData, options) => {
-    if (isElectron) return window.electronAPI.printInvoice(invoiceData, options);
-    window.print();
-    return true;
+  printInvoice: async (invoiceData, options = {}) => {
+    if (isElectron && window.electronAPI?.printInvoice) {
+      return await window.electronAPI.printInvoice(invoiceData, options);
+    }
+
+    // Web / Browser Preview: Dedicated isolated print frame containing ONLY the invoice document
+    const docHtml = renderClientInvoiceHtml(invoiceData);
+    
+    return new Promise((resolve) => {
+      let printIframe = document.getElementById('shepherd-invoice-print-frame');
+      if (printIframe) {
+        try {
+          printIframe.remove();
+        } catch {}
+      }
+      
+      printIframe = document.createElement('iframe');
+      printIframe.id = 'shepherd-invoice-print-frame';
+      printIframe.style.position = 'fixed';
+      printIframe.style.right = '0';
+      printIframe.style.bottom = '0';
+      printIframe.style.width = '0';
+      printIframe.style.height = '0';
+      printIframe.style.border = '0';
+      printIframe.style.visibility = 'hidden';
+      document.body.appendChild(printIframe);
+
+      const frameDoc = printIframe.contentDocument || printIframe.contentWindow.document;
+      frameDoc.open();
+      frameDoc.write(docHtml);
+      frameDoc.close();
+
+      setTimeout(() => {
+        try {
+          printIframe.contentWindow.focus();
+          printIframe.contentWindow.print();
+          resolve(true);
+        } catch (err) {
+          console.warn('Iframe print fallback to window popup:', err);
+          const printWindow = window.open('', '_blank');
+          if (printWindow) {
+            printWindow.document.open();
+            printWindow.document.write(docHtml);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+              try {
+                printWindow.print();
+              } catch {}
+            }, 300);
+          }
+          resolve(true);
+        }
+      }, 300);
+    });
   },
 
   getPrinters: async () => {
-    if (isElectron) return window.electronAPI.getPrinters();
+    if (isElectron && window.electronAPI?.getPrinters) return window.electronAPI.getPrinters();
     return [];
   },
 
@@ -754,9 +805,80 @@ export const ipcClient = {
     return {};
   },
 
-  searchCustomers: async (query) => {
-    if (isElectron) return window.electronAPI.searchCustomers(query);
-    return [];
+  searchCustomers: async (query = '') => {
+    if (isElectron && typeof window.electronAPI?.searchCustomers === 'function') {
+      return await window.electronAPI.searchCustomers(query);
+    }
+    const q = String(query || '').trim().toLowerCase();
+    const map = new Map();
+
+    try {
+      const stored = JSON.parse(localStorage.getItem('shepherd_saved_customers') || '[]');
+      for (const c of stored) {
+        const key = (c.name || '').trim().toLowerCase();
+        if (key) map.set(key, c);
+      }
+    } catch {}
+
+    const invs = [...getLocalInvoices(), ...getLocalProformas()];
+    for (const inv of invs) {
+      if (inv.buyer_name) {
+        const key = inv.buyer_name.trim().toLowerCase();
+        if (!map.has(key)) {
+          map.set(key, {
+            id: inv.id || Date.now(),
+            name: inv.buyer_name.trim(),
+            address: inv.buyer_address || '',
+            gstin: inv.customer_gstin ? inv.customer_gstin.trim().toUpperCase() : '',
+            state: inv.customer_state || 'Maharashtra',
+            state_code: inv.customer_state_code || '27'
+          });
+        }
+      }
+    }
+
+    const all = Array.from(map.values());
+    if (!q) return all.slice(0, 25);
+    return all.filter(c => 
+      (c.name && c.name.toLowerCase().includes(q)) || 
+      (c.gstin && c.gstin.toLowerCase().includes(q))
+    ).slice(0, 25);
+  },
+
+  saveCustomer: async (customerData) => {
+    if (!customerData || !customerData.name) return null;
+    if (isElectron && typeof window.electronAPI?.saveCustomer === 'function') {
+      return await window.electronAPI.saveCustomer(customerData);
+    }
+    try {
+      const stored = JSON.parse(localStorage.getItem('shepherd_saved_customers') || '[]');
+      const name = customerData.name.trim();
+      const gstin = customerData.gstin ? customerData.gstin.trim().toUpperCase() : '';
+      const existingIdx = stored.findIndex(c => 
+        (gstin && c.gstin && c.gstin.toUpperCase() === gstin) || 
+        (c.name && c.name.trim().toLowerCase() === name.toLowerCase())
+      );
+
+      const customerObj = {
+        id: existingIdx >= 0 ? stored[existingIdx].id : Date.now(),
+        name: name,
+        address: customerData.address || '',
+        gstin: gstin,
+        state: customerData.state || 'Maharashtra',
+        state_code: customerData.state_code || '27',
+        updated_at: new Date().toISOString()
+      };
+
+      if (existingIdx >= 0) {
+        stored[existingIdx] = { ...stored[existingIdx], ...customerObj };
+      } else {
+        stored.unshift(customerObj);
+      }
+      localStorage.setItem('shepherd_saved_customers', JSON.stringify(stored));
+      return customerObj.id;
+    } catch {
+      return null;
+    }
   },
 
   // Security Password / PIN APIs
@@ -834,7 +956,52 @@ export const ipcClient = {
   },
 
   retryEmailQueue: async () => {
-    if (isElectron) return window.electronAPI.retryEmailQueue();
+    if (isElectron && window.electronAPI?.retryEmailQueue) return window.electronAPI.retryEmailQueue();
+    return true;
+  },
+
+  getEmailQueueSummary: async () => {
+    if (isElectron && window.electronAPI?.getEmailQueueSummary) {
+      return window.electronAPI.getEmailQueueSummary();
+    }
+    const localQueue = JSON.parse(localStorage.getItem('shepherd_email_queue') || '[]');
+    const pending = localQueue.filter(q => q.status === 'PENDING' || q.status === 'FAILED').length;
+    const sent = localQueue.filter(q => q.status === 'SENT').length;
+    return {
+      pendingCount: pending,
+      sentCount: sent,
+      totalCount: localQueue.length,
+      lastSentAt: localStorage.getItem('shepherd_email_last_sent') || null,
+      lastRecipient: localStorage.getItem('shepherd_backup_email') || null
+    };
+  },
+
+  sendQueuedEmailBackups: async (settings) => {
+    if (isElectron && window.electronAPI?.sendQueuedEmailBackups) {
+      return window.electronAPI.sendQueuedEmailBackups(settings);
+    }
+    const localQueue = JSON.parse(localStorage.getItem('shepherd_email_queue') || '[]');
+    const count = localQueue.filter(q => q.status !== 'SENT').length;
+    localQueue.forEach(q => { q.status = 'SENT'; q.sent_at = new Date().toISOString(); });
+    localStorage.setItem('shepherd_email_queue', JSON.stringify(localQueue));
+    localStorage.setItem('shepherd_email_last_sent', new Date().toISOString());
+    return {
+      success: true,
+      total: count,
+      sent: count,
+      failed: 0,
+      recipient: settings?.backup_email || 'test@example.com',
+      message: `Simulated browser dispatch: sent ${count} queued email(s).`
+    };
+  },
+
+  clearSentEmailQueue: async () => {
+    if (isElectron && window.electronAPI?.clearSentEmailQueue) {
+      return window.electronAPI.clearSentEmailQueue();
+    }
+    const localQueue = JSON.parse(localStorage.getItem('shepherd_email_queue') || '[]');
+    const filtered = localQueue.filter(q => q.status !== 'SENT');
+    localStorage.setItem('shepherd_email_queue', JSON.stringify(filtered));
     return true;
   },
 

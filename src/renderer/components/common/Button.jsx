@@ -12,7 +12,7 @@ export function Button({
   type = 'button',
   ...props
 }) {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none';
+  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors duration-150 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none shadow-none';
 
   const sizeStyles = {
     sm: 'px-3 py-1.5 text-xs gap-1.5 min-h-[36px]',
@@ -21,12 +21,12 @@ export function Button({
   };
 
   const variantStyles = {
-    primary: 'btn-primary bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 focus:ring-indigo-500 border border-indigo-500/30',
-    secondary: 'btn-secondary bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 focus:ring-slate-500 shadow-sm',
-    accent: 'btn-accent bg-cyan-600 hover:bg-cyan-500 active:bg-cyan-700 text-white shadow-md shadow-cyan-600/20 focus:ring-cyan-500 border border-cyan-500/30',
-    success: 'btn-success bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 focus:ring-emerald-500 border border-emerald-500/30',
-    danger: 'btn-danger bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white shadow-md shadow-rose-600/20 focus:ring-rose-500 border border-rose-500/30',
-    ghost: 'btn-ghost bg-transparent hover:bg-slate-800/60 text-slate-300 hover:text-white focus:ring-slate-500'
+    primary: 'btn-primary bg-sky-100 hover:bg-sky-200 active:bg-sky-300 text-sky-900 border border-sky-300 dark:bg-sky-950/70 dark:hover:bg-sky-900 dark:text-sky-200 dark:border-sky-800',
+    secondary: 'btn-secondary bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 border border-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 dark:border-slate-700',
+    accent: 'btn-accent bg-cyan-100 hover:bg-cyan-200 active:bg-cyan-300 text-cyan-900 border border-cyan-300 dark:bg-cyan-950/70 dark:hover:bg-cyan-900 dark:text-cyan-200 dark:border-cyan-800',
+    success: 'btn-success bg-emerald-100 hover:bg-emerald-200 active:bg-emerald-300 text-emerald-900 border border-emerald-300 dark:bg-emerald-950/70 dark:hover:bg-emerald-900 dark:text-emerald-200 dark:border-emerald-800',
+    danger: 'btn-danger bg-rose-100 hover:bg-rose-200 active:bg-rose-300 text-rose-900 border border-rose-300 dark:bg-rose-950/70 dark:hover:bg-rose-900 dark:text-rose-200 dark:border-rose-800',
+    ghost: 'btn-ghost bg-transparent hover:bg-slate-100 active:bg-slate-200 text-slate-700 dark:text-slate-300 dark:hover:bg-slate-800/60 dark:hover:text-white border border-transparent'
   };
 
   return (

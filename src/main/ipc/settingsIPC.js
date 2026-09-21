@@ -2,8 +2,8 @@ import { ipcMain } from 'electron';
 import { fetchAppSettings, saveAppSetting } from '../services/settingsService.js';
 import { isPinProtected, verifyPin, setSecurityPin, disableSecurityPin } from '../services/pinService.js';
 import { getCompanyProfile } from '../services/companyService.js';
-import { findCustomers } from '../services/customerService.js';
-import { processPendingEmailQueue } from '../services/emailQueueService.js';
+import { findCustomers, saveCustomerInfo } from '../services/customerService.js';
+import { processPendingEmailQueue, getEmailQueueStatus, clearSentEmailQueue } from '../services/emailQueueService.js';
 import { testSmtpConnection } from '../services/emailService.js';
 
 export function registerSettingsIPC() {
@@ -12,15 +12,23 @@ export function registerSettingsIPC() {
   });
 
   ipcMain.handle('settings:set', async (_, { key, value }) => {
-    const result = saveAppSetting(key, value);
-    if (key === 'backup_email' || key.startsWith('smtp_')) {
-      processPendingEmailQueue().catch(() => {});
-    }
-    return result;
+    return saveAppSetting(key, value);
   });
 
   ipcMain.handle('settings:testEmail', async (_, settings) => {
     return await testSmtpConnection(settings);
+  });
+
+  ipcMain.handle('emailQueue:getSummary', async () => {
+    return getEmailQueueStatus();
+  });
+
+  ipcMain.handle('emailQueue:sendAll', async (_, settings) => {
+    return await processPendingEmailQueue(settings || {});
+  });
+
+  ipcMain.handle('emailQueue:clearSent', async () => {
+    return clearSentEmailQueue();
   });
 
   ipcMain.handle('company:getProfile', async () => {
@@ -29,6 +37,10 @@ export function registerSettingsIPC() {
 
   ipcMain.handle('customers:search', async (_, query) => {
     return findCustomers(query);
+  });
+
+  ipcMain.handle('customers:save', async (_, customerData) => {
+    return saveCustomerInfo(customerData);
   });
 
   // Security PIN IPCs

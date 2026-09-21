@@ -129,11 +129,15 @@ function createMainWindow() {
 
   mainWindow.webContents.on('before-input-event', (event, input) => {
     if ((input.control && input.shift && input.key.toLowerCase() === 'i') || input.key === 'F12') {
-      mainWindow.webContents.toggleDevTools();
+      if (isDev) {
+        mainWindow.webContents.toggleDevTools();
+      }
       event.preventDefault();
     }
     if ((input.control && input.key.toLowerCase() === 'r') || input.key === 'F5') {
-      mainWindow.reload();
+      if (isDev) {
+        mainWindow.reload();
+      }
       event.preventDefault();
     }
   });
@@ -176,10 +180,7 @@ if (!gotTheLock) {
     registerRecycleBinIPC();
     registerAppIPC();
 
-    // 3. Process pending offline email queue in background
-    processPendingEmailQueue().catch(() => {});
-
-    // 4. Create primary app window
+    // 3. Create primary app window
     createMainWindow();
 
     app.on('activate', () => {

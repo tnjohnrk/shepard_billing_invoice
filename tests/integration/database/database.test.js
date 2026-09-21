@@ -141,4 +141,54 @@ describe('SQLite Repositories Integration Tests', () => {
     expect(results.length).toBe(1);
     expect(results[0].name).toBe('Reliance Retail');
   });
+
+  it('enqueues backup emails and provides accurate queue summary and clear functions', async () => {
+    const { enqueueEmail, getEmailQueueSummary, getPendingEmails, updateEmailQueueStatus, clearSentEmails } = await import('../../../src/main/repositories/emailQueueRepository.js');
+    
+    // Create an invoice to reference
+    const invNum = generateNextInvoiceNumber();
+    const invId = createInvoice({
+      invoice_number: invNum,
+      invoice_type: 'NORMAL',
+      invoice_date: '2026-09-21',
+      buyer_name: 'Queue Test Corp',
+      buyer_address: 'Mumbai',
+      customer_state: 'Maharashtra',
+      customer_state_code: '27',
+      subtotal: 1000,
+      grand_total: 1180,
+      amount_in_words: 'One Thousand One Hundred Eighty Rupees Only'
+    }, [{ description: 'Item 1', hsn_sac: '9983', quantity: 1, rate: 1000, amount: 1000 }]);
+
+    // Initial summary
+    let summary = getEmailQueueSummary();
+    expect(summary.pendingCount).toBe(0);
+
+    // Enqueue 2 items
+    const q1 = enqueueEmail({ invoice_id: invId, backup_path: 'C:/fake/backup1.zip', recipient: 'receiver@example.com' });
+    const q2 = enqueueEmail({ invoice_id: invId, backup_path: 'C:/fake/backup2.zip', recipient: 'receiver@example.com' });
+    expect(q1).toBeGreaterThan(0);
+    expect(q2).toBeGreaterThan(0);
+
+    // Pending check
+    summary = getEmailQueueSummary();
+    expect(summary.pendingCount).toBe(2);
+    expect(summary.sentCount).toBe(0);
+
+    const pending = getPendingEmails();
+    expect(pending.length).toBe(2);
+
+    // Mark 1 as SENT
+    updateEmailQueueStatus(q1, { status: 'SENT' });
+    summary = getEmailQueueSummary();
+    expect(summary.pendingCount).toBe(1);
+    expect(summary.sentCount).toBe(1);
+    expect(summary.lastRecipient).toBe('receiver@example.com');
+
+    // Clear sent
+    clearSentEmails();
+    summary = getEmailQueueSummary();
+    expect(summary.sentCount).toBe(0);
+    expect(summary.pendingCount).toBe(1);
+  });
 });

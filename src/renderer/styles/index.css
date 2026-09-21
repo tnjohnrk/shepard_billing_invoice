@@ -256,26 +256,28 @@ button:active:not(:disabled) {
 /* ========================================================================= */
 
 .light .btn-primary {
-  background-color: #4f46e5 !important;
-  border-color: #4338ca !important;
-  color: #ffffff !important;
-  box-shadow: 0 2px 6px 0 rgba(79, 70, 229, 0.25) !important;
+  background-color: #e0f2fe !important;
+  border-color: #7dd3fc !important;
+  color: #0369a1 !important;
+  box-shadow: none !important;
 }
 
 .light .btn-primary:hover {
-  background-color: #4338ca !important;
-  box-shadow: 0 4px 10px 0 rgba(79, 70, 229, 0.35) !important;
+  background-color: #bae6fd !important;
+  border-color: #38bdf8 !important;
+  color: #0c4a6e !important;
+  box-shadow: none !important;
 }
 
 .light .btn-secondary {
-  background-color: #ffffff !important;
+  background-color: #f1f5f9 !important;
   color: #334155 !important;
   border-color: #cbd5e1 !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+  box-shadow: none !important;
 }
 
 .light .btn-secondary:hover {
-  background-color: #f8fafc !important;
+  background-color: #e2e8f0 !important;
   color: #0f172a !important;
   border-color: #94a3b8 !important;
 }
@@ -290,33 +292,42 @@ button:active:not(:disabled) {
 }
 
 .light .btn-accent {
-  background-color: #0891b2 !important;
-  border-color: #0e7490 !important;
-  color: #ffffff !important;
+  background-color: #ecfeff !important;
+  border-color: #a5f3fc !important;
+  color: #0e7490 !important;
+  box-shadow: none !important;
 }
 
 .light .btn-accent:hover {
-  background-color: #0e7490 !important;
+  background-color: #cffafe !important;
+  border-color: #67e8f9 !important;
+  color: #155e75 !important;
 }
 
 .light .btn-success {
-  background-color: #059669 !important;
-  border-color: #047857 !important;
-  color: #ffffff !important;
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+  box-shadow: none !important;
 }
 
 .light .btn-success:hover {
-  background-color: #047857 !important;
+  background-color: #d1fae5 !important;
+  border-color: #6ee7b7 !important;
+  color: #065f46 !important;
 }
 
 .light .btn-danger {
-  background-color: #e11d48 !important;
-  border-color: #be123c !important;
-  color: #ffffff !important;
+  background-color: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+  color: #e11d48 !important;
+  box-shadow: none !important;
 }
 
 .light .btn-danger:hover {
-  background-color: #be123c !important;
+  background-color: #ffe4e6 !important;
+  border-color: #fda4af !important;
+  color: #be123c !important;
 }
 
 /* Generic Fallback for Buttons styled with slate in Light Mode */
@@ -463,4 +474,13 @@ button:active:not(:disabled) {
 
 .light ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+@keyframes toast-progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
 }

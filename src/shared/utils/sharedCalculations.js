@@ -165,3 +165,34 @@ export function computeCompleteInvoiceTotals(items, sellerStateCode, customerSta
     amountInWords
   };
 }
+
+/**
+ * Format rate value:
+ * - Single-digit integer (0-9) -> leading zero ('05', '09', '00')
+ * - Two or more digits (10+) -> no leading zero ('18', '28', '100')
+ * - Decimals -> clean format without unnecessary leading zero ('2.5', '0.5')
+ */
+export function formatRateValue(val) {
+  if (val === '' || val === null || val === undefined) return '';
+  const str = String(val).trim();
+  const num = parseFloat(str);
+  if (isNaN(num)) return str;
+
+  // Single-digit integer 0-9 without decimal point -> prefix with single 0 (e.g. 5 -> 05, 9 -> 09, 0 -> 00)
+  if (Number.isInteger(num) && num >= 0 && num <= 9 && !str.includes('.')) {
+    return `0${num}`;
+  }
+  
+  // Two-digit or greater integer without decimal point -> no leading 0 (e.g. 018 -> 18, 12 -> 12)
+  if (Number.isInteger(num) && num >= 10 && !str.includes('.')) {
+    return `${num}`;
+  }
+
+  // Decimals (e.g. 2.5, 14.5) -> strip redundant leading 0
+  if (str.startsWith('0') && !str.startsWith('0.') && num >= 1) {
+    return String(num);
+  }
+
+  return str;
+}
+

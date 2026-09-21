@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Printer, FileDown, FileSpreadsheet, Save, ArrowLeft, Home } from 'lucide-react';
+import { Printer, FileDown, FileSpreadsheet, Save, ArrowLeft, Home, ArrowRightLeft } from 'lucide-react';
 import { Button } from '../common/Button';
 import { ipcClient } from '../../services/ipcClient';
 import { computeCompleteInvoiceTotals } from '../../../shared/utils/sharedCalculations';
@@ -9,6 +9,7 @@ import companyLogo from '../../assets/logo.png';
 
 export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toast }) {
   const [isSaving, setIsSaving] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
   const [docData, setDocData] = useState(formData);
   const [savedInvoice, setSavedInvoice] = useState(formData.id ? formData : null);
 
@@ -149,19 +150,39 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
     }
   };
 
+  const handleConvertToTaxInvoice = async () => {
+    if (!docData?.id) return;
+    setIsConverting(true);
+    try {
+      const converted = await ipcClient.convertProformaToInvoice({ proformaId: docData.id });
+      if (converted) {
+        setDocData(converted);
+        setSavedInvoice(converted);
+        toast('success', `Proforma converted to Official Tax Invoice ${converted.invoice_number}!`);
+        if (onSaveSuccess) onSaveSuccess(converted);
+      }
+    } catch (err) {
+      toast('error', err.message || 'Failed to convert proforma to tax invoice.');
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
   const handleGoHome = () => {
     if (onGoHome) {
       onGoHome();
+    } else if (onBack) {
+      onBack();
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 print:m-0 print:p-0">
       {/* Top Controls Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 glass-panel rounded-xl border border-slate-800">
+      <div className="no-print flex flex-wrap items-center justify-between gap-4 p-4 glass-panel rounded-xl border border-slate-800">
         <div className="flex items-center gap-3">
           <Button variant="secondary" icon={ArrowLeft} onClick={onBack}>
-            Back to Form
+            Back
           </Button>
 
           <Button variant="primary" icon={Home} onClick={handleGoHome}>
@@ -170,6 +191,17 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {isProforma && (savedInvoice?.id || docData?.id) && (
+            <Button
+              variant="accent"
+              icon={ArrowRightLeft}
+              onClick={handleConvertToTaxInvoice}
+              isLoading={isConverting}
+            >
+              Convert to Tax Invoice
+            </Button>
+          )}
+
           {!savedInvoice && (
             <Button
               variant="secondary"
@@ -208,8 +240,8 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
       </div>
 
       {/* Developer-Locked Exact Reference Invoice Visual Frame */}
-      <div className="bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-2xl flex justify-center overflow-x-auto">
-        <div id="invoice-preview-sheet" className="w-[194mm] min-h-[270mm] bg-white text-black p-6 rounded shadow-lg border border-slate-400 text-left font-sans text-xs">
+      <div className="bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-2xl flex justify-center overflow-x-auto print:bg-transparent print:p-0 print:border-none print:shadow-none">
+        <div id="invoice-preview-sheet" className="w-[194mm] min-h-[270mm] bg-white text-black p-6 rounded shadow-lg border border-slate-400 text-left font-sans text-xs print:w-full print:p-0 print:border-none print:shadow-none">
           
           {/* Top Header */}
           <table className="w-full border-collapse mb-2">
@@ -516,39 +548,6 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
             </tbody>
           </table>
 
-        </div>
-      </div>
-
-      {/* Bottom Action Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 glass-panel rounded-xl border border-slate-800">
-        <div className="flex items-center gap-3">
-          <Button variant="secondary" icon={ArrowLeft} onClick={onBack}>
-            Back to Edit
-          </Button>
-
-          <Button variant="primary" icon={Home} onClick={handleGoHome}>
-            Home Dashboard
-          </Button>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          {!savedInvoice && (
-            <Button variant="success" icon={Save} onClick={handleSave} isLoading={isSaving}>
-              Save Invoice
-            </Button>
-          )}
-
-          <Button variant="secondary" icon={Printer} onClick={handlePrint}>
-            Print
-          </Button>
-
-          <Button variant="secondary" icon={FileDown} onClick={handleExportPdf}>
-            Export PDF
-          </Button>
-
-          <Button variant="accent" icon={FileSpreadsheet} onClick={handleExportExcel}>
-            Export Excel
-          </Button>
         </div>
       </div>
     </div>

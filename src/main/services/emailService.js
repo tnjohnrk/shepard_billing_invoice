@@ -34,26 +34,57 @@ function createTransporter(config) {
   });
 }
 
-export async function sendBackupEmail(backupPath, recipientEmailOverride = null) {
-  const config = getSmtpConfig();
-  const recipient = recipientEmailOverride || config.recipient;
+export async function sendInvoicePdfEmail({ pdfPath, docNumber, docType = 'NORMAL', invoiceData = null, recipient = null, overrideSettings = {} }) {
+  const config = getSmtpConfig(overrideSettings);
+  const targetRecipient = recipient || overrideSettings.backup_email || config.recipient;
+
+  if (!targetRecipient) {
+    throw new Error('Receiver email address is required.');
+  }
+
+  const isProforma = docType === 'PROFORMA' || Boolean(invoiceData?.proforma_number) || String(invoiceData?.invoice_type).toUpperCase() === 'PROFORMA';
+  const label = isProforma ? 'Proforma Invoice' : 'Invoice';
+  const cleanDocNum = docNumber || (isProforma ? invoiceData?.proforma_number : invoiceData?.invoice_number) || 'Document';
 
   const transporter = createTransporter(config);
 
+  const subject = `${label} ${cleanDocNum} - ${COMPANY_CONFIG.name}`;
+  const docDate = (isProforma ? invoiceData?.proforma_date : invoiceData?.invoice_date) || new Date().toISOString().split('T')[0];
+  const grandTotal = invoiceData?.grand_total ? `₹${Number(invoiceData.grand_total).toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : null;
+
+  let bodyText = `Dear Customer / Recipient,\n\nPlease find attached the official PDF of ${label} ${cleanDocNum}.\n\n`;
+  bodyText += `• Document Number: ${cleanDocNum}\n`;
+  bodyText += `• Date of Issue: ${docDate}\n`;
+  if (grandTotal) {
+    bodyText += `• Total Amount: ${grandTotal}\n`;
+  }
+  bodyText += `\nThank you for your business.\n\nBest Regards,\n${COMPANY_CONFIG.name}`;
+
   const mailOptions = {
     from: `"${COMPANY_CONFIG.name}" <${config.smtpUser}>`,
-    to: recipient,
-    subject: `[Automatic Backup] ${COMPANY_CONFIG.name} Database Backup`,
-    text: `Attached is the automatic backup of the Shepherd Enterprises Billing System database created on ${new Date().toLocaleString()}.`,
+    to: targetRecipient,
+    subject,
+    text: bodyText,
     attachments: [
       {
-        path: backupPath
+        filename: `${cleanDocNum}.pdf`,
+        path: pdfPath,
+        contentType: 'application/pdf'
       }
     ]
   };
 
   const info = await transporter.sendMail(mailOptions);
   return info;
+}
+
+export async function sendBackupEmail(backupPath, recipientEmailOverride = null, overrideSettings = {}) {
+  return sendInvoicePdfEmail({
+    pdfPath: backupPath,
+    docNumber: 'Document',
+    recipient: recipientEmailOverride,
+    overrideSettings
+  });
 }
 
 export async function testSmtpConnection(settings = {}) {
@@ -67,8 +98,8 @@ export async function testSmtpConnection(settings = {}) {
   const testInfo = await transporter.sendMail({
     from: `"${COMPANY_CONFIG.name}" <${config.smtpUser}>`,
     to: config.recipient,
-    subject: `[Test Verification] Shepherd Enterprises Email Backup Test`,
-    text: `This is a test verification email sent from the Shepherd Enterprises Billing System.\n\nTimestamp: ${new Date().toLocaleString()}\nSMTP Server: ${config.smtpHost}:${config.smtpPort}\nStatus: Verified and Operational.`
+    subject: `[Test Verification] Shepherd Enterprises Email Delivery Test`,
+    text: `This is a test verification email from the Shepherd Enterprises Billing System.\n\nTimestamp: ${new Date().toLocaleString()}\nStatus: SMTP Verified and Operational.`
   });
 
   return {
@@ -77,3 +108,4 @@ export async function testSmtpConnection(settings = {}) {
     messageId: testInfo.messageId
   };
 }
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { PageContainer } from '../components/layout/PageContainer';
 import { InvoiceStepper } from '../components/invoice/InvoiceStepper';
 import { InvoiceTypeSelector } from '../components/invoice/InvoiceTypeSelector';
@@ -18,6 +18,7 @@ import { SHEPHERD_DEFAULT_STATE_CODE } from '../../shared/constants/application'
 export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNavigateHome }) {
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
+  const formContainerRef = useRef(null);
 
   const [formData, setFormData] = useState({
     invoice_type: 'NORMAL',
@@ -32,6 +33,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
     date_of_supply: new Date().toISOString().split('T')[0],
     delivery_address: '',
 
+    buyer_type: 'COMPANY',
     buyer_name: '',
     buyer_address: '',
     customer_gstin: '',
@@ -56,6 +58,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
         ...prev,
         ...initialData
       }));
+      setStep(2);
     } else {
       fetchNextDocNumbers();
     }
@@ -151,13 +154,21 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
 
     if (step === 3) {
       if (!formData.buyer_name || !formData.buyer_name.trim()) {
-        newErrors.buyer_name = 'Buyer name is required';
+        newErrors.buyer_name = (formData.buyer_type === 'COMPANY' ? 'Company name' : 'Customer name') + ' is required';
       }
       if (!formData.buyer_address || !formData.buyer_address.trim()) {
-        newErrors.buyer_address = 'Buyer address is required';
+        newErrors.buyer_address = (formData.buyer_type === 'COMPANY' ? 'Company address' : 'Customer address') + ' is required';
       }
-      if (formData.customer_gstin && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(formData.customer_gstin)) {
-        newErrors.customer_gstin = 'Invalid GSTIN format (15 chars required)';
+      if (formData.buyer_type === 'COMPANY') {
+        if (!formData.customer_gstin || !formData.customer_gstin.trim()) {
+          newErrors.customer_gstin = 'Company GSTIN is mandatory';
+        } else if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(formData.customer_gstin.trim())) {
+          newErrors.customer_gstin = 'Invalid GSTIN format (15 chars required, e.g. 27AAAAA0000A1Z5)';
+        }
+      } else {
+        if (formData.customer_gstin && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(formData.customer_gstin.trim())) {
+          newErrors.customer_gstin = 'Invalid GSTIN format (15 chars required, e.g. 27AAAAA0000A1Z5)';
+        }
       }
     }
 
@@ -177,8 +188,30 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
     return Object.keys(newErrors).length === 0;
   };
 
+  // Auto-focus the first input on each new step
+  useEffect(() => {
+    if (formContainerRef.current && step > 1 && step < 8) {
+      const timer = setTimeout(() => {
+        const firstInput = formContainerRef.current?.querySelector('input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), select:not([disabled])');
+        if (firstInput) {
+          firstInput.focus();
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [step]);
+
   const handleNext = () => {
     if (validateCurrentStep()) {
+      if (step === 3 && formData.buyer_name) {
+        ipcClient.saveCustomer({
+          name: formData.buyer_name,
+          address: formData.buyer_address,
+          gstin: formData.customer_gstin,
+          state: formData.customer_state,
+          state_code: formData.customer_state_code
+        }).catch(() => {});
+      }
       setStep(prev => Math.min(prev + 1, steps.length));
     }
   };
@@ -187,13 +220,60 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
     setStep(prev => Math.max(prev - 1, 1));
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      const target = e.target;
+      const tagName = target?.tagName?.toLowerCase();
+
+      // Allow Shift+Enter inside textarea for multi-line text
+      if (tagName === 'textarea' && e.shiftKey) {
+        return;
+      }
+
+      // If user pressed Enter on a button, let the native button click trigger
+      if (tagName === 'button') {
+        return;
+      }
+
+      e.preventDefault();
+
+      const container = formContainerRef.current;
+      if (!container) {
+        handleNext();
+        return;
+      }
+
+      const focusableSelectors = 'input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled])';
+      const focusables = Array.from(container.querySelectorAll(focusableSelectors))
+        .filter(el => el.offsetParent !== null && !el.hasAttribute('disabled'));
+
+      const currentIndex = focusables.indexOf(target);
+
+      if (currentIndex !== -1 && currentIndex < focusables.length - 1) {
+        // Move focus to the next input in the current question/step
+        const nextElem = focusables[currentIndex + 1];
+        nextElem.focus();
+        if (typeof nextElem.select === 'function' && nextElem.tagName.toLowerCase() === 'input') {
+          nextElem.select();
+        }
+      } else {
+        // Last input in current step -> Advance to the next step
+        handleNext();
+      }
+    }
+  };
+
   const isProforma = formData.invoice_type === 'PROFORMA';
 
   return (
     <PageContainer>
       <InvoiceStepper currentStep={step} setStep={setStep} steps={steps} />
 
-      <div className="p-6 glass-panel rounded-xl border border-slate-800 min-h-[450px] flex flex-col justify-between">
+      <div 
+        ref={formContainerRef}
+        onKeyDown={handleKeyDown}
+        className="p-6 glass-panel rounded-xl border border-slate-800 min-h-[450px] flex flex-col justify-between"
+      >
         <div>
           {step === 1 && (
             <InvoiceTypeSelector

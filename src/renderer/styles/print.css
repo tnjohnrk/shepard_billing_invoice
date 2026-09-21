@@ -1,5 +1,5 @@
 @media print {
-  body {
+  html, body {
     background: #ffffff !important;
     color: #000000 !important;
     font-family: Arial, Helvetica, sans-serif !important;
@@ -11,10 +11,37 @@
 
   @page {
     size: A4 portrait;
-    margin: 12mm;
+    margin: 8mm;
   }
 
-  .no-print {
+  /* Hide application chrome, navbar, sidebar, buttons, controls */
+  .no-print,
+  header,
+  nav,
+  aside,
+  button,
+  .sidebar,
+  .glass-panel,
+  [role="dialog"],
+  .dialog-backdrop {
     display: none !important;
   }
+
+  /* Invoice document container full-width on printed paper */
+  #invoice-preview-sheet {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Ensure table borders and headers print with high contrast */
+  table {
+    page-break-inside: avoid;
+  }
 }
+

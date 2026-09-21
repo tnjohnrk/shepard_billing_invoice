@@ -5,7 +5,8 @@ import {
   calculateTax,
   calculateGrandTotal,
   numberToWordsIndian,
-  computeCompleteInvoiceTotals
+  computeCompleteInvoiceTotals,
+  formatRateValue
 } from '../../../src/shared/utils/sharedCalculations.js';
 
 describe('sharedCalculations Unit Tests', () => {
@@ -62,5 +63,41 @@ describe('sharedCalculations Unit Tests', () => {
     expect(full.sgstAmount).toBe(900);
     expect(full.grandTotal).toBe(11800);
     expect(full.amountInWords).toBe('Eleven Thousand Eight Hundred Rupees Only');
+  });
+
+  describe('formatRateValue Unit Tests', () => {
+    it('formats single-digit rates with a leading zero', () => {
+      expect(formatRateValue(0)).toBe('00');
+      expect(formatRateValue('0')).toBe('00');
+      expect(formatRateValue(5)).toBe('05');
+      expect(formatRateValue('5')).toBe('05');
+      expect(formatRateValue('05')).toBe('05');
+      expect(formatRateValue(9)).toBe('09');
+      expect(formatRateValue('9')).toBe('09');
+    });
+
+    it('formats two-digit or greater rates without leading zeroes', () => {
+      expect(formatRateValue(10)).toBe('10');
+      expect(formatRateValue('10')).toBe('10');
+      expect(formatRateValue(18)).toBe('18');
+      expect(formatRateValue('18')).toBe('18');
+      expect(formatRateValue('018')).toBe('18');
+      expect(formatRateValue(28)).toBe('28');
+      expect(formatRateValue('28')).toBe('28');
+      expect(formatRateValue('028')).toBe('28');
+    });
+
+    it('formats decimal rates correctly', () => {
+      expect(formatRateValue(2.5)).toBe('2.5');
+      expect(formatRateValue('2.5')).toBe('2.5');
+      expect(formatRateValue('02.5')).toBe('2.5');
+      expect(formatRateValue(0.5)).toBe('0.5');
+    });
+
+    it('handles empty and invalid values gracefully', () => {
+      expect(formatRateValue('')).toBe('');
+      expect(formatRateValue(null)).toBe('');
+      expect(formatRateValue(undefined)).toBe('');
+    });
   });
 });

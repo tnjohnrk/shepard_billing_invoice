@@ -155,8 +155,29 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
     }
   };
 
+  const [convertTarget, setConvertTarget] = useState(null);
+  const [isConverting, setIsConverting] = useState(false);
+
   const handleConvert = (inv) => {
-    if (onConvertProforma) onConvertProforma(inv);
+    setConvertTarget(inv);
+  };
+
+  const handleConfirmConvert = async () => {
+    if (!convertTarget) return;
+    setIsConverting(true);
+    try {
+      const converted = await ipcClient.convertProformaToInvoice({ proformaId: convertTarget.id });
+      if (converted) {
+        toast('success', `Proforma ${convertTarget.proforma_number || convertTarget.invoice_number} successfully converted to Official Tax Invoice ${converted.invoice_number}!`);
+        setConvertTarget(null);
+        await loadInvoices();
+        setSelectedInvoice(converted);
+      }
+    } catch (e) {
+      toast('error', e.message || 'Proforma conversion failed.');
+    } finally {
+      setIsConverting(false);
+    }
   };
 
   const handleDeleteClick = (inv) => {
@@ -206,7 +227,10 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
       <PageContainer>
         <InvoicePreview
           formData={selectedInvoice}
-          onBack={() => setSelectedInvoice(null)}
+          onBack={() => {
+            setSelectedInvoice(null);
+            loadInvoices();
+          }}
           toast={toast}
         />
       </PageContainer>
@@ -217,6 +241,10 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
     ? (String(deleteTarget.invoice_type).toUpperCase() === 'PROFORMA'
         ? (deleteTarget.proforma_number || deleteTarget.invoice_number)
         : (deleteTarget.invoice_number || deleteTarget.proforma_number))
+    : '';
+
+  const convertDocNum = convertTarget
+    ? (convertTarget.proforma_number || convertTarget.invoice_number || 'PRO-001')
     : '';
 
   return (
@@ -278,6 +306,19 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
           </div>
         </div>
       )}
+
+      {/* Convert Proforma Confirmation Dialog */}
+      <Dialog
+        isOpen={Boolean(convertTarget)}
+        onClose={() => !isConverting && setConvertTarget(null)}
+        onConfirm={handleConfirmConvert}
+        title="Convert Proforma to Official Tax Invoice"
+        message={`Are you sure you want to convert Proforma "${convertDocNum}" (Buyer: ${convertTarget?.buyer_name || 'N/A'}, Amount: ₹${Number(convertTarget?.grand_total || 0).toLocaleString('en-IN')}) into an official Tax Invoice? This will automatically assign a new Tax Invoice Number and generate the official Tax Invoice PDF.`}
+        confirmText="Convert to Tax Invoice"
+        cancelText="Cancel"
+        variant="primary"
+        isLoading={isConverting}
+      />
 
       {/* Delete Confirmation Dialog */}
       <Dialog

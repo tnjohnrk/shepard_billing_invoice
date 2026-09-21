@@ -4,11 +4,26 @@ import { ipcClient } from '../../services/ipcClient';
 
 export function StatusBar() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [pendingCount, setPendingCount] = useState(0);
+
+  const fetchQueueCount = async () => {
+    try {
+      const summary = await ipcClient.getEmailQueueSummary();
+      if (summary && typeof summary.pendingCount === 'number') {
+        setPendingCount(summary.pendingCount);
+      }
+    } catch (e) {
+      // Ignore
+    }
+  };
 
   useEffect(() => {
+    fetchQueueCount();
+    const interval = setInterval(fetchQueueCount, 15000);
+
     const handleOnline = () => {
       setIsOnline(true);
-      ipcClient.retryEmailQueue().catch(() => {});
+      fetchQueueCount();
     };
     const handleOffline = () => setIsOnline(false);
 
@@ -16,6 +31,7 @@ export function StatusBar() {
     window.addEventListener('offline', handleOffline);
 
     return () => {
+      clearInterval(interval);
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
@@ -30,8 +46,10 @@ export function StatusBar() {
         </span>
         <span className="text-slate-700">|</span>
         <span className="flex items-center gap-1.5">
-          <Mail className="w-3 h-3 text-cyan-400" />
-          <span>Email Queue Active</span>
+          <Mail className={`w-3 h-3 ${pendingCount > 0 ? 'text-amber-400' : 'text-cyan-400'}`} />
+          <span>
+            {pendingCount > 0 ? `Email Queue: ${pendingCount} Pending` : 'Email Queue: Ready'}
+          </span>
         </span>
       </div>
 

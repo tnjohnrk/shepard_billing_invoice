@@ -26,7 +26,8 @@ export default function App() {
   const bootstrapApp = async () => {
     try {
       const isProtected = await ipcClient.isPinProtected();
-      if (isProtected) {
+      const isSessionUnlocked = sessionStorage.getItem('session_unlocked') === 'true';
+      if (isProtected && !isSessionUnlocked) {
         setIsLocked(true);
       }
     } catch (e) {
@@ -46,6 +47,7 @@ export default function App() {
     try {
       const isValid = await ipcClient.verifyPin(enteredPassword);
       if (isValid) {
+        sessionStorage.setItem('session_unlocked', 'true');
         setIsLocked(false);
         showToast('success', 'Security verification successful. Welcome!');
         return true;
@@ -112,7 +114,16 @@ export default function App() {
         }}
         title={tabTitles[activeTab]?.title}
         subtitle={tabTitles[activeTab]?.subtitle}
-        onLockApp={() => setIsLocked(true)}
+        onLockApp={async () => {
+          const isProtected = await ipcClient.isPinProtected();
+          if (isProtected) {
+            sessionStorage.removeItem('session_unlocked');
+            setIsLocked(true);
+          } else {
+            showToast('info', 'Please enable Security Password in Settings first.');
+            setActiveTab('settings');
+          }
+        }}
       >
         {activeTab === 'dashboard' && (
           <Dashboard

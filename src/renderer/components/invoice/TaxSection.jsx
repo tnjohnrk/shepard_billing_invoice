@@ -1,5 +1,5 @@
-import React from 'react';
-import { computeCompleteInvoiceTotals } from '../../../shared/utils/sharedCalculations';
+import React, { useState, useEffect } from 'react';
+import { computeCompleteInvoiceTotals, formatRateValue } from '../../../shared/utils/sharedCalculations';
 import { SHEPHERD_DEFAULT_STATE_CODE } from '../../../shared/constants/application';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -14,6 +14,22 @@ export function TaxSection({
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
+  const [cgstInput, setCgstInput] = useState(() => formatRateValue(cgstRate));
+  const [sgstInput, setSgstInput] = useState(() => formatRateValue(sgstRate));
+  const [igstInput, setIgstInput] = useState(() => formatRateValue(igstRate));
+
+  useEffect(() => {
+    setCgstInput(formatRateValue(cgstRate));
+  }, [cgstRate]);
+
+  useEffect(() => {
+    setSgstInput(formatRateValue(sgstRate));
+  }, [sgstRate]);
+
+  useEffect(() => {
+    setIgstInput(formatRateValue(igstRate));
+  }, [igstRate]);
+
   const totals = computeCompleteInvoiceTotals(
     items,
     SHEPHERD_DEFAULT_STATE_CODE,
@@ -24,39 +40,73 @@ export function TaxSection({
     igstRate
   );
 
-  const handleCgstChange = (val) => {
-    const rate = parseFloat(val) || 0;
+  const handleCgstInputChange = (rawVal) => {
+    setCgstInput(rawVal);
+    const parsed = parseFloat(rawVal);
+    const num = isNaN(parsed) ? 0 : parsed;
     if (onChangeTaxRate) {
-      onChangeTaxRate('cgst_rate', rate);
-      onChangeTaxRate('sgst_rate', rate);
+      onChangeTaxRate('cgst_rate', num);
+      onChangeTaxRate('sgst_rate', num);
     }
   };
 
-  const handleSgstChange = (val) => {
-    const rate = parseFloat(val) || 0;
+  const handleCgstBlur = () => {
+    const formatted = formatRateValue(cgstInput);
+    setCgstInput(formatted);
+    const num = parseFloat(formatted) || 0;
     if (onChangeTaxRate) {
-      onChangeTaxRate('sgst_rate', rate);
+      onChangeTaxRate('cgst_rate', num);
+      onChangeTaxRate('sgst_rate', num);
     }
   };
 
-  const handleIgstChange = (val) => {
-    const rate = parseFloat(val) || 0;
+  const handleSgstInputChange = (rawVal) => {
+    setSgstInput(rawVal);
+    const parsed = parseFloat(rawVal);
+    const num = isNaN(parsed) ? 0 : parsed;
     if (onChangeTaxRate) {
-      onChangeTaxRate('igst_rate', rate);
+      onChangeTaxRate('sgst_rate', num);
+    }
+  };
+
+  const handleSgstBlur = () => {
+    const formatted = formatRateValue(sgstInput);
+    setSgstInput(formatted);
+    const num = parseFloat(formatted) || 0;
+    if (onChangeTaxRate) {
+      onChangeTaxRate('sgst_rate', num);
+    }
+  };
+
+  const handleIgstInputChange = (rawVal) => {
+    setIgstInput(rawVal);
+    const parsed = parseFloat(rawVal);
+    const num = isNaN(parsed) ? 0 : parsed;
+    if (onChangeTaxRate) {
+      onChangeTaxRate('igst_rate', num);
+    }
+  };
+
+  const handleIgstBlur = () => {
+    const formatted = formatRateValue(igstInput);
+    setIgstInput(formatted);
+    const num = parseFloat(formatted) || 0;
+    if (onChangeTaxRate) {
+      onChangeTaxRate('igst_rate', num);
     }
   };
 
   const gstPresetsIntra = [
-    { label: 'GST 0% (CGST 0% + SGST 0%)', cgst: 0, sgst: 0 },
+    { label: 'GST 0% (CGST 00% + SGST 00%)', cgst: 0, sgst: 0 },
     { label: 'GST 5% (CGST 2.5% + SGST 2.5%)', cgst: 2.5, sgst: 2.5 },
-    { label: 'GST 12% (CGST 6% + SGST 6%)', cgst: 6, sgst: 6 },
-    { label: 'GST 18% (CGST 9% + SGST 9%) - Default', cgst: 9, sgst: 9 },
+    { label: 'GST 12% (CGST 06% + SGST 06%)', cgst: 6, sgst: 6 },
+    { label: 'GST 18% (CGST 09% + SGST 09%) - Default', cgst: 9, sgst: 9 },
     { label: 'GST 28% (CGST 14% + SGST 14%)', cgst: 14, sgst: 14 }
   ];
 
   const gstPresetsInter = [
-    { label: 'IGST 0%', igst: 0 },
-    { label: 'IGST 5%', igst: 5 },
+    { label: 'IGST 00%', igst: 0 },
+    { label: 'IGST 05%', igst: 5 },
     { label: 'IGST 12%', igst: 12 },
     { label: 'IGST 18% - Default', igst: 18 },
     { label: 'IGST 28%', igst: 28 }
@@ -115,13 +165,12 @@ export function TaxSection({
                 </label>
                 <div className="relative flex items-center">
                   <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    max="100"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    value={totals.cgstRate}
-                    onChange={(e) => handleCgstChange(e.target.value)}
+                    type="text"
+                    inputMode="decimal"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                    value={cgstInput}
+                    onChange={(e) => handleCgstInputChange(e.target.value)}
+                    onBlur={handleCgstBlur}
                   />
                   <span className="absolute right-3 text-xs text-slate-400 font-bold">%</span>
                 </div>
@@ -133,13 +182,12 @@ export function TaxSection({
                 </label>
                 <div className="relative flex items-center">
                   <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    max="100"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    value={totals.sgstRate}
-                    onChange={(e) => handleSgstChange(e.target.value)}
+                    type="text"
+                    inputMode="decimal"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                    value={sgstInput}
+                    onChange={(e) => handleSgstInputChange(e.target.value)}
+                    onBlur={handleSgstBlur}
                   />
                   <span className="absolute right-3 text-xs text-slate-400 font-bold">%</span>
                 </div>
@@ -180,13 +228,12 @@ export function TaxSection({
               </label>
               <div className="relative flex items-center">
                 <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="100"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                  value={totals.igstRate}
-                  onChange={(e) => handleIgstChange(e.target.value)}
+                  type="text"
+                  inputMode="decimal"
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono"
+                  value={igstInput}
+                  onChange={(e) => handleIgstInputChange(e.target.value)}
+                  onBlur={handleIgstBlur}
                 />
                 <span className="absolute right-3 text-xs text-slate-400 font-bold">%</span>
               </div>

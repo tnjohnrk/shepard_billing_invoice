@@ -52,11 +52,11 @@ export function InvoiceDetailsForm({ formData, onChange, errors = {}, isProforma
             label="Vehicle Number"
             placeholder="e.g. MH-04-AB-1234"
             value={formData.vehicle_number || ''}
-            onChange={(e) => onChange('vehicle_number', e.target.value)}
+            onChange={(e) => onChange('vehicle_number', e.target.value.toUpperCase())}
           />
 
           <Input
-            label="Date of Supply *"
+            label="Date of Supply"
             type="date"
             value={formData.date_of_supply || ''}
             onChange={(e) => onChange('date_of_supply', e.target.value)}

@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { HardDriveDownload, RotateCcw, Mail, RefreshCw, Save, Laptop, ArrowRight, CheckCircle2, ShieldCheck, HelpCircle } from 'lucide-react';
+import { 
+  HardDriveDownload, RotateCcw, Mail, RefreshCw, Save, Laptop, 
+  ArrowRight, CheckCircle2, ShieldCheck, HelpCircle, Send, 
+  Clock, AlertCircle, Eye, EyeOff, Check, Trash2 
+} from 'lucide-react';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { Dialog } from '../common/Dialog';
@@ -17,12 +21,24 @@ export function BackupRestore({ toast }) {
   const [smtpPort, setSmtpPort] = useState('587');
   const [smtpUser, setSmtpUser] = useState('');
   const [smtpPass, setSmtpPass] = useState('');
-  const [isProcessingQueue, setIsProcessingQueue] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Queue Status State
+  const [queueSummary, setQueueSummary] = useState({
+    pendingCount: 0,
+    sentCount: 0,
+    totalCount: 0,
+    lastSentAt: null,
+    lastRecipient: null
+  });
+  const [isSendingQueue, setIsSendingQueue] = useState(false);
+  const [isRefreshingQueue, setIsRefreshingQueue] = useState(false);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [isTestingEmail, setIsTestingEmail] = useState(false);
 
   useEffect(() => {
     loadSettings();
+    loadQueueSummary();
   }, []);
 
   const loadSettings = async () => {
@@ -38,6 +54,20 @@ export function BackupRestore({ toast }) {
     }
   };
 
+  const loadQueueSummary = async () => {
+    try {
+      setIsRefreshingQueue(true);
+      const summary = await ipcClient.getEmailQueueSummary();
+      if (summary) {
+        setQueueSummary(summary);
+      }
+    } catch (e) {
+      console.error('Failed to load email queue summary:', e);
+    } finally {
+      setIsRefreshingQueue(false);
+    }
+  };
+
   const handleSaveEmailSettings = async (e) => {
     if (e) e.preventDefault();
     setIsSavingSettings(true);
@@ -47,7 +77,7 @@ export function BackupRestore({ toast }) {
       await ipcClient.setSetting('smtp_port', smtpPort);
       await ipcClient.setSetting('smtp_user', smtpUser);
       await ipcClient.setSetting('smtp_pass', smtpPass);
-      toast('success', 'Email Backup & SMTP settings saved!');
+      toast('success', 'Email Backup & SMTP credentials saved!');
     } catch (err) {
       toast('error', err.message || 'Failed to save email settings.');
     } finally {
@@ -56,8 +86,8 @@ export function BackupRestore({ toast }) {
   };
 
   const handleTestEmail = async () => {
-    if (!smtpHost || !smtpUser || !smtpPass) {
-      toast('error', 'Please fill in SMTP Host, Username, and Password before testing.');
+    if (!backupEmail || !smtpUser || !smtpPass) {
+      toast('error', 'Please enter Receiver Email, Sender Email, and Password before testing.');
       return;
     }
     setIsTestingEmail(true);
@@ -83,21 +113,63 @@ export function BackupRestore({ toast }) {
         toast('error', res?.error || 'Test email failed. Please verify credentials.');
       }
     } catch (err) {
-      toast('error', err.message || 'SMTP connection failed. Check host, port, or app password.');
+      toast('error', err.message || 'SMTP connection failed. Check credentials or Google App Password.');
     } finally {
       setIsTestingEmail(false);
     }
   };
 
-  const handleRetryQueue = async () => {
-    setIsProcessingQueue(true);
+  const handleSendQueuedEmails = async () => {
+    if (!backupEmail || !smtpUser || !smtpPass) {
+      toast('error', 'Please fill in Receiver Email, Sender Email, and App Password first.');
+      return;
+    }
+
+    if (queueSummary.pendingCount === 0) {
+      toast('info', 'There are no pending backup emails in the queue.');
+      return;
+    }
+
+    setIsSendingQueue(true);
     try {
-      await ipcClient.retryEmailQueue();
-      toast('success', 'Processed pending email backup queue!');
+      // Save credentials first
+      await ipcClient.setSetting('backup_email', backupEmail);
+      await ipcClient.setSetting('smtp_host', smtpHost);
+      await ipcClient.setSetting('smtp_port', smtpPort);
+      await ipcClient.setSetting('smtp_user', smtpUser);
+      await ipcClient.setSetting('smtp_pass', smtpPass);
+
+      const res = await ipcClient.sendQueuedEmailBackups({
+        backup_email: backupEmail,
+        smtp_host: smtpHost,
+        smtp_port: smtpPort,
+        smtp_user: smtpUser,
+        smtp_pass: smtpPass
+      });
+
+      if (res && res.success) {
+        toast('success', res.message || `Successfully sent ${res.sent} queued backup(s) to ${backupEmail}!`);
+      } else if (res && res.sent > 0) {
+        toast('warning', res.message || `Sent ${res.sent} backups, but ${res.failed} failed.`);
+      } else {
+        toast('error', res?.errors?.[0] || res?.message || 'Failed to send queued emails. Check SMTP connection.');
+      }
+
+      await loadQueueSummary();
     } catch (err) {
-      toast('error', err.message || 'Email queue processing failed.');
+      toast('error', err.message || 'Failed to dispatch email queue.');
     } finally {
-      setIsProcessingQueue(false);
+      setIsSendingQueue(false);
+    }
+  };
+
+  const handleClearSent = async () => {
+    try {
+      await ipcClient.clearSentEmailQueue();
+      toast('info', 'Cleaned up sent backup history records.');
+      await loadQueueSummary();
+    } catch (err) {
+      toast('error', err.message || 'Failed to clear sent queue.');
     }
   };
 
@@ -203,26 +275,125 @@ export function BackupRestore({ toast }) {
         </div>
       </div>
 
-      {/* Email Backup & SMTP Settings Section */}
-      <div className="p-5 glass-panel rounded-xl border border-slate-800 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-semibold text-slate-200">Off-Site Email Backup (Automated SMTP)</h3>
-            <p className="text-xs text-slate-400">Automatically send a compressed SQLite backup copy to your email address every time an invoice is created.</p>
+      {/* Email Backup & Queue Section */}
+      <div className="p-6 glass-panel rounded-xl border border-slate-800 space-y-6">
+        
+        {/* Header with Title & Queue Status Badge */}
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+              <Mail className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2.5">
+                <h3 className="text-base font-bold text-slate-100">Email Dispatch Queue (Invoice PDFs)</h3>
+                {queueSummary.pendingCount > 0 ? (
+                  <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-950/80 text-amber-300 border border-amber-500/40 animate-pulse">
+                    <Clock className="w-3.5 h-3.5" />
+                    {queueSummary.pendingCount} Pending Invoice PDF{queueSummary.pendingCount > 1 ? 's' : ''}
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Queue All Clear
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-slate-400 mt-1">
+                Every invoice and proforma saved is safely queued locally (works offline). Enter your credentials below and click <strong>Send All Queued Invoices</strong> to dispatch official PDF copies directly to your receiver email address.
+              </p>
+            </div>
           </div>
-          <Button variant="secondary" size="sm" icon={RefreshCw} onClick={handleRetryQueue} isLoading={isProcessingQueue}>
-            Retry Email Queue
+
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            icon={RefreshCw} 
+            onClick={loadQueueSummary} 
+            isLoading={isRefreshingQueue}
+            title="Refresh Queue Count"
+          >
+            Refresh Status
           </Button>
         </div>
 
-        <form onSubmit={handleSaveEmailSettings} className="space-y-4 pt-2">
+        {/* Queue Metrics Dashboard */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800/80 flex items-center justify-between">
+            <div>
+              <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Pending PDFs in Queue</div>
+              <div className="text-2xl font-black text-amber-400 mt-0.5">{queueSummary.pendingCount}</div>
+            </div>
+            <div className="p-2.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <Clock className="w-5 h-5" />
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800/80 flex items-center justify-between">
+            <div>
+              <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Successfully Dispatched</div>
+              <div className="text-2xl font-black text-emerald-400 mt-0.5">{queueSummary.sentCount}</div>
+            </div>
+            <div className="p-2.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <Check className="w-5 h-5" />
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800/80 flex items-center justify-between">
+            <div>
+              <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Last Sent Timestamp</div>
+              <div className="text-xs font-semibold text-slate-200 mt-1">
+                {queueSummary.lastSentAt ? new Date(queueSummary.lastSentAt).toLocaleString() : 'No emails sent yet'}
+              </div>
+            </div>
+            <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+              <Mail className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+
+        {/* Credentials Form */}
+        <form onSubmit={handleSaveEmailSettings} className="space-y-4 pt-1">
           <Input
-            label="Backup Recipient Email Address"
+            label="Receiver Email Address (Destination for Invoice PDFs)"
             placeholder="e.g. tnjohnrk@gmail.com"
             value={backupEmail}
             onChange={(e) => setBackupEmail(e.target.value)}
             required
           />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Sender Email Address (SMTP Username / Google Account)"
+              placeholder="e.g. your-company@gmail.com"
+              value={smtpUser}
+              onChange={(e) => setSmtpUser(e.target.value)}
+              required
+            />
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                Google App Password (16 characters) / SMTP Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Enter 16-character App Password"
+                  value={smtpPass}
+                  onChange={(e) => setSmtpPass(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-colors pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
@@ -234,44 +405,69 @@ export function BackupRestore({ toast }) {
 
             <Input
               label="SMTP Port"
-              placeholder="e.g. 587 or 465"
+              placeholder="e.g. 587 (TLS) or 465 (SSL)"
               value={smtpPort}
               onChange={(e) => setSmtpPort(e.target.value)}
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              label="SMTP Sender Email / Username"
-              placeholder="e.g. your-company@gmail.com"
-              value={smtpUser}
-              onChange={(e) => setSmtpUser(e.target.value)}
-            />
-
-            <Input
-              label="SMTP Password / Gmail App Password"
-              type="password"
-              placeholder="Enter App Password"
-              value={smtpPass}
-              onChange={(e) => setSmtpPass(e.target.value)}
-            />
-          </div>
-
-          <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800 text-[11px] text-slate-300 space-y-1">
-            <div className="font-semibold text-slate-200">💡 Google / Gmail Setup Instructions:</div>
-            <div>• Use <strong>smtp.gmail.com</strong> on port <strong>587</strong> (TLS) or <strong>465</strong> (SSL).</div>
+          {/* Google App Password Guide Note */}
+          <div className="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 text-[11px] text-slate-300 space-y-1.5">
+            <div className="font-bold text-slate-200 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span>Gmail Setup Note:</span>
+            </div>
+            <div>• Use <strong>smtp.gmail.com</strong> on port <strong>587</strong> (TLS).</div>
             <div>• Google requires a <strong>16-character App Password</strong> (not your regular account password).</div>
-            <div>• Generate one via: <em>Google Account &gt; Security &gt; 2-Step Verification &gt; App Passwords</em>.</div>
+            <div>• Generate one in: <em>Google Account &gt; Security &gt; 2-Step Verification &gt; App Passwords</em>.</div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 pt-1">
-            <Button type="submit" variant="primary" icon={Save} isLoading={isSavingSettings}>
-              Save Email & SMTP Settings
-            </Button>
+          {/* Action Button Strip */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Primary Send Button */}
+              <Button 
+                type="button" 
+                variant="primary" 
+                icon={Send} 
+                onClick={handleSendQueuedEmails} 
+                isLoading={isSendingQueue}
+                className="bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-indigo-950/40"
+              >
+                Send All Queued Invoices ({queueSummary.pendingCount})
+              </Button>
 
-            <Button type="button" variant="secondary" icon={Mail} onClick={handleTestEmail} isLoading={isTestingEmail}>
-              Send Test Email
-            </Button>
+              <Button 
+                type="button" 
+                variant="secondary" 
+                icon={Mail} 
+                onClick={handleTestEmail} 
+                isLoading={isTestingEmail}
+              >
+                Test SMTP Connection
+              </Button>
+
+              <Button 
+                type="submit" 
+                variant="secondary" 
+                icon={Save} 
+                isLoading={isSavingSettings}
+              >
+                Save Credentials
+              </Button>
+            </div>
+
+            {queueSummary.sentCount > 0 && (
+              <button
+                type="button"
+                onClick={handleClearSent}
+                className="text-[11px] text-slate-500 hover:text-rose-400 flex items-center gap-1 transition-colors px-2 py-1"
+                title="Clear sent queue history"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Clear Sent History ({queueSummary.sentCount})</span>
+              </button>
+            )}
           </div>
         </form>
       </div>
@@ -289,4 +485,5 @@ export function BackupRestore({ toast }) {
     </div>
   );
 }
+
 

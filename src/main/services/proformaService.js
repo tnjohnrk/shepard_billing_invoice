@@ -15,9 +15,10 @@ import { computeCompleteInvoiceTotals } from '../../shared/utils/sharedCalculati
 import { COMPANY_CONFIG } from '../config/companyConfig.js';
 import { saveNewInvoice } from './invoiceService.js';
 import { createAutomaticBackup } from './backupService.js';
+import { generateInvoicePdf } from './pdfService.js';
 import { handleInvoiceSavedEmailBackup } from './emailQueueService.js';
 
-export function saveNewProforma(formData) {
+export async function saveNewProforma(formData) {
   const sellerStateCode = COMPANY_CONFIG.state_code;
   const totals = computeCompleteInvoiceTotals(
     formData.items || [],
@@ -79,15 +80,23 @@ export function saveNewProforma(formData) {
     // Non-blocking
   }
 
-  // Automatic backup & email backup
+  // Generate PDF file
+  let pdfPath = null;
   try {
-    const backupPath = createAutomaticBackup();
-    if (backupPath) {
-      handleInvoiceSavedEmailBackup(id, backupPath).catch(() => {});
-    }
+    pdfPath = await generateInvoicePdf({ ...proformaModel, items: totals.items, invoice_type: 'PROFORMA' });
   } catch (e) {
     // Non-blocking
   }
+
+  // Automatic backup & email queue
+  let backupPath = null;
+  try {
+    backupPath = createAutomaticBackup();
+  } catch (e) {
+    // Non-blocking
+  }
+
+  handleInvoiceSavedEmailBackup(id, pdfPath || backupPath).catch(() => {});
 
   return {
     ...proformaModel,

@@ -103,10 +103,8 @@ export async function saveNewInvoice(formData) {
     // Backup error does NOT block invoice saving
   }
 
-  // Step 5: Queue/Send email backup
-  if (backupPath) {
-    handleInvoiceSavedEmailBackup(invoiceId, backupPath).catch(() => {});
-  }
+  // Step 5: Queue invoice PDF for email dispatch
+  handleInvoiceSavedEmailBackup(invoiceId, pdfPath || backupPath).catch(() => {});
 
   return {
     ...invoiceModel,
