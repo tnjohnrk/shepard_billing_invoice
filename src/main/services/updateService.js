@@ -1,14 +1,19 @@
-let autoUpdater = null;
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
-try {
-  const electronUpdater = await import('electron-updater');
-  autoUpdater = electronUpdater.default?.autoUpdater || electronUpdater.autoUpdater;
-} catch (e) {
-  console.warn('electron-updater module load notice:', e.message);
+function getAutoUpdater() {
+  try {
+    const updaterModule = require('electron-updater');
+    return updaterModule?.autoUpdater || updaterModule?.default?.autoUpdater || null;
+  } catch {
+    return null;
+  }
 }
 
 export function initializeAutoUpdater(webContents) {
+  const autoUpdater = getAutoUpdater();
   if (!autoUpdater) return;
+
   try {
     autoUpdater.autoDownload = false;
 
@@ -35,26 +40,27 @@ export function initializeAutoUpdater(webContents) {
 }
 
 export async function checkForUpdates() {
+  const autoUpdater = getAutoUpdater();
   if (!autoUpdater) return null;
   try {
     return await autoUpdater.checkForUpdates();
-  } catch (err) {
-    console.warn('Check for updates check notice:', err.message);
+  } catch {
     return null;
   }
 }
 
 export async function downloadUpdate() {
+  const autoUpdater = getAutoUpdater();
   if (!autoUpdater) return null;
   try {
     return await autoUpdater.downloadUpdate();
-  } catch (err) {
-    console.warn('Download update notice:', err.message);
+  } catch {
     return null;
   }
 }
 
 export function quitAndInstall() {
+  const autoUpdater = getAutoUpdater();
   if (!autoUpdater) return;
   try {
     autoUpdater.quitAndInstall();

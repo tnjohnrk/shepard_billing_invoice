@@ -28,3 +28,8 @@ Thumbs.db
 *.xlsx
 *.pdf
 
+# Release distributions
+release_package/
+*.zip
+*.exe
+
