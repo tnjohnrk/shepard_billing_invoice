@@ -120,13 +120,6 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
       return;
     }
 
-    // If trial is expired, normal PIN cannot unlock!
-    if (licenseStatus?.isExpired) {
-      setError('Trial / Evaluation period has ended. Access restricted to Developer Mode.');
-      setPin(['', '', '', '']);
-      return;
-    }
-
     setIsVerifying(true);
     setError('');
     setIsSuccess(false);
@@ -271,22 +264,10 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
 
         {/* State Banner */}
         {!isDevControlOpen ? (
-          isExpired ? (
-            <div className="mt-5 flex items-start gap-3 p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800 text-xs text-rose-900 dark:text-rose-200">
-              <ShieldAlert className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
-              <div>
-                <strong className="font-bold text-rose-700 dark:text-rose-300 block">Trial / Evaluation Period Ended:</strong>
-                <span className="text-rose-800 dark:text-rose-200 text-xs">
-                  User access is locked. Please open Developer Recovery Mode to activate Live Mode or extend the trial period. All data and backups are safe and preserved.
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="mt-5 flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 text-xs text-sky-900 dark:text-sky-200 font-medium">
-              <ShieldCheck className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
-              <span>Application is locked. Enter your security PIN to access billing records.</span>
-            </div>
-          )
+          <div className="mt-5 flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 text-xs text-sky-900 dark:text-sky-200 font-medium">
+            <ShieldCheck className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
+            <span>Application is locked. Enter your 4-digit PIN to access billing records.</span>
+          </div>
         ) : (
           <div className="mt-4 flex items-start gap-2.5 px-3.5 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800/60 text-xs text-amber-900 dark:text-amber-200">
             <Wrench className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
@@ -302,7 +283,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
         {/* Normal Login Form vs Developer Master Code vs Developer Control Panel */}
         {!isDevControlOpen ? (
           <form onSubmit={handleSubmitUnlock} className="mt-5 space-y-5">
-            {!isDeveloperMode && !isExpired ? (
+            {!isDeveloperMode ? (
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 text-center block">
@@ -397,20 +378,18 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                   </div>
                 </Button>
 
-                {!isExpired && (
-                  <div className="text-center pt-1">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsDeveloperMode(false);
-                        setError('');
-                      }}
-                      className="text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
-                    >
-                      Back to PIN Login
-                    </button>
-                  </div>
-                )}
+                <div className="text-center pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsDeveloperMode(false);
+                      setError('');
+                    }}
+                    className="text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
+                  >
+                    Back to PIN Login
+                  </button>
+                </div>
               </div>
             )}
           </form>

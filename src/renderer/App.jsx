@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { AppLayout } from './components/layout/AppLayout';
 import { SplashScreen } from './components/splash/SplashScreen';
 import { LockScreen } from './components/auth/LockScreen';
+import { TrialExpiredOverlay } from './components/auth/TrialExpiredOverlay';
 import { Toast } from './components/common/Toast';
 import { Dashboard } from './pages/Dashboard';
 import { CreateInvoice } from './pages/CreateInvoice';
@@ -30,13 +31,6 @@ export default function App() {
       ]);
 
       setLicenseStatus(license);
-
-      // If trial has expired, enforce lockdown
-      if (license?.isExpired) {
-        setIsLocked(true);
-        sessionStorage.removeItem('session_unlocked');
-        return;
-      }
 
       const isSessionUnlocked = sessionStorage.getItem('session_unlocked') === 'true';
       if (isProtected && !isSessionUnlocked) {
@@ -77,13 +71,8 @@ export default function App() {
       if (enteredPassword === 'DEV_UNLOCKED' || enteredPassword === 'developer@v2c') {
         sessionStorage.setItem('session_unlocked', 'true');
         setIsLocked(false);
-        showToast('success', 'Developer Mode activated. Welcome!');
+        showToast('success', 'Developer access verified. Welcome!');
         return true;
-      }
-
-      if (updatedLicense?.isExpired) {
-        showToast('error', 'Trial has ended. Please use Developer Mode.');
-        return false;
       }
 
       const isValid = await ipcClient.verifyPin(enteredPassword);
@@ -210,6 +199,21 @@ export default function App() {
         {activeTab === 'settings' && <Settings toast={showToast} />}
       </AppLayout>
 
+      {/* Trial Expired Fullscreen Lockdown Overlay (Hides and locks everything when trial ends) */}
+      {licenseStatus?.isExpired && (
+        <TrialExpiredOverlay
+          licenseStatus={licenseStatus}
+          onLicenseUpdated={(updated) => {
+            setLicenseStatus(updated);
+            showToast('success', 'License reactivated! All features are now accessible.');
+          }}
+          onLockApp={() => {
+            sessionStorage.removeItem('session_unlocked');
+            setIsLocked(true);
+          }}
+        />
+      )}
+
       {/* Global Toast Notification */}
       {toastState && (
         <Toast
@@ -221,4 +225,5 @@ export default function App() {
     </>
   );
 }
+
 
