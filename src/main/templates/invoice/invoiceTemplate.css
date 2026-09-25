@@ -31,9 +31,12 @@ body {
 .invoice-page {
   width: 100%;
   max-width: 194mm;
+  height: 284mm;
   page-break-after: always;
   break-after: page;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .invoice-page.is-last-page {
@@ -41,14 +44,7 @@ body {
   break-after: avoid;
 }
 
-/* Non-last pages (fill full A4 height so table lines run to bottom) */
-.invoice-page:not(.is-last-page) {
-  height: 284mm;
-  display: flex;
-  flex-direction: column;
-}
-
-.invoice-page:not(.is-last-page) .invoice-box-frame {
+.invoice-box-frame {
   width: 100%;
   height: 100%;
   border: 1.5px solid #000;
@@ -59,13 +55,13 @@ body {
   justify-content: space-between;
 }
 
-.invoice-page:not(.is-last-page) .top-content {
+.top-content {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
-.invoice-page:not(.is-last-page) .items-table {
+.items-table {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
@@ -74,31 +70,9 @@ body {
   height: 100%;
 }
 
-/* Last page (natural height ending according to content) */
-.invoice-page.is-last-page .invoice-box-frame {
-  width: 100%;
-  border: 1.5px solid #000;
-  background: #fff;
-  box-sizing: border-box;
-}
-
-.invoice-page.is-last-page .items-table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
-  border-bottom: 1.5px solid #000;
-}
-
-.invoice-page.is-last-page .table-spacer-row {
-  display: none;
-}
-
 @media print {
-  .invoice-page:not(.is-last-page) {
+  .invoice-page {
     height: 284mm;
-    margin-bottom: 0;
-  }
-  .invoice-page.is-last-page {
     margin-bottom: 0;
   }
 }
@@ -372,6 +346,40 @@ body {
   font-weight: bold;
   line-height: 1.35;
   color: #111;
+}
+
+/* Page-wise Subtotal Row (Multi-page invoices) */
+.page-subtotal-row td {
+  border-top: 1.5px solid #000;
+  background: #f8fafc;
+  padding: 4px 6px;
+  font-size: 9.5px;
+  font-weight: bold;
+}
+
+.page-subtotal-label {
+  text-align: right;
+  border-right: 1px solid #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.page-subtotal-amount {
+  text-align: right;
+  font-size: 10px;
+}
+
+.cont-notice {
+  float: left;
+  font-size: 8.5px;
+  font-style: italic;
+  font-weight: normal;
+  color: #475569;
+}
+
+.page-breakdown-subtotal-row td {
+  font-size: 9px !important;
+  background: #f8fafc;
 }
 
 /* 5. Bottom Section Container */

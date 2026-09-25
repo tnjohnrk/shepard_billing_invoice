@@ -261,14 +261,23 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
 
             <div
               id={`invoice-preview-sheet-page-${page.pageNumber}`}
-              style={{ backgroundColor: '#ffffff', color: '#000000', width: '194mm' }}
-              className="bg-white text-black p-6 border border-slate-400 shadow-lg text-left font-sans text-xs print:w-full print:p-0 print:border-none print:shadow-none print:break-after-page print:page-break-after-always"
+              style={{
+                backgroundColor: '#ffffff',
+                color: '#000000',
+                width: '210mm',
+                minHeight: '297mm',
+                height: '297mm',
+                padding: '8mm',
+                boxSizing: 'border-box'
+              }}
+              className="bg-white text-black border border-slate-300 shadow-xl text-left font-sans text-xs flex flex-col justify-between overflow-hidden print:w-full print:h-[281mm] print:min-h-[281mm] print:p-0 print:border-none print:shadow-none print:break-after-page print:page-break-after-always print:last:break-after-avoid"
             >
               {/* Overall Box Layout Frame from Header to Footer */}
-              <div className="border-[1.5px] border-black w-full bg-white">
+              <div className="border-[1.5px] border-black w-full h-full bg-white flex flex-col justify-between flex-1">
                 
-                {/* 1. Header Section (Only on Page 1) */}
-                {page.isFirstPage ? (
+                <div className="flex-1 flex flex-col">
+                  {/* 1. Header Section (Only on Page 1) */}
+                  {page.isFirstPage ? (
                   <>
                     <table className="w-full border-collapse border-b-[1.5px] border-black" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
                       <tbody>
@@ -418,60 +427,85 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                   </table>
                 )}
 
-                {/* 4. Line Items Table */}
-                <table className="w-full border-collapse border-b-[1.5px] border-black text-left text-[10px]" style={{ tableLayout: 'fixed' }}>
-                  <thead>
-                    <tr className="bg-white border-b-[1.5px] border-black font-bold uppercase text-[9.5px]">
-                      <th className="p-1.5 border-r border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
-                      <th className="p-1.5 border-r border-black text-center" style={{ width: '11%' }}>HSN</th>
-                      <th className="p-1.5 border-r border-black text-center" style={{ width: '11%' }}>QTY.</th>
-                      <th className="p-1.5 border-r border-black text-right" style={{ width: '12%' }}>RATE</th>
-                      <th className="p-1.5 text-right" style={{ width: '12%' }}>AMOUNT</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y-0">
-                    {page.items.map((item, idx) => {
-                      const isFirstOverallItem = page.isFirstPage && idx === 0;
-                      return (
-                        <tr key={idx} className="align-top">
-                          <td className="p-1.5 border-r border-black" style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
-                            <div className="font-bold uppercase text-slate-950 leading-tight text-[9.5px] whitespace-pre-wrap">
-                              {item.description}
-                            </div>
-                            {isFirstOverallItem && (
-                              <div className="mt-1 font-bold text-[9px] text-slate-900 leading-tight space-y-0.5">
-                                {fullData.so_po_number && (
-                                  <div>
-                                    S.O. No: {fullData.so_po_number}
-                                    {fullData.so_po_date ? ` Dt: ${fullData.so_po_date}` : ''}
-                                  </div>
-                                )}
-                                {fullData.gemc_number && (
-                                  <div>GEMC - {fullData.gemc_number}</div>
-                                )}
-                                {fullData.reference_number && (
-                                  <div>Ref: {fullData.reference_number}</div>
-                                )}
+                  {/* 4. Line Items Table */}
+                  <table className="w-full border-collapse border-b-[1.5px] border-black text-left text-[10px] flex-1" style={{ tableLayout: 'fixed', height: '100%', display: 'table' }}>
+                    <thead>
+                      <tr className="bg-white border-b-[1.5px] border-black font-bold uppercase text-[9.5px]">
+                        <th className="p-1.5 border-r border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
+                        <th className="p-1.5 border-r border-black text-center" style={{ width: '11%' }}>HSN</th>
+                        <th className="p-1.5 border-r border-black text-center" style={{ width: '11%' }}>QTY.</th>
+                        <th className="p-1.5 border-r border-black text-right" style={{ width: '12%' }}>RATE</th>
+                        <th className="p-1.5 text-right" style={{ width: '12%' }}>AMOUNT</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y-0" style={{ height: '100%' }}>
+                      {page.items.map((item, idx) => {
+                        const isFirstOverallItem = page.isFirstPage && idx === 0;
+                        return (
+                          <tr key={idx} className="align-top">
+                            <td className="p-1.5 border-r border-black" style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
+                              <div className="font-bold uppercase text-slate-950 leading-tight text-[9.5px] whitespace-pre-wrap">
+                                {item.description}
                               </div>
+                              {isFirstOverallItem && (
+                                <div className="mt-1 font-bold text-[9px] text-slate-900 leading-tight space-y-0.5">
+                                  {fullData.so_po_number && (
+                                    <div>
+                                      S.O. No: {fullData.so_po_number}
+                                      {fullData.so_po_date ? ` Dt: ${fullData.so_po_date}` : ''}
+                                    </div>
+                                  )}
+                                  {fullData.gemc_number && (
+                                    <div>GEMC - {fullData.gemc_number}</div>
+                                  )}
+                                  {fullData.reference_number && (
+                                    <div>Ref: {fullData.reference_number}</div>
+                                  )}
+                                </div>
+                              )}
+                            </td>
+                            <td className="p-1.5 border-r border-black text-center">{item.hsn_sac || '-'}</td>
+                            <td className="p-1.5 border-r border-black text-center">{item.quantity}</td>
+                            <td className="p-1.5 border-r border-black text-right">
+                              {Number(item.rate).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            </td>
+                            <td className="p-1.5 text-right font-medium">
+                              {Number(item.amount || (item.quantity * item.rate)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      {/* Spacer Row to stretch table vertical border lines to bottom */}
+                      <tr className="table-spacer-row" style={{ height: '100%' }}>
+                        <td className="p-1.5 border-r border-black"></td>
+                        <td className="p-1.5 border-r border-black"></td>
+                        <td className="p-1.5 border-r border-black"></td>
+                        <td className="p-1.5 border-r border-black"></td>
+                        <td className="p-1.5"></td>
+                      </tr>
+                      {/* Page-wise Subtotal Row (When invoice has more than 1 page) */}
+                      {page.totalPages > 1 && (
+                        <tr className="border-t-[1.5px] border-black bg-slate-50 font-bold text-[9.5px]">
+                          <td colSpan={4} className="p-1.5 border-r border-black text-right uppercase tracking-wider">
+                            {!page.isLastPage && (
+                              <span className="float-left text-[8.5px] italic text-slate-500 font-normal">
+                                Continued on Page {page.pageNumber + 1}...
+                              </span>
                             )}
+                            PAGE {page.pageNumber} SUB TOTAL:
                           </td>
-                          <td className="p-1.5 border-r border-black text-center">{item.hsn_sac || '-'}</td>
-                          <td className="p-1.5 border-r border-black text-center">{item.quantity}</td>
-                          <td className="p-1.5 border-r border-black text-right">
-                            {Number(item.rate).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                          </td>
-                          <td className="p-1.5 text-right font-medium">
-                            {Number(item.amount || (item.quantity * item.rate)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                          <td className="p-1.5 text-right font-bold text-[10px]">
+                            {(page.items || []).reduce((sum, item) => sum + Number(item.amount || (item.quantity * item.rate) || 0), 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </td>
                         </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
 
                 {/* Bottom Section (Totals, Bank Details, and Footer on Last Page) */}
                 {page.hasTotalsAndFooter && (
-                  <div>
+                  <div className="w-full">
                     {/* 5. Amount Words Strip */}
                     <div className="p-1.5 border-b-[1.5px] border-black font-normal text-[10px]">
                       <span className="font-bold">TOTAL AMOUNT IN WORDS: </span>
@@ -494,9 +528,20 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                           <td className="w-[40%] p-0 align-top">
                             <table className="w-full border-collapse text-[9.5px]">
                               <tbody>
-                                <tr className="border-b border-black">
+                                {pages.length > 1 && pages.map((p) => {
+                                  const pSub = (p.items || []).reduce((sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0), 0);
+                                  return (
+                                    <tr key={p.pageNumber} className="border-b border-black text-slate-800 bg-slate-50/80 text-[9px]">
+                                      <td className="p-1 text-left w-[65%]">PAGE {p.pageNumber} SUB TOTAL</td>
+                                      <td className="p-1 text-right w-[35%] font-medium">
+                                        {pSub.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                                <tr className="border-b border-black font-bold">
                                   <td className="p-1 text-left w-[65%]">TOTAL AMOUNT BEFORE TAX</td>
-                                  <td className="p-1 text-right w-[35%] font-medium">
+                                  <td className="p-1 text-right w-[35%] font-bold">
                                     {fullData.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                   </td>
                                 </tr>

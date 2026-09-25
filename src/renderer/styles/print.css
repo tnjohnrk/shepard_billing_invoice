@@ -28,15 +28,25 @@
   }
 
   /* Invoice document container full-width on printed paper */
-  #invoice-preview-sheet {
+  #invoice-preview-sheet,
+  [id^="invoice-preview-sheet-page-"] {
     width: 100% !important;
     max-width: 100% !important;
+    height: 281mm !important;
+    min-height: 281mm !important;
     margin: 0 !important;
     padding: 0 !important;
     border: none !important;
     box-shadow: none !important;
     background: #ffffff !important;
     color: #000000 !important;
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  [id^="invoice-preview-sheet-page-"]:last-child {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
   /* Ensure table borders and headers print with high contrast */

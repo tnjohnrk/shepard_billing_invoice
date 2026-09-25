@@ -201,6 +201,21 @@ export function renderInvoiceHtml(invoiceData) {
       return `<tr class="item-data-row"><td class="col-desc"><div class="item-desc-text">${formattedDesc}</div>${isFirstOverallItem ? refsHtml : ''}</td><td class="col-hsn">${escapeHtml(item.hsn_sac || '-')}</td><td class="col-qty">${item.quantity || 0}</td><td class="col-rate">${formatCurrency(item.rate)}</td><td class="col-amount">${formatCurrency(item.amount || (item.quantity * item.rate))}</td></tr>`;
     }).join('');
 
+    const pageSubtotal = (page.items || []).reduce(
+      (sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0),
+      0
+    );
+
+    const pageSubtotalRowHtml = page.totalPages > 1 ? `
+      <tr class="page-subtotal-row">
+        <td colspan="4" class="page-subtotal-label">
+          ${!page.isLastPage ? `<span class="cont-notice">Continued on Page ${page.pageNumber + 1}...</span>` : ''}
+          PAGE ${page.pageNumber} SUB TOTAL:
+        </td>
+        <td class="col-amount page-subtotal-amount">${formatCurrency(pageSubtotal)}</td>
+      </tr>
+    ` : '';
+
     const itemsTableHtml = `
       <table class="items-table">
         <thead>
@@ -221,12 +236,23 @@ export function renderInvoiceHtml(invoiceData) {
             <td class="col-rate"></td>
             <td class="col-amount"></td>
           </tr>
+          ${pageSubtotalRowHtml}
         </tbody>
       </table>
     `;
 
     let footerSectionHtml = '';
     if (page.hasTotalsAndFooter) {
+      const multiPageBreakdownHtml = pages.length > 1 ? pages.map((p) => {
+        const pSub = (p.items || []).reduce((sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0), 0);
+        return `
+          <tr class="page-breakdown-subtotal-row">
+            <td class="tax-title-col">PAGE ${p.pageNumber} SUB TOTAL</td>
+            <td class="tax-num-col">${formatCurrency(pSub)}</td>
+          </tr>
+        `;
+      }).join('') : '';
+
       footerSectionHtml = `
         <div class="bottom-content">
           <!-- 5. Amount in Words Strip -->
@@ -245,9 +271,10 @@ export function renderInvoiceHtml(invoiceData) {
               </td>
               <td class="tax-summary-cell">
                 <table class="tax-breakdown-table">
+                  ${multiPageBreakdownHtml}
                   <tr>
-                    <td class="tax-title-col">TOTAL AMOUNT BEFORE TAX</td>
-                    <td class="tax-num-col">${formatCurrency(invoiceData.subtotal)}</td>
+                    <td class="tax-title-col font-bold">TOTAL AMOUNT BEFORE TAX</td>
+                    <td class="tax-num-col font-bold">${formatCurrency(invoiceData.subtotal)}</td>
                   </tr>
                   ${taxRowsHtml}
                   ${roundOffHtml}

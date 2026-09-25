@@ -3,30 +3,31 @@
  * Exact A4 page partitioning matching official invoice PDF specification.
  */
 
-const PAGE_TOTAL_HEIGHT = 1060; // Available inner height in px for A4 (280mm-285mm)
+const PAGE_TOTAL_HEIGHT = 1050; // Available inner height in px for A4 sheet (281mm)
 
 // Height allowances for header and footer components (in pixels)
-const HEIGHT_PAGE1_TOP = 270;         // Full Header (113) + Subheader (28) + Meta Grid (128)
-const HEIGHT_CONT_PAGE_TOP = 50;      // Subheader (28) + Table Header (22) on continuation page
-const HEIGHT_TOTALS_AND_FOOTER = 210; // Words Strip (24) + Bank/Tax (80) + Terms/Signatures (106)
-const SAFETY_MARGIN = 10;
+const HEIGHT_PAGE1_TOP = 345;         // Full Header (115) + Subheader (32) + Meta Grid (160) + Table Header (28) + padding (10)
+const HEIGHT_CONT_PAGE_TOP = 65;      // Subheader (32) + Table Header (28) + padding (5)
+const HEIGHT_TOTALS_AND_FOOTER = 295; // Words Strip (26) + Bank/Tax with page subtotals (150) + Terms/Signatures (115) + padding (4)
+const HEIGHT_PAGE_SUBTOTAL = 30;      // Page-wise subtotal row at bottom of table
+const SAFETY_MARGIN = 20;
 
 /**
  * Estimate the pixel height of a line item row
  */
 export function estimateItemRowHeight(item, isFirstItem = false, refsCount = 0) {
-  const baseHeight = 16.5;
+  const baseHeight = 22;
   const desc = String(item?.description || '');
   
   // Count explicit line breaks
   const explicitLines = desc.split(/\r\n|\r|\n/).length;
   
-  // Estimate wrapped lines based on character width (approx 55 chars per line in 54% table column)
-  const charLines = Math.max(1, Math.ceil(desc.length / 55));
+  // In a 54% column on 194mm width (~400px), approx 40-45 chars per line
+  const charLines = Math.max(1, Math.ceil(desc.length / 42));
   const estimatedLines = Math.max(explicitLines, charLines);
   
-  const extraLineHeight = (estimatedLines - 1) * 13;
-  const refHeight = isFirstItem ? (refsCount * 12) : 0;
+  const extraLineHeight = (estimatedLines - 1) * 15;
+  const refHeight = isFirstItem ? (refsCount * 14) : 0;
   
   return baseHeight + extraLineHeight + refHeight;
 }
@@ -95,9 +96,9 @@ export function paginateInvoiceItems(items = [], invoiceData = {}) {
   let itemStartIndex = 0;
   let isFirstPage = true;
 
-  const page1Capacity = PAGE_TOTAL_HEIGHT - HEIGHT_PAGE1_TOP - SAFETY_MARGIN; // ~780px (~47 items)
-  const midPageCapacity = PAGE_TOTAL_HEIGHT - HEIGHT_CONT_PAGE_TOP - SAFETY_MARGIN; // ~1000px (~60 items)
-  const lastPageCapacity = PAGE_TOTAL_HEIGHT - HEIGHT_CONT_PAGE_TOP - HEIGHT_TOTALS_AND_FOOTER - SAFETY_MARGIN; // ~790px (~47 items)
+  const page1Capacity = PAGE_TOTAL_HEIGHT - HEIGHT_PAGE1_TOP - HEIGHT_PAGE_SUBTOTAL - SAFETY_MARGIN; // ~755px
+  const midPageCapacity = PAGE_TOTAL_HEIGHT - HEIGHT_CONT_PAGE_TOP - HEIGHT_PAGE_SUBTOTAL - SAFETY_MARGIN; // ~975px
+  const lastPageCapacity = PAGE_TOTAL_HEIGHT - HEIGHT_CONT_PAGE_TOP - HEIGHT_TOTALS_AND_FOOTER - HEIGHT_PAGE_SUBTOTAL - SAFETY_MARGIN; // ~765px
 
   for (let i = 0; i < safeItems.length; i++) {
     const item = safeItems[i];
