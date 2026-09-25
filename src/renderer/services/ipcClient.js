@@ -1187,16 +1187,6 @@ export const ipcClient = {
 
   // License & Test Mode APIs
   getLicenseStatus: async () => {
-    if (isElectron && typeof window.electronAPI?.getLicenseStatus === 'function') {
-      try {
-        const res = await window.electronAPI.getLicenseStatus();
-        if (res && res.mode) return res;
-      } catch (e) {
-        console.warn('Electron getLicenseStatus IPC failed, using settings fallback:', e);
-      }
-    }
-
-    // Try reading from electron settings:getAll if available
     let mode = 'LIVE';
     let start = null;
     let end = null;
@@ -1209,7 +1199,9 @@ export const ipcClient = {
           start = allSettings.trial_start_datetime || localStorage.getItem('shepherd_trial_start') || null;
           end = allSettings.trial_end_datetime || localStorage.getItem('shepherd_trial_end') || null;
         }
-      } catch {}
+      } catch (e) {
+        console.warn('getAllSettings failed, falling back to localStorage:', e);
+      }
     } else {
       mode = localStorage.getItem('shepherd_license_mode') || 'LIVE';
       start = localStorage.getItem('shepherd_trial_start');
@@ -1274,28 +1266,18 @@ export const ipcClient = {
       throw new Error('Invalid developer master authentication code.');
     }
 
-    // Try electron IPC first
-    if (isElectron && typeof window.electronAPI?.setLicenseMode === 'function') {
-      try {
-        const res = await window.electronAPI.setLicenseMode({ developerKey, mode, startDateTime, endDateTime });
-        if (res) return res;
-      } catch (e) {
-        console.warn('Electron setLicenseMode IPC failed, falling back to settings API:', e);
-      }
-    }
-
-    // Direct settings fallback
+    // Direct SQLite settings persist
     if (isElectron && typeof window.electronAPI?.setSetting === 'function') {
       try {
         await window.electronAPI.setSetting('license_mode', mode);
         await window.electronAPI.setSetting('trial_start_datetime', mode === 'TEST' ? (startDateTime || new Date().toISOString()) : '');
         await window.electronAPI.setSetting('trial_end_datetime', mode === 'TEST' ? (endDateTime || new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()) : '');
       } catch (err) {
-        console.warn('Failed saving via window.electronAPI.setSetting:', err);
+        console.warn('Failed saving via setSetting:', err);
       }
     }
 
-    // Always update localStorage
+    // Sync to localStorage
     localStorage.setItem('shepherd_license_mode', mode);
     if (mode === 'TEST') {
       localStorage.setItem('shepherd_trial_start', startDateTime || new Date().toISOString());
