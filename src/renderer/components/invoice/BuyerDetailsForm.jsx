@@ -5,6 +5,7 @@ import { INDIAN_STATES } from '../../../shared/constants/application';
 import { ipcClient } from '../../services/ipcClient';
 import { useTheme } from '../../context/ThemeContext';
 import { Search, Building2, User, Sparkles, CheckCircle2, Plus, Check } from 'lucide-react';
+import { FEATURE_FLAGS } from '../../../shared/constants/featureFlags';
 
 export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
   const { theme } = useTheme();
@@ -270,7 +271,7 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
           required
         />
 
-        {showNameSuggestions && nameSuggestions.length > 0 && (
+        {FEATURE_FLAGS.DETAILS_PANEL_ENABLED && showNameSuggestions && nameSuggestions.length > 0 && (
           <div className="absolute z-50 w-full mt-1.5 rounded-2xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-none max-h-60 overflow-y-auto divide-y divide-slate-200 dark:divide-slate-800">
             <div className="p-2.5 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
@@ -299,7 +300,7 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
         )}
 
         {/* Quick Add To Directory Prompt when new company is typed */}
-        {formData.buyer_name && formData.buyer_name.trim().length >= 2 && (
+        {FEATURE_FLAGS.DETAILS_PANEL_ENABLED && formData.buyer_name && formData.buyer_name.trim().length >= 2 && (
           <div className="flex items-center justify-between mt-1.5 px-1">
             <span className="text-[11px] text-slate-500 dark:text-slate-400">
               Not in saved list?
@@ -354,7 +355,7 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
             helperText={buyerType === 'COMPANY' ? 'Mandatory 15-char GSTIN. Auto-fills company details or enter manually.' : 'Optional for retail / individual buyers'}
           />
 
-          {showGstinSuggestions && gstinSuggestions.length > 0 && (
+          {FEATURE_FLAGS.DETAILS_PANEL_ENABLED && showGstinSuggestions && gstinSuggestions.length > 0 && (
             <div className="absolute z-50 w-full mt-1.5 rounded-2xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-none max-h-60 overflow-y-auto divide-y divide-slate-200 dark:divide-slate-800">
               <div className="p-2.5 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800">
                 <Sparkles className="w-3.5 h-3.5 text-cyan-500" />

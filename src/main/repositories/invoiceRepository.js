@@ -193,20 +193,18 @@ export function listDeletedInvoices() {
 
 export function generateNextInvoiceNumber() {
   const db = getDatabase();
-  const row = db.prepare(`
-    SELECT invoice_number FROM invoices 
-    ORDER BY id DESC LIMIT 1
-  `).get();
+  const rows = db.prepare(`SELECT invoice_number FROM invoices`).all();
 
-  if (!row) {
-    return 'INV-001';
+  let maxNum = 0;
+  for (const r of rows) {
+    const match = (r.invoice_number || '').match(/INV-(\d+)/i);
+    if (match) {
+      const num = parseInt(match[1], 10);
+      if (!isNaN(num) && num > maxNum) {
+        maxNum = num;
+      }
+    }
   }
 
-  const match = row.invoice_number.match(/INV-(\d+)/);
-  if (match) {
-    const nextNum = parseInt(match[1], 10) + 1;
-    return `INV-${String(nextNum).padStart(3, '0')}`;
-  }
-
-  return `INV-${Date.now().toString().slice(-4)}`;
+  return `INV-${String(maxNum + 1).padStart(3, '0')}`;
 }

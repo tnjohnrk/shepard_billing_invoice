@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '../components/layout/PageContainer';
-import { HistorySearch } from '../components/history/HistorySearch';
 import { HistoryFilters } from '../components/history/HistoryFilters';
 import { HistoryTable } from '../components/history/HistoryTable';
 import { InvoicePreview } from '../components/invoice/InvoicePreview';
@@ -244,6 +243,10 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
             setSelectedInvoice(null);
             loadInvoices();
           }}
+          onNewInvoice={() => {
+            setSelectedInvoice(null);
+            if (onNavigateCreate) onNavigateCreate();
+          }}
           toast={toast}
         />
       </PageContainer>
@@ -262,10 +265,18 @@ export function History({ initialInvoice = null, toast, onNavigateCreate, onDupl
 
   return (
     <PageContainer>
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-        <HistorySearch search={search} setSearch={(val) => { setSearch(val); setPage(1); }} />
-        <HistoryFilters filters={filters} setFilters={(f) => { setFilters(f); setPage(1); }} />
-      </div>
+      <HistoryFilters
+        search={search}
+        setSearch={(val) => { setSearch(val); setPage(1); }}
+        totalCount={totalCount}
+        filters={filters}
+        setFilters={(f) => { setFilters(f); setPage(1); }}
+        onReset={() => {
+          setSearch('');
+          setFilters({ invoiceType: '', startDate: '', endDate: '' });
+          setPage(1);
+        }}
+      />
 
       {loading ? (
         <Loading text="Searching Invoice History..." />

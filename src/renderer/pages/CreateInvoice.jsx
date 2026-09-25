@@ -11,46 +11,77 @@ import { AdditionalDetailsForm } from '../components/invoice/AdditionalDetailsFo
 import { InvoiceReview } from '../components/invoice/InvoiceReview';
 import { InvoicePreview } from '../components/invoice/InvoicePreview';
 import { Button } from '../components/common/Button';
-import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, RotateCcw } from 'lucide-react';
 import { ipcClient } from '../services/ipcClient';
 import { SHEPHERD_DEFAULT_STATE_CODE } from '../../shared/constants/application';
+import { FEATURE_FLAGS } from '../../shared/constants/featureFlags';
+
+const DRAFT_STORAGE_KEY = 'shepherd_invoice_create_draft';
+
+const defaultFormState = {
+  invoice_type: 'NORMAL',
+  invoice_number: '',
+  proforma_number: '',
+  invoice_date: new Date().toISOString().split('T')[0],
+  proforma_date: new Date().toISOString().split('T')[0],
+  copy_type: 'ORIGINAL',
+
+  transportation_mode: '',
+  vehicle_number: '',
+  date_of_supply: new Date().toISOString().split('T')[0],
+  delivery_address: '',
+
+  buyer_type: 'COMPANY',
+  buyer_name: '',
+  buyer_address: '',
+  customer_gstin: '',
+  customer_state: 'Tamil Nadu',
+  customer_state_code: SHEPHERD_DEFAULT_STATE_CODE,
+
+  so_po_number: '',
+  so_po_date: '',
+  gemc_number: '',
+  additional_reference: '',
+
+  items: [
+    { description: '', hsn_sac: '', quantity: 1, rate: 0 }
+  ],
+
+  notes: ''
+};
 
 export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNavigateHome }) {
-  const [step, setStep] = useState(1);
+  const getSavedDraft = () => {
+    if (initialData) return null;
+    try {
+      const raw = sessionStorage.getItem(DRAFT_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.formData) return parsed;
+      }
+    } catch (e) {}
+    return null;
+  };
+
+  const initialDraft = getSavedDraft();
+
+  const [step, setStep] = useState(initialDraft ? (initialDraft.step || 1) : 1);
   const [errors, setErrors] = useState({});
   const formContainerRef = useRef(null);
 
-  const [formData, setFormData] = useState({
-    invoice_type: 'NORMAL',
-    invoice_number: '',
-    proforma_number: '',
-    invoice_date: new Date().toISOString().split('T')[0],
-    proforma_date: new Date().toISOString().split('T')[0],
-    copy_type: 'ORIGINAL',
+  const [formData, setFormData] = useState(initialDraft ? initialDraft.formData : defaultFormState);
 
-    transportation_mode: '',
-    vehicle_number: '',
-    date_of_supply: new Date().toISOString().split('T')[0],
-    delivery_address: '',
-
-    buyer_type: 'COMPANY',
-    buyer_name: '',
-    buyer_address: '',
-    customer_gstin: '',
-    customer_state: 'Tamil Nadu',
-    customer_state_code: SHEPHERD_DEFAULT_STATE_CODE,
-
-    so_po_number: '',
-    so_po_date: '',
-    gemc_number: '',
-    additional_reference: '',
-
-    items: [
-      { description: '', hsn_sac: '', quantity: 1, rate: 0 }
-    ],
-
-    notes: ''
-  });
+  // Auto-save draft to sessionStorage on every change during active form steps (1-7)
+  useEffect(() => {
+    if (!initialData && step < 8) {
+      try {
+        sessionStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({
+          formData,
+          step
+        }));
+      } catch (e) {}
+    }
+  }, [formData, step, initialData]);
 
   useEffect(() => {
     if (initialData) {
@@ -59,7 +90,8 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
         ...initialData
       }));
       setStep(2);
-    } else {
+      sessionStorage.removeItem(DRAFT_STORAGE_KEY);
+    } else if (!initialDraft) {
       fetchNextDocNumbers();
     }
   }, [initialData]);
@@ -84,6 +116,34 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
     } catch (e) {
       console.error('Error fetching next numbers:', e);
     }
+  };
+
+  const handleResetDraft = async (type = 'NORMAL') => {
+    sessionStorage.removeItem(DRAFT_STORAGE_KEY);
+    setErrors({});
+    let invNum = '';
+    let proNum = '';
+    try {
+      if (type === 'PROFORMA') {
+        proNum = await ipcClient.getNextProformaNumber();
+      } else {
+        invNum = await ipcClient.getNextInvoiceNumber();
+      }
+    } catch (e) {
+      console.error('Failed to fetch next number on draft reset:', e);
+    }
+
+    setFormData({
+      ...defaultFormState,
+      invoice_type: type,
+      invoice_number: type === 'PROFORMA' ? '' : (invNum || 'INV-001'),
+      proforma_number: type === 'PROFORMA' ? (proNum || 'PRO-001') : '',
+      invoice_date: new Date().toISOString().split('T')[0],
+      proforma_date: new Date().toISOString().split('T')[0],
+      date_of_supply: new Date().toISOString().split('T')[0]
+    });
+    setStep(1);
+    if (toast) toast('info', 'Started a fresh invoice creation.');
   };
 
   const handleTypeSelect = async (type) => {
@@ -115,9 +175,6 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
     } catch (e) {
       console.error('Error fetching sequence number on type select:', e);
     }
-
-    // Automatically advance to Step 2 (Invoice Details)
-    setStep(2);
   };
 
   const steps = [
@@ -182,6 +239,11 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
         toast('error', 'Please add at least one line item.');
         return false;
       }
+      const missingHsnItem = formData.items.find(i => !i.hsn_sac || !String(i.hsn_sac).trim());
+      if (missingHsnItem) {
+        toast('error', 'HSN / SAC code is mandatory. Please select an HSN code for all items to proceed.');
+        return false;
+      }
       const invalidItem = formData.items.find(i => !i.description || i.quantity <= 0 || i.rate < 0);
       if (invalidItem) {
         toast('error', 'Please ensure all line items have valid descriptions, quantities, and rates.');
@@ -208,7 +270,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
 
   const handleNext = () => {
     if (validateCurrentStep()) {
-      if (step === 3 && formData.buyer_name) {
+      if (FEATURE_FLAGS.DETAILS_PANEL_ENABLED && step === 3 && formData.buyer_name) {
         ipcClient.saveCustomer({
           name: formData.buyer_name,
           address: formData.buyer_address,
@@ -269,92 +331,122 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
   };
 
   const isProforma = formData.invoice_type === 'PROFORMA';
+  const hasDraftData = Boolean(step > 1 || formData.buyer_name || (formData.items && formData.items.some(i => i.description)));
 
   return (
     <PageContainer>
       <InvoiceStepper currentStep={step} setStep={setStep} steps={steps} />
 
-      <div 
-        ref={formContainerRef}
-        onKeyDown={handleKeyDown}
-        className="p-6 sm:p-8 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 flex flex-col justify-between shadow-none min-h-[380px]"
-      >
-        <div className="flex-1">
-          {step === 1 && (
-            <InvoiceTypeSelector
-              selectedType={formData.invoice_type}
-              onSelect={handleTypeSelect}
-            />
-          )}
-
-          {step === 2 && (
-            <InvoiceDetailsForm
-              formData={formData}
-              onChange={handleFieldChange}
-              errors={errors}
-              isProforma={isProforma}
-            />
-          )}
-
-          {step === 3 && (
-            <BuyerDetailsForm
-              formData={formData}
-              onChange={handleFieldChange}
-              errors={errors}
-            />
-          )}
-
-          {step === 4 && (
-            <ReferenceDetailsForm
-              formData={formData}
-              onChange={handleFieldChange}
-            />
-          )}
-
-          {step === 5 && (
-            <div className="space-y-6">
-              <ItemTable
-                items={formData.items}
-                setItems={(items) => handleFieldChange('items', items)}
-              />
-              <TaxSection
-                items={formData.items}
-                customerStateCode={formData.customer_state_code}
-                cgstRate={formData.cgst_rate ?? 9}
-                sgstRate={formData.sgst_rate ?? 9}
-                igstRate={formData.igst_rate ?? 18}
-                onChangeTaxRate={handleFieldChange}
-              />
-            </div>
-          )}
-
-          {step === 6 && (
-            <AdditionalDetailsForm
-              formData={formData}
-              onChange={handleFieldChange}
-            />
-          )}
-
-          {step === 7 && (
-            <InvoiceReview
-              formData={formData}
-              isProforma={isProforma}
-            />
-          )}
-
-          {step === 8 && (
-            <InvoicePreview
-              formData={formData}
-              onBack={() => setStep(7)}
-              onSaveSuccess={onInvoiceSaved}
-              onGoHome={onNavigateHome}
-              toast={toast}
-            />
-          )}
+      {hasDraftData && step < 8 && (
+        <div className="flex items-center justify-between px-2 -mt-3 mb-3 text-xs">
+          <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold text-[11px]">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Draft Auto-Saved (persists across tabs during session)</span>
+          </span>
+          <button
+            type="button"
+            onClick={handleResetDraft}
+            className="flex items-center gap-1 text-[11px] text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 transition-colors font-medium cursor-pointer"
+          >
+            <RotateCcw className="w-3 h-3" />
+            <span>Start Fresh (Reset Draft)</span>
+          </button>
         </div>
+      )}
 
-        {/* Wizard Bottom Nav */}
-        {step < 8 && (
+      {step === 8 ? (
+        <InvoicePreview
+          formData={formData}
+          onBack={() => {
+            if (formData.id) {
+              handleResetDraft(formData.invoice_type || 'NORMAL');
+            } else {
+              setStep(7);
+            }
+          }}
+          onNewInvoice={() => handleResetDraft(formData.invoice_type || 'NORMAL')}
+          onSaveSuccess={(inv) => {
+            sessionStorage.removeItem(DRAFT_STORAGE_KEY);
+            setFormData(prev => ({ ...prev, id: inv?.id }));
+            if (onInvoiceSaved) onInvoiceSaved(inv);
+          }}
+          onGoHome={() => {
+            sessionStorage.removeItem(DRAFT_STORAGE_KEY);
+            if (onNavigateHome) onNavigateHome();
+          }}
+          toast={toast}
+        />
+      ) : (
+        <div 
+          ref={formContainerRef}
+          onKeyDown={handleKeyDown}
+          className="p-6 sm:p-8 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 flex flex-col justify-between shadow-none min-h-[380px]"
+        >
+          <div className="flex-1">
+            {step === 1 && (
+              <InvoiceTypeSelector
+                selectedType={formData.invoice_type}
+                onSelect={handleTypeSelect}
+              />
+            )}
+
+            {step === 2 && (
+              <InvoiceDetailsForm
+                formData={formData}
+                onChange={handleFieldChange}
+                errors={errors}
+                isProforma={isProforma}
+              />
+            )}
+
+            {step === 3 && (
+              <BuyerDetailsForm
+                formData={formData}
+                onChange={handleFieldChange}
+                errors={errors}
+              />
+            )}
+
+            {step === 4 && (
+              <ReferenceDetailsForm
+                formData={formData}
+                onChange={handleFieldChange}
+              />
+            )}
+
+            {step === 5 && (
+              <div className="space-y-6">
+                <ItemTable
+                  items={formData.items}
+                  setItems={(items) => handleFieldChange('items', items)}
+                />
+                <TaxSection
+                  items={formData.items}
+                  customerStateCode={formData.customer_state_code}
+                  cgstRate={formData.cgst_rate ?? 9}
+                  sgstRate={formData.sgst_rate ?? 9}
+                  igstRate={formData.igst_rate ?? 18}
+                  onChangeTaxRate={handleFieldChange}
+                />
+              </div>
+            )}
+
+            {step === 6 && (
+              <AdditionalDetailsForm
+                formData={formData}
+                onChange={handleFieldChange}
+              />
+            )}
+
+            {step === 7 && (
+              <InvoiceReview
+                formData={formData}
+                isProforma={isProforma}
+              />
+            )}
+          </div>
+
+          {/* Wizard Bottom Nav */}
           <div className="flex items-center justify-between pt-6 border-t border-slate-200 dark:border-slate-800 mt-8">
             <Button
               variant="secondary"
@@ -373,8 +465,8 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
               {step === 7 ? 'Generate Invoice Document' : 'Next Step'}
             </Button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </PageContainer>
   );
 }

@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Wifi, WifiOff, HardDrive, Mail } from 'lucide-react';
+import { Wifi, WifiOff, Database, Mail } from 'lucide-react';
 import { ipcClient } from '../../services/ipcClient';
 
 export function StatusBar() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [pendingCount, setPendingCount] = useState(0);
+  const [isDbConnected, setIsDbConnected] = useState(true);
+
+  const checkDbStatus = async () => {
+    try {
+      const res = await ipcClient.listInvoices({ limit: 1 });
+      setIsDbConnected(Boolean(res && (Array.isArray(res.data) || Array.isArray(res))));
+    } catch (e) {
+      setIsDbConnected(false);
+    }
+  };
 
   const fetchQueueCount = async () => {
     try {
@@ -18,12 +28,17 @@ export function StatusBar() {
   };
 
   useEffect(() => {
+    checkDbStatus();
     fetchQueueCount();
-    const interval = setInterval(fetchQueueCount, 15000);
+    const interval = setInterval(() => {
+      fetchQueueCount();
+      checkDbStatus();
+    }, 15000);
 
     const handleOnline = () => {
       setIsOnline(true);
       fetchQueueCount();
+      checkDbStatus();
     };
     const handleOffline = () => setIsOnline(false);
 
@@ -39,11 +54,21 @@ export function StatusBar() {
 
   return (
     <footer className="h-7 bg-white dark:bg-slate-950 border-t border-slate-300 dark:border-slate-800 px-4 flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400 select-none shadow-none">
-      <div className="flex items-center gap-4">
-        <span className="flex items-center gap-1.5">
-          <HardDrive className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-          <span>SQLite Engine Connected</span>
-        </span>
+      <div className="flex items-center gap-3">
+        {/* SQL Database Symbol with Green / Red Connection Signal */}
+        <div 
+          className="flex items-center gap-1.5 cursor-default" 
+          title={isDbConnected ? 'SQL Database: Connected' : 'SQL Database: Disconnected'}
+        >
+          <Database className={`w-3.5 h-3.5 ${isDbConnected ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`} />
+          <span 
+            className={`w-2 h-2 rounded-full transition-colors ${
+              isDbConnected 
+                ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.7)] animate-pulse' 
+                : 'bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.7)]'
+            }`} 
+          />
+        </div>
         <span className="text-slate-300 dark:text-slate-700">|</span>
         <span className="flex items-center gap-1.5">
           <Mail className={`w-3 h-3 ${pendingCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-sky-600 dark:text-cyan-400'}`} />

@@ -1,3 +1,5 @@
+import { FEATURE_FLAGS } from '../constants/featureFlags.js';
+
 /**
  * Invoice Pagination Utility for Shepherd Enterprises Invoicing System
  * Exact A4 page partitioning matching official invoice PDF specification.
@@ -71,8 +73,8 @@ export function paginateInvoiceItems(items = [], invoiceData = {}) {
   );
   const totalItemsHeight = itemHeights.reduce((sum, h) => sum + h, 0);
 
-  // If all items fit into a single page
-  if (totalItemsHeight <= singlePageItemCapacity) {
+  // If single-page invoice is locked or all items fit into a single page
+  if (FEATURE_FLAGS?.SINGLE_PAGE_INVOICE_LOCKED || totalItemsHeight <= singlePageItemCapacity) {
     return [
       {
         pageNumber: 1,

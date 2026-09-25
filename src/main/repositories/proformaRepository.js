@@ -155,20 +155,19 @@ export function listDeletedProformas() {
 
 export function generateNextProformaNumber() {
   const db = getDatabase();
-  const row = db.prepare(`
-    SELECT proforma_number FROM proformas 
-    ORDER BY id DESC LIMIT 1
-  `).get();
+  const rows = db.prepare(`SELECT proforma_number FROM proformas`).all();
 
-  if (!row) {
-    return 'PRO-001';
+  let maxNum = 0;
+  for (const r of rows) {
+    const match = (r.proforma_number || '').match(/PRO-(\d+)/i);
+    if (match) {
+      const num = parseInt(match[1], 10);
+      if (!isNaN(num) && num > maxNum) {
+        maxNum = num;
+      }
+    }
   }
 
-  const match = row.proforma_number.match(/PRO-(\d+)/);
-  if (match) {
-    const nextNum = parseInt(match[1], 10) + 1;
-    return `PRO-${String(nextNum).padStart(3, '0')}`;
-  }
-
-  return `PRO-${Date.now().toString().slice(-4)}`;
+  return `PRO-${String(maxNum + 1).padStart(3, '0')}`;
 }
+

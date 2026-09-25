@@ -10,6 +10,7 @@ import { Details } from './pages/Details';
 import { Reports } from './pages/Reports';
 import { Settings } from './pages/Settings';
 import { ipcClient } from './services/ipcClient';
+import { FEATURE_FLAGS } from '../shared/constants/featureFlags';
 
 export default function App() {
   const [isInitializing, setIsInitializing] = useState(true);
@@ -161,7 +162,7 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'details' && <Details toast={showToast} />}
+        {activeTab === 'details' && FEATURE_FLAGS.DETAILS_PANEL_ENABLED && <Details toast={showToast} />}
 
         {activeTab === 'reports' && <Reports toast={showToast} />}
 

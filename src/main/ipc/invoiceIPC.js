@@ -3,30 +3,55 @@ import path from 'path';
 import { saveNewInvoice, fetchInvoice, fetchInvoiceByNumber, queryInvoices, getNextInvoiceNumber, duplicateExistingInvoice } from '../services/invoiceService.js';
 import { exportInvoiceToExcel } from '../services/excelService.js';
 import { generateInvoicePdf } from '../services/pdfService.js';
+import { formatHumanReadableError } from '../../shared/utils/errorHandler.js';
 
 export function registerInvoiceIPC() {
   ipcMain.handle('invoice:create', async (_, formData) => {
-    return await saveNewInvoice(formData);
+    try {
+      return await saveNewInvoice(formData);
+    } catch (err) {
+      throw new Error(formatHumanReadableError(err));
+    }
   });
 
   ipcMain.handle('invoice:get', async (_, id) => {
-    return fetchInvoice(id);
+    try {
+      return await fetchInvoice(id);
+    } catch (err) {
+      throw new Error(formatHumanReadableError(err));
+    }
   });
 
   ipcMain.handle('invoice:getByNumber', async (_, number) => {
-    return fetchInvoiceByNumber(number);
+    try {
+      return await fetchInvoiceByNumber(number);
+    } catch (err) {
+      throw new Error(formatHumanReadableError(err));
+    }
   });
 
   ipcMain.handle('invoice:list', async (_, filters) => {
-    return queryInvoices(filters);
+    try {
+      return await queryInvoices(filters);
+    } catch (err) {
+      throw new Error(formatHumanReadableError(err));
+    }
   });
 
   ipcMain.handle('invoice:getNextNumber', async () => {
-    return getNextInvoiceNumber();
+    try {
+      return await getNextInvoiceNumber();
+    } catch (err) {
+      throw new Error(formatHumanReadableError(err));
+    }
   });
 
   ipcMain.handle('invoice:duplicate', async (_, id) => {
-    return duplicateExistingInvoice(id);
+    try {
+      return await duplicateExistingInvoice(id);
+    } catch (err) {
+      throw new Error(formatHumanReadableError(err));
+    }
   });
 
   ipcMain.handle('invoice:exportPdf', async (event, invoiceData) => {

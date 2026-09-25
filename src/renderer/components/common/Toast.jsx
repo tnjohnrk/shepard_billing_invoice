@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { CheckCircle2, AlertCircle, XCircle, Info, X } from 'lucide-react';
+import { formatHumanReadableError } from '../../../shared/utils/errorHandler';
 
 export function Toast({ type = 'error', message, onClose, duration = 5000 }) {
   useEffect(() => {
@@ -12,6 +13,8 @@ export function Toast({ type = 'error', message, onClose, duration = 5000 }) {
   }, [duration, onClose]);
 
   if (!message) return null;
+
+  const displayMessage = type === 'error' ? formatHumanReadableError(message) : message;
 
   const icons = {
     success: <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />,
@@ -38,7 +41,7 @@ export function Toast({ type = 'error', message, onClose, duration = 5000 }) {
     <div className={`fixed bottom-6 right-6 z-[9999] flex flex-col rounded-xl border ${styles[type] || styles.error} shadow-md transition-all animate-slide-up max-w-md select-none overflow-hidden`}>
       <div className="flex items-center gap-2.5 px-4 py-3">
         {icons[type] || icons.error}
-        <p className="text-xs sm:text-sm font-medium pr-1">{message}</p>
+        <p className="text-xs sm:text-sm font-medium pr-1">{displayMessage}</p>
         {onClose && (
           <button
             onClick={onClose}

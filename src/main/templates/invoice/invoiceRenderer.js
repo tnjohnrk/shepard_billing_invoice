@@ -216,6 +216,14 @@ export function renderInvoiceHtml(invoiceData) {
       </tr>
     ` : '';
 
+    const totalWordsRowHtml = page.hasTotalsAndFooter ? `
+      <tr class="amount-words-row">
+        <td colspan="5" class="amount-words-cell">
+          <span class="font-bold">TOTAL AMOUNT IN WORDS:</span> ${escapeHtml(invoiceData.amount_in_words || '')}
+        </td>
+      </tr>
+    ` : '';
+
     const itemsTableHtml = `
       <table class="items-table">
         <thead>
@@ -237,6 +245,7 @@ export function renderInvoiceHtml(invoiceData) {
             <td class="col-amount"></td>
           </tr>
           ${pageSubtotalRowHtml}
+          ${totalWordsRowHtml}
         </tbody>
       </table>
     `;
@@ -255,11 +264,6 @@ export function renderInvoiceHtml(invoiceData) {
 
       footerSectionHtml = `
         <div class="bottom-content">
-          <!-- 5. Amount in Words Strip -->
-          <div class="amount-words-strip">
-            <span class="font-bold">TOTAL AMOUNT IN WORDS:</span> ${escapeHtml(invoiceData.amount_in_words || '')}
-          </div>
-
           <!-- 6. Bank Details & Tax Totals Section -->
           <table class="bank-tax-table">
             <tr class="bank-tax-row">

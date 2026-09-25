@@ -47,7 +47,7 @@ body {
 .invoice-box-frame {
   width: 100%;
   height: 100%;
-  border: 1.5px solid #000;
+  border: 2px solid #000;
   background: #fff;
   box-sizing: border-box;
   display: flex;
@@ -81,7 +81,7 @@ body {
 .header-table {
   width: 100%;
   border-collapse: collapse;
-  border-bottom: 1.5px solid #000;
+  border-bottom: 2px solid #000;
 }
 
 .header-left-col {
@@ -89,7 +89,7 @@ body {
   vertical-align: middle;
   text-align: center;
   padding: 6px;
-  border-right: 1px solid #000;
+  border-right: 1.5px solid #000;
 }
 
 .header-logo-img {
@@ -155,7 +155,7 @@ body {
 .sub-header-table {
   width: 100%;
   border-collapse: collapse;
-  border-bottom: 1.5px solid #000;
+  border-bottom: 2px solid #000;
 }
 
 .sub-header-row td {
@@ -167,7 +167,7 @@ body {
   width: 38%;
   font-size: 11px;
   font-weight: bold;
-  border-right: 1px solid #000;
+  border-right: 1.5px solid #000;
 }
 
 .cell-doc-title {
@@ -178,7 +178,7 @@ body {
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #1e3a8a;
-  border-right: 1px solid #000;
+  border-right: 1.5px solid #000;
 }
 
 .cell-copy-type {
@@ -204,20 +204,20 @@ body {
 .meta-table {
   width: 100%;
   border-collapse: collapse;
-  border-bottom: 1.5px solid #000;
+  border-bottom: 2px solid #000;
 }
 
 .meta-left-cell {
   width: 50%;
-  border-right: 1px solid #000;
-  border-bottom: 1px solid #000;
+  border-right: 1.5px solid #000;
+  border-bottom: 1.5px solid #000;
   padding: 4px 6px;
   vertical-align: top;
 }
 
 .meta-right-cell {
   width: 50%;
-  border-bottom: 1px solid #000;
+  border-bottom: 1.5px solid #000;
   padding: 4px 6px;
   vertical-align: top;
 }
@@ -248,7 +248,7 @@ body {
 
 .cust-gstin-cell {
   width: 50%;
-  border-right: 1px solid #000;
+  border-right: 1.5px solid #000;
   font-size: 10px;
 }
 
@@ -258,9 +258,22 @@ body {
 }
 
 /* 4. Items Grid Table */
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  flex: 1 1 auto;
+  height: 100%;
+  table-layout: fixed;
+  border-bottom: 2px solid #000;
+}
+
+.items-table tbody {
+  height: 100%;
+}
+
 .items-table th {
-  border-right: 1px solid #000;
-  border-bottom: 1.5px solid #000;
+  border-right: 1.5px solid #000;
+  border-bottom: 2px solid #000;
   background: #ffffff;
   font-size: 9.5px;
   font-weight: bold;
@@ -269,27 +282,51 @@ body {
   height: 22px;
 }
 
-.items-table th:last-child {
-  border-right: none;
-}
-
 .items-table td {
-  border-right: 1px solid #000;
+  border-right: 1.5px solid #000;
   border-bottom: none;
   border-top: none;
-  padding: 2px 6px;
+  padding: 4px 6px;
   font-size: 10px;
   vertical-align: top;
-  height: 16px;
+}
+
+.item-data-row td {
+  border-bottom: 1.5px solid #000;
+  padding: 5px 6px;
 }
 
 .items-table td:last-child {
   border-right: none;
 }
 
+.items-table tr.table-spacer-row {
+  height: 100%;
+}
+
 .items-table tr.table-spacer-row td {
-  height: auto;
+  height: 100%;
   padding: 0;
+  border-right: 1.5px solid #000;
+  border-bottom: none;
+  border-top: none;
+}
+
+.items-table tr.table-spacer-row td:last-child {
+  border-right: none;
+}
+
+.amount-words-row td,
+.amount-words-cell {
+  border-top: 2px solid #000 !important;
+  border-bottom: none !important;
+  border-right: none !important;
+  border-left: none !important;
+  padding: 5px 6px !important;
+  font-size: 10px !important;
+  font-weight: normal !important;
+  text-align: left !important;
+  background: #ffffff !important;
 }
 
 .col-desc,
@@ -350,7 +387,7 @@ body {
 
 /* Page-wise Subtotal Row (Multi-page invoices) */
 .page-subtotal-row td {
-  border-top: 1.5px solid #000;
+  border-top: 2px solid #000;
   background: #f8fafc;
   padding: 4px 6px;
   font-size: 9.5px;
@@ -359,7 +396,7 @@ body {
 
 .page-subtotal-label {
   text-align: right;
-  border-right: 1px solid #000;
+  border-right: 1.5px solid #000;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -389,7 +426,7 @@ body {
 
 /* Amount Words Strip */
 .amount-words-strip {
-  border-bottom: 1.5px solid #000;
+  border-bottom: 2px solid #000;
   padding: 5px 6px;
   font-size: 10px;
 }
@@ -398,12 +435,12 @@ body {
 .bank-tax-table {
   width: 100%;
   border-collapse: collapse;
-  border-bottom: 1.5px solid #000;
+  border-bottom: 2px solid #000;
 }
 
 .bank-details-cell {
   width: 60%;
-  border-right: 1px solid #000;
+  border-right: 1.5px solid #000;
   padding: 5px 6px;
   vertical-align: top;
 }
@@ -433,7 +470,7 @@ body {
 
 .tax-breakdown-table td {
   border: none;
-  border-bottom: 1px solid #000;
+  border-bottom: 1.5px solid #000;
   padding: 3px 6px;
   font-size: 9.5px;
 }
@@ -469,7 +506,7 @@ body {
   width: 50%;
   vertical-align: top;
   padding: 6px;
-  border-right: 1px solid #000;
+  border-right: 1.5px solid #000;
 }
 
 .terms-title {

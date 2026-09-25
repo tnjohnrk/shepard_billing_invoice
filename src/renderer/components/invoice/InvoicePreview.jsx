@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Printer, FileDown, FileSpreadsheet, Save, ArrowLeft, Home, ArrowRightLeft } from 'lucide-react';
+import { Printer, FileDown, FileSpreadsheet, Save, ArrowLeft, PlusCircle, ArrowRightLeft } from 'lucide-react';
 import { Button } from '../common/Button';
 import { ipcClient } from '../../services/ipcClient';
 import { computeCompleteInvoiceTotals } from '../../../shared/utils/sharedCalculations';
@@ -9,7 +9,7 @@ import { COMPANY_CONFIG } from '../../../main/config/companyConfig';
 import { paginateInvoiceItems } from '../../../shared/utils/invoicePagination';
 import shepherdInvoiceLogo from '../../assets/shepherd_invoice_logo.png';
 
-export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toast }) {
+export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNewInvoice, toast }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
   const [docData, setDocData] = useState(formData);
@@ -102,6 +102,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
 
       setSavedInvoice(result);
       setDocData(result);
+      sessionStorage.removeItem('shepherd_invoice_create_draft');
       toast('success', `${isProforma ? 'Proforma' : 'Tax Invoice'} saved! Automatic backup created.`);
       if (onSaveSuccess) onSaveSuccess(result);
       return result;
@@ -187,17 +188,18 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
   };
 
   return (
-    <div className="space-y-6 print:m-0 print:p-0">
-      {/* Top Controls Header */}
-      <div className="no-print flex flex-wrap items-center justify-between gap-4 p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none">
-        <div className="flex items-center gap-3">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 overflow-hidden shadow-none print:border-none print:bg-transparent print:m-0 print:p-0">
+      {/* 1. Top Controls Header (Attached directly at top of the single box) */}
+      <div className="no-print flex flex-wrap items-center justify-between gap-3 p-4 bg-white dark:bg-slate-900 border-b-2 border-slate-300 dark:border-slate-700">
+        <div className="flex items-center gap-2">
           <Button variant="secondary" icon={ArrowLeft} onClick={onBack}>
             Back
           </Button>
-
-          <Button variant="primary" icon={Home} onClick={handleGoHome}>
-            Dashboard
-          </Button>
+          {onNewInvoice && (
+            <Button variant="secondary" icon={PlusCircle} onClick={onNewInvoice}>
+              Create New Invoice
+            </Button>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -249,8 +251,8 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
         </div>
       </div>
 
-      {/* Exact Reference A4 Layout Frame */}
-      <div className="bg-slate-200 dark:bg-slate-900 p-6 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-none flex flex-col items-center gap-8 overflow-x-auto print:bg-transparent print:p-0 print:border-none print:shadow-none print:gap-0">
+      {/* 2. Exact Reference A4 Layout Frame (Inside the same container box) */}
+      <div className="bg-slate-100 dark:bg-slate-950 p-6 sm:p-8 flex flex-col items-center gap-8 overflow-x-auto print:bg-transparent print:p-0 print:border-none print:shadow-none print:gap-0">
         {pages.map((page) => (
           <div key={page.pageNumber} className="w-full flex flex-col items-center">
             {pages.length > 1 && (
@@ -273,16 +275,16 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
               className="bg-white text-black border border-slate-300 shadow-xl text-left font-sans text-xs flex flex-col justify-between overflow-hidden print:w-full print:h-[281mm] print:min-h-[281mm] print:p-0 print:border-none print:shadow-none print:break-after-page print:page-break-after-always print:last:break-after-avoid"
             >
               {/* Overall Box Layout Frame from Header to Footer */}
-              <div className="border-[1.5px] border-black w-full h-full bg-white flex flex-col justify-between flex-1">
+              <div className="border-2 border-black w-full h-full bg-white flex flex-col justify-between flex-1">
                 
-                <div className="flex-1 flex flex-col">
+                <div className="flex-1 flex flex-col min-h-0">
                   {/* 1. Header Section (Only on Page 1) */}
                   {page.isFirstPage ? (
                   <>
-                    <table className="w-full border-collapse border-b-[1.5px] border-black" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
+                    <table className="w-full border-collapse border-b-2 border-black" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
                       <tbody>
                         <tr>
-                          <td className="w-[22%] align-middle text-center p-2 border-r border-black">
+                          <td className="w-[22%] align-middle text-center p-2 border-r-[1.5px] border-black">
                             <img
                               src={shepherdInvoiceLogo}
                               alt="Shepherd Enterprises"
@@ -314,13 +316,13 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                     </table>
 
                     {/* 2. Sub-Header Row: GSTIN | DOC TYPE | COPY TYPE & PAGE NO */}
-                    <table className="w-full border-collapse border-b-[1.5px] border-black text-[10px]">
+                    <table className="w-full border-collapse border-b-2 border-black text-[10px]">
                       <tbody>
                         <tr>
-                          <td className="w-[38%] p-1.5 font-bold border-r border-black align-middle text-[11px]">
+                          <td className="w-[38%] p-1.5 font-bold border-r-[1.5px] border-black align-middle text-[11px]">
                             GSTIN: {COMPANY_CONFIG.gstin || '33ABUCS2217H1Z8'}
                           </td>
-                          <td className="w-[24%] p-1.5 font-black text-center text-blue-900 text-sm tracking-wider uppercase border-r border-black align-middle">
+                          <td className="w-[24%] p-1.5 font-black text-center text-blue-900 text-sm tracking-wider uppercase border-r-[1.5px] border-black align-middle">
                             {isProforma ? 'PROFORMA INVOICE' : 'INVOICE'}
                           </td>
                           <td className="w-[38%] p-1.5 font-bold text-right uppercase tracking-wider text-[10px] align-middle">
@@ -334,11 +336,11 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                     </table>
 
                     {/* 3. Meta Grid: Invoice Details & Logistics (2 Columns) */}
-                    <table className="w-full border-collapse border-b-[1.5px] border-black text-[10px]">
+                    <table className="w-full border-collapse border-b-2 border-black text-[10px]">
                       <tbody>
-                        <tr className="border-b border-black">
+                        <tr className="border-b-[1.5px] border-black">
                           {/* Left Meta Column */}
-                          <td className="w-[50%] p-1.5 border-r border-black align-top space-y-0.5">
+                          <td className="w-[50%] p-1.5 border-r-[1.5px] border-black align-top space-y-0.5">
                             <div className="leading-tight">
                               <span className="font-bold">INVOICE NO : </span>
                               <span className="font-bold">{isProforma ? (fullData.proforma_number || fullData.invoice_number) : (fullData.invoice_number || fullData.proforma_number)}</span>
@@ -388,7 +390,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
 
                         {/* Customer GSTIN & State Code Row */}
                         <tr>
-                          <td className="w-[50%] p-1.5 border-r border-black align-middle font-bold">
+                          <td className="w-[50%] p-1.5 border-r-[1.5px] border-black align-middle font-bold">
                             CUSTOMER' GSTIN: {fullData.customer_gstin || 'N/A'}
                           </td>
                           <td className="w-[50%] p-1.5 align-middle space-y-0.5">
@@ -407,13 +409,13 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                   </>
                 ) : (
                   /* Continuation Page Sub-Header Row with Page Number */
-                  <table className="w-full border-collapse border-b-[1.5px] border-black text-[10px]">
+                  <table className="w-full border-collapse border-b-2 border-black text-[10px]">
                     <tbody>
                       <tr className="bg-slate-50">
-                        <td className="w-[38%] p-1.5 font-bold border-r border-black align-middle text-[11px]">
+                        <td className="w-[38%] p-1.5 font-bold border-r-[1.5px] border-black align-middle text-[11px]">
                           INVOICE NO: {isProforma ? (fullData.proforma_number || fullData.invoice_number) : (fullData.invoice_number || fullData.proforma_number)}
                         </td>
-                        <td className="w-[24%] p-1.5 font-black text-center text-blue-900 text-sm tracking-wider uppercase border-r border-black align-middle">
+                        <td className="w-[24%] p-1.5 font-black text-center text-blue-900 text-sm tracking-wider uppercase border-r-[1.5px] border-black align-middle">
                           {isProforma ? 'PROFORMA INVOICE' : 'INVOICE'}
                         </td>
                         <td className="w-[38%] p-1.5 font-bold text-right uppercase tracking-wider text-[10px] align-middle">
@@ -428,13 +430,13 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                 )}
 
                   {/* 4. Line Items Table */}
-                  <table className="w-full border-collapse border-b-[1.5px] border-black text-left text-[10px] flex-1" style={{ tableLayout: 'fixed', height: '100%', display: 'table' }}>
+                  <table className="w-full border-collapse border-b-2 border-black text-left text-[10px] flex-1" style={{ tableLayout: 'fixed', height: '100%', display: 'table' }}>
                     <thead>
-                      <tr className="bg-white border-b-[1.5px] border-black font-bold uppercase text-[9.5px]">
-                        <th className="p-1.5 border-r border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
-                        <th className="p-1.5 border-r border-black text-center" style={{ width: '11%' }}>HSN</th>
-                        <th className="p-1.5 border-r border-black text-center" style={{ width: '11%' }}>QTY.</th>
-                        <th className="p-1.5 border-r border-black text-right" style={{ width: '12%' }}>RATE</th>
+                      <tr className="bg-white border-b-2 border-black font-bold uppercase text-[9.5px]">
+                        <th className="p-1.5 border-r-[1.5px] border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
+                        <th className="p-1.5 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>HSN</th>
+                        <th className="p-1.5 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>QTY.</th>
+                        <th className="p-1.5 border-r-[1.5px] border-black text-right" style={{ width: '12%' }}>RATE</th>
                         <th className="p-1.5 text-right" style={{ width: '12%' }}>AMOUNT</th>
                       </tr>
                     </thead>
@@ -442,8 +444,8 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                       {page.items.map((item, idx) => {
                         const isFirstOverallItem = page.isFirstPage && idx === 0;
                         return (
-                          <tr key={idx} className="align-top">
-                            <td className="p-1.5 border-r border-black" style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
+                          <tr key={idx} className="align-top border-b-[1.5px] border-black">
+                            <td className="p-1.5 border-r-[1.5px] border-black" style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
                               <div className="font-bold uppercase text-slate-950 leading-tight text-[9.5px] whitespace-pre-wrap">
                                 {item.description}
                               </div>
@@ -464,9 +466,9 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                                 </div>
                               )}
                             </td>
-                            <td className="p-1.5 border-r border-black text-center">{item.hsn_sac || '-'}</td>
-                            <td className="p-1.5 border-r border-black text-center">{item.quantity}</td>
-                            <td className="p-1.5 border-r border-black text-right">
+                            <td className="p-1.5 border-r-[1.5px] border-black text-center">{item.hsn_sac || '-'}</td>
+                            <td className="p-1.5 border-r-[1.5px] border-black text-center">{item.quantity}</td>
+                            <td className="p-1.5 border-r-[1.5px] border-black text-right">
                               {Number(item.rate).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
                             <td className="p-1.5 text-right font-medium">
@@ -477,16 +479,16 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                       })}
                       {/* Spacer Row to stretch table vertical border lines to bottom */}
                       <tr className="table-spacer-row" style={{ height: '100%' }}>
-                        <td className="p-1.5 border-r border-black"></td>
-                        <td className="p-1.5 border-r border-black"></td>
-                        <td className="p-1.5 border-r border-black"></td>
-                        <td className="p-1.5 border-r border-black"></td>
+                        <td className="p-1.5 border-r-[1.5px] border-black"></td>
+                        <td className="p-1.5 border-r-[1.5px] border-black"></td>
+                        <td className="p-1.5 border-r-[1.5px] border-black"></td>
+                        <td className="p-1.5 border-r-[1.5px] border-black"></td>
                         <td className="p-1.5"></td>
                       </tr>
                       {/* Page-wise Subtotal Row (When invoice has more than 1 page) */}
                       {page.totalPages > 1 && (
-                        <tr className="border-t-[1.5px] border-black bg-slate-50 font-bold text-[9.5px]">
-                          <td colSpan={4} className="p-1.5 border-r border-black text-right uppercase tracking-wider">
+                        <tr className="border-t-2 border-black bg-slate-50 font-bold text-[9.5px]">
+                          <td colSpan={4} className="p-1.5 border-r-[1.5px] border-black text-right uppercase tracking-wider">
                             {!page.isLastPage && (
                               <span className="float-left text-[8.5px] italic text-slate-500 font-normal">
                                 Continued on Page {page.pageNumber + 1}...
@@ -499,6 +501,16 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                           </td>
                         </tr>
                       )}
+
+                      {/* Total Amount in Words Row (On last page, perfectly attached to vertical table lines) */}
+                      {page.hasTotalsAndFooter && (
+                        <tr className="border-t-2 border-black bg-white font-normal text-[10px]">
+                          <td colSpan={5} className="p-1.5 text-left">
+                            <span className="font-bold">TOTAL AMOUNT IN WORDS: </span>
+                            {fullData.amount_in_words}
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -506,18 +518,12 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                 {/* Bottom Section (Totals, Bank Details, and Footer on Last Page) */}
                 {page.hasTotalsAndFooter && (
                   <div className="w-full">
-                    {/* 5. Amount Words Strip */}
-                    <div className="p-1.5 border-b-[1.5px] border-black font-normal text-[10px]">
-                      <span className="font-bold">TOTAL AMOUNT IN WORDS: </span>
-                      {fullData.amount_in_words}
-                    </div>
-
                     {/* 6. Bank Details & Tax Summary Row */}
-                    <table className="w-full border-collapse border-b-[1.5px] border-black text-[9.5px]">
+                    <table className="w-full border-collapse border-b-2 border-black text-[9.5px]">
                       <tbody>
                         <tr>
                           {/* Left: Bank Details */}
-                          <td className="w-[60%] p-1.5 border-r border-black align-top space-y-0.5">
+                          <td className="w-[60%] p-1.5 border-r-[1.5px] border-black align-top space-y-0.5">
                             <div className="font-bold text-[10px] uppercase text-slate-900 mb-1">BANK DETAILS</div>
                             <div><span className="font-bold">BANK NAME: </span>{COMPANY_CONFIG.bank_name}: {COMPANY_CONFIG.account_number}</div>
                             <div><span className="font-bold">BRANCH NAME: </span>{(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
@@ -531,7 +537,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                                 {pages.length > 1 && pages.map((p) => {
                                   const pSub = (p.items || []).reduce((sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0), 0);
                                   return (
-                                    <tr key={p.pageNumber} className="border-b border-black text-slate-800 bg-slate-50/80 text-[9px]">
+                                    <tr key={p.pageNumber} className="border-b-[1.5px] border-black text-slate-800 bg-slate-50/80 text-[9px]">
                                       <td className="p-1 text-left w-[65%]">PAGE {p.pageNumber} SUB TOTAL</td>
                                       <td className="p-1 text-right w-[35%] font-medium">
                                         {pSub.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
@@ -539,7 +545,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                                     </tr>
                                   );
                                 })}
-                                <tr className="border-b border-black font-bold">
+                                <tr className="border-b-[1.5px] border-black font-bold">
                                   <td className="p-1 text-left w-[65%]">TOTAL AMOUNT BEFORE TAX</td>
                                   <td className="p-1 text-right w-[35%] font-bold">
                                     {fullData.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
@@ -547,13 +553,13 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                                 </tr>
                                 {totals.isIntraState ? (
                                   <>
-                                    <tr className="border-b border-black">
+                                    <tr className="border-b-[1.5px] border-black">
                                       <td className="p-1 text-left">ADD CGST: {totals.cgstRate}%</td>
                                       <td className="p-1 text-right font-medium">
                                         {totals.cgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
                                     </tr>
-                                    <tr className="border-b border-black">
+                                    <tr className="border-b-[1.5px] border-black">
                                       <td className="p-1 text-left">ADD SGST: {totals.sgstRate}%</td>
                                       <td className="p-1 text-right font-medium">
                                         {totals.sgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
@@ -561,7 +567,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                                     </tr>
                                   </>
                                 ) : (
-                                  <tr className="border-b border-black">
+                                  <tr className="border-b-[1.5px] border-black">
                                     <td className="p-1 text-left">ADD IGST: {totals.igstRate}%</td>
                                     <td className="p-1 text-right font-medium">
                                       {totals.igstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
@@ -569,7 +575,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                                   </tr>
                                 )}
                                 {fullData.round_off !== 0 && fullData.round_off != null && (
-                                  <tr className="border-b border-black">
+                                  <tr className="border-b-[1.5px] border-black">
                                     <td className="p-1 text-left">ROUND OFF</td>
                                     <td className="p-1 text-right font-medium">
                                       {fullData.round_off > 0 ? '+' : ''}{Number(fullData.round_off).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
@@ -593,7 +599,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
                     <table className="w-full border-collapse text-[9px]">
                       <tbody>
                         <tr>
-                          <td className="w-[50%] align-top p-2 border-r border-black">
+                          <td className="w-[50%] align-top p-2 border-r-[1.5px] border-black">
                             <div className="font-bold uppercase text-[9.5px] text-slate-900 mb-1">TERMS AND CONDITIONS</div>
                             <div className="text-[8.5px] text-slate-700 leading-tight">
                               We declare that this invoice shows the actual value of services described and that all particulars are true and correct.

@@ -1,6 +1,7 @@
 import { 
   createProforma, 
   getProformaById, 
+  getProformaByNumber,
   listProformas, 
   generateNextProformaNumber, 
   updateProformaStatus,
@@ -30,7 +31,15 @@ export async function saveNewProforma(formData) {
     formData.igst_rate
   );
 
-  const proformaNumber = formData.proforma_number || generateNextProformaNumber();
+  let proformaNumber = formData.proforma_number;
+  if (!proformaNumber) {
+    proformaNumber = generateNextProformaNumber();
+  } else if (!formData.id) {
+    const existing = getProformaByNumber(proformaNumber);
+    if (existing) {
+      proformaNumber = generateNextProformaNumber();
+    }
+  }
 
   const proformaModel = {
     proforma_number: proformaNumber,

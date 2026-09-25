@@ -30,7 +30,15 @@ export async function saveNewInvoice(formData) {
     formData.igst_rate
   );
 
-  const invoiceNumber = formData.invoice_number || generateNextInvoiceNumber();
+  let invoiceNumber = formData.invoice_number;
+  if (!invoiceNumber) {
+    invoiceNumber = generateNextInvoiceNumber();
+  } else if (!formData.id) {
+    const existing = getInvoiceByNumber(invoiceNumber);
+    if (existing) {
+      invoiceNumber = generateNextInvoiceNumber();
+    }
+  }
 
   const invoiceModel = {
     invoice_number: invoiceNumber,

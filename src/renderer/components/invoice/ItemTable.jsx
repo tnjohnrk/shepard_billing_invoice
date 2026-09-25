@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Info } from 'lucide-react';
 import { ItemRow } from './ItemRow';
 import { Button } from '../common/Button';
 import { ipcClient } from '../../services/ipcClient';
+import { FEATURE_FLAGS } from '../../../shared/constants/featureFlags';
 
 export function ItemTable({ items = [], setItems }) {
   const [catalogProducts, setCatalogProducts] = useState([]);
@@ -42,7 +43,10 @@ export function ItemTable({ items = [], setItems }) {
     });
   };
 
+  const maxReached = FEATURE_FLAGS.SINGLE_PAGE_INVOICE_LOCKED && (items || []).length >= FEATURE_FLAGS.MAX_ITEMS_PER_INVOICE;
+
   const handleAddItem = () => {
+    if (maxReached) return;
     setItems(prevItems => [
       ...(Array.isArray(prevItems) ? prevItems : []),
       { description: '', hsn_sac: '', quantity: 1, rate: 0 }
@@ -67,7 +71,7 @@ export function ItemTable({ items = [], setItems }) {
             <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-300 dark:border-slate-700 uppercase font-bold text-slate-700 dark:text-slate-300">
               <th className="px-3 py-3 text-center border-r border-slate-300 dark:border-slate-700" style={{ width: '5%' }}>#</th>
               <th className="px-3 py-3 border-r border-slate-300 dark:border-slate-700" style={{ width: '40%' }}>Description</th>
-              <th className="px-3 py-3 text-center border-r border-slate-300 dark:border-slate-700" style={{ width: '15%' }}>HSN/SAC</th>
+              <th className="px-3 py-3 text-left border-r border-slate-300 dark:border-slate-700" style={{ width: '15%' }}>HSN / SAC</th>
               <th className="px-3 py-3 text-right border-r border-slate-300 dark:border-slate-700" style={{ width: '12%' }}>Qty</th>
               <th className="px-3 py-3 text-right border-r border-slate-300 dark:border-slate-700" style={{ width: '13%' }}>Rate (₹)</th>
               <th className="px-3 py-3 text-right border-r border-slate-300 dark:border-slate-700" style={{ width: '15%' }}>Amount (₹)</th>
@@ -92,10 +96,23 @@ export function ItemTable({ items = [], setItems }) {
         </table>
       </div>
 
-      <div className="flex justify-end">
-        <Button variant="secondary" size="sm" icon={Plus} onClick={handleAddItem}>
-          Add Line Item
-        </Button>
+      <div className="flex items-center justify-between">
+        {FEATURE_FLAGS.SINGLE_PAGE_INVOICE_LOCKED && (
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
+            <Info className="w-4 h-4 text-sky-500 shrink-0" />
+            <span>
+              Single-page format: {(items || []).length} / {FEATURE_FLAGS.MAX_ITEMS_PER_INVOICE} items added
+              {maxReached && ' (Maximum limit reached)'}
+            </span>
+          </div>
+        )}
+        <div className="ml-auto">
+          {!maxReached && (
+            <Button variant="secondary" size="sm" icon={Plus} onClick={handleAddItem}>
+              Add Line Item
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

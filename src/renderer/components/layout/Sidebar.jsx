@@ -1,13 +1,14 @@
 import React from 'react';
 import { LayoutDashboard, FilePlus, History, BarChart3, Layers, Settings, ShieldCheck } from 'lucide-react';
 import companyLogo from '../../assets/logo.png';
+import { FEATURE_FLAGS } from '../../../shared/constants/featureFlags';
 
 export function Sidebar({ activeTab, setActiveTab }) {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'create', label: 'Create Invoice', icon: FilePlus },
     { id: 'history', label: 'History', icon: History },
-    { id: 'details', label: 'Details', icon: Layers },
+    ...(FEATURE_FLAGS.DETAILS_PANEL_ENABLED ? [{ id: 'details', label: 'Details', icon: Layers }] : []),
     { id: 'reports', label: 'Reports', icon: BarChart3 },
     { id: 'settings', label: 'Settings', icon: Settings }
   ];

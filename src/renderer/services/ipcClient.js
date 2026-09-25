@@ -70,9 +70,9 @@ function renderClientInvoiceHtml(data) {
 
   const pagesHtml = pages.map((page) => {
     const headerHtml = page.isFirstPage ? `
-      <table style="width: 100%; border-collapse: collapse; border-bottom: 1.5px solid #000;">
+      <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000;">
         <tr>
-          <td style="width: 22%; vertical-align: middle; text-align: center; border-right: 1px solid #000; padding: 6px;">
+          <td style="width: 22%; vertical-align: middle; text-align: center; border-right: 1.5px solid #000; padding: 6px;">
             <img src="${shepherdInvoiceLogo}" alt="Logo" style="width: 78px; height: 78px; object-fit: contain; display: block; margin: 0 auto;" />
             <div style="font-size: 8.5px; font-weight: bold; text-transform: uppercase; margin-top: 2px; color: #1e293b;">SHEPHERD ENTERPRISES</div>
             <div style="font-size: 8px; color: #475569;">${upiHandle}</div>
@@ -87,12 +87,12 @@ function renderClientInvoiceHtml(data) {
       </table>
 
       <!-- Sub-Header Row -->
-      <table style="width: 100%; border-collapse: collapse; border-bottom: 1.5px solid #000; font-size: 10px;">
+      <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000; font-size: 10px;">
         <tr>
-          <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 11px; border-right: 1px solid #000;">
+          <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 11px; border-right: 1.5px solid #000;">
             GSTIN: ${COMPANY_CONFIG.gstin || '33ABUCS2217H1Z8'}
           </td>
-          <td style="width: 24%; padding: 4px 6px; font-weight: 900; font-size: 15px; text-align: center; color: #1e3a8a; text-transform: uppercase; border-right: 1px solid #000;">
+          <td style="width: 24%; padding: 4px 6px; font-weight: 900; font-size: 15px; text-align: center; color: #1e3a8a; text-transform: uppercase; border-right: 1.5px solid #000;">
             ${docType}
           </td>
           <td style="width: 38%; padding: 4px 6px; font-weight: bold; text-align: right; text-transform: uppercase; font-size: 10px;">
@@ -103,9 +103,9 @@ function renderClientInvoiceHtml(data) {
       </table>
 
       <!-- Meta Grid -->
-      <table style="width: 100%; border-collapse: collapse; border-bottom: 1.5px solid #000; font-size: 10px;">
+      <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000; font-size: 10px;">
         <tr>
-          <td style="width: 50%; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 4px 6px; vertical-align: top;">
+          <td style="width: 50%; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; padding: 4px 6px; vertical-align: top;">
             <div style="line-height: 1.35; margin-bottom: 2px;"><strong>INVOICE NO :</strong> <strong>${docNum}</strong></div>
             <div style="line-height: 1.35; margin-bottom: 2px;"><strong>INVOICE DATE:</strong> ${docDate}</div>
             <div style="line-height: 1.35; margin-bottom: 2px;">
@@ -117,7 +117,7 @@ function renderClientInvoiceHtml(data) {
               <div style="line-height: 1.35; margin-bottom: 2px;"><strong>CUSTOMER ADDRESS:</strong> <span style="white-space: pre-line; font-size: 9.5px;">${data.buyer_address || ''}</span></div>
             </div>
           </td>
-          <td style="width: 50%; border-bottom: 1px solid #000; padding: 4px 6px; vertical-align: top;">
+          <td style="width: 50%; border-bottom: 1.5px solid #000; padding: 4px 6px; vertical-align: top;">
             <div style="line-height: 1.35; margin-bottom: 2px;"><strong>TRANSPORTATION MODE:</strong> ${data.transportation_mode || '-'}</div>
             <div style="line-height: 1.35; margin-bottom: 2px;"><strong>VEHICLE NO:</strong> ${data.vehicle_number || '-'}</div>
             <div style="line-height: 1.35; margin-bottom: 2px;"><strong>DATE OF SUPPLY:</strong> ${data.date_of_supply || docDate || '-'}</div>
@@ -125,7 +125,7 @@ function renderClientInvoiceHtml(data) {
           </td>
         </tr>
         <tr>
-          <td style="width: 50%; border-right: 1px solid #000; padding: 4px 6px; font-size: 10px; font-weight: bold;">
+          <td style="width: 50%; border-right: 1.5px solid #000; padding: 4px 6px; font-size: 10px; font-weight: bold;">
             CUSTOMER' GSTIN: ${data.customer_gstin || 'N/A'}
           </td>
           <td style="width: 50%; padding: 4px 6px; font-size: 10px;">
@@ -135,12 +135,12 @@ function renderClientInvoiceHtml(data) {
         </tr>
       </table>
     ` : `
-      <table style="width: 100%; border-collapse: collapse; border-bottom: 1.5px solid #000; font-size: 10px; background: #f8fafc;">
+      <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000; font-size: 10px; background: #f8fafc;">
         <tr>
-          <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 11px; border-right: 1px solid #000;">
+          <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 11px; border-right: 1.5px solid #000;">
             INVOICE NO: ${docNum}
           </td>
-          <td style="width: 24%; padding: 4px 6px; font-weight: 900; font-size: 15px; text-align: center; color: #1e3a8a; text-transform: uppercase; border-right: 1px solid #000;">
+          <td style="width: 24%; padding: 4px 6px; font-weight: 900; font-size: 15px; text-align: center; color: #1e3a8a; text-transform: uppercase; border-right: 1.5px solid #000;">
             ${docType}
           </td>
           <td style="width: 38%; padding: 4px 6px; font-weight: bold; text-align: right; text-transform: uppercase; font-size: 10px;">
@@ -154,29 +154,36 @@ function renderClientInvoiceHtml(data) {
     const itemRows = page.items.map((item, idx) => {
       const isFirstOverallItem = page.isFirstPage && idx === 0;
       const formattedDesc = String(item.description || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\r?\n/g, '<br/>');
-      return `<tr><td style="width: 54%; padding: 2.5px 6px; border-right: 1px solid #000; vertical-align: top; word-break: break-word; overflow-wrap: break-word;"><div style="font-weight: bold; text-transform: uppercase; font-size: 9.5px; line-height: 1.3; word-break: break-word; overflow-wrap: break-word;">${formattedDesc}</div>${isFirstOverallItem ? refsHtml : ''}</td><td style="width: 11%; padding: 2.5px 6px; border-right: 1px solid #000; text-align: center; vertical-align: top; font-size: 10px;">${item.hsn_sac || '-'}</td><td style="width: 11%; padding: 2.5px 6px; border-right: 1px solid #000; text-align: center; vertical-align: top; font-size: 10px;">${item.quantity || 0}</td><td style="width: 12%; padding: 2.5px 6px; border-right: 1px solid #000; text-align: right; vertical-align: top; font-size: 10px;">${Number(item.rate || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td><td style="width: 12%; padding: 2.5px 6px; text-align: right; vertical-align: top; font-size: 10px;">${Number(item.amount || ((item.quantity || 0) * (item.rate || 0))).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td></tr>`;
+      return `<tr><td style="width: 54%; padding: 2.5px 6px; border-right: 1.5px solid #000; vertical-align: top; word-break: break-word; overflow-wrap: break-word;"><div style="font-weight: bold; text-transform: uppercase; font-size: 9.5px; line-height: 1.3; word-break: break-word; overflow-wrap: break-word;">${formattedDesc}</div>${isFirstOverallItem ? refsHtml : ''}</td><td style="width: 11%; padding: 2.5px 6px; border-right: 1.5px solid #000; text-align: center; vertical-align: top; font-size: 10px;">${item.hsn_sac || '-'}</td><td style="width: 11%; padding: 2.5px 6px; border-right: 1.5px solid #000; text-align: center; vertical-align: top; font-size: 10px;">${item.quantity || 0}</td><td style="width: 12%; padding: 2.5px 6px; border-right: 1.5px solid #000; text-align: right; vertical-align: top; font-size: 10px;">${Number(item.rate || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td><td style="width: 12%; padding: 2.5px 6px; text-align: right; vertical-align: top; font-size: 10px;">${Number(item.amount || ((item.quantity || 0) * (item.rate || 0))).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td></tr>`;
     }).join('');
 
     const itemsTableHtml = `
       <table style="width: 100%; table-layout: fixed; border-collapse: collapse; flex: 1; display: table; height: 100%;">
         <thead>
-          <tr style="background: #ffffff; border-bottom: 1.5px solid #000; font-size: 9.5px; font-weight: bold; text-align: center;">
-            <th style="padding: 4px 6px; border-right: 1px solid #000; text-align: left; width: 54%; height: 22px;">DESCRIPTION</th>
-            <th style="padding: 4px 6px; border-right: 1px solid #000; width: 11%;">HSN</th>
-            <th style="padding: 4px 6px; border-right: 1px solid #000; width: 11%;">QTY.</th>
-            <th style="padding: 4px 6px; border-right: 1px solid #000; width: 12%; text-align: right;">RATE</th>
+          <tr style="background: #ffffff; border-bottom: 2px solid #000; font-size: 9.5px; font-weight: bold; text-align: center;">
+            <th style="padding: 4px 6px; border-right: 1.5px solid #000; text-align: left; width: 54%; height: 22px;">DESCRIPTION</th>
+            <th style="padding: 4px 6px; border-right: 1.5px solid #000; width: 11%;">HSN</th>
+            <th style="padding: 4px 6px; border-right: 1.5px solid #000; width: 11%;">QTY.</th>
+            <th style="padding: 4px 6px; border-right: 1.5px solid #000; width: 12%; text-align: right;">RATE</th>
             <th style="padding: 4px 6px; width: 12%; text-align: right;">AMOUNT</th>
           </tr>
         </thead>
         <tbody>
           ${itemRows}
-          <tr class="table-spacer-row">
-            <td style="border-right: 1px solid #000; padding: 0;"></td>
-            <td style="border-right: 1px solid #000; padding: 0;"></td>
-            <td style="border-right: 1px solid #000; padding: 0;"></td>
-            <td style="border-right: 1px solid #000; padding: 0;"></td>
+          <tr class="table-spacer-row" style="height: 100%;">
+            <td style="border-right: 1.5px solid #000; padding: 0;"></td>
+            <td style="border-right: 1.5px solid #000; padding: 0;"></td>
+            <td style="border-right: 1.5px solid #000; padding: 0;"></td>
+            <td style="border-right: 1.5px solid #000; padding: 0;"></td>
             <td style="padding: 0;"></td>
           </tr>
+          ${page.hasTotalsAndFooter ? `
+          <tr style="border-top: 2px solid #000; background: #fff;">
+            <td colspan="5" style="padding: 5px 6px; font-size: 10px; font-weight: normal; text-align: left;">
+              <strong>TOTAL AMOUNT IN WORDS:</strong> ${data.amount_in_words || ''}
+            </td>
+          </tr>
+          ` : ''}
         </tbody>
       </table>
     `;
@@ -184,14 +191,10 @@ function renderClientInvoiceHtml(data) {
     let bottomSectionHtml = '';
     if (page.hasTotalsAndFooter) {
       bottomSectionHtml = `
-        <div style="width: 100%; border-top: 1.5px solid #000;">
-          <div style="border-bottom: 1.5px solid #000; padding: 5px 6px; font-size: 10px;">
-            <strong>TOTAL AMOUNT IN WORDS:</strong> ${data.amount_in_words || ''}
-          </div>
-
-          <table style="width: 100%; border-collapse: collapse; border-bottom: 1.5px solid #000;">
+        <div style="width: 100%;">
+          <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000;">
             <tr>
-              <td style="width: 60%; border-right: 1px solid #000; padding: 5px 6px; vertical-align: top;">
+              <td style="width: 60%; border-right: 1.5px solid #000; padding: 5px 6px; vertical-align: top;">
                 <div style="font-weight: bold; font-size: 10px; margin-bottom: 3px;">BANK DETAILS</div>
                 <div style="font-size: 9.5px; line-height: 1.35; margin-bottom: 2px;"><strong>BANK NAME:</strong> ${COMPANY_CONFIG.bank_name}: ${COMPANY_CONFIG.account_number}</div>
                 <div style="font-size: 9.5px; line-height: 1.35; margin-bottom: 2px;"><strong>BRANCH NAME:</strong> ${COMPANY_CONFIG.branch_name}</div>
@@ -200,8 +203,8 @@ function renderClientInvoiceHtml(data) {
               <td style="width: 40%; padding: 0; vertical-align: top;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 9.5px;">
                   <tr>
-                    <td style="padding: 3px 6px; width: 65%; border-bottom: 1px solid #000;">TOTAL AMOUNT BEFORE TAX</td>
-                    <td style="padding: 3px 6px; width: 35%; text-align: right; border-bottom: 1px solid #000;">${Number(data.subtotal || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                    <td style="padding: 3px 6px; width: 65%; border-bottom: 1.5px solid #000;">TOTAL AMOUNT BEFORE TAX</td>
+                    <td style="padding: 3px 6px; width: 35%; text-align: right; border-bottom: 1.5px solid #000;">${Number(data.subtotal || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
                   </tr>
                   ${taxRows}
                   <tr style="background: #f8fafc; font-weight: bold; font-size: 10px;">
@@ -215,7 +218,7 @@ function renderClientInvoiceHtml(data) {
 
           <table style="width: 100%; border-collapse: collapse;">
             <tr>
-              <td style="width: 50%; vertical-align: top; padding: 6px; border-right: 1px solid #000;">
+              <td style="width: 50%; vertical-align: top; padding: 6px; border-right: 1.5px solid #000;">
                 <div style="font-weight: bold; font-size: 9.5px; margin-bottom: 4px;">TERMS AND CONDITIONS</div>
                 <div style="font-size: 8.5px; color: #334155; line-height: 1.35;">
                   We declare that this invoice shows the actual value of services described and that all particulars are true and correct.
@@ -247,8 +250,8 @@ function renderClientInvoiceHtml(data) {
       : 'width: 100%; max-width: 194mm; height: 284mm; margin: 0 auto; page-break-after: always; break-after: page; box-sizing: border-box; display: flex; flex-direction: column;';
 
     const boxFrameStyle = page.isLastPage
-      ? 'width: 100%; border: 1.5px solid #000; background: #fff; box-sizing: border-box;'
-      : 'width: 100%; height: 100%; border: 1.5px solid #000; background: #fff; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;';
+      ? 'width: 100%; border: 2px solid #000; background: #fff; box-sizing: border-box;'
+      : 'width: 100%; height: 100%; border: 2px solid #000; background: #fff; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;';
 
     return `
       <div class="invoice-page${page.isLastPage ? ' is-last-page' : ''}" style="${pageContainerStyle}">

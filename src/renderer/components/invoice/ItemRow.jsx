@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Trash2, Sparkles, Plus, Check, AlertCircle } from 'lucide-react';
 import { calculateLineAmount } from '../../../shared/utils/sharedCalculations';
 import { ipcClient } from '../../services/ipcClient';
+import { FEATURE_FLAGS } from '../../../shared/constants/featureFlags';
 
 export function ItemRow({ 
   index, 
@@ -160,8 +161,9 @@ export function ItemRow({
 
   // 2. Description Input Change Handler
   const handleDescChange = (val) => {
-    onChange(index, 'description', val);
-    const trimmed = (val || '').trim();
+    const limitedVal = (val || '').slice(0, FEATURE_FLAGS.MAX_PRODUCT_NAME_LENGTH || 60);
+    onChange(index, 'description', limitedVal);
+    const trimmed = limitedVal.trim();
 
     if (!trimmed) {
       setDescSuggestions([]);
@@ -239,22 +241,35 @@ export function ItemRow({
         {index + 1}
       </td>
 
-      {/* 2. Description with Auto-Suggest */}
+      {/* 2. Description with Auto-Suggest & Character Limit */}
       <td className="px-3 py-3 border-r border-slate-200 dark:border-slate-800 relative" ref={descContainerRef}>
-        <input
-          type="text"
-          placeholder="Description of Goods / Services"
-          className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-sky-500 shadow-none font-medium"
-          value={item.description || ''}
-          onChange={(e) => handleDescChange(e.target.value)}
-          onFocus={() => {
-            if (item.description && item.description.trim().length >= 1) {
-              handleDescChange(item.description);
-            }
-          }}
-        />
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Description of Goods / Services"
+            maxLength={FEATURE_FLAGS.MAX_PRODUCT_NAME_LENGTH || 60}
+            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-2.5 pr-12 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-sky-500 shadow-none font-medium"
+            value={item.description || ''}
+            onChange={(e) => handleDescChange(e.target.value)}
+            onFocus={() => {
+              if (item.description && item.description.trim().length >= 1) {
+                handleDescChange(item.description);
+              }
+            }}
+          />
+          <span 
+            className={`absolute right-2 top-1/2 -translate-y-1/2 text-[9.5px] font-mono select-none pointer-events-none ${
+              (item.description || '').length >= (FEATURE_FLAGS.MAX_PRODUCT_NAME_LENGTH || 60)
+                ? 'text-amber-600 dark:text-amber-400 font-bold'
+                : 'text-slate-400 dark:text-slate-500'
+            }`}
+            title={`Character limit: ${FEATURE_FLAGS.MAX_PRODUCT_NAME_LENGTH || 60}`}
+          >
+            {(item.description || '').length}/{FEATURE_FLAGS.MAX_PRODUCT_NAME_LENGTH || 60}
+          </span>
+        </div>
 
-        {showDescSuggestions && descSuggestions.length > 0 && (
+        {FEATURE_FLAGS.DETAILS_PANEL_ENABLED && showDescSuggestions && descSuggestions.length > 0 && (
           <div className="absolute left-3 right-3 top-full z-50 mt-1 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl max-h-48 overflow-y-auto divide-y divide-slate-200 dark:divide-slate-800 text-left">
             <div className="p-1.5 text-[9.5px] font-bold uppercase tracking-wider bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 flex items-center gap-1">
               <Sparkles className="w-3 h-3 text-amber-500" />
@@ -282,7 +297,7 @@ export function ItemRow({
         )}
 
         {/* Inline Quick Save to Catalog - ONLY for new products not yet in catalog */}
-        {(isNewCustomProduct || isSavedInCatalog) && (
+        {FEATURE_FLAGS.DETAILS_PANEL_ENABLED && (isNewCustomProduct || isSavedInCatalog) && (
           <div className="mt-1">
             {isSavedInCatalog ? (
               <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
@@ -304,74 +319,101 @@ export function ItemRow({
         )}
       </td>
 
-      {/* 3. HSN / SAC with Instant Auto-Suggest Dropdown */}
+      {/* 3. HSN / SAC (Restricted Dropdown when locked, Auto-Suggest input when unlocked) */}
       <td className="px-3 py-3 border-r border-slate-200 dark:border-slate-800 relative" ref={hsnContainerRef}>
-        <input
-          type="text"
-          placeholder="HSN Code"
-          title="Type HSN code or press Enter to auto-fill product details"
-          className={`w-full bg-slate-50 dark:bg-slate-800 border rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-center placeholder-slate-400 focus:outline-none shadow-none font-mono font-bold ${
-            hsnError 
-              ? 'border-rose-400 dark:border-rose-600 focus:border-rose-500' 
-              : 'border-slate-300 dark:border-slate-700 focus:border-sky-500'
-          }`}
-          value={item.hsn_sac || ''}
-          onChange={(e) => handleHsnChange(e.target.value)}
-          onKeyDown={handleHsnKeyDown}
-          onBlur={handleHsnBlur}
-          onFocus={() => {
-            if (item.hsn_sac && item.hsn_sac.trim().length >= 1) {
-              handleHsnChange(item.hsn_sac);
-            }
-          }}
-        />
+        {!FEATURE_FLAGS.DETAILS_PANEL_ENABLED ? (
+          <div>
+            <select
+              className={`w-full bg-slate-50 dark:bg-slate-800 border rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-left focus:outline-none shadow-none font-medium cursor-pointer transition-colors ${
+                !item.hsn_sac
+                  ? 'border-rose-400 dark:border-rose-600 focus:border-rose-500 bg-rose-50/20'
+                  : 'border-slate-300 dark:border-slate-700 focus:border-sky-500'
+              }`}
+              value={item.hsn_sac || ''}
+              onChange={(e) => onChange(index, 'hsn_sac', e.target.value)}
+              required
+            >
+              <option value="" className="text-slate-500">Select HSN *</option>
+              {FEATURE_FLAGS.ALLOWED_HSN_CODES.map((code) => (
+                <option key={code} value={code} className="font-mono font-bold text-slate-900 dark:text-slate-100">
+                  {code}
+                </option>
+              ))}
+            </select>
+            {!item.hsn_sac && (
+              <div className="text-[9px] text-rose-500 font-semibold mt-0.5 text-left pl-1">Required *</div>
+            )}
+          </div>
+        ) : (
+          <>
+            <input
+              type="text"
+              placeholder="HSN Code"
+              title="Type HSN code or press Enter to auto-fill product details"
+              className={`w-full bg-slate-50 dark:bg-slate-800 border rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-left placeholder-slate-400 focus:outline-none shadow-none font-mono font-bold ${
+                hsnError 
+                  ? 'border-rose-400 dark:border-rose-600 focus:border-rose-500' 
+                  : 'border-slate-300 dark:border-slate-700 focus:border-sky-500'
+              }`}
+              value={item.hsn_sac || ''}
+              onChange={(e) => handleHsnChange(e.target.value)}
+              onKeyDown={handleHsnKeyDown}
+              onBlur={handleHsnBlur}
+              onFocus={() => {
+                if (item.hsn_sac && item.hsn_sac.trim().length >= 1) {
+                  handleHsnChange(item.hsn_sac);
+                }
+              }}
+            />
 
-        {/* HSN Suggestions Dropdown */}
-        {showHsnSuggestions && hsnSuggestions.length > 0 && (
-          <div className="absolute left-0 right-0 top-full z-50 mt-1 min-w-[220px] rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl max-h-48 overflow-y-auto divide-y divide-slate-200 dark:divide-slate-800 text-left">
-            <div className="p-1.5 text-[9.5px] font-bold uppercase tracking-wider bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-emerald-500" />
-              <span>Matching HSN Products:</span>
-            </div>
-            {hsnSuggestions.map((p, idx) => (
-              <div
-                key={p.id || idx}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  selectProduct(p);
-                }}
-                className="p-2.5 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-xs font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
-                    {p.hsn_sac}
-                  </span>
-                  <span className="text-[11px] font-bold font-mono text-slate-800 dark:text-slate-200">
-                    ₹{Number(p.rate || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                  </span>
+            {/* HSN Suggestions Dropdown */}
+            {showHsnSuggestions && hsnSuggestions.length > 0 && (
+              <div className="absolute left-0 right-0 top-full z-50 mt-1 min-w-[220px] rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl max-h-48 overflow-y-auto divide-y divide-slate-200 dark:divide-slate-800 text-left">
+                <div className="p-1.5 text-[9.5px] font-bold uppercase tracking-wider bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-emerald-500" />
+                  <span>Matching HSN Products:</span>
                 </div>
-                <div className="text-[11px] font-semibold text-slate-800 dark:text-slate-200 mt-1 truncate">
-                  {p.name}
-                </div>
+                {hsnSuggestions.map((p, idx) => (
+                  <div
+                    key={p.id || idx}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      selectProduct(p);
+                    }}
+                    className="p-2.5 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
+                        {p.hsn_sac}
+                      </span>
+                      <span className="text-[11px] font-bold font-mono text-slate-800 dark:text-slate-200">
+                        ₹{Number(p.rate || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                    <div className="text-[11px] font-semibold text-slate-800 dark:text-slate-200 mt-1 truncate">
+                      {p.name}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
+            )}
 
-        {/* Not Found Error */}
-        {hsnError && (
-          <div className="mt-1 flex items-start gap-1 text-[10px] font-semibold text-rose-600 dark:text-rose-400 leading-tight">
-            <AlertCircle className="w-3 h-3 shrink-0 mt-0.5" />
-            <span>{hsnError}</span>
-          </div>
-        )}
+            {/* Not Found Error */}
+            {hsnError && (
+              <div className="mt-1 flex items-start gap-1 text-[10px] font-semibold text-rose-600 dark:text-rose-400 leading-tight">
+                <AlertCircle className="w-3 h-3 shrink-0 mt-0.5" />
+                <span>{hsnError}</span>
+              </div>
+            )}
 
-        {/* Found Success Badge */}
-        {hsnSuccess && (
-          <div className="mt-1 flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 truncate">
-            <Check className="w-3 h-3 shrink-0" />
-            <span className="truncate">{hsnSuccess}</span>
-          </div>
+            {/* Found Success Badge */}
+            {hsnSuccess && (
+              <div className="mt-1 flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 truncate">
+                <Check className="w-3 h-3 shrink-0" />
+                <span className="truncate">{hsnSuccess}</span>
+              </div>
+            )}
+          </>
         )}
       </td>
 
