@@ -509,10 +509,10 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                       <div className="flex items-center gap-1">
                         <button
                           type="button"
-                          onClick={() => handleApplyPreset(7)}
-                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors"
+                          onClick={() => handleApplyPreset(10)}
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors cursor-pointer"
                         >
-                          +7 Days
+                          +10 Days
                         </button>
                         <button
                           type="button"

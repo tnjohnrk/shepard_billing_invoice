@@ -158,32 +158,30 @@ export function TrialExpiredOverlay({ licenseStatus, onLicenseUpdated, onLockApp
           </div>
         </div>
 
-        {/* Reactivation Button */}
-        <div className="space-y-3 pt-2">
-          <Button
+        {/* Footer Actions / Subtle Developer Entry */}
+        <div className="pt-2 flex flex-col items-center gap-2">
+          {onLockApp && (
+            <button
+              type="button"
+              onClick={onLockApp}
+              className="text-xs text-slate-400 hover:text-slate-200 transition-colors font-medium cursor-pointer"
+            >
+              Lock &amp; Exit to Lock Screen
+            </button>
+          )}
+
+          <button
             type="button"
-            variant="primary"
             onClick={() => {
               setIsModalOpen(true);
               setIsKeyVerified(false);
               setDeveloperKey('');
               setError('');
             }}
-            className="w-full justify-center py-3 text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 rounded-xl"
-            icon={KeyRound}
+            className="text-[11px] font-semibold text-slate-500 hover:text-slate-400 dark:text-slate-500 dark:hover:text-slate-400 transition-colors cursor-pointer"
           >
-            Developer Reactivation &amp; Unlock
-          </Button>
-
-          {onLockApp && (
-            <button
-              type="button"
-              onClick={onLockApp}
-              className="text-xs text-slate-400 hover:text-slate-200 transition-colors font-medium"
-            >
-              Lock &amp; Exit to Lock Screen
-            </button>
-          )}
+            Developer Mode
+          </button>
         </div>
       </div>
 
@@ -310,10 +308,10 @@ export function TrialExpiredOverlay({ licenseStatus, onLicenseUpdated, onLockApp
                       <div className="flex gap-1">
                         <button
                           type="button"
-                          onClick={() => handleApplyPreset(7)}
-                          className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-amber-900 text-amber-100"
+                          onClick={() => handleApplyPreset(10)}
+                          className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-amber-900 text-amber-100 cursor-pointer"
                         >
-                          +7d
+                          +10d
                         </button>
                         <button
                           type="button"
