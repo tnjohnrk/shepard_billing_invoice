@@ -69,6 +69,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setSecurityPin: (oldPin, newPin) => ipcRenderer.invoke('pin:set', { oldPin, newPin }),
   disableSecurityPin: (currentPin) => ipcRenderer.invoke('pin:disable', currentPin),
 
+  // License & Test Mode
+  getLicenseStatus: () => ipcRenderer.invoke('license:getStatus'),
+  setLicenseMode: (payload) => ipcRenderer.invoke('license:setMode', payload),
+
   // App & Updates
   getAppVersion: () => ipcRenderer.invoke('app:getVersion'),
   openExternal: (url) => ipcRenderer.invoke('app:openExternal', url),

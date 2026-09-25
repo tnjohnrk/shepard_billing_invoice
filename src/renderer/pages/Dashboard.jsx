@@ -6,7 +6,7 @@ import { BillingAmountChart } from '../components/dashboard/BillingAmountChart';
 import { RecentInvoices } from '../components/dashboard/RecentInvoices';
 import { Loading } from '../components/common/Loading';
 import { ipcClient } from '../services/ipcClient';
-import { CalendarDays, Filter } from 'lucide-react';
+import { CalendarDays, Filter, Clock, ShieldCheck, AlertCircle } from 'lucide-react';
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const FULL_MONTH_NAMES = [
@@ -14,10 +14,50 @@ const FULL_MONTH_NAMES = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-export function Dashboard({ onViewInvoice, onNavigateCreate }) {
+function formatDateTime(isoString) {
+  if (!isoString) return 'Not configured';
+  try {
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return 'Invalid date';
+    return d.toLocaleString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  } catch (e) {
+    return isoString;
+  }
+}
+
+function getRemainingTimeText(endIsoString) {
+  if (!endIsoString) return 'Active';
+  try {
+    const now = new Date();
+    const end = new Date(endIsoString);
+    const diffMs = end.getTime() - now.getTime();
+    if (diffMs <= 0) return 'Trial Expired';
+    
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    if (days > 0) {
+      return `${days} day${days > 1 ? 's' : ''}, ${hours} hr${hours > 1 ? 's' : ''} remaining`;
+    }
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours} hr${hours > 1 ? 's' : ''}, ${minutes} min${minutes > 1 ? 's' : ''} remaining`;
+  } catch (e) {
+    return 'Active';
+  }
+}
+
+export function Dashboard({ onViewInvoice, onNavigateCreate, licenseStatus: propLicenseStatus }) {
   const [loading, setLoading] = useState(true);
   const [rawInvoices, setRawInvoices] = useState([]);
   const [rawProformas, setRawProformas] = useState([]);
+  const [licenseStatus, setLicenseStatus] = useState(propLicenseStatus || null);
   
   // Period filter: 'this_month' | 'last_6_months' | 'last_12_months' | 'current_fy' | 'all_time' | 'custom_month'
   const [selectedPeriod, setSelectedPeriod] = useState('all_time');
@@ -27,12 +67,19 @@ export function Dashboard({ onViewInvoice, onNavigateCreate }) {
     loadDashboardData();
   }, []);
 
+  useEffect(() => {
+    if (propLicenseStatus) {
+      setLicenseStatus(propLicenseStatus);
+    }
+  }, [propLicenseStatus]);
+
   const loadDashboardData = async () => {
     setLoading(true);
     try {
-      const [invResult, proResult] = await Promise.all([
+      const [invResult, proResult, licResult] = await Promise.all([
         ipcClient.listInvoices({ page: 1, limit: 2000 }),
-        ipcClient.listProformas({ page: 1, limit: 2000 })
+        ipcClient.listProformas({ page: 1, limit: 2000 }),
+        propLicenseStatus ? Promise.resolve(propLicenseStatus) : ipcClient.getLicenseStatus()
       ]);
 
       const invoices = invResult?.data || [];
@@ -40,6 +87,7 @@ export function Dashboard({ onViewInvoice, onNavigateCreate }) {
 
       setRawInvoices(invoices);
       setRawProformas(proformas);
+      if (licResult) setLicenseStatus(licResult);
 
       // Set default customMonth to current month (e.g. 2026-09)
       const now = new Date();
@@ -282,8 +330,45 @@ export function Dashboard({ onViewInvoice, onNavigateCreate }) {
     return <Loading text="Loading Dashboard Analytics..." />;
   }
 
+  const isTestMode = licenseStatus?.mode === 'TEST';
+
   return (
     <PageContainer>
+      {/* Test Mode Banner Box (Visible when Test Mode is Active) */}
+      {isTestMode && (
+        <div className="p-4 rounded-2xl border-2 border-amber-400 dark:border-amber-600/80 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent dark:from-amber-950/40 dark:via-amber-950/20 text-slate-900 dark:text-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/20 dark:bg-amber-500/30 flex items-center justify-center shrink-0 border border-amber-500/30 text-amber-600 dark:text-amber-400">
+              <Clock className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-amber-500 text-white dark:bg-amber-600">
+                  Test / Trial Mode Active
+                </span>
+                <span className="text-xs font-bold text-amber-700 dark:text-amber-300 font-mono">
+                  {getRemainingTimeText(licenseStatus?.endDateTime)}
+                </span>
+              </div>
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-slate-300">
+                <span>
+                  <strong className="text-slate-800 dark:text-slate-100">Started:</strong> {formatDateTime(licenseStatus?.startDateTime)}
+                </span>
+                <span>•</span>
+                <span>
+                  <strong className="text-slate-800 dark:text-slate-100">Trial Ends:</strong> {formatDateTime(licenseStatus?.endDateTime)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 self-start md:self-center px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 text-[11px] text-amber-800 dark:text-amber-200">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span>All records &amp; backups remain 100% permanently safe</span>
+          </div>
+        </div>
+      )}
+
       {/* Interactive Time Period & Month Selector Control Bar */}
       <div className="p-4 rounded-2xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-2">
@@ -421,3 +506,4 @@ export function Dashboard({ onViewInvoice, onNavigateCreate }) {
     </PageContainer>
   );
 }
+

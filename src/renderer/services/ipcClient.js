@@ -1185,6 +1185,61 @@ export const ipcClient = {
     return true;
   },
 
+  // License & Test Mode APIs
+  getLicenseStatus: async () => {
+    if (isElectron && typeof window.electronAPI?.getLicenseStatus === 'function') {
+      return window.electronAPI.getLicenseStatus();
+    }
+    const mode = localStorage.getItem('shepherd_license_mode') || 'LIVE';
+    const start = localStorage.getItem('shepherd_trial_start');
+    const end = localStorage.getItem('shepherd_trial_end');
+    if (mode === 'LIVE') {
+      return {
+        mode: 'LIVE',
+        isLive: true,
+        isTest: false,
+        isExpired: false,
+        statusMessage: 'Permanently Activated (Live Mode)'
+      };
+    }
+    const now = new Date();
+    const endDate = end ? new Date(end) : null;
+    const isExpired = endDate ? (endDate.getTime() - now.getTime() <= 0) : false;
+    const diffMs = endDate ? Math.max(0, endDate.getTime() - now.getTime()) : 0;
+    const remainingDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const remainingHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    return {
+      mode: 'TEST',
+      isLive: false,
+      isTest: true,
+      isExpired,
+      startDateTime: start,
+      endDateTime: end,
+      remainingMs: diffMs,
+      remainingDays,
+      remainingHours,
+      statusMessage: isExpired ? 'Trial Period Expired' : `Test Mode (${remainingDays}d ${remainingHours}h remaining)`
+    };
+  },
+
+  setLicenseMode: async ({ developerKey, mode, startDateTime, endDateTime }) => {
+    if (isElectron && typeof window.electronAPI?.setLicenseMode === 'function') {
+      return window.electronAPI.setLicenseMode({ developerKey, mode, startDateTime, endDateTime });
+    }
+    if (String(developerKey || '').trim() !== 'developer@v2c') {
+      throw new Error('Invalid developer master authentication code.');
+    }
+    localStorage.setItem('shepherd_license_mode', mode);
+    if (mode === 'TEST') {
+      localStorage.setItem('shepherd_trial_start', startDateTime || new Date().toISOString());
+      localStorage.setItem('shepherd_trial_end', endDateTime || new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString());
+    } else {
+      localStorage.removeItem('shepherd_trial_start');
+      localStorage.removeItem('shepherd_trial_end');
+    }
+    return ipcClient.getLicenseStatus();
+  },
+
   // App & Updates
   getAppVersion: async () => {
     if (isElectron) return window.electronAPI.getAppVersion();

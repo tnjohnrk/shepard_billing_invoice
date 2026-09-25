@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { AppLayout } from './components/layout/AppLayout';
 import { SplashScreen } from './components/splash/SplashScreen';
 import { LockScreen } from './components/auth/LockScreen';
@@ -18,28 +18,51 @@ export default function App() {
   const [toastState, setToastState] = useState(null);
   const [createInitialData, setCreateInitialData] = useState(null);
 
-  // Security Password Protection state
+  // Security & License status
   const [isLocked, setIsLocked] = useState(false);
+  const [licenseStatus, setLicenseStatus] = useState(null);
 
-  useEffect(() => {
-    bootstrapApp();
-  }, []);
-
-  const bootstrapApp = async () => {
+  const checkLicenseAndLockState = useCallback(async () => {
     try {
-      const isProtected = await ipcClient.isPinProtected();
+      const [isProtected, license] = await Promise.all([
+        ipcClient.isPinProtected(),
+        ipcClient.getLicenseStatus()
+      ]);
+
+      setLicenseStatus(license);
+
+      // If trial has expired, enforce lockdown
+      if (license?.isExpired) {
+        setIsLocked(true);
+        sessionStorage.removeItem('session_unlocked');
+        return;
+      }
+
       const isSessionUnlocked = sessionStorage.getItem('session_unlocked') === 'true';
       if (isProtected && !isSessionUnlocked) {
         setIsLocked(true);
       }
     } catch (e) {
-      console.error('Error checking security lock status:', e);
-    } finally {
+      console.error('Error checking security & license status:', e);
+    }
+  }, []);
+
+  useEffect(() => {
+    const init = async () => {
+      await checkLicenseAndLockState();
       setTimeout(() => {
         setIsInitializing(false);
       }, 1000);
-    }
-  };
+    };
+    init();
+
+    // Periodic check every 60 seconds to ensure trial expiration is detected
+    const interval = setInterval(() => {
+      checkLicenseAndLockState();
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, [checkLicenseAndLockState]);
 
   const showToast = (type, message) => {
     setToastState({ type, message });
@@ -47,6 +70,22 @@ export default function App() {
 
   const handleUnlock = async (enteredPassword) => {
     try {
+      // Re-fetch latest license status
+      const updatedLicense = await ipcClient.getLicenseStatus();
+      setLicenseStatus(updatedLicense);
+
+      if (enteredPassword === 'DEV_UNLOCKED' || enteredPassword === 'developer@v2c') {
+        sessionStorage.setItem('session_unlocked', 'true');
+        setIsLocked(false);
+        showToast('success', 'Developer Mode activated. Welcome!');
+        return true;
+      }
+
+      if (updatedLicense?.isExpired) {
+        showToast('error', 'Trial has ended. Please use Developer Mode.');
+        return false;
+      }
+
       const isValid = await ipcClient.verifyPin(enteredPassword);
       if (isValid) {
         sessionStorage.setItem('session_unlocked', 'true');
@@ -85,7 +124,7 @@ export default function App() {
   if (isLocked) {
     return (
       <>
-        <LockScreen onUnlock={handleUnlock} />
+        <LockScreen onUnlock={handleUnlock} initialLicenseStatus={licenseStatus} />
         {toastState && (
           <Toast
             type={toastState.type}
@@ -130,6 +169,8 @@ export default function App() {
       >
         {activeTab === 'dashboard' && (
           <Dashboard
+            licenseStatus={licenseStatus}
+            onRefreshLicense={checkLicenseAndLockState}
             onViewInvoice={(inv) => {
               setHistorySelectedInvoice(inv);
               setActiveTab('history');
@@ -180,3 +221,4 @@ export default function App() {
     </>
   );
 }
+
