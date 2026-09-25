@@ -1188,26 +1188,56 @@ export const ipcClient = {
   // License & Test Mode APIs
   getLicenseStatus: async () => {
     if (isElectron && typeof window.electronAPI?.getLicenseStatus === 'function') {
-      return window.electronAPI.getLicenseStatus();
+      try {
+        const res = await window.electronAPI.getLicenseStatus();
+        if (res && res.mode) return res;
+      } catch (e) {
+        console.warn('Electron getLicenseStatus IPC failed, using settings fallback:', e);
+      }
     }
-    const mode = localStorage.getItem('shepherd_license_mode') || 'LIVE';
-    const start = localStorage.getItem('shepherd_trial_start');
-    const end = localStorage.getItem('shepherd_trial_end');
+
+    // Try reading from electron settings:getAll if available
+    let mode = 'LIVE';
+    let start = null;
+    let end = null;
+
+    if (isElectron && typeof window.electronAPI?.getAllSettings === 'function') {
+      try {
+        const allSettings = await window.electronAPI.getAllSettings();
+        if (allSettings) {
+          mode = allSettings.license_mode || localStorage.getItem('shepherd_license_mode') || 'LIVE';
+          start = allSettings.trial_start_datetime || localStorage.getItem('shepherd_trial_start') || null;
+          end = allSettings.trial_end_datetime || localStorage.getItem('shepherd_trial_end') || null;
+        }
+      } catch {}
+    } else {
+      mode = localStorage.getItem('shepherd_license_mode') || 'LIVE';
+      start = localStorage.getItem('shepherd_trial_start');
+      end = localStorage.getItem('shepherd_trial_end');
+    }
+
     if (mode === 'LIVE') {
       return {
         mode: 'LIVE',
         isLive: true,
         isTest: false,
         isExpired: false,
+        startDateTime: null,
+        endDateTime: null,
+        remainingMs: Infinity,
+        remainingDays: Infinity,
+        remainingHours: Infinity,
         statusMessage: 'Permanently Activated (Live Mode)'
       };
     }
+
     const now = new Date();
     const endDate = end ? new Date(end) : null;
     const isExpired = endDate ? (endDate.getTime() - now.getTime() <= 0) : false;
     const diffMs = endDate ? Math.max(0, endDate.getTime() - now.getTime()) : 0;
     const remainingDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const remainingHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
     return {
       mode: 'TEST',
       isLive: false,
@@ -1222,13 +1252,50 @@ export const ipcClient = {
     };
   },
 
-  setLicenseMode: async ({ developerKey, mode, startDateTime, endDateTime }) => {
-    if (isElectron && typeof window.electronAPI?.setLicenseMode === 'function') {
-      return window.electronAPI.setLicenseMode({ developerKey, mode, startDateTime, endDateTime });
+  setLicenseMode: async (param1, param2) => {
+    let developerKey = '';
+    let mode = 'LIVE';
+    let startDateTime = null;
+    let endDateTime = null;
+
+    if (typeof param1 === 'object' && param1 !== null) {
+      developerKey = param1.developerKey;
+      mode = param1.mode || 'LIVE';
+      startDateTime = param1.startDateTime;
+      endDateTime = param1.endDateTime;
+    } else {
+      developerKey = param1;
+      mode = param2?.mode || 'LIVE';
+      startDateTime = param2?.startDateTime;
+      endDateTime = param2?.endDateTime;
     }
+
     if (String(developerKey || '').trim() !== 'developer@v2c') {
       throw new Error('Invalid developer master authentication code.');
     }
+
+    // Try electron IPC first
+    if (isElectron && typeof window.electronAPI?.setLicenseMode === 'function') {
+      try {
+        const res = await window.electronAPI.setLicenseMode({ developerKey, mode, startDateTime, endDateTime });
+        if (res) return res;
+      } catch (e) {
+        console.warn('Electron setLicenseMode IPC failed, falling back to settings API:', e);
+      }
+    }
+
+    // Direct settings fallback
+    if (isElectron && typeof window.electronAPI?.setSetting === 'function') {
+      try {
+        await window.electronAPI.setSetting('license_mode', mode);
+        await window.electronAPI.setSetting('trial_start_datetime', mode === 'TEST' ? (startDateTime || new Date().toISOString()) : '');
+        await window.electronAPI.setSetting('trial_end_datetime', mode === 'TEST' ? (endDateTime || new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()) : '');
+      } catch (err) {
+        console.warn('Failed saving via window.electronAPI.setSetting:', err);
+      }
+    }
+
+    // Always update localStorage
     localStorage.setItem('shepherd_license_mode', mode);
     if (mode === 'TEST') {
       localStorage.setItem('shepherd_trial_start', startDateTime || new Date().toISOString());
@@ -1237,6 +1304,7 @@ export const ipcClient = {
       localStorage.removeItem('shepherd_trial_start');
       localStorage.removeItem('shepherd_trial_end');
     }
+
     return ipcClient.getLicenseStatus();
   },
 
