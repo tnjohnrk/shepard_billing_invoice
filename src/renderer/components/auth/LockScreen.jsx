@@ -418,39 +418,46 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
           /* Developer Control Panel with SEPARATE TABS */
           <div className="mt-4 space-y-4">
             {/* Top Distinct Tab Switcher */}
-            <div className="grid grid-cols-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 gap-1">
-              <button
-                type="button"
-                onClick={() => {
-                  setDevActiveTab('license');
-                  setError('');
-                }}
-                className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                  devActiveTab === 'license'
-                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-slate-700'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
-              >
-                <Sparkles className="w-4 h-4" />
-                <span>System License Mode</span>
-              </button>
+            {!isExpired ? (
+              <div className="grid grid-cols-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 gap-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDevActiveTab('license');
+                    setError('');
+                  }}
+                  className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                    devActiveTab === 'license'
+                      ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-slate-700'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                  }`}
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>System License Mode</span>
+                </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setDevActiveTab('password');
-                  setError('');
-                }}
-                className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                  devActiveTab === 'password'
-                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-slate-700'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
-              >
-                <KeyRound className="w-4 h-4" />
-                <span>Password Reset</span>
-              </button>
-            </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDevActiveTab('password');
+                    setError('');
+                  }}
+                  className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                    devActiveTab === 'password'
+                      ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-slate-700'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                  }`}
+                >
+                  <KeyRound className="w-4 h-4" />
+                  <span>Password Reset</span>
+                </button>
+              </div>
+            ) : (
+              <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 text-xs font-bold text-amber-900 dark:text-amber-200 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                <span>License Reactivation Required (Password editing locked until active)</span>
+              </div>
+            )}
 
             {/* TAB 1: System License & Trial Settings */}
             {devActiveTab === 'license' && (
