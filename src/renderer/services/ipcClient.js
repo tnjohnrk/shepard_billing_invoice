@@ -1187,7 +1187,7 @@ export const ipcClient = {
 
   // License & Test Mode APIs
   getLicenseStatus: async () => {
-    let mode = 'LIVE';
+    let mode = null;
     let start = null;
     let end = null;
 
@@ -1195,17 +1195,40 @@ export const ipcClient = {
       try {
         const allSettings = await window.electronAPI.getAllSettings();
         if (allSettings) {
-          mode = allSettings.license_mode || localStorage.getItem('shepherd_license_mode') || 'LIVE';
-          start = allSettings.trial_start_datetime || localStorage.getItem('shepherd_trial_start') || null;
-          end = allSettings.trial_end_datetime || localStorage.getItem('shepherd_trial_end') || null;
+          mode = allSettings.license_mode || null;
+          start = allSettings.trial_start_datetime || null;
+          end = allSettings.trial_end_datetime || null;
         }
       } catch (e) {
         console.warn('getAllSettings failed, falling back to localStorage:', e);
       }
-    } else {
-      mode = localStorage.getItem('shepherd_license_mode') || 'LIVE';
-      start = localStorage.getItem('shepherd_trial_start');
-      end = localStorage.getItem('shepherd_trial_end');
+    }
+
+    if (!mode) {
+      mode = localStorage.getItem('shepherd_license_mode') || null;
+      start = localStorage.getItem('shepherd_trial_start') || null;
+      end = localStorage.getItem('shepherd_trial_end') || null;
+    }
+
+    // On fresh installation: Automatically start 10-day trial timer!
+    if (!mode) {
+      mode = 'TEST';
+      const now = new Date();
+      start = now.toISOString();
+      const expiry = new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000);
+      end = expiry.toISOString();
+
+      localStorage.setItem('shepherd_license_mode', 'TEST');
+      localStorage.setItem('shepherd_trial_start', start);
+      localStorage.setItem('shepherd_trial_end', end);
+
+      if (isElectron && typeof window.electronAPI?.setSetting === 'function') {
+        try {
+          await window.electronAPI.setSetting('license_mode', 'TEST');
+          await window.electronAPI.setSetting('trial_start_datetime', start);
+          await window.electronAPI.setSetting('trial_end_datetime', end);
+        } catch {}
+      }
     }
 
     if (mode === 'LIVE') {

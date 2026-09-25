@@ -2,9 +2,21 @@ import { getSetting, setSetting } from '../repositories/settingsRepository.js';
 import { DEVELOPER_MASTER_KEY, isDeveloperKey } from './pinService.js';
 
 export function getLicenseStatus() {
-  const mode = getSetting('license_mode', 'LIVE'); // Default to LIVE on first install
-  const startDateTime = getSetting('trial_start_datetime', null);
-  const endDateTime = getSetting('trial_end_datetime', null);
+  let mode = getSetting('license_mode', null);
+  let startDateTime = getSetting('trial_start_datetime', null);
+  let endDateTime = getSetting('trial_end_datetime', null);
+
+  // First time software installation: Start 10-day trial automatically
+  if (!mode) {
+    mode = 'TEST';
+    const now = new Date();
+    startDateTime = now.toISOString();
+    const expiry = new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000);
+    endDateTime = expiry.toISOString();
+    setSetting('license_mode', 'TEST');
+    setSetting('trial_start_datetime', startDateTime);
+    setSetting('trial_end_datetime', endDateTime);
+  }
 
   if (mode === 'LIVE') {
     return {
@@ -28,7 +40,6 @@ export function getLicenseStatus() {
   const startDate = startDateTime ? new Date(startDateTime) : null;
 
   if (!endDate || isNaN(endDate.getTime())) {
-    // If no valid end date was configured, default to not expired
     return {
       mode: 'TEST',
       isLive: false,
@@ -40,7 +51,7 @@ export function getLicenseStatus() {
       remainingDays: null,
       remainingHours: null,
       remainingMinutes: null,
-      statusMessage: 'Test Mode Active'
+      statusMessage: 'Test Mode Active (10 Days Trial)'
     };
   }
 
