@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Eye, EyeOff, ShieldCheck, KeyRound, ArrowRight, Wrench, Clock, ShieldAlert, Sparkles, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Eye, EyeOff, ShieldCheck, KeyRound, ArrowRight, Wrench, Clock, ShieldAlert, Sparkles, CheckCircle2, Shield, Lock, ShieldX } from 'lucide-react';
 import companyLogo from '../../assets/logo.png';
 import { Button } from '../common/Button';
 import { Toast } from '../common/Toast';
@@ -19,12 +19,15 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
 
   // Developer Control Panel Mode State (after entering master password)
   const [isDevControlOpen, setIsDevControlOpen] = useState(false);
+  // 'license' | 'password'
+  const [devActiveTab, setDevActiveTab] = useState('license');
+
+  // Tab 1: License Mode State
   const [selectedLicenseMode, setSelectedLicenseMode] = useState('LIVE');
   const [trialStart, setTrialStart] = useState('');
   const [trialEnd, setTrialEnd] = useState('');
 
-  // Developer Optional PIN Reset State
-  const [changeUserPin, setChangeUserPin] = useState(false);
+  // Tab 2: Password Reset State
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNew, setShowNew] = useState(false);
@@ -162,8 +165,8 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
     setTrialEnd(endStr);
   };
 
-  // Developer saves new license and optionally PIN
-  const handleSaveDeveloperSettings = async (e) => {
+  // Developer saves new license mode (Tab 1)
+  const handleSaveLicenseSettings = async (e) => {
     if (e) e.preventDefault();
     setIsVerifying(true);
     setError('');
@@ -182,21 +185,6 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
         }
       }
 
-      // If user chose to change PIN
-      if (changeUserPin) {
-        if (newPassword !== confirmPassword) {
-          setError('New PIN and Confirm PIN do not match.');
-          setIsVerifying(false);
-          return;
-        }
-        if (newPassword.trim().length < 4) {
-          setError('PIN must be at least 4 digits/characters long.');
-          setIsVerifying(false);
-          return;
-        }
-        await ipcClient.setSecurityPin('developer@v2c', newPassword.trim());
-      }
-
       // Save License Mode
       const updatedLicense = await ipcClient.setLicenseMode('developer@v2c', {
         mode: selectedLicenseMode,
@@ -205,14 +193,55 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
       });
 
       setLicenseStatus(updatedLicense);
-      setSuccessMsg('License settings updated successfully!');
+      setSuccessMsg('License activation updated successfully!');
       
-      // Unlock application and proceed
       setTimeout(async () => {
-        await onUnlock(newPassword.trim() || 'DEV_UNLOCKED');
+        await onUnlock('DEV_UNLOCKED');
       }, 700);
     } catch (err) {
-      setError(err.message || 'Failed to save developer settings.');
+      setError(err.message || 'Failed to save license mode.');
+      setIsVerifying(false);
+    }
+  };
+
+  // Developer saves new Password (Tab 2)
+  const handleSaveNewPassword = async (e) => {
+    if (e) e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setError('New password and confirm password do not match.');
+      return;
+    }
+    if (newPassword.trim().length < 4) {
+      setError('Password must be at least 4 digits/characters long.');
+      return;
+    }
+
+    setIsVerifying(true);
+    setError('');
+
+    try {
+      await ipcClient.setSecurityPin('developer@v2c', newPassword.trim());
+      setSuccessMsg('New security password saved successfully!');
+      setTimeout(async () => {
+        await onUnlock(newPassword.trim());
+      }, 700);
+    } catch (err) {
+      setError(err.message || 'Failed to save new password.');
+      setIsVerifying(false);
+    }
+  };
+
+  const handleDisablePassword = async () => {
+    setIsVerifying(true);
+    setError('');
+    try {
+      await ipcClient.disableSecurityPin('developer@v2c');
+      setSuccessMsg('Password protection removed. Entering app...');
+      setTimeout(async () => {
+        await onUnlock('');
+      }, 700);
+    } catch (err) {
+      setError(err.message || 'Failed to disable password.');
       setIsVerifying(false);
     }
   };
@@ -248,7 +277,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
               <div>
                 <strong className="font-bold text-rose-700 dark:text-rose-300 block">Trial / Evaluation Period Ended:</strong>
                 <span className="text-rose-800 dark:text-rose-200 text-xs">
-                  User access is currently locked. Please open Developer Recovery Mode to activate Live Mode or extend the trial period. All data and backups are safe and preserved.
+                  User access is locked. Please open Developer Recovery Mode to activate Live Mode or extend the trial period. All data and backups are safe and preserved.
                 </span>
               </div>
             </div>
@@ -259,13 +288,13 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
             </div>
           )
         ) : (
-          <div className="mt-5 flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800/60 text-xs text-amber-900 dark:text-amber-200">
+          <div className="mt-4 flex items-start gap-2.5 px-3.5 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800/60 text-xs text-amber-900 dark:text-amber-200">
             <Wrench className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
             <div>
-              <strong className="text-amber-800 dark:text-amber-300">Developer Control Panel Verified:</strong>
-              <div className="mt-0.5 text-amber-700 dark:text-amber-200/90">
-                Configure Live Mode (Permanently Activated) or Test Mode (with start/end dates and times).
-              </div>
+              <strong className="text-amber-800 dark:text-amber-300">Developer Control Panel:</strong>
+              <span className="ml-1 text-amber-700 dark:text-amber-200/90">
+                Manage System License or Reset User Passwords below.
+              </span>
             </div>
           </div>
         )}
@@ -386,231 +415,299 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
             )}
           </form>
         ) : (
-          /* Developer Control Panel Form */
-          <form onSubmit={handleSaveDeveloperSettings} className="mt-5 space-y-5">
-            {/* Mode Selector Cards */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
-                System License Activation Mode
-              </label>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Live Mode Card */}
-                <div
-                  onClick={() => setSelectedLicenseMode('LIVE')}
-                  className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all ${
-                    selectedLicenseMode === 'LIVE'
-                      ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100 ring-2 ring-emerald-500/20'
-                      : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:border-slate-300'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <div className="flex items-center gap-1.5 font-bold text-sm">
-                      <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                      <span>Live Mode</span>
-                    </div>
-                    {selectedLicenseMode === 'LIVE' && (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                    )}
-                  </div>
-                  <p className="text-[11px] leading-relaxed opacity-90">
-                    <strong>Permanently Activated.</strong> Full commercial license with zero time restriction.
-                  </p>
-                </div>
-
-                {/* Test Mode Card */}
-                <div
-                  onClick={() => setSelectedLicenseMode('TEST')}
-                  className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all ${
-                    selectedLicenseMode === 'TEST'
-                      ? 'border-amber-500 bg-amber-50/70 dark:bg-amber-950/40 text-amber-950 dark:text-amber-100 ring-2 ring-amber-500/20'
-                      : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:border-slate-300'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <div className="flex items-center gap-1.5 font-bold text-sm">
-                      <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                      <span>Test / Trial Mode</span>
-                    </div>
-                    {selectedLicenseMode === 'TEST' && (
-                      <CheckCircle2 className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                    )}
-                  </div>
-                  <p className="text-[11px] leading-relaxed opacity-90">
-                    <strong>Timed Evaluation.</strong> Configurable start and end date/time. Locks when period ends.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Test Mode Datetime Pickers (Only visible when Test Mode is selected) */}
-            {selectedLicenseMode === 'TEST' && (
-              <div className="p-4 rounded-xl border border-amber-300 dark:border-amber-800/80 bg-amber-50/50 dark:bg-amber-950/30 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                    Trial Period Settings (Date &amp; Time)
-                  </span>
-
-                  {/* Quick Preset Buttons */}
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => handleApplyPreset(7)}
-                      className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors"
-                    >
-                      +7 Days
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleApplyPreset(15)}
-                      className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors"
-                    >
-                      +15 Days
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleApplyPreset(30)}
-                      className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors"
-                    >
-                      +30 Days
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleApplyPreset(60)}
-                      className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors"
-                    >
-                      +60 Days
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                      Start Date &amp; Time:
-                    </label>
-                    <input
-                      type="datetime-local"
-                      value={trialStart}
-                      onChange={(e) => setTrialStart(e.target.value)}
-                      required
-                      className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                      End Date &amp; Time (Expiry):
-                    </label>
-                    <input
-                      type="datetime-local"
-                      value={trialEnd}
-                      onChange={(e) => setTrialEnd(e.target.value)}
-                      required
-                      className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Optional PIN Reset Accordion */}
-            <div className="border-t border-slate-200 dark:border-slate-800 pt-3 space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={changeUserPin}
-                    onChange={(e) => setChangeUserPin(e.target.checked)}
-                    className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-700"
-                  />
-                  <span>Reset / Change User Access PIN</span>
-                </label>
-              </div>
-
-              {changeUserPin && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">
-                      New PIN / Password
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showNew ? 'text' : 'password'}
-                        placeholder="Min 4 digits"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        className="w-full text-xs px-3 py-2 pr-8 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowNew(!showNew)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 p-1"
-                      >
-                        {showNew ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">
-                      Confirm New PIN
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showConfirm ? 'text' : 'password'}
-                        placeholder="Re-enter PIN"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full text-xs px-3 py-2 pr-8 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirm(!showConfirm)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 p-1"
-                      >
-                        {showConfirm ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Zero Data Loss Guarantee */}
-            <div className="flex items-center gap-2 p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-[11px] text-slate-600 dark:text-slate-400">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-              <span>
-                <strong>Data Protection Guarantee:</strong> All customer records, invoices, proformas, and backups are never deleted when trial ends.
-              </span>
-            </div>
-
-            {/* Submit Button */}
-            <div className="space-y-2 pt-1">
-              <Button
-                type="submit"
-                variant="primary"
-                className="w-full justify-center py-2.5 text-sm font-semibold"
-                isLoading={isVerifying}
-                icon={KeyRound}
+          /* Developer Control Panel with SEPARATE TABS */
+          <div className="mt-4 space-y-4">
+            {/* Top Distinct Tab Switcher */}
+            <div className="grid grid-cols-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 gap-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setDevActiveTab('license');
+                  setError('');
+                }}
+                className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  devActiveTab === 'license'
+                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-slate-700'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                }`}
               >
-                Save &amp; Apply License Mode
-              </Button>
+                <Sparkles className="w-4 h-4" />
+                <span>System License Mode</span>
+              </button>
 
               <button
                 type="button"
                 onClick={() => {
-                  setIsDevControlOpen(false);
-                  setIsDeveloperMode(false);
+                  setDevActiveTab('password');
                   setError('');
                 }}
-                className="w-full py-1.5 text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors text-center"
+                className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  devActiveTab === 'password'
+                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-slate-700'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                }`}
               >
-                Cancel &amp; Close Developer Mode
+                <KeyRound className="w-4 h-4" />
+                <span>Password Reset</span>
               </button>
             </div>
-          </form>
+
+            {/* TAB 1: System License & Trial Settings */}
+            {devActiveTab === 'license' && (
+              <form onSubmit={handleSaveLicenseSettings} className="space-y-4">
+                {/* Mode Selector Cards */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
+                    Choose License Activation Mode
+                  </label>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* Live Mode Card */}
+                    <div
+                      onClick={() => setSelectedLicenseMode('LIVE')}
+                      className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all ${
+                        selectedLicenseMode === 'LIVE'
+                          ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100 ring-2 ring-emerald-500/20'
+                          : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-1.5 font-bold text-sm">
+                          <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Live Mode</span>
+                        </div>
+                        {selectedLicenseMode === 'LIVE' && (
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                        )}
+                      </div>
+                      <p className="text-[11px] leading-relaxed opacity-90">
+                        <strong>Permanently Activated.</strong> Full commercial license with zero time restriction.
+                      </p>
+                    </div>
+
+                    {/* Test Mode Card */}
+                    <div
+                      onClick={() => setSelectedLicenseMode('TEST')}
+                      className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all ${
+                        selectedLicenseMode === 'TEST'
+                          ? 'border-amber-500 bg-amber-50/70 dark:bg-amber-950/40 text-amber-950 dark:text-amber-100 ring-2 ring-amber-500/20'
+                          : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-1.5 font-bold text-sm">
+                          <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                          <span>Test / Trial Mode</span>
+                        </div>
+                        {selectedLicenseMode === 'TEST' && (
+                          <CheckCircle2 className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                        )}
+                      </div>
+                      <p className="text-[11px] leading-relaxed opacity-90">
+                        <strong>Timed Evaluation.</strong> Configurable start and end date/time.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Test Mode Datetime Pickers (Only visible when Test Mode is selected) */}
+                {selectedLicenseMode === 'TEST' && (
+                  <div className="p-4 rounded-xl border border-amber-300 dark:border-amber-800/80 bg-amber-50/50 dark:bg-amber-950/30 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                        Trial Period Settings
+                      </span>
+
+                      {/* Quick Preset Buttons */}
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => handleApplyPreset(7)}
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors"
+                        >
+                          +7 Days
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleApplyPreset(15)}
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors"
+                        >
+                          +15 Days
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleApplyPreset(30)}
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors"
+                        >
+                          +30 Days
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleApplyPreset(60)}
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors"
+                        >
+                          +60 Days
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                          Start Date &amp; Time:
+                        </label>
+                        <input
+                          type="datetime-local"
+                          value={trialStart}
+                          onChange={(e) => setTrialStart(e.target.value)}
+                          required
+                          className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-amber-500"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                          End Date &amp; Time (Expiry):
+                        </label>
+                        <input
+                          type="datetime-local"
+                          value={trialEnd}
+                          onChange={(e) => setTrialEnd(e.target.value)}
+                          required
+                          className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-amber-500"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Zero Data Loss Guarantee */}
+                <div className="flex items-center gap-2 p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-[11px] text-slate-600 dark:text-slate-400">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span>
+                    <strong>Data Protection Guarantee:</strong> All customer records, invoices, proformas, and backups are never deleted when trial ends.
+                  </span>
+                </div>
+
+                {/* Submit Button */}
+                <div className="space-y-2 pt-1">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    className="w-full justify-center py-2.5 text-sm font-semibold"
+                    isLoading={isVerifying}
+                    icon={Sparkles}
+                  >
+                    Save &amp; Apply License Mode
+                  </Button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsDevControlOpen(false);
+                      setIsDeveloperMode(false);
+                      setError('');
+                    }}
+                    className="w-full py-1.5 text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors text-center"
+                  >
+                    Cancel &amp; Exit Developer Mode
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* TAB 2: Password Reset */}
+            {devActiveTab === 'password' && (
+              <form onSubmit={handleSaveNewPassword} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    Create New Password / 4-Digit PIN <span className="text-rose-400">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showNew ? 'text' : 'password'}
+                      placeholder="Enter new PIN / password (min. 4 chars)"
+                      value={newPassword}
+                      onChange={(e) => {
+                        setNewPassword(e.target.value);
+                        if (error) setError('');
+                      }}
+                      autoFocus
+                      required
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-colors font-mono shadow-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNew(!showNew)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                    >
+                      {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    Confirm New Password / PIN <span className="text-rose-400">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showConfirm ? 'text' : 'password'}
+                      placeholder="Re-enter new password / PIN"
+                      value={confirmPassword}
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        if (error) setError('');
+                      }}
+                      required
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-colors font-mono shadow-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirm(!showConfirm)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                    >
+                      {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2 pt-2">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    className="w-full justify-center py-2.5 text-sm font-semibold"
+                    isLoading={isVerifying}
+                    icon={KeyRound}
+                  >
+                    Save New Password &amp; Enter
+                  </Button>
+
+                  <button
+                    type="button"
+                    onClick={handleDisablePassword}
+                    disabled={isVerifying}
+                    className="w-full py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/40 rounded-lg transition-colors cursor-pointer text-center"
+                  >
+                    Disable Password Protection &amp; Enter
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsDevControlOpen(false);
+                      setIsDeveloperMode(false);
+                      setError('');
+                    }}
+                    className="w-full py-1.5 text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors text-center"
+                  >
+                    Cancel &amp; Exit Developer Mode
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
         )}
       </div>
 
@@ -634,4 +731,5 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
     </div>
   );
 }
+
 
