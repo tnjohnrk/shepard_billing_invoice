@@ -32,4 +32,5 @@ Thumbs.db
 release_package/
 *.zip
 *.exe
+scratch/
 

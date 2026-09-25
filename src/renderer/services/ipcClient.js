@@ -1,4 +1,6 @@
 import { getCopyTypeLabel } from '../../shared/constants/copyTypes';
+import { COMPANY_CONFIG } from '../../main/config/companyConfig';
+import { paginateInvoiceItems } from '../../shared/utils/invoicePagination';
 import shepherdInvoiceLogo from '../assets/shepherd_invoice_logo.png';
 
 const isElectron = typeof window !== 'undefined' && Boolean(window.electronAPI);
@@ -25,7 +27,6 @@ function renderClientInvoiceHtml(data) {
     : (data.invoice_number || data.proforma_number || 'INV-001');
   const docDate = (isProforma ? data.proforma_date : data.invoice_date) || new Date().toISOString().split('T')[0];
   const copyTypeLabel = getCopyTypeLabel(data.copy_type, isProforma);
-  const items = data.items || [];
 
   // Build reference block string for line items (S.O. No, GEMC No, Ref)
   const refs = [];
@@ -44,32 +45,8 @@ function renderClientInvoiceHtml(data) {
   }
 
   const refsHtml = refs.length > 0
-    ? `<div style="margin-top: 4px; font-size: 9.5px; font-weight: bold; line-height: 1.4;">${refs.join('<br>')}</div>`
+    ? `<div style="margin-top: 3px; font-size: 9px; font-weight: bold; line-height: 1.35; color: #111;">${refs.join('<br>')}</div>`
     : '';
-
-  const itemRows = items.length === 0 ? `
-    <tr>
-      <td style="padding: 4px 6px; border-right: 1px solid #000; vertical-align: top;">
-        <div style="font-weight: bold; text-transform: uppercase;">-</div>
-        ${refsHtml}
-      </td>
-      <td style="padding: 4px 6px; border-right: 1px solid #000; text-align: center; vertical-align: top;">-</td>
-      <td style="padding: 4px 6px; border-right: 1px solid #000; text-align: center; vertical-align: top;">-</td>
-      <td style="padding: 4px 6px; border-right: 1px solid #000; text-align: right; vertical-align: top;">-</td>
-      <td style="padding: 4px 6px; text-align: right; vertical-align: top;">-</td>
-    </tr>
-  ` : items.map((item, idx) => `
-    <tr>
-      <td style="padding: 4px 6px; border-right: 1px solid #000; vertical-align: top;">
-        <div style="font-weight: bold; text-transform: uppercase;">${item.description || ''}</div>
-        ${idx === 0 ? refsHtml : ''}
-      </td>
-      <td style="padding: 4px 6px; border-right: 1px solid #000; text-align: center; vertical-align: top;">${item.hsn_sac || '-'}</td>
-      <td style="padding: 4px 6px; border-right: 1px solid #000; text-align: center; vertical-align: top;">${item.quantity || 0}</td>
-      <td style="padding: 4px 6px; border-right: 1px solid #000; text-align: right; vertical-align: top;">${Number(item.rate || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-      <td style="padding: 4px 6px; text-align: right; vertical-align: top;">${Number(item.amount || ((item.quantity || 0) * (item.rate || 0))).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-    </tr>
-  `).join('');
 
   const taxRows = (data.cgst_amount > 0 || data.sgst_amount > 0) ? `
     <tr style="border-bottom: 1px solid #000;">
@@ -88,171 +65,230 @@ function renderClientInvoiceHtml(data) {
   ` : '';
 
   const upiHandle = COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'icici'}` : '@icici';
+  const deliveryAddress = data.delivery_address || data.buyer_address || '';
+  const pages = paginateInvoiceItems(data.items || [], data);
 
-  const html = `
+  const pagesHtml = pages.map((page) => {
+    const headerHtml = page.isFirstPage ? `
+      <table style="width: 100%; border-collapse: collapse; border-bottom: 1.5px solid #000;">
+        <tr>
+          <td style="width: 22%; vertical-align: middle; text-align: center; border-right: 1px solid #000; padding: 6px;">
+            <img src="${shepherdInvoiceLogo}" alt="Logo" style="width: 78px; height: 78px; object-fit: contain; display: block; margin: 0 auto;" />
+            <div style="font-size: 8.5px; font-weight: bold; text-transform: uppercase; margin-top: 2px; color: #1e293b;">SHEPHERD ENTERPRISES</div>
+            <div style="font-size: 8px; color: #475569;">${upiHandle}</div>
+          </td>
+          <td style="width: 78%; vertical-align: middle; text-align: center; padding: 6px 12px;">
+            <div style="font-size: 21px; font-weight: 800; text-transform: uppercase; color: #1e3a8a; margin-bottom: 3px;">${COMPANY_CONFIG.name}</div>
+            <div style="font-size: 9.5px; text-transform: uppercase; margin-bottom: 3px; line-height: 1.3;">${COMPANY_CONFIG.address}</div>
+            <div style="font-size: 10px; font-weight: bold; color: #0f172a; margin-bottom: 2px;">Cell: ${COMPANY_CONFIG.phone}</div>
+            <div style="font-size: 10px; font-weight: bold; color: #0f172a;">Email: ${COMPANY_CONFIG.email}</div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Sub-Header Row -->
+      <table style="width: 100%; border-collapse: collapse; border-bottom: 1.5px solid #000; font-size: 10px;">
+        <tr>
+          <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 11px; border-right: 1px solid #000;">
+            GSTIN: ${COMPANY_CONFIG.gstin || '33ABUCS2217H1Z8'}
+          </td>
+          <td style="width: 24%; padding: 4px 6px; font-weight: 900; font-size: 15px; text-align: center; color: #1e3a8a; text-transform: uppercase; border-right: 1px solid #000;">
+            ${docType}
+          </td>
+          <td style="width: 38%; padding: 4px 6px; font-weight: bold; text-align: right; text-transform: uppercase; font-size: 10px;">
+            <span>${copyTypeLabel}</span>
+            <span style="margin-left: 6px; font-weight: bold; font-size: 9.5px;">Page ${page.pageNumber}/${page.totalPages}</span>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Meta Grid -->
+      <table style="width: 100%; border-collapse: collapse; border-bottom: 1.5px solid #000; font-size: 10px;">
+        <tr>
+          <td style="width: 50%; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 4px 6px; vertical-align: top;">
+            <div style="line-height: 1.35; margin-bottom: 2px;"><strong>INVOICE NO :</strong> <strong>${docNum}</strong></div>
+            <div style="line-height: 1.35; margin-bottom: 2px;"><strong>INVOICE DATE:</strong> ${docDate}</div>
+            <div style="line-height: 1.35; margin-bottom: 2px;">
+              <strong>STATE:</strong> <span style="text-transform: uppercase;">${COMPANY_CONFIG.state || 'TAMIL NADU'}</span>
+              <strong style="margin-left: 10px;">STATE CODE:</strong> ${COMPANY_CONFIG.state_code || '33'}
+            </div>
+            <div style="margin-top: 4px;">
+              <div style="line-height: 1.35; margin-bottom: 2px;"><strong>BUYER:</strong> <strong>${data.buyer_name || ''}</strong></div>
+              <div style="line-height: 1.35; margin-bottom: 2px;"><strong>CUSTOMER ADDRESS:</strong> <span style="white-space: pre-line; font-size: 9.5px;">${data.buyer_address || ''}</span></div>
+            </div>
+          </td>
+          <td style="width: 50%; border-bottom: 1px solid #000; padding: 4px 6px; vertical-align: top;">
+            <div style="line-height: 1.35; margin-bottom: 2px;"><strong>TRANSPORTATION MODE:</strong> ${data.transportation_mode || '-'}</div>
+            <div style="line-height: 1.35; margin-bottom: 2px;"><strong>VEHICLE NO:</strong> ${data.vehicle_number || '-'}</div>
+            <div style="line-height: 1.35; margin-bottom: 2px;"><strong>DATE OF SUPPLY:</strong> ${data.date_of_supply || docDate || '-'}</div>
+            <div style="line-height: 1.35; margin-bottom: 2px;"><strong>DELIVERY ADDRESS:</strong> ${deliveryAddress}</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 50%; border-right: 1px solid #000; padding: 4px 6px; font-size: 10px; font-weight: bold;">
+            CUSTOMER' GSTIN: ${data.customer_gstin || 'N/A'}
+          </td>
+          <td style="width: 50%; padding: 4px 6px; font-size: 10px;">
+            <div><strong>STATE:</strong> ${(data.customer_state || 'Tamil Nadu').toUpperCase()}</div>
+            <div style="margin-top: 2px;"><strong>STATE CODE:</strong> ${data.customer_state_code || '33'}</div>
+          </td>
+        </tr>
+      </table>
+    ` : `
+      <table style="width: 100%; border-collapse: collapse; border-bottom: 1.5px solid #000; font-size: 10px; background: #f8fafc;">
+        <tr>
+          <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 11px; border-right: 1px solid #000;">
+            INVOICE NO: ${docNum}
+          </td>
+          <td style="width: 24%; padding: 4px 6px; font-weight: 900; font-size: 15px; text-align: center; color: #1e3a8a; text-transform: uppercase; border-right: 1px solid #000;">
+            ${docType}
+          </td>
+          <td style="width: 38%; padding: 4px 6px; font-weight: bold; text-align: right; text-transform: uppercase; font-size: 10px;">
+            <span>${copyTypeLabel}</span>
+            <span style="margin-left: 6px; font-weight: bold; font-size: 9.5px;">Page ${page.pageNumber}/${page.totalPages}</span>
+          </td>
+        </tr>
+      </table>
+    `;
+
+    const itemRows = page.items.map((item, idx) => {
+      const isFirstOverallItem = page.isFirstPage && idx === 0;
+      const formattedDesc = String(item.description || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\r?\n/g, '<br/>');
+      return `<tr><td style="width: 54%; padding: 2.5px 6px; border-right: 1px solid #000; vertical-align: top; word-break: break-word; overflow-wrap: break-word;"><div style="font-weight: bold; text-transform: uppercase; font-size: 9.5px; line-height: 1.3; word-break: break-word; overflow-wrap: break-word;">${formattedDesc}</div>${isFirstOverallItem ? refsHtml : ''}</td><td style="width: 11%; padding: 2.5px 6px; border-right: 1px solid #000; text-align: center; vertical-align: top; font-size: 10px;">${item.hsn_sac || '-'}</td><td style="width: 11%; padding: 2.5px 6px; border-right: 1px solid #000; text-align: center; vertical-align: top; font-size: 10px;">${item.quantity || 0}</td><td style="width: 12%; padding: 2.5px 6px; border-right: 1px solid #000; text-align: right; vertical-align: top; font-size: 10px;">${Number(item.rate || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td><td style="width: 12%; padding: 2.5px 6px; text-align: right; vertical-align: top; font-size: 10px;">${Number(item.amount || ((item.quantity || 0) * (item.rate || 0))).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td></tr>`;
+    }).join('');
+
+    const itemsTableHtml = `
+      <table style="width: 100%; table-layout: fixed; border-collapse: collapse; flex: 1; display: table; height: 100%;">
+        <thead>
+          <tr style="background: #ffffff; border-bottom: 1.5px solid #000; font-size: 9.5px; font-weight: bold; text-align: center;">
+            <th style="padding: 4px 6px; border-right: 1px solid #000; text-align: left; width: 54%; height: 22px;">DESCRIPTION</th>
+            <th style="padding: 4px 6px; border-right: 1px solid #000; width: 11%;">HSN</th>
+            <th style="padding: 4px 6px; border-right: 1px solid #000; width: 11%;">QTY.</th>
+            <th style="padding: 4px 6px; border-right: 1px solid #000; width: 12%; text-align: right;">RATE</th>
+            <th style="padding: 4px 6px; width: 12%; text-align: right;">AMOUNT</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemRows}
+          <tr class="table-spacer-row">
+            <td style="border-right: 1px solid #000; padding: 0;"></td>
+            <td style="border-right: 1px solid #000; padding: 0;"></td>
+            <td style="border-right: 1px solid #000; padding: 0;"></td>
+            <td style="border-right: 1px solid #000; padding: 0;"></td>
+            <td style="padding: 0;"></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+
+    let bottomSectionHtml = '';
+    if (page.hasTotalsAndFooter) {
+      bottomSectionHtml = `
+        <div style="width: 100%; border-top: 1.5px solid #000;">
+          <div style="border-bottom: 1.5px solid #000; padding: 5px 6px; font-size: 10px;">
+            <strong>TOTAL AMOUNT IN WORDS:</strong> ${data.amount_in_words || ''}
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; border-bottom: 1.5px solid #000;">
+            <tr>
+              <td style="width: 60%; border-right: 1px solid #000; padding: 5px 6px; vertical-align: top;">
+                <div style="font-weight: bold; font-size: 10px; margin-bottom: 3px;">BANK DETAILS</div>
+                <div style="font-size: 9.5px; line-height: 1.35; margin-bottom: 2px;"><strong>BANK NAME:</strong> ${COMPANY_CONFIG.bank_name}: ${COMPANY_CONFIG.account_number}</div>
+                <div style="font-size: 9.5px; line-height: 1.35; margin-bottom: 2px;"><strong>BRANCH NAME:</strong> ${COMPANY_CONFIG.branch_name}</div>
+                <div style="font-size: 9.5px; line-height: 1.35;"><strong>IFSC CODE:</strong> ${COMPANY_CONFIG.ifsc_code}</div>
+              </td>
+              <td style="width: 40%; padding: 0; vertical-align: top;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 9.5px;">
+                  <tr>
+                    <td style="padding: 3px 6px; width: 65%; border-bottom: 1px solid #000;">TOTAL AMOUNT BEFORE TAX</td>
+                    <td style="padding: 3px 6px; width: 35%; text-align: right; border-bottom: 1px solid #000;">${Number(data.subtotal || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                  </tr>
+                  ${taxRows}
+                  <tr style="background: #f8fafc; font-weight: bold; font-size: 10px;">
+                    <td style="padding: 3px 6px;">TOTAL AMOUNT AFTER TAX:</td>
+                    <td style="padding: 3px 6px; text-align: right;">${Number(data.grand_total || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="width: 50%; vertical-align: top; padding: 6px; border-right: 1px solid #000;">
+                <div style="font-weight: bold; font-size: 9.5px; margin-bottom: 4px;">TERMS AND CONDITIONS</div>
+                <div style="font-size: 8.5px; color: #334155; line-height: 1.35;">
+                  We declare that this invoice shows the actual value of services described and that all particulars are true and correct.
+                </div>
+                <div style="margin-top: 6px; font-size: 8.5px; color: #334155; font-weight: bold;">
+                  Page ${page.pageNumber}/${page.totalPages}
+                </div>
+              </td>
+              <td style="width: 50%; vertical-align: top; text-align: center; padding: 6px;">
+                <div style="font-weight: bold; font-size: 8.5px; text-transform: uppercase; margin-bottom: 4px;">
+                  CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT
+                </div>
+                <div style="font-weight: bold; font-size: 10.5px; color: #1e3a8a; margin-bottom: 4px;">
+                  For ${COMPANY_CONFIG.name}
+                </div>
+                <div style="height: 48px;"></div>
+                <div style="font-weight: bold; font-size: 10px; text-align: right; padding-right: 15px;">
+                  Proprietor
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      `;
+    }
+
+    const pageContainerStyle = page.isLastPage
+      ? 'width: 100%; max-width: 194mm; margin: 0 auto; page-break-after: avoid; break-after: avoid; box-sizing: border-box;'
+      : 'width: 100%; max-width: 194mm; height: 284mm; margin: 0 auto; page-break-after: always; break-after: page; box-sizing: border-box; display: flex; flex-direction: column;';
+
+    const boxFrameStyle = page.isLastPage
+      ? 'width: 100%; border: 1.5px solid #000; background: #fff; box-sizing: border-box;'
+      : 'width: 100%; height: 100%; border: 1.5px solid #000; background: #fff; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;';
+
+    return `
+      <div class="invoice-page${page.isLastPage ? ' is-last-page' : ''}" style="${pageContainerStyle}">
+        <div style="${boxFrameStyle}">
+          <div style="display: flex; flex-direction: column; flex: 1;">
+            ${headerHtml}
+            ${itemsTableHtml}
+          </div>
+          ${bottomSectionHtml}
+        </div>
+      </div>
+    `;
+  }).join('\n');
+
+  return `
     <!DOCTYPE html>
     <html>
       <head>
         <meta charset="utf-8" />
         <title>${docType} ${docNum}</title>
         <style>
-          @page { size: A4 portrait; margin: 8mm; }
-          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; color: #000; font-size: 10px; }
-          .invoice-box { width: 100%; box-sizing: border-box; }
-          table { width: 100%; border-collapse: collapse; }
-          td, th { vertical-align: middle; }
-          .main-table { border: 1.5px solid #000; }
-          .main-table td { border-bottom: 1px solid #000; }
-          .main-table td:not(:last-child) { border-right: 1px solid #000; }
-          .item-table th { background-color: #f1f5f9; border-bottom: 1px solid #000; font-weight: bold; padding: 4px 3px; font-size: 9.5px; text-transform: uppercase; }
-          .item-table td { padding: 4px 3px; font-size: 9.5px; border-bottom: 1px solid #cbd5e1; }
-          .noborder td { border: none !important; }
+          @page { size: A4 portrait; margin: 6mm 8mm 6mm 8mm; }
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body { font-family: Arial, Helvetica, sans-serif; font-size: 11px; line-height: 1.25; color: #000; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          @media print {
+            body { padding: 0; }
+            .invoice-page:not(.is-last-page) { height: 284mm; margin-bottom: 0 !important; }
+            .invoice-page.is-last-page { margin-bottom: 0 !important; }
+          }
         </style>
       </head>
       <body>
-        <div class="invoice-box">
-          <!-- Top Header -->
-          <table class="noborder" style="margin-bottom: 6px;">
-            <tr>
-              <td style="width: 18%; vertical-align: top; text-align: center; border: none; padding-right: 8px;">
-                <img src="${shepherdInvoiceLogo}" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; display: block; margin: 0 auto;" />
-                <div style="font-size: 8px; font-weight: bold; text-transform: uppercase; margin-top: 2px;">SHEPHERD ENTERPRISES</div>
-                <div style="font-size: 7.5px; color: #475569;">${upiHandle}</div>
-              </td>
-              <td style="width: 82%; vertical-align: top; text-align: center; border: none; padding-right: 25px;">
-                <div style="font-size: 20px; font-weight: 800; text-transform: uppercase; color: #1e3a8a; margin-bottom: 3px;">${COMPANY_CONFIG.name}</div>
-                <div style="font-size: 9.5px; text-transform: uppercase; margin-bottom: 3px;">${COMPANY_CONFIG.address}</div>
-                <div style="font-size: 10px; font-weight: bold; margin-bottom: 2px;">Cell: ${COMPANY_CONFIG.phone}</div>
-                <div style="font-size: 10px; font-weight: bold;">Email: ${COMPANY_CONFIG.email}</div>
-              </td>
-            </tr>
-          </table>
-
-          <!-- Main Boxed Table -->
-          <table class="main-table">
-            <!-- Sub-Header Row -->
-            <tr style="border-bottom: 1.5px solid #000;">
-              <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 11px;">GSTIN: ${COMPANY_CONFIG.gstin}</td>
-              <td style="width: 24%; padding: 4px 6px; font-weight: 900; font-size: 16px; text-align: center; color: #1e3a8a; text-transform: uppercase;">${docType}</td>
-              <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 10px; text-align: right; text-transform: uppercase;">${copyTypeLabel}</td>
-            </tr>
-
-            <!-- Meta Grid (2-Columns) -->
-            <tr>
-              <td colspan="2" style="width: 50%; padding: 4px 6px; vertical-align: top; font-size: 10px; border-right: 1px solid #000;">
-                <div><strong>INVOICE NO :</strong> <strong>${docNum}</strong></div>
-                <div><strong>INVOICE DATE:</strong> ${docDate}</div>
-                <div><strong>STATE:</strong> ${(COMPANY_CONFIG.state || 'TAMIL NADU').toUpperCase()} <strong style="margin-left: 10px;">STATE CODE:</strong> ${COMPANY_CONFIG.state_code || '33'}</div>
-                <div style="margin-top: 4px;">
-                  <div><strong>BUYER:</strong> <strong>${data.buyer_name || ''}</strong></div>
-                  <div style="font-size: 9.5px; margin-top: 2px;">${data.buyer_address || ''}</div>
-                </div>
-              </td>
-              <td style="width: 50%; padding: 4px 6px; vertical-align: top; font-size: 10px;">
-                <div><strong>TRANSPORTATION MODE:</strong> ${data.transportation_mode || '-'}</div>
-                <div><strong>VEHICLE NO:</strong> ${data.vehicle_number || '-'}</div>
-                <div><strong>DATE OF SUPPLY:</strong> ${data.date_of_supply || docDate || '-'}</div>
-                <div><strong>DELIVERY ADDRESS:</strong> ${data.delivery_address || data.buyer_address || '-'}</div>
-              </td>
-            </tr>
-
-            <!-- Customer GSTIN & State Code -->
-            <tr style="border-top: 1px solid #000; border-bottom: 1.5px solid #000;">
-              <td colspan="2" style="width: 60%; padding: 4px 6px; font-size: 10px; font-weight: bold;">
-                CUSTOMER' GSTIN: ${data.customer_gstin || 'N/A'}
-              </td>
-              <td style="width: 40%; padding: 4px 6px; font-size: 10px;">
-                <div><strong>STATE:</strong> ${(data.customer_state || 'Tamil Nadu').toUpperCase()}</div>
-                <div><strong>STATE CODE:</strong> ${data.customer_state_code || '33'}</div>
-              </td>
-            </tr>
-
-            <!-- Items Table -->
-            <tr>
-              <td colspan="3" style="padding: 0; border: none;">
-                <table>
-                  <thead>
-                    <tr style="background: #f8fafc; border-bottom: 1.5px solid #000; font-size: 10px; font-weight: bold;">
-                      <th style="padding: 4px; border-right: 1px solid #000; text-align: left; width: 54%;">DESCRIPTION</th>
-                      <th style="padding: 4px; border-right: 1px solid #000; text-align: center; width: 11%;">HSN</th>
-                      <th style="padding: 4px; border-right: 1px solid #000; text-align: center; width: 11%;">QTY.</th>
-                      <th style="padding: 4px; border-right: 1px solid #000; text-align: right; width: 12%;">RATE</th>
-                      <th style="padding: 4px; text-align: right; width: 12%;">AMOUNT</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${itemRows}
-                    <tr>
-                      <td style="height: 180px; border-right: 1px solid #000;"></td>
-                      <td style="border-right: 1px solid #000;"></td>
-                      <td style="border-right: 1px solid #000;"></td>
-                      <td style="border-right: 1px solid #000;"></td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-
-            <!-- Amount in Words -->
-            <tr style="border-top: 1.5px solid #000; border-bottom: 1.5px solid #000;">
-              <td colspan="3" style="padding: 5px 6px; font-size: 10px;">
-                <strong>TOTAL AMOUNT IN WORDS:</strong> ${data.amount_in_words || 'Zero Rupees Only'}
-              </td>
-            </tr>
-
-            <!-- Bank Details & Tax Section -->
-            <tr>
-              <td colspan="2" style="width: 60%; padding: 5px 6px; vertical-align: top; border-right: 1px solid #000; font-size: 9.5px;">
-                <div style="font-weight: bold; font-size: 10px; text-transform: uppercase; margin-bottom: 3px;">BANK DETAILS</div>
-                <div><strong>BANK NAME:</strong> ${COMPANY_CONFIG.bank_name}: ${COMPANY_CONFIG.account_number}</div>
-                <div><strong>BRANCH NAME:</strong> ${(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
-                <div><strong>IFSC CODE:</strong> ${COMPANY_CONFIG.ifsc_code}</div>
-              </td>
-            <td style="width: 40%; padding: 0; vertical-align: top;">
-              <table style="font-size: 9.5px;">
-                <tr style="border-bottom: 1px solid #000;">
-                  <td style="padding: 3px 6px; width: 65%; border-bottom: 1px solid #000;">TOTAL AMOUNT BEFORE TAX</td>
-                  <td style="padding: 3px 6px; width: 35%; text-align: right; border-bottom: 1px solid #000;">${Number(data.subtotal || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                </tr>
-                ${taxRows}
-                <tr style="background: #f8fafc; font-weight: bold; font-size: 10px;">
-                  <td style="padding: 3px 6px;">TOTAL AMOUNT AFTER TAX:</td>
-                  <td style="padding: 3px 6px; text-align: right;">${Number(data.grand_total || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-
-        <!-- Footer: Terms & Signature -->
-        <table style="margin-top: 8px; font-size: 9px;">
-          <tr>
-            <td style="width: 48%; vertical-align: top; padding: 0 4px; border: none;">
-              <div style="font-weight: bold; font-size: 9.5px; margin-bottom: 4px;">TERMS AND CONDITIONS</div>
-              <div style="font-size: 8.5px; color: #334155; line-height: 1.35;">
-                We declare that this invoice shows the actual value of services described and that all particulars are true and correct.
-              </div>
-            </td>
-            <td style="width: 52%; vertical-align: top; text-align: center; padding: 0 4px; border: none;">
-              <div style="font-weight: bold; font-size: 8.5px; text-transform: uppercase; margin-bottom: 4px;">
-                CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT
-              </div>
-              <div style="font-weight: bold; font-size: 10.5px; color: #1e3a8a; margin-bottom: 4px;">
-                For SHEPHERD ENTERPRISES PRIVATE LIMITED
-              </div>
-              <div style="height: 48px;"></div>
-              <div style="font-weight: bold; font-size: 10px; text-align: right; padding-right: 15px;">
-                Proprietor
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </body>
+        <div style="width: 100%; max-width: 194mm; margin: 0 auto;">
+          ${pagesHtml}
+        </div>
+      </body>
     </html>
   `;
 }
+
 
 export const ipcClient = {
   // Invoice APIs
@@ -817,6 +853,24 @@ export const ipcClient = {
     return {};
   },
 
+  listCustomers: async (search = '') => {
+    if (isElectron && typeof window.electronAPI?.listCustomers === 'function') {
+      return await window.electronAPI.listCustomers(search);
+    }
+    const q = String(search || '').trim().toLowerCase();
+    try {
+      const stored = JSON.parse(localStorage.getItem('shepherd_saved_customers') || '[]');
+      if (!q) return stored;
+      return stored.filter(c => 
+        (c.name && c.name.toLowerCase().includes(q)) || 
+        (c.gstin && c.gstin.toLowerCase().includes(q)) ||
+        (c.address && c.address.toLowerCase().includes(q))
+      );
+    } catch {
+      return [];
+    }
+  },
+
   searchCustomers: async (query = '') => {
     if (isElectron && typeof window.electronAPI?.searchCustomers === 'function') {
       return await window.electronAPI.searchCustomers(query);
@@ -867,12 +921,13 @@ export const ipcClient = {
       const name = customerData.name.trim();
       const gstin = customerData.gstin ? customerData.gstin.trim().toUpperCase() : '';
       const existingIdx = stored.findIndex(c => 
+        (customerData.id && c.id === customerData.id) ||
         (gstin && c.gstin && c.gstin.toUpperCase() === gstin) || 
         (c.name && c.name.trim().toLowerCase() === name.toLowerCase())
       );
 
       const customerObj = {
-        id: existingIdx >= 0 ? stored[existingIdx].id : Date.now(),
+        id: customerData.id || (existingIdx >= 0 ? stored[existingIdx].id : Date.now()),
         name: name,
         address: customerData.address || '',
         gstin: gstin,
@@ -890,6 +945,186 @@ export const ipcClient = {
       return customerObj.id;
     } catch {
       return null;
+    }
+  },
+
+  deleteCustomer: async (id) => {
+    if (isElectron && typeof window.electronAPI?.deleteCustomer === 'function') {
+      return await window.electronAPI.deleteCustomer(id);
+    }
+    try {
+      const stored = JSON.parse(localStorage.getItem('shepherd_saved_customers') || '[]');
+      const filtered = stored.filter(c => c.id !== id);
+      localStorage.setItem('shepherd_saved_customers', JSON.stringify(filtered));
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  // Products / Item Master
+  listProducts: async (search = '') => {
+    if (isElectron && typeof window.electronAPI?.listProducts === 'function') {
+      return await window.electronAPI.listProducts(search);
+    }
+    const q = String(search || '').trim().toLowerCase();
+    try {
+      const stored = JSON.parse(localStorage.getItem('shepherd_saved_products') || '[]');
+      if (stored.length === 0) {
+        // Default seed product
+        stored.push({
+          id: 1,
+          name: 'INDUSTRIAL SUPPLY / SERVICE ITEM',
+          hsn_sac: '9983',
+          default_quantity: 1,
+          rate: 10000
+        });
+        localStorage.setItem('shepherd_saved_products', JSON.stringify(stored));
+      }
+      if (!q) return stored;
+      return stored.filter(p => 
+        (p.name && p.name.toLowerCase().includes(q)) || 
+        (p.hsn_sac && p.hsn_sac.toLowerCase().includes(q))
+      );
+    } catch {
+      return [];
+    }
+  },
+
+  searchProducts: async (query = '') => {
+    if (isElectron && typeof window.electronAPI?.searchProducts === 'function') {
+      return await window.electronAPI.searchProducts(query);
+    }
+    const q = String(query || '').trim().toLowerCase();
+    const map = new Map();
+
+    try {
+      const stored = JSON.parse(localStorage.getItem('shepherd_saved_products') || '[]');
+      for (const p of stored) {
+        const key = `${p.hsn_sac}_${p.name.toLowerCase()}`;
+        map.set(key, p);
+      }
+    } catch {}
+
+    const all = Array.from(map.values());
+    if (!q) return all.slice(0, 20);
+
+    return all.filter(p => 
+      (p.hsn_sac && p.hsn_sac.toLowerCase().includes(q)) || 
+      (p.name && p.name.toLowerCase().includes(q))
+    ).sort((a, b) => {
+      const aHsnMatch = a.hsn_sac && a.hsn_sac.toLowerCase().startsWith(q);
+      const bHsnMatch = b.hsn_sac && b.hsn_sac.toLowerCase().startsWith(q);
+      if (aHsnMatch && !bHsnMatch) return -1;
+      if (!aHsnMatch && bHsnMatch) return 1;
+      return 0;
+    }).slice(0, 20);
+  },
+
+  getProductByHsn: async (hsnCode = '') => {
+    const q = String(hsnCode || '').trim();
+    if (!q) return null;
+
+    // 1. Try IPC getProductByHsn if available in Electron
+    if (isElectron && typeof window.electronAPI?.getProductByHsn === 'function') {
+      try {
+        const res = await window.electronAPI.getProductByHsn(q);
+        if (res && res.name) return res;
+      } catch (err) {
+        console.warn('IPC getProductByHsn call error:', err);
+      }
+    }
+
+    // 2. Query products catalog via listProducts()
+    try {
+      const all = await ipcClient.listProducts();
+      if (Array.isArray(all) && all.length > 0) {
+        const qLower = q.toLowerCase();
+        // Exact HSN match
+        const exact = all.find(p => p.hsn_sac && String(p.hsn_sac).trim().toLowerCase() === qLower);
+        if (exact) return exact;
+        // Prefix HSN match
+        const prefix = all.find(p => p.hsn_sac && String(p.hsn_sac).trim().toLowerCase().startsWith(qLower));
+        if (prefix) return prefix;
+        // Contains HSN match
+        const contains = all.find(p => p.hsn_sac && String(p.hsn_sac).trim().toLowerCase().includes(qLower));
+        if (contains) return contains;
+      }
+    } catch (e) {
+      console.warn('listProducts fallback in getProductByHsn error:', e);
+    }
+
+    // 3. Query via searchProducts()
+    try {
+      const searched = await ipcClient.searchProducts(q);
+      if (Array.isArray(searched) && searched.length > 0) {
+        const qLower = q.toLowerCase();
+        const matched = searched.find(p => p.hsn_sac && String(p.hsn_sac).trim().toLowerCase() === qLower) || searched[0];
+        if (matched) return matched;
+      }
+    } catch (e) {
+      console.warn('searchProducts fallback in getProductByHsn error:', e);
+    }
+
+    // 4. Check localStorage directly (Browser mode fallback)
+    try {
+      const stored = JSON.parse(localStorage.getItem('shepherd_saved_products') || '[]');
+      const qLower = q.toLowerCase();
+      const exact = stored.find(p => p.hsn_sac && String(p.hsn_sac).trim().toLowerCase() === qLower);
+      if (exact) return exact;
+      const prefix = stored.find(p => p.hsn_sac && String(p.hsn_sac).trim().toLowerCase().startsWith(qLower));
+      if (prefix) return prefix;
+    } catch {}
+
+    return null;
+  },
+
+  saveProduct: async (productData) => {
+    if (!productData || !productData.name) return null;
+    if (isElectron && typeof window.electronAPI?.saveProduct === 'function') {
+      return await window.electronAPI.saveProduct(productData);
+    }
+    try {
+      const stored = JSON.parse(localStorage.getItem('shepherd_saved_products') || '[]');
+      const name = productData.name.trim();
+      const hsn = (productData.hsn_sac || '').trim();
+      const existingIdx = stored.findIndex(p => 
+        (productData.id && p.id === productData.id) ||
+        (p.name.toLowerCase() === name.toLowerCase() && p.hsn_sac === hsn)
+      );
+
+      const productObj = {
+        id: productData.id || (existingIdx >= 0 ? stored[existingIdx].id : Date.now()),
+        name: name,
+        hsn_sac: hsn,
+        default_quantity: Number(productData.default_quantity) || 1,
+        rate: Number(productData.rate) || 0,
+        updated_at: new Date().toISOString()
+      };
+
+      if (existingIdx >= 0) {
+        stored[existingIdx] = { ...stored[existingIdx], ...productObj };
+      } else {
+        stored.unshift(productObj);
+      }
+      localStorage.setItem('shepherd_saved_products', JSON.stringify(stored));
+      return productObj.id;
+    } catch {
+      return null;
+    }
+  },
+
+  deleteProduct: async (id) => {
+    if (isElectron && typeof window.electronAPI?.deleteProduct === 'function') {
+      return await window.electronAPI.deleteProduct(id);
+    }
+    try {
+      const stored = JSON.parse(localStorage.getItem('shepherd_saved_products') || '[]');
+      const filtered = stored.filter(p => p.id !== id);
+      localStorage.setItem('shepherd_saved_products', JSON.stringify(filtered));
+      return true;
+    } catch {
+      return false;
     }
   },
 

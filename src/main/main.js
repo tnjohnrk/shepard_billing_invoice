@@ -13,6 +13,7 @@ import { registerBackupIPC } from './ipc/backupIPC.js';
 import { registerPrintIPC } from './ipc/printIPC.js';
 import { registerSettingsIPC } from './ipc/settingsIPC.js';
 import { registerRecycleBinIPC } from './ipc/recycleBinIPC.js';
+import { registerDetailsIPC } from './ipc/detailsIPC.js';
 import { registerAppIPC } from './ipc/appIPC.js';
 import { initializeAutoUpdater } from './services/updateService.js';
 import { processPendingEmailQueue } from './services/emailQueueService.js';
@@ -192,6 +193,7 @@ if (!gotTheLock) {
     registerPrintIPC();
     registerSettingsIPC();
     registerRecycleBinIPC();
+    registerDetailsIPC();
     registerAppIPC();
 
     // 3. Create primary app window

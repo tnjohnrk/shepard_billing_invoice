@@ -6,6 +6,7 @@ import { Toast } from './components/common/Toast';
 import { Dashboard } from './pages/Dashboard';
 import { CreateInvoice } from './pages/CreateInvoice';
 import { History } from './pages/History';
+import { Details } from './pages/Details';
 import { Reports } from './pages/Reports';
 import { Settings } from './pages/Settings';
 import { ipcClient } from './services/ipcClient';
@@ -99,6 +100,7 @@ export default function App() {
     dashboard: { title: 'Dashboard Analytics', subtitle: 'Shepherd Enterprises Private Limited Billing Control Panel' },
     create: { title: 'Create Invoice', subtitle: 'Step-by-step invoice creation wizard' },
     history: { title: 'Invoice History & Search', subtitle: 'Search, filter, print, and export historical invoice records' },
+    details: { title: 'Directory & Master Details', subtitle: 'Manage client companies and product/service catalogs for fast auto-fill' },
     reports: { title: 'Financial & Tax Reports', subtitle: 'Daily, Monthly, Financial Year (Apr-Mar) and Customer Billing summaries' },
     settings: { title: 'Application Settings', subtitle: 'Backup, restore, data migration, and security lock configuration' }
   };
@@ -158,6 +160,8 @@ export default function App() {
             onConvertProforma={handleConvertProforma}
           />
         )}
+
+        {activeTab === 'details' && <Details toast={showToast} />}
 
         {activeTab === 'reports' && <Reports toast={showToast} />}
 

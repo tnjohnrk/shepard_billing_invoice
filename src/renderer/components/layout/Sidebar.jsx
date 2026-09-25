@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, FilePlus, History, BarChart3, Settings, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, FilePlus, History, BarChart3, Layers, Settings, ShieldCheck } from 'lucide-react';
 import companyLogo from '../../assets/logo.png';
 
 export function Sidebar({ activeTab, setActiveTab }) {
@@ -7,6 +7,7 @@ export function Sidebar({ activeTab, setActiveTab }) {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'create', label: 'Create Invoice', icon: FilePlus },
     { id: 'history', label: 'History', icon: History },
+    { id: 'details', label: 'Details', icon: Layers },
     { id: 'reports', label: 'Reports', icon: BarChart3 },
     { id: 'settings', label: 'Settings', icon: Settings }
   ];

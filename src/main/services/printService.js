@@ -5,6 +5,8 @@ export async function printInvoiceDocument(invoiceData, options = {}) {
   const htmlContent = renderInvoiceHtml(invoiceData);
 
   const printWin = new BrowserWindow({
+    width: 1200,
+    height: 1600,
     show: false,
     webPreferences: {
       nodeIntegration: false,
@@ -14,6 +16,17 @@ export async function printInvoiceDocument(invoiceData, options = {}) {
 
   const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`;
   await printWin.loadURL(dataUrl);
+
+  // Wait until document layout, images, and fonts are completely rendered
+  await printWin.webContents.executeJavaScript(`
+    new Promise(resolve => {
+      if (document.readyState === 'complete') {
+        setTimeout(resolve, 300);
+      } else {
+        window.addEventListener('load', () => setTimeout(resolve, 300));
+      }
+    })
+  `);
 
   return new Promise((resolve, reject) => {
     printWin.webContents.print(

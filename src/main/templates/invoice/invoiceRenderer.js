@@ -7,18 +7,19 @@ const __dirname = path.dirname(__filename);
 import { COMPANY_CONFIG } from '../../config/companyConfig.js';
 import { TEMPLATE_CONFIG } from './templateConfig.js';
 import { getCopyTypeLabel } from '../../../shared/constants/copyTypes.js';
+import { paginateInvoiceItems } from '../../../shared/utils/invoicePagination.js';
 
 export function renderInvoiceHtml(invoiceData) {
   const htmlPath = path.join(__dirname, 'invoiceTemplate.html');
   const cssPath = path.join(__dirname, 'invoiceTemplate.css');
 
-  let htmlTemplate = fs.readFileSync(htmlPath, 'utf8');
-  let cssContent = fs.readFileSync(cssPath, 'utf8');
+  let htmlTemplate = fs.existsSync(htmlPath) ? fs.readFileSync(htmlPath, 'utf8') : '';
+  let cssContent = fs.existsSync(cssPath) ? fs.readFileSync(cssPath, 'utf8') : '';
 
   const isProforma = String(invoiceData.invoice_type).toUpperCase() === 'PROFORMA';
   const docType = isProforma ? 'PROFORMA INVOICE' : 'INVOICE';
-  const docNum = isProforma ? (invoiceData.proforma_number || '') : (invoiceData.invoice_number || '');
-  const docDate = (isProforma ? invoiceData.proforma_date : invoiceData.invoice_date) || '';
+  const docNum = isProforma ? (invoiceData.proforma_number || invoiceData.invoice_number || '') : (invoiceData.invoice_number || invoiceData.proforma_number || '');
+  const docDate = (isProforma ? invoiceData.proforma_date : invoiceData.invoice_date) || invoiceData.invoice_date || invoiceData.proforma_date || '';
   const copyTypeLabel = getCopyTypeLabel(invoiceData.copy_type, isProforma);
 
   // Read and encode company logo to base64 Data URI
@@ -28,6 +29,9 @@ export function renderInvoiceHtml(invoiceData) {
     const logoBase64 = fs.readFileSync(logoPath).toString('base64');
     logoHtml = `<img src="data:image/png;base64,${logoBase64}" alt="Shepherd Enterprises" class="header-logo-img" />`;
   }
+
+  const upiTag = COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'icici'}` : '@icici';
+  const deliveryAddress = invoiceData.delivery_address || invoiceData.buyer_address || '-';
 
   // Build reference block string for line items (S.O. No, GEMC No, Ref)
   const refs = [];
@@ -48,49 +52,6 @@ export function renderInvoiceHtml(invoiceData) {
   const refsHtml = refs.length > 0
     ? `<div class="item-refs-block">${refs.join('<br>')}</div>`
     : '';
-
-  // Build Item Rows HTML
-  const items = invoiceData.items || [];
-  let itemRowsHtml = '';
-
-  if (items.length === 0) {
-    itemRowsHtml = `
-      <tr>
-        <td class="col-desc">
-          <div class="item-desc-text">-</div>
-          ${refsHtml}
-        </td>
-        <td class="col-hsn">-</td>
-        <td class="col-qty">-</td>
-        <td class="col-rate">-</td>
-        <td class="col-amount">-</td>
-      </tr>
-    `;
-  } else {
-    itemRowsHtml = items.map((item, idx) => `
-      <tr>
-        <td class="col-desc">
-          <div class="item-desc-text">${escapeHtml(item.description)}</div>
-          ${idx === 0 ? refsHtml : ''}
-        </td>
-        <td class="col-hsn">${escapeHtml(item.hsn_sac || '-')}</td>
-        <td class="col-qty">${item.quantity}</td>
-        <td class="col-rate">${formatCurrency(item.rate)}</td>
-        <td class="col-amount">${formatCurrency(item.amount || (item.quantity * item.rate))}</td>
-      </tr>
-    `).join('');
-  }
-
-  // Add min spacer row to stretch table body nicely
-  itemRowsHtml += `
-    <tr class="items-table-spacer">
-      <td class="col-desc"></td>
-      <td class="col-hsn"></td>
-      <td class="col-qty"></td>
-      <td class="col-rate"></td>
-      <td class="col-amount"></td>
-    </tr>
-  `;
 
   // Build Tax Rows HTML
   let taxRowsHtml = '';
@@ -116,11 +77,12 @@ export function renderInvoiceHtml(invoiceData) {
 
   // Round Off row
   let roundOffHtml = '';
-  if (invoiceData.roundOff && invoiceData.roundOff !== 0) {
+  if (invoiceData.round_off && Number(invoiceData.round_off) !== 0) {
+    const roundVal = Number(invoiceData.round_off);
     roundOffHtml = `
       <tr>
         <td class="tax-title-col">ROUND OFF</td>
-        <td class="tax-num-col">${invoiceData.roundOff > 0 ? '+' : ''}${formatCurrency(invoiceData.roundOff)}</td>
+        <td class="tax-num-col">${roundVal > 0 ? '+' : ''}${formatCurrency(roundVal)}</td>
       </tr>
     `;
   }
@@ -132,56 +94,225 @@ export function renderInvoiceHtml(invoiceData) {
   let notesHtml = '';
   if (invoiceData.notes) {
     notesHtml = `
-      <div style="font-size: 8.5px; color: #1f2937; margin-top: 4px;">
+      <div class="notes-text">
         <strong>Notes:</strong> ${escapeHtml(invoiceData.notes)}
       </div>
     `;
   }
 
-  const deliveryAddress = invoiceData.delivery_address || invoiceData.buyer_address || '';
+  // Paginate items across A4 pages deterministically
+  const rawItems = (invoiceData.items && invoiceData.items.length > 0) ? invoiceData.items : [];
+  const pages = paginateInvoiceItems(rawItems, invoiceData);
 
-  // Perform replacements
-  let rendered = htmlTemplate
-    .replace('{{CSS_CONTENT}}', cssContent)
-    .replace('{{COMPANY_LOGO_HTML}}', logoHtml)
-    .replace('{{COMPANY_NAME_SHORT}}', 'SHEPHERD ENTERPRISES')
-    .replace('{{COMPANY_UPI_ID}}', COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'icici'}` : '@icici')
-    .replace(/{{DOC_TYPE}}/g, docType)
-    .replace(/{{INVOICE_NUMBER}}/g, docNum)
-    .replace('{{COPY_TYPE_LABEL}}', copyTypeLabel)
-    .replace('{{COMPANY_NAME}}', COMPANY_CONFIG.name)
-    .replace('{{COMPANY_ADDRESS}}', COMPANY_CONFIG.address)
-    .replace('{{COMPANY_PHONE}}', COMPANY_CONFIG.phone)
-    .replace('{{COMPANY_EMAIL}}', COMPANY_CONFIG.email)
-    .replace('{{COMPANY_GSTIN}}', COMPANY_CONFIG.gstin)
-    .replace('{{COMPANY_STATE}}', COMPANY_CONFIG.state)
-    .replace('{{COMPANY_STATE_CODE}}', COMPANY_CONFIG.state_code)
-    .replace('{{BUYER_NAME}}', escapeHtml(invoiceData.buyer_name || ''))
-    .replace('{{BUYER_ADDRESS}}', escapeHtml(invoiceData.buyer_address || ''))
-    .replace('{{DELIVERY_ADDRESS}}', escapeHtml(deliveryAddress))
-    .replace('{{BUYER_GSTIN}}', escapeHtml(invoiceData.customer_gstin || 'N/A'))
-    .replace('{{BUYER_STATE}}', escapeHtml(invoiceData.customer_state || ''))
-    .replace('{{BUYER_STATE_CODE}}', escapeHtml(invoiceData.customer_state_code || ''))
-    .replace('{{INVOICE_DATE}}', docDate)
-    .replace('{{DATE_OF_SUPPLY}}', escapeHtml(invoiceData.date_of_supply || docDate || '-'))
-    .replace('{{TRANSPORTATION_MODE}}', escapeHtml(invoiceData.transportation_mode || '-'))
-    .replace('{{VEHICLE_NUMBER}}', escapeHtml(invoiceData.vehicle_number || '-'))
-    .replace('{{ITEM_ROWS}}', itemRowsHtml)
-    .replace('{{AMOUNT_IN_WORDS}}', invoiceData.amount_in_words || '')
-    .replace('{{SUBTOTAL}}', formatCurrency(invoiceData.subtotal))
-    .replace('{{TAX_ROWS}}', taxRowsHtml)
-    .replace('{{ROUND_OFF_ROW}}', roundOffHtml)
-    .replace('{{GRAND_TOTAL}}', formatCurrency(invoiceData.grand_total))
-    .replace('{{NOTES_SECTION}}', notesHtml)
-    .replace('{{BANK_NAME}}', COMPANY_CONFIG.bank_name)
-    .replace('{{ACCOUNT_NUMBER}}', COMPANY_CONFIG.account_number)
-    .replace('{{IFSC_CODE}}', COMPANY_CONFIG.ifsc_code)
-    .replace('{{BRANCH_NAME}}', COMPANY_CONFIG.branch_name)
-    .replace('{{TERMS_AND_CONDITIONS}}', termsHtml)
-    .replace('{{DECLARATION}}', 'CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT')
-    .replace('{{AUTHORIZED_SIGNATORY_LABEL}}', `For ${COMPANY_CONFIG.name}`);
+  const pagesHtml = pages.map((page) => {
+    let headerSectionHtml = '';
+    if (page.isFirstPage) {
+      headerSectionHtml = `
+        <!-- 1. Header Section -->
+        <table class="header-table">
+          <tr>
+            <td class="header-left-col">
+              ${logoHtml}
+              <div class="company-sub-brand">SHEPHERD ENTERPRISES</div>
+              <div class="company-upi-tag">${upiTag}</div>
+            </td>
+            <td class="header-center-col">
+              <div class="company-name">${escapeHtml(COMPANY_CONFIG.name)}</div>
+              <div class="company-address">${escapeHtml(COMPANY_CONFIG.address)}</div>
+              <div class="company-cell">Cell: ${escapeHtml(COMPANY_CONFIG.phone)}</div>
+              <div class="company-email">Email: ${escapeHtml(COMPANY_CONFIG.email)}</div>
+            </td>
+          </tr>
+        </table>
 
-  return rendered;
+        <!-- 2. Sub-Header Row: GSTIN | DOC TYPE | COPY TYPE & PAGE -->
+        <table class="sub-header-table">
+          <tr class="sub-header-row">
+            <td class="cell-gstin">
+              GSTIN: ${escapeHtml(COMPANY_CONFIG.gstin || '33ABUCS2217H1Z8')}
+            </td>
+            <td class="cell-doc-title">
+              ${docType}
+            </td>
+            <td class="cell-copy-type">
+              <span>${copyTypeLabel}</span>
+              <span class="page-num-text">Page ${page.pageNumber}/${page.totalPages}</span>
+            </td>
+          </tr>
+        </table>
+
+        <!-- 3. Meta Grid: Invoice Details & Logistics (2 Columns) -->
+        <table class="meta-table">
+          <tr class="meta-row">
+            <td class="meta-left-cell">
+              <div class="meta-field"><span class="meta-lbl font-bold">INVOICE NO :</span> <span class="meta-txt font-bold">${escapeHtml(docNum)}</span></div>
+              <div class="meta-field"><span class="meta-lbl font-bold">INVOICE DATE:</span> <span class="meta-txt">${escapeHtml(docDate)}</span></div>
+              <div class="meta-field">
+                <span class="meta-lbl font-bold">STATE:</span> <span class="meta-txt uppercase">${escapeHtml(COMPANY_CONFIG.state || 'TAMIL NADU')}</span>
+                <span class="meta-lbl font-bold" style="margin-left: 10px;">STATE CODE:</span> <span class="meta-txt">${escapeHtml(COMPANY_CONFIG.state_code || '33')}</span>
+              </div>
+              <div class="buyer-block">
+                <div class="meta-field"><span class="meta-lbl font-bold">BUYER:</span> <span class="meta-txt font-bold">${escapeHtml(invoiceData.buyer_name || '')}</span></div>
+                <div class="meta-field"><span class="meta-lbl font-bold">CUSTOMER ADDRESS:</span> <span class="meta-txt" style="white-space: pre-line;">${escapeHtml(invoiceData.buyer_address || '')}</span></div>
+              </div>
+            </td>
+            <td class="meta-right-cell">
+              <div class="meta-field"><span class="meta-lbl font-bold">TRANSPORTATION MODE:</span> <span class="meta-txt">${escapeHtml(invoiceData.transportation_mode || '-')}</span></div>
+              <div class="meta-field"><span class="meta-lbl font-bold">VEHICLE NO:</span> <span class="meta-txt">${escapeHtml(invoiceData.vehicle_number || '-')}</span></div>
+              <div class="meta-field"><span class="meta-lbl font-bold">DATE OF SUPPLY:</span> <span class="meta-txt">${escapeHtml(invoiceData.date_of_supply || docDate || '-')}</span></div>
+              <div class="meta-field"><span class="meta-lbl font-bold">DELIVERY ADDRESS:</span> <span class="meta-txt">${escapeHtml(deliveryAddress)}</span></div>
+            </td>
+          </tr>
+          <tr class="customer-info-row">
+            <td class="cust-gstin-cell">
+              <span class="font-bold">CUSTOMER' GSTIN:</span> ${escapeHtml(invoiceData.customer_gstin || 'N/A')}
+            </td>
+            <td class="cust-state-cell">
+              <div class="meta-field"><span class="meta-lbl font-bold">STATE:</span> <span class="meta-txt uppercase">${escapeHtml(invoiceData.customer_state || 'Tamil Nadu')}</span></div>
+              <div class="meta-field" style="margin-top: 2px;"><span class="meta-lbl font-bold">STATE CODE:</span> <span class="meta-txt">${escapeHtml(invoiceData.customer_state_code || '33')}</span></div>
+            </td>
+          </tr>
+        </table>
+      `;
+    } else {
+      headerSectionHtml = `
+        <!-- Continuation Page Sub-Header Row -->
+        <table class="sub-header-table cont-sub-header">
+          <tr class="sub-header-row">
+            <td class="cell-gstin">
+              INVOICE NO: ${escapeHtml(docNum)}
+            </td>
+            <td class="cell-doc-title">
+              ${docType}
+            </td>
+            <td class="cell-copy-type">
+              <span>${copyTypeLabel}</span>
+              <span class="page-num-text">Page ${page.pageNumber}/${page.totalPages}</span>
+            </td>
+          </tr>
+        </table>
+      `;
+    }
+
+    // Items table for this page
+    const itemRowsHtml = page.items.map((item, idx) => {
+      const isFirstOverallItem = page.isFirstPage && idx === 0;
+      const formattedDesc = escapeHtml(item.description || '').replace(/\r?\n/g, '<br/>');
+      return `<tr class="item-data-row"><td class="col-desc"><div class="item-desc-text">${formattedDesc}</div>${isFirstOverallItem ? refsHtml : ''}</td><td class="col-hsn">${escapeHtml(item.hsn_sac || '-')}</td><td class="col-qty">${item.quantity || 0}</td><td class="col-rate">${formatCurrency(item.rate)}</td><td class="col-amount">${formatCurrency(item.amount || (item.quantity * item.rate))}</td></tr>`;
+    }).join('');
+
+    const itemsTableHtml = `
+      <table class="items-table">
+        <thead>
+          <tr class="items-head-row">
+            <th class="col-desc">DESCRIPTION</th>
+            <th class="col-hsn">HSN</th>
+            <th class="col-qty">QTY.</th>
+            <th class="col-rate">RATE</th>
+            <th class="col-amount">AMOUNT</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemRowsHtml}
+          <tr class="table-spacer-row">
+            <td class="col-desc"></td>
+            <td class="col-hsn"></td>
+            <td class="col-qty"></td>
+            <td class="col-rate"></td>
+            <td class="col-amount"></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+
+    let footerSectionHtml = '';
+    if (page.hasTotalsAndFooter) {
+      footerSectionHtml = `
+        <div class="bottom-content">
+          <!-- 5. Amount in Words Strip -->
+          <div class="amount-words-strip">
+            <span class="font-bold">TOTAL AMOUNT IN WORDS:</span> ${escapeHtml(invoiceData.amount_in_words || '')}
+          </div>
+
+          <!-- 6. Bank Details & Tax Totals Section -->
+          <table class="bank-tax-table">
+            <tr class="bank-tax-row">
+              <td class="bank-details-cell">
+                <div class="bank-heading font-bold">BANK DETAILS</div>
+                <div class="bank-item"><span class="font-bold">BANK NAME:</span> ${escapeHtml(COMPANY_CONFIG.bank_name)}: ${escapeHtml(COMPANY_CONFIG.account_number)}</div>
+                <div class="bank-item"><span class="font-bold">BRANCH NAME:</span> ${escapeHtml(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony')}</div>
+                <div class="bank-item"><span class="font-bold">IFSC CODE:</span> ${escapeHtml(COMPANY_CONFIG.ifsc_code)}</div>
+              </td>
+              <td class="tax-summary-cell">
+                <table class="tax-breakdown-table">
+                  <tr>
+                    <td class="tax-title-col">TOTAL AMOUNT BEFORE TAX</td>
+                    <td class="tax-num-col">${formatCurrency(invoiceData.subtotal)}</td>
+                  </tr>
+                  ${taxRowsHtml}
+                  ${roundOffHtml}
+                  <tr class="total-after-tax-line">
+                    <td class="tax-title-col font-bold">TOTAL AMOUNT AFTER TAX:</td>
+                    <td class="tax-num-col font-bold">${formatCurrency(invoiceData.grand_total)}</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+
+          <!-- 7. Footer Section -->
+          <table class="footer-layout-table">
+            <tr>
+              <td class="footer-terms-col">
+                <div class="terms-title font-bold">TERMS AND CONDITIONS</div>
+                <div class="terms-list">
+                  ${termsHtml}
+                </div>
+                ${notesHtml}
+                <div class="footer-page-num">
+                  Page ${page.pageNumber}/${page.totalPages}
+                </div>
+              </td>
+              <td class="footer-sign-col">
+                <div class="certify-text font-bold">CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT</div>
+                <div class="company-sign-title font-bold">For ${escapeHtml(COMPANY_CONFIG.name)}</div>
+                <div class="signature-space"></div>
+                <div class="signatory-label font-bold">Proprietor</div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="invoice-page${page.isLastPage ? ' is-last-page' : ''}">
+        <div class="invoice-box-frame">
+          <div class="top-content">
+            ${headerSectionHtml}
+            ${itemsTableHtml}
+          </div>
+          ${footerSectionHtml}
+        </div>
+      </div>
+    `;
+  }).join('\n');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>${escapeHtml(docType)} - ${escapeHtml(docNum)}</title>
+  <style>
+    ${cssContent}
+  </style>
+</head>
+<body>
+  <div class="invoice-container">
+    ${pagesHtml}
+  </div>
+</body>
+</html>`;
 }
 
 function formatCurrency(val) {
@@ -200,4 +331,3 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
-

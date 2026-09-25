@@ -188,6 +188,33 @@ export function runMigrations(db) {
     db.prepare('INSERT INTO schema_migrations (version) VALUES (2)').run();
   }
 
+  // Migration 3: Products Catalog Table
+  const version3Count = db.prepare('SELECT COUNT(*) as count FROM schema_migrations WHERE version = 3').get().count;
+  if (version3Count === 0) {
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS products (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        hsn_sac TEXT NOT NULL,
+        default_quantity REAL DEFAULT 1,
+        rate REAL NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // Seed initial default product if table is empty
+    const productCount = db.prepare('SELECT COUNT(*) as count FROM products').get().count;
+    if (productCount === 0) {
+      db.prepare(`
+        INSERT INTO products (name, hsn_sac, default_quantity, rate)
+        VALUES ('INDUSTRIAL SUPPLY / SERVICE ITEM', '9983', 1, 10000)
+      `).run();
+    }
+
+    db.prepare('INSERT INTO schema_migrations (version) VALUES (3)').run();
+  }
+
   // Seed default company details if not present or sync address
   const companyCount = db.prepare('SELECT COUNT(*) as count FROM companies').get().count;
   if (companyCount === 0) {

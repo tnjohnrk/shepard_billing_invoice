@@ -4,7 +4,7 @@ import { Select } from '../common/Select';
 import { INDIAN_STATES } from '../../../shared/constants/application';
 import { ipcClient } from '../../services/ipcClient';
 import { useTheme } from '../../context/ThemeContext';
-import { Search, Building2, User, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Search, Building2, User, Sparkles, CheckCircle2, Plus, Check } from 'lucide-react';
 
 export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
   const { theme } = useTheme();
@@ -14,11 +14,31 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
   const [showNameSuggestions, setShowNameSuggestions] = useState(false);
   const [gstinSuggestions, setGstinSuggestions] = useState([]);
   const [showGstinSuggestions, setShowGstinSuggestions] = useState(false);
+  const [quickSaved, setQuickSaved] = useState(false);
   
   const nameDropdownRef = useRef(null);
   const gstinDropdownRef = useRef(null);
+  const nameDebounceRef = useRef(null);
 
   const buyerType = formData.buyer_type || 'COMPANY';
+
+  const handleQuickSaveToDirectory = async () => {
+    const name = (formData.buyer_name || '').trim();
+    if (!name) return;
+    try {
+      await ipcClient.saveCustomer({
+        name,
+        address: formData.buyer_address || '',
+        gstin: formData.customer_gstin ? formData.customer_gstin.toUpperCase() : null,
+        state: formData.customer_state || 'Tamil Nadu',
+        state_code: formData.customer_state_code || '33'
+      });
+      setQuickSaved(true);
+      setTimeout(() => setQuickSaved(false), 3500);
+    } catch (e) {
+      console.error('Failed to save to directory:', e);
+    }
+  };
 
   // Handle clicking outside to dismiss dropdowns
   useEffect(() => {
@@ -31,7 +51,10 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      if (nameDebounceRef.current) clearTimeout(nameDebounceRef.current);
+    };
   }, []);
 
   const handleBuyerTypeChange = (type) => {
@@ -59,32 +82,22 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
     setShowGstinSuggestions(false);
   };
 
-  const handleNameChange = async (val) => {
+  const handleNameChange = (val) => {
     onChange('buyer_name', val);
     const trimmed = val.trim();
-    if (trimmed.length >= 2) {
-      try {
-        const results = await ipcClient.searchCustomers(trimmed);
-        setNameSuggestions(results || []);
-        setShowNameSuggestions(true);
 
-        // Instant auto-fill if exact match typed
-        const exactMatch = results?.find(c => c.name && c.name.trim().toLowerCase() === trimmed.toLowerCase());
-        if (exactMatch && (!formData.customer_gstin || !formData.buyer_address)) {
-          if (exactMatch.gstin && !formData.customer_gstin) {
-            onChange('customer_gstin', exactMatch.gstin.toUpperCase());
-          }
-          if (exactMatch.address && !formData.buyer_address) {
-            onChange('buyer_address', exactMatch.address);
-          }
-          if (exactMatch.state_code && !formData.customer_state_code) {
-            onChange('customer_state_code', exactMatch.state_code);
-            onChange('customer_state', exactMatch.state);
-          }
+    if (nameDebounceRef.current) clearTimeout(nameDebounceRef.current);
+
+    if (trimmed.length >= 2) {
+      nameDebounceRef.current = setTimeout(async () => {
+        try {
+          const results = await ipcClient.searchCustomers(trimmed);
+          setNameSuggestions(results || []);
+          setShowNameSuggestions(true);
+        } catch (e) {
+          setNameSuggestions([]);
         }
-      } catch (e) {
-        setNameSuggestions([]);
-      }
+      }, 250);
     } else {
       setNameSuggestions([]);
       setShowNameSuggestions(false);
@@ -282,6 +295,30 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
                 )}
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Quick Add To Directory Prompt when new company is typed */}
+        {formData.buyer_name && formData.buyer_name.trim().length >= 2 && (
+          <div className="flex items-center justify-between mt-1.5 px-1">
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">
+              Not in saved list?
+            </span>
+            {quickSaved ? (
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                <Check className="w-3.5 h-3.5" />
+                <span>Saved to Company Directory!</span>
+              </span>
+            ) : (
+              <button
+                type="button"
+                onClick={handleQuickSaveToDirectory}
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-sky-600 dark:text-sky-400 hover:text-sky-700 hover:underline cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Save "{formData.buyer_name}" to Details Directory</span>
+              </button>
+            )}
           </div>
         )}
       </div>

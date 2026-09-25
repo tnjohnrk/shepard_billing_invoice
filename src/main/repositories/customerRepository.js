@@ -100,3 +100,43 @@ export function saveOrUpdateCustomer(customerData) {
     return res.lastInsertRowid;
   }
 }
+
+/**
+ * Retrieve all registered customers from master directory with optional search
+ */
+export function getAllCustomers(search = '') {
+  const db = getDatabase();
+  const trimmed = search.trim();
+  if (trimmed) {
+    const q = `%${trimmed}%`;
+    return db.prepare(`
+      SELECT id, name, address, gstin, state, state_code, created_at
+      FROM customers
+      WHERE name LIKE ? OR gstin LIKE ? OR address LIKE ?
+      ORDER BY name ASC
+    `).all(q, q, q);
+  }
+
+  return db.prepare(`
+    SELECT id, name, address, gstin, state, state_code, created_at
+    FROM customers
+    ORDER BY name ASC
+  `).all();
+}
+
+/**
+ * Delete customer by ID
+ */
+export function deleteCustomer(id) {
+  const db = getDatabase();
+  return db.prepare('DELETE FROM customers WHERE id = ?').run(id);
+}
+
+/**
+ * Get customer by ID
+ */
+export function getCustomerById(id) {
+  const db = getDatabase();
+  return db.prepare('SELECT * FROM customers WHERE id = ?').get(id);
+}
+

@@ -42,13 +42,26 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deletePermanentlyFromBin: (id, type) => ipcRenderer.invoke('bin:deletePermanent', { id, type }),
   emptyRecycleBin: () => ipcRenderer.invoke('bin:empty'),
 
-  // Settings & Profile
+  // Settings, Master Details & Profile
   getAllSettings: () => ipcRenderer.invoke('settings:getAll'),
   setSetting: (key, value) => ipcRenderer.invoke('settings:set', { key, value }),
   testEmailConnection: (settings) => ipcRenderer.invoke('settings:testEmail', settings),
   getCompanyProfile: () => ipcRenderer.invoke('company:getProfile'),
+
+  // Company / Customer Directory
+  listCustomers: (search) => ipcRenderer.invoke('customers:list', search),
   searchCustomers: (query) => ipcRenderer.invoke('customers:search', query),
   saveCustomer: (customerData) => ipcRenderer.invoke('customers:save', customerData),
+  deleteCustomer: (id) => ipcRenderer.invoke('customers:delete', id),
+  getCustomer: (id) => ipcRenderer.invoke('customers:get', id),
+
+  // Product Catalog
+  listProducts: (search) => ipcRenderer.invoke('products:list', search),
+  searchProducts: (query) => ipcRenderer.invoke('products:search', query),
+  getProductByHsn: (hsnCode) => ipcRenderer.invoke('products:getByHsn', hsnCode),
+  saveProduct: (productData) => ipcRenderer.invoke('products:save', productData),
+  deleteProduct: (id) => ipcRenderer.invoke('products:delete', id),
+  getProduct: (id) => ipcRenderer.invoke('products:get', id),
 
   // Security PIN
   isPinProtected: () => ipcRenderer.invoke('pin:isProtected'),

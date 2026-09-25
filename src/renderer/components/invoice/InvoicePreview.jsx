@@ -6,6 +6,7 @@ import { computeCompleteInvoiceTotals } from '../../../shared/utils/sharedCalcul
 import { SHEPHERD_DEFAULT_STATE_CODE } from '../../../shared/constants/application';
 import { getCopyTypeLabel } from '../../../shared/constants/copyTypes';
 import { COMPANY_CONFIG } from '../../../main/config/companyConfig';
+import { paginateInvoiceItems } from '../../../shared/utils/invoicePagination';
 import shepherdInvoiceLogo from '../../assets/shepherd_invoice_logo.png';
 
 export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toast }) {
@@ -17,7 +18,6 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
   const isProforma = String(docData.invoice_type || formData.invoice_type).toUpperCase() === 'PROFORMA';
 
   useEffect(() => {
-    // If viewing a saved invoice that might have items missing, fetch full document
     if (formData.id && (!formData.items || formData.items.length === 0)) {
       const fetchFull = async () => {
         try {
@@ -82,6 +82,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
   };
 
   const copyTypeBadge = getCopyTypeLabel(docData.copy_type || fullData.copy_type, isProforma);
+  const pages = paginateInvoiceItems(fullData.items || [], fullData);
 
   const ensureSaved = async () => {
     if (savedInvoice) return savedInvoice;
@@ -248,316 +249,342 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, toas
         </div>
       </div>
 
-      {/* Developer-Locked Exact Reference Invoice Visual Frame */}
-      <div className="bg-slate-200 dark:bg-slate-900 p-6 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-none flex justify-center overflow-x-auto print:bg-transparent print:p-0 print:border-none print:shadow-none">
-        <div id="invoice-preview-sheet" style={{ backgroundColor: '#ffffff', color: '#000000' }} className="w-[194mm] min-h-[270mm] bg-white text-black p-6 border border-slate-400 shadow-lg text-left font-sans text-xs print:w-full print:p-0 print:border-none print:shadow-none">
-          
-          {/* Top Header */}
-          <table className="w-full border-collapse mb-2" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
-            <tbody>
-              <tr>
-                <td className="w-[18%] align-top text-center pr-2">
-                  <img
-                    src={shepherdInvoiceLogo}
-                    alt="Shepherd Enterprises"
-                    className="w-16 h-16 object-contain mx-auto block"
-                  />
-                  <div className="text-[8px] font-bold uppercase mt-0.5 text-slate-800 tracking-wider">
-                    SHEPHERD ENTERPRISES
-                  </div>
-                  <div className="text-[7.5px] text-slate-600">
-                    {COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'icici'}` : '@icici'}
-                  </div>
-                </td>
-                <td className="w-[82%] align-top text-center pr-6">
-                  <h1 className="text-lg font-black uppercase tracking-wide text-blue-900 mb-0.5">
-                    SHEPHERD ENTERPRISES PRIVATE LIMITED
-                  </h1>
-                  <p className="text-[9.5px] text-slate-800 leading-tight uppercase mb-0.5">
-                    No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062
-                  </p>
-                  <p className="text-[10px] font-bold text-slate-900 mb-0.5">
-                    Cell: +91 9025812298 / +91 8438435681
-                  </p>
-                  <p className="text-[10px] font-bold text-slate-900">
-                    Email: shepheredenterprisespvtltd@gmail.com
-                  </p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      {/* Exact Reference A4 Layout Frame */}
+      <div className="bg-slate-200 dark:bg-slate-900 p-6 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-none flex flex-col items-center gap-8 overflow-x-auto print:bg-transparent print:p-0 print:border-none print:shadow-none print:gap-0">
+        {pages.map((page) => (
+          <div key={page.pageNumber} className="w-full flex flex-col items-center">
+            {pages.length > 1 && (
+              <div className="no-print self-center text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 px-3 py-1 bg-slate-300/80 dark:bg-slate-800 rounded-full">
+                Page {page.pageNumber} of {page.totalPages} ({page.pageNumber}/{page.totalPages})
+              </div>
+            )}
 
-          {/* Main Boxed Grid Table */}
-          <table className="w-full border-collapse border-[1.5px] border-black text-[10px]">
-            <tbody>
-              {/* 3-Way Sub-Header Row */}
-              <tr className="border-b-[1.5px] border-black">
-                <td className="w-[38%] p-1.5 font-bold border-r border-black align-middle text-[11px]">
-                  GSTIN: {COMPANY_CONFIG.gstin || '33AAACS1234F1Z5'}
-                </td>
-                <td className="w-[24%] p-1.5 font-black text-center text-blue-900 text-sm tracking-wider uppercase border-r border-black align-middle">
-                  {isProforma ? 'PROFORMA INVOICE' : 'INVOICE'}
-                </td>
-                <td className="w-[38%] p-1.5 font-bold text-right uppercase tracking-wider text-[10px] align-middle">
-                  {copyTypeBadge}
-                </td>
-              </tr>
-
-              {/* Meta Grid: 2 Columns */}
-              <tr className="border-b border-black">
-                {/* Left Meta Column */}
-                <td colSpan={2} className="w-[50%] p-1.5 border-r border-black align-top space-y-0.5">
-                  <div className="leading-tight">
-                    <span className="font-bold">INVOICE NO : </span>
-                    <span className="font-bold">{isProforma ? (fullData.proforma_number || fullData.invoice_number) : (fullData.invoice_number || fullData.proforma_number)}</span>
-                  </div>
-                  <div className="leading-tight">
-                    <span className="font-bold">INVOICE DATE: </span>
-                    <span>{(isProforma ? fullData.proforma_date : fullData.invoice_date) || fullData.invoice_date || fullData.proforma_date}</span>
-                  </div>
-                  <div className="leading-tight">
-                    <span className="font-bold">STATE: </span>
-                    <span className="uppercase">{COMPANY_CONFIG.state || 'TAMIL NADU'} </span>
-                    <span className="font-bold ml-2">STATE CODE: </span>
-                    <span>{COMPANY_CONFIG.state_code || '33'}</span>
-                  </div>
-                  <div className="pt-1">
-                    <div className="leading-tight">
-                      <span className="font-bold">BUYER: </span>
-                      <span className="font-bold text-slate-950">{fullData.buyer_name}</span>
-                    </div>
-                    <div className="text-[9.5px] text-slate-800 leading-tight pl-0.5 mt-0.5 whitespace-pre-line">
-                      {fullData.buyer_address}
-                    </div>
-                  </div>
-                </td>
-
-                {/* Right Meta Column */}
-                <td className="w-[50%] p-1.5 align-top space-y-0.5">
-                  <div className="leading-tight">
-                    <span className="font-bold">TRANSPORTATION MODE: </span>
-                    <span>{fullData.transportation_mode || '-'}</span>
-                  </div>
-                  <div className="leading-tight">
-                    <span className="font-bold">VEHICLE NO: </span>
-                    <span>{fullData.vehicle_number || '-'}</span>
-                  </div>
-                  <div className="leading-tight">
-                    <span className="font-bold">DATE OF SUPPLY: </span>
-                    <span>{fullData.date_of_supply || (isProforma ? fullData.proforma_date : fullData.invoice_date) || '-'}</span>
-                  </div>
-                  <div className="leading-tight">
-                    <span className="font-bold">DELIVERY ADDRESS: </span>
-                    <span>{fullData.delivery_address || fullData.buyer_address || '-'}</span>
-                  </div>
-                </td>
-              </tr>
-
-              {/* Customer GSTIN & State Code Row */}
-              <tr className="border-b-[1.5px] border-black">
-                <td colSpan={2} className="w-[60%] p-1.5 border-r border-black align-middle font-bold">
-                  CUSTOMER' GSTIN: {fullData.customer_gstin || 'N/A'}
-                </td>
-                <td className="w-[40%] p-1.5 align-middle space-y-0.5">
-                  <div>
-                    <span className="font-bold">STATE: </span>
-                    <span className="uppercase">{fullData.customer_state || 'Tamil Nadu'}</span>
-                  </div>
-                  <div>
-                    <span className="font-bold">STATE CODE: </span>
-                    <span>{fullData.customer_state_code || '33'}</span>
-                  </div>
-                </td>
-              </tr>
-
-              {/* Items Table Container */}
-              <tr>
-                <td colSpan={3} className="p-0 border-none">
-                  <table className="w-full border-collapse text-left text-[10px]">
-                    <thead>
-                      <tr className="bg-slate-50 border-b-[1.5px] border-black font-bold uppercase text-[9.5px]">
-                        <th className="p-1.5 border-r border-black text-left w-[54%]">DESCRIPTION</th>
-                        <th className="p-1.5 border-r border-black text-center w-[11%]">HSN</th>
-                        <th className="p-1.5 border-r border-black text-center w-[11%]">QTY.</th>
-                        <th className="p-1.5 border-r border-black text-right w-[12%]">RATE</th>
-                        <th className="p-1.5 text-right w-[12%]">AMOUNT</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y-0">
-                      {(fullData.items || []).length === 0 ? (
-                        <tr className="align-top">
-                          <td className="p-1.5 border-r border-black">
-                            <div className="font-bold uppercase text-slate-950 leading-tight">
-                              Industrial Supply / Service Charges
+            <div
+              id={`invoice-preview-sheet-page-${page.pageNumber}`}
+              style={{ backgroundColor: '#ffffff', color: '#000000', width: '194mm' }}
+              className="bg-white text-black p-6 border border-slate-400 shadow-lg text-left font-sans text-xs print:w-full print:p-0 print:border-none print:shadow-none print:break-after-page print:page-break-after-always"
+            >
+              {/* Overall Box Layout Frame from Header to Footer */}
+              <div className="border-[1.5px] border-black w-full bg-white">
+                
+                {/* 1. Header Section (Only on Page 1) */}
+                {page.isFirstPage ? (
+                  <>
+                    <table className="w-full border-collapse border-b-[1.5px] border-black" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
+                      <tbody>
+                        <tr>
+                          <td className="w-[22%] align-middle text-center p-2 border-r border-black">
+                            <img
+                              src={shepherdInvoiceLogo}
+                              alt="Shepherd Enterprises"
+                              className="w-[78px] h-[78px] object-contain mx-auto block"
+                            />
+                            <div className="text-[8.5px] font-bold uppercase mt-1 text-slate-800 tracking-wider">
+                              SHEPHERD ENTERPRISES
                             </div>
-                            <div className="mt-1 font-bold text-[9px] text-slate-900 leading-tight space-y-0.5">
-                              {fullData.so_po_number && (
-                                <div>
-                                  S.O. No: {fullData.so_po_number}
-                                  {fullData.so_po_date ? ` Dt: ${fullData.so_po_date}` : ''}
-                                </div>
-                              )}
-                              {fullData.gemc_number && (
-                                <div>GEMC - {fullData.gemc_number}</div>
-                              )}
-                              {fullData.reference_number && (
-                                <div>Ref: {fullData.reference_number}</div>
-                              )}
+                            <div className="text-[8px] text-slate-600">
+                              {COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'icici'}` : '@icici'}
                             </div>
                           </td>
-                          <td className="p-1.5 border-r border-black text-center">-</td>
-                          <td className="p-1.5 border-r border-black text-center">1</td>
+                          <td className="w-[78%] align-middle text-center p-2.5">
+                            <h1 className="text-[21px] font-black uppercase tracking-wide text-blue-900 mb-0.5">
+                              SHEPHERD ENTERPRISES PRIVATE LIMITED
+                            </h1>
+                            <p className="text-[10px] text-slate-800 leading-tight uppercase mb-1">
+                              No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062
+                            </p>
+                            <p className="text-[10.5px] font-bold text-slate-900 mb-0.5">
+                              Cell: +91 9025812298 / +91 8438435681
+                            </p>
+                            <p className="text-[10.5px] font-bold text-slate-900">
+                              Email: shepheredenterprisespvtltd@gmail.com
+                            </p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    {/* 2. Sub-Header Row: GSTIN | DOC TYPE | COPY TYPE & PAGE NO */}
+                    <table className="w-full border-collapse border-b-[1.5px] border-black text-[10px]">
+                      <tbody>
+                        <tr>
+                          <td className="w-[38%] p-1.5 font-bold border-r border-black align-middle text-[11px]">
+                            GSTIN: {COMPANY_CONFIG.gstin || '33ABUCS2217H1Z8'}
+                          </td>
+                          <td className="w-[24%] p-1.5 font-black text-center text-blue-900 text-sm tracking-wider uppercase border-r border-black align-middle">
+                            {isProforma ? 'PROFORMA INVOICE' : 'INVOICE'}
+                          </td>
+                          <td className="w-[38%] p-1.5 font-bold text-right uppercase tracking-wider text-[10px] align-middle">
+                            <span>{copyTypeBadge}</span>
+                            <span className="ml-2 font-bold text-[9.5px]">
+                              Page {page.pageNumber}/{page.totalPages}
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    {/* 3. Meta Grid: Invoice Details & Logistics (2 Columns) */}
+                    <table className="w-full border-collapse border-b-[1.5px] border-black text-[10px]">
+                      <tbody>
+                        <tr className="border-b border-black">
+                          {/* Left Meta Column */}
+                          <td className="w-[50%] p-1.5 border-r border-black align-top space-y-0.5">
+                            <div className="leading-tight">
+                              <span className="font-bold">INVOICE NO : </span>
+                              <span className="font-bold">{isProforma ? (fullData.proforma_number || fullData.invoice_number) : (fullData.invoice_number || fullData.proforma_number)}</span>
+                            </div>
+                            <div className="leading-tight">
+                              <span className="font-bold">INVOICE DATE: </span>
+                              <span>{(isProforma ? fullData.proforma_date : fullData.invoice_date) || fullData.invoice_date || fullData.proforma_date}</span>
+                            </div>
+                            <div className="leading-tight">
+                              <span className="font-bold">STATE: </span>
+                              <span className="uppercase">{COMPANY_CONFIG.state || 'TAMIL NADU'} </span>
+                              <span className="font-bold ml-2">STATE CODE: </span>
+                              <span>{COMPANY_CONFIG.state_code || '33'}</span>
+                            </div>
+                            <div className="pt-1">
+                              <div className="leading-tight">
+                                <span className="font-bold">BUYER: </span>
+                                <span className="font-bold text-slate-950">{fullData.buyer_name}</span>
+                              </div>
+                              <div className="leading-tight mt-0.5">
+                                <span className="font-bold">CUSTOMER ADDRESS: </span>
+                                <span className="text-[9.5px] text-slate-800 whitespace-pre-line">{fullData.buyer_address}</span>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Right Meta Column */}
+                          <td className="w-[50%] p-1.5 align-top space-y-0.5">
+                            <div className="leading-tight">
+                              <span className="font-bold">TRANSPORTATION MODE: </span>
+                              <span>{fullData.transportation_mode || '-'}</span>
+                            </div>
+                            <div className="leading-tight">
+                              <span className="font-bold">VEHICLE NO: </span>
+                              <span>{fullData.vehicle_number || '-'}</span>
+                            </div>
+                            <div className="leading-tight">
+                              <span className="font-bold">DATE OF SUPPLY: </span>
+                              <span>{fullData.date_of_supply || (isProforma ? fullData.proforma_date : fullData.invoice_date) || '-'}</span>
+                            </div>
+                            <div className="leading-tight">
+                              <span className="font-bold">DELIVERY ADDRESS: </span>
+                              <span>{fullData.delivery_address || fullData.buyer_address || '-'}</span>
+                            </div>
+                          </td>
+                        </tr>
+
+                        {/* Customer GSTIN & State Code Row */}
+                        <tr>
+                          <td className="w-[50%] p-1.5 border-r border-black align-middle font-bold">
+                            CUSTOMER' GSTIN: {fullData.customer_gstin || 'N/A'}
+                          </td>
+                          <td className="w-[50%] p-1.5 align-middle space-y-0.5">
+                            <div>
+                              <span className="font-bold">STATE: </span>
+                              <span className="uppercase">{fullData.customer_state || 'Tamil Nadu'}</span>
+                            </div>
+                            <div>
+                              <span className="font-bold">STATE CODE: </span>
+                              <span>{fullData.customer_state_code || '33'}</span>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </>
+                ) : (
+                  /* Continuation Page Sub-Header Row with Page Number */
+                  <table className="w-full border-collapse border-b-[1.5px] border-black text-[10px]">
+                    <tbody>
+                      <tr className="bg-slate-50">
+                        <td className="w-[38%] p-1.5 font-bold border-r border-black align-middle text-[11px]">
+                          INVOICE NO: {isProforma ? (fullData.proforma_number || fullData.invoice_number) : (fullData.invoice_number || fullData.proforma_number)}
+                        </td>
+                        <td className="w-[24%] p-1.5 font-black text-center text-blue-900 text-sm tracking-wider uppercase border-r border-black align-middle">
+                          {isProforma ? 'PROFORMA INVOICE' : 'INVOICE'}
+                        </td>
+                        <td className="w-[38%] p-1.5 font-bold text-right uppercase tracking-wider text-[10px] align-middle">
+                          <span>{copyTypeBadge}</span>
+                          <span className="ml-2 font-bold text-[9.5px]">
+                            Page {page.pageNumber}/{page.totalPages}
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                )}
+
+                {/* 4. Line Items Table */}
+                <table className="w-full border-collapse border-b-[1.5px] border-black text-left text-[10px]" style={{ tableLayout: 'fixed' }}>
+                  <thead>
+                    <tr className="bg-white border-b-[1.5px] border-black font-bold uppercase text-[9.5px]">
+                      <th className="p-1.5 border-r border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
+                      <th className="p-1.5 border-r border-black text-center" style={{ width: '11%' }}>HSN</th>
+                      <th className="p-1.5 border-r border-black text-center" style={{ width: '11%' }}>QTY.</th>
+                      <th className="p-1.5 border-r border-black text-right" style={{ width: '12%' }}>RATE</th>
+                      <th className="p-1.5 text-right" style={{ width: '12%' }}>AMOUNT</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y-0">
+                    {page.items.map((item, idx) => {
+                      const isFirstOverallItem = page.isFirstPage && idx === 0;
+                      return (
+                        <tr key={idx} className="align-top">
+                          <td className="p-1.5 border-r border-black" style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
+                            <div className="font-bold uppercase text-slate-950 leading-tight text-[9.5px] whitespace-pre-wrap">
+                              {item.description}
+                            </div>
+                            {isFirstOverallItem && (
+                              <div className="mt-1 font-bold text-[9px] text-slate-900 leading-tight space-y-0.5">
+                                {fullData.so_po_number && (
+                                  <div>
+                                    S.O. No: {fullData.so_po_number}
+                                    {fullData.so_po_date ? ` Dt: ${fullData.so_po_date}` : ''}
+                                  </div>
+                                )}
+                                {fullData.gemc_number && (
+                                  <div>GEMC - {fullData.gemc_number}</div>
+                                )}
+                                {fullData.reference_number && (
+                                  <div>Ref: {fullData.reference_number}</div>
+                                )}
+                              </div>
+                            )}
+                          </td>
+                          <td className="p-1.5 border-r border-black text-center">{item.hsn_sac || '-'}</td>
+                          <td className="p-1.5 border-r border-black text-center">{item.quantity}</td>
                           <td className="p-1.5 border-r border-black text-right">
-                            {Number(fullData.subtotal || fullData.grand_total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            {Number(item.rate).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                           </td>
                           <td className="p-1.5 text-right font-medium">
-                            {Number(fullData.subtotal || fullData.grand_total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            {Number(item.amount || (item.quantity * item.rate)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                           </td>
                         </tr>
-                      ) : (
-                        (fullData.items || []).map((item, idx) => (
-                          <tr key={idx} className="align-top">
-                            <td className="p-1.5 border-r border-black">
-                              <div className="font-bold uppercase text-slate-950 leading-tight">
-                                {item.description}
-                              </div>
-                              {idx === 0 && (
-                                <div className="mt-1 font-bold text-[9px] text-slate-900 leading-tight space-y-0.5">
-                                  {fullData.so_po_number && (
-                                    <div>
-                                      S.O. No: {fullData.so_po_number}
-                                      {fullData.so_po_date ? ` Dt: ${fullData.so_po_date}` : ''}
-                                    </div>
-                                  )}
-                                  {fullData.gemc_number && (
-                                    <div>GEMC - {fullData.gemc_number}</div>
-                                  )}
-                                  {fullData.reference_number && (
-                                    <div>Ref: {fullData.reference_number}</div>
-                                  )}
-                                </div>
-                              )}
-                            </td>
-                            <td className="p-1.5 border-r border-black text-center">{item.hsn_sac || '-'}</td>
-                            <td className="p-1.5 border-r border-black text-center">{item.quantity}</td>
-                            <td className="p-1.5 border-r border-black text-right">
-                              {Number(item.rate).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                            </td>
-                            <td className="p-1.5 text-right font-medium">
-                              {Number(item.amount || (item.quantity * item.rate)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                      {/* Height spacer */}
-                      <tr>
-                        <td className="p-1.5 border-r border-black h-36"></td>
-                        <td className="p-1.5 border-r border-black"></td>
-                        <td className="p-1.5 border-r border-black"></td>
-                        <td className="p-1.5 border-r border-black"></td>
-                        <td className="p-1.5"></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
 
-              {/* Amount Words Strip */}
-              <tr className="border-t-[1.5px] border-b-[1.5px] border-black">
-                <td colSpan={3} className="p-1.5 font-normal text-[10px]">
-                  <span className="font-bold">TOTAL AMOUNT IN WORDS: </span>
-                  {fullData.amount_in_words}
-                </td>
-              </tr>
-
-              {/* Bank Details & Tax Summary Row */}
-              <tr>
-                {/* Left: Bank Details */}
-                <td colSpan={2} className="w-[60%] p-1.5 border-r border-black align-top space-y-0.5 text-[9.5px]">
-                  <div className="font-bold text-[10px] uppercase text-slate-900 mb-1">BANK DETAILS</div>
-                  <div><span className="font-bold">BANK NAME: </span>{COMPANY_CONFIG.bank_name}: {COMPANY_CONFIG.account_number}</div>
-                  <div><span className="font-bold">BRANCH NAME: </span>{(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
-                  <div><span className="font-bold">IFSC CODE: </span>{COMPANY_CONFIG.ifsc_code}</div>
-                </td>
-
-                {/* Right: Tax Breakdown */}
-                <td className="w-[40%] p-0 align-top">
-                  <table className="w-full border-collapse text-[9.5px]">
-                    <tbody>
-                      <tr className="border-b border-black">
-                        <td className="p-1 text-left w-[65%]">TOTAL AMOUNT BEFORE TAX</td>
-                        <td className="p-1 text-right w-[35%] font-medium">
-                          {fullData.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                        </td>
-                      </tr>
-                      {totals.isIntraState ? (
-                        <>
-                          <tr className="border-b border-black">
-                            <td className="p-1 text-left">ADD CGST: {totals.cgstRate}%</td>
-                            <td className="p-1 text-right font-medium">
-                              {totals.cgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                            </td>
-                          </tr>
-                          <tr className="border-b border-black">
-                            <td className="p-1 text-left">ADD SGST: {totals.sgstRate}%</td>
-                            <td className="p-1 text-right font-medium">
-                              {totals.sgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                            </td>
-                          </tr>
-                        </>
-                      ) : (
-                        <tr className="border-b border-black">
-                          <td className="p-1 text-left">ADD IGST: {totals.igstRate}%</td>
-                          <td className="p-1 text-right font-medium">
-                            {totals.igstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                          </td>
-                        </tr>
-                      )}
-                      <tr className="bg-slate-50 font-bold text-[10px]">
-                        <td className="p-1 text-left">TOTAL AMOUNT AFTER TAX:</td>
-                        <td className="p-1 text-right">
-                          {totals.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          {/* Footer: Terms & Signature */}
-          <table className="w-full border-collapse mt-2 text-[9px]">
-            <tbody>
-              <tr>
-                <td className="w-[48%] align-top pr-2">
-                  <div className="font-bold uppercase text-[9.5px] text-slate-900 mb-1">TERMS AND CONDITIONS</div>
-                  <div className="text-[8.5px] text-slate-700 leading-tight">
-                    We declare that this invoice shows the actual value of services described and that all particulars are true and correct.
-                  </div>
-                  {fullData.notes && (
-                    <div className="text-[8.5px] text-slate-700 mt-1">
-                      <strong>Notes:</strong> {fullData.notes}
+                {/* Bottom Section (Totals, Bank Details, and Footer on Last Page) */}
+                {page.hasTotalsAndFooter && (
+                  <div>
+                    {/* 5. Amount Words Strip */}
+                    <div className="p-1.5 border-b-[1.5px] border-black font-normal text-[10px]">
+                      <span className="font-bold">TOTAL AMOUNT IN WORDS: </span>
+                      {fullData.amount_in_words}
                     </div>
-                  )}
-                </td>
-                <td className="w-[52%] align-top text-center pl-2">
-                  <div className="font-bold text-[8.5px] uppercase text-slate-800 mb-1">
-                    CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT
-                  </div>
-                  <div className="font-bold text-[10.5px] text-blue-900 mb-1">
-                    For SHEPHERD ENTERPRISES PRIVATE LIMITED
-                  </div>
-                  <div className="h-12"></div>
-                  <div className="font-bold text-[10px] text-right pr-4 text-slate-900">
-                    Proprietor
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
 
-        </div>
+                    {/* 6. Bank Details & Tax Summary Row */}
+                    <table className="w-full border-collapse border-b-[1.5px] border-black text-[9.5px]">
+                      <tbody>
+                        <tr>
+                          {/* Left: Bank Details */}
+                          <td className="w-[60%] p-1.5 border-r border-black align-top space-y-0.5">
+                            <div className="font-bold text-[10px] uppercase text-slate-900 mb-1">BANK DETAILS</div>
+                            <div><span className="font-bold">BANK NAME: </span>{COMPANY_CONFIG.bank_name}: {COMPANY_CONFIG.account_number}</div>
+                            <div><span className="font-bold">BRANCH NAME: </span>{(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
+                            <div><span className="font-bold">IFSC CODE: </span>{COMPANY_CONFIG.ifsc_code}</div>
+                          </td>
+
+                          {/* Right: Tax Breakdown */}
+                          <td className="w-[40%] p-0 align-top">
+                            <table className="w-full border-collapse text-[9.5px]">
+                              <tbody>
+                                <tr className="border-b border-black">
+                                  <td className="p-1 text-left w-[65%]">TOTAL AMOUNT BEFORE TAX</td>
+                                  <td className="p-1 text-right w-[35%] font-medium">
+                                    {fullData.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                  </td>
+                                </tr>
+                                {totals.isIntraState ? (
+                                  <>
+                                    <tr className="border-b border-black">
+                                      <td className="p-1 text-left">ADD CGST: {totals.cgstRate}%</td>
+                                      <td className="p-1 text-right font-medium">
+                                        {totals.cgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                      </td>
+                                    </tr>
+                                    <tr className="border-b border-black">
+                                      <td className="p-1 text-left">ADD SGST: {totals.sgstRate}%</td>
+                                      <td className="p-1 text-right font-medium">
+                                        {totals.sgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                      </td>
+                                    </tr>
+                                  </>
+                                ) : (
+                                  <tr className="border-b border-black">
+                                    <td className="p-1 text-left">ADD IGST: {totals.igstRate}%</td>
+                                    <td className="p-1 text-right font-medium">
+                                      {totals.igstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                    </td>
+                                  </tr>
+                                )}
+                                {fullData.round_off !== 0 && fullData.round_off != null && (
+                                  <tr className="border-b border-black">
+                                    <td className="p-1 text-left">ROUND OFF</td>
+                                    <td className="p-1 text-right font-medium">
+                                      {fullData.round_off > 0 ? '+' : ''}{Number(fullData.round_off).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                    </td>
+                                  </tr>
+                                )}
+                                <tr className="bg-slate-50 font-bold text-[10px]">
+                                  <td className="p-1 text-left">TOTAL AMOUNT AFTER TAX:</td>
+                                  <td className="p-1 text-right">
+                                    {totals.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    {/* 7. Footer: Terms & Signature inside the overall box */}
+                    <table className="w-full border-collapse text-[9px]">
+                      <tbody>
+                        <tr>
+                          <td className="w-[50%] align-top p-2 border-r border-black">
+                            <div className="font-bold uppercase text-[9.5px] text-slate-900 mb-1">TERMS AND CONDITIONS</div>
+                            <div className="text-[8.5px] text-slate-700 leading-tight">
+                              We declare that this invoice shows the actual value of services described and that all particulars are true and correct.
+                            </div>
+                            {fullData.notes && (
+                              <div className="text-[8.5px] text-slate-700 mt-1">
+                                <strong>Notes:</strong> {fullData.notes}
+                              </div>
+                            )}
+                            <div className="mt-2 text-[8.5px] font-bold text-slate-700">
+                              Page {page.pageNumber}/{page.totalPages}
+                            </div>
+                          </td>
+                          <td className="w-[50%] align-top p-2 text-center">
+                            <div className="font-bold text-[8.5px] uppercase text-slate-800 mb-1">
+                              CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT
+                            </div>
+                            <div className="font-bold text-[10.5px] text-blue-900 mb-1">
+                              For SHEPHERD ENTERPRISES PRIVATE LIMITED
+                            </div>
+                            <div className="h-12"></div>
+                            <div className="font-bold text-[10px] text-right pr-4 text-slate-900">
+                              Proprietor
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+              </div>
+
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

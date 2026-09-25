@@ -46,7 +46,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
     additional_reference: '',
 
     items: [
-      { description: 'Industrial Supply / Service Item', hsn_sac: '9983', quantity: 1, rate: 10000 }
+      { description: '', hsn_sac: '', quantity: 1, rate: 0 }
     ],
 
     notes: ''
@@ -132,7 +132,10 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
   ];
 
   const handleFieldChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => ({
+      ...prev,
+      [field]: typeof value === 'function' ? value(prev[field]) : value
+    }));
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: null }));
     }

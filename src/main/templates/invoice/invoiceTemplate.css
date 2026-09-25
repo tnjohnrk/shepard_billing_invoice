@@ -1,7 +1,7 @@
 /* Exact Hardcoded Print & PDF Layout for Shepherd Enterprises Private Limited */
 @page {
   size: A4 portrait;
-  margin: 8mm 8mm 8mm 8mm;
+  margin: 6mm 8mm 6mm 8mm;
 }
 
 * {
@@ -28,30 +28,106 @@ body {
   padding: 0;
 }
 
-/* Header Section */
+.invoice-page {
+  width: 100%;
+  max-width: 194mm;
+  page-break-after: always;
+  break-after: page;
+  box-sizing: border-box;
+}
+
+.invoice-page.is-last-page {
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+/* Non-last pages (fill full A4 height so table lines run to bottom) */
+.invoice-page:not(.is-last-page) {
+  height: 284mm;
+  display: flex;
+  flex-direction: column;
+}
+
+.invoice-page:not(.is-last-page) .invoice-box-frame {
+  width: 100%;
+  height: 100%;
+  border: 1.5px solid #000;
+  background: #fff;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.invoice-page:not(.is-last-page) .top-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.invoice-page:not(.is-last-page) .items-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  flex: 1;
+  display: table;
+  height: 100%;
+}
+
+/* Last page (natural height ending according to content) */
+.invoice-page.is-last-page .invoice-box-frame {
+  width: 100%;
+  border: 1.5px solid #000;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.invoice-page.is-last-page .items-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-bottom: 1.5px solid #000;
+}
+
+.invoice-page.is-last-page .table-spacer-row {
+  display: none;
+}
+
+@media print {
+  .invoice-page:not(.is-last-page) {
+    height: 284mm;
+    margin-bottom: 0;
+  }
+  .invoice-page.is-last-page {
+    margin-bottom: 0;
+  }
+}
+
+/* 1. Header Section */
 .header-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 6px;
+  border-bottom: 1.5px solid #000;
 }
 
 .header-left-col {
-  width: 18%;
-  vertical-align: top;
+  width: 22%;
+  vertical-align: middle;
   text-align: center;
-  padding-right: 8px;
+  padding: 6px;
+  border-right: 1px solid #000;
 }
 
 .header-logo-img {
-  width: 62px;
-  height: 62px;
+  width: 78px;
+  height: 78px;
   object-fit: contain;
   display: block;
   margin: 0 auto;
 }
 
 .company-sub-brand {
-  font-size: 8px;
+  font-size: 8.5px;
   font-weight: bold;
   text-transform: uppercase;
   margin-top: 2px;
@@ -60,19 +136,19 @@ body {
 }
 
 .company-upi-tag {
-  font-size: 7.5px;
+  font-size: 8px;
   color: #475569;
 }
 
 .header-center-col {
-  width: 82%;
-  vertical-align: top;
+  width: 78%;
+  vertical-align: middle;
   text-align: center;
-  padding-right: 25px; /* balance centering vs left logo */
+  padding: 6px 12px;
 }
 
 .company-name {
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -84,7 +160,7 @@ body {
   font-size: 9.5px;
   color: #1f2937;
   margin-bottom: 3px;
-  line-height: 1.25;
+  line-height: 1.3;
   text-transform: uppercase;
 }
 
@@ -101,40 +177,34 @@ body {
   color: #0f172a;
 }
 
-/* Main Boxed Grid Table */
-.main-invoice-table {
+/* 2. Sub Header Row Table */
+.sub-header-table {
   width: 100%;
   border-collapse: collapse;
-  border: 1.5px solid #000;
+  border-bottom: 1.5px solid #000;
 }
 
-.main-invoice-table td {
-  border: 1px solid #000;
-  padding: 4px 6px;
-  vertical-align: top;
-}
-
-/* Sub Header Row */
 .sub-header-row td {
   padding: 4px 6px;
   vertical-align: middle;
-  border-bottom: 1.5px solid #000;
 }
 
 .cell-gstin {
   width: 38%;
   font-size: 11px;
   font-weight: bold;
+  border-right: 1px solid #000;
 }
 
 .cell-doc-title {
   width: 24%;
   text-align: center;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 900;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #1e3a8a;
+  border-right: 1px solid #000;
 }
 
 .cell-copy-type {
@@ -146,16 +216,36 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* Meta Grid */
+.page-num-text {
+  margin-left: 6px;
+  font-weight: bold;
+  font-size: 9.5px;
+}
+
+.cont-sub-header {
+  background: #f8fafc;
+}
+
+/* 3. Meta Grid Table */
+.meta-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-bottom: 1.5px solid #000;
+}
+
 .meta-left-cell {
   width: 50%;
   border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
   padding: 4px 6px;
+  vertical-align: top;
 }
 
 .meta-right-cell {
   width: 50%;
+  border-bottom: 1px solid #000;
   padding: 4px 6px;
+  vertical-align: top;
 }
 
 .meta-field {
@@ -176,48 +266,33 @@ body {
   margin-top: 4px;
 }
 
-.buyer-address-text {
-  font-size: 9.5px;
-  margin-left: 2px;
-  line-height: 1.3;
-}
-
 /* Customer GSTIN Row */
 .customer-info-row td {
-  border-top: 1px solid #000;
-  border-bottom: 1.5px solid #000;
   padding: 4px 6px;
+  vertical-align: middle;
 }
 
 .cust-gstin-cell {
-  width: 60%;
+  width: 50%;
+  border-right: 1px solid #000;
   font-size: 10px;
 }
 
 .cust-state-cell {
-  width: 40%;
+  width: 50%;
   font-size: 10px;
 }
 
-/* Items Grid Table */
-.items-container-cell {
-  padding: 0 !important;
-  border: none !important;
-}
-
-.items-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
+/* 4. Items Grid Table */
 .items-table th {
   border-right: 1px solid #000;
   border-bottom: 1.5px solid #000;
-  background: #f8fafc;
-  font-size: 10px;
+  background: #ffffff;
+  font-size: 9.5px;
   font-weight: bold;
   text-align: center;
-  padding: 4px;
+  padding: 4px 6px;
+  height: 22px;
 }
 
 .items-table th:last-child {
@@ -228,83 +303,107 @@ body {
   border-right: 1px solid #000;
   border-bottom: none;
   border-top: none;
-  padding: 4px 6px;
+  padding: 2px 6px;
   font-size: 10px;
   vertical-align: top;
+  height: 16px;
 }
 
 .items-table td:last-child {
   border-right: none;
 }
 
-.col-desc {
+.items-table tr.table-spacer-row td {
+  height: auto;
+  padding: 0;
+}
+
+.col-desc,
+.items-table th:nth-child(1),
+.items-table td:nth-child(1) {
   width: 54%;
+  text-align: left;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.col-hsn,
+.items-table th:nth-child(2),
+.items-table td:nth-child(2) {
+  width: 11%;
+  text-align: center;
+}
+
+.col-qty,
+.items-table th:nth-child(3),
+.items-table td:nth-child(3) {
+  width: 11%;
+  text-align: center;
+}
+
+.col-rate,
+.items-table th:nth-child(4),
+.items-table td:nth-child(4) {
+  width: 12%;
+  text-align: right;
+}
+
+.col-amount,
+.items-table th:nth-child(5),
+.items-table td:nth-child(5) {
+  width: 12%;
+  text-align: right;
+}
+
+.item-desc-text,
+.items-table td:nth-child(1) {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 9.5px;
+  line-height: 1.3;
+  word-break: break-word;
+  overflow-wrap: break-word;
   text-align: left;
 }
 
-.col-hsn {
-  width: 11%;
-  text-align: center;
-}
-
-.col-qty {
-  width: 11%;
-  text-align: center;
-}
-
-.col-rate {
-  width: 12%;
-  text-align: right;
-}
-
-.col-amount {
-  width: 12%;
-  text-align: right;
-}
-
-.item-desc-text {
-  font-weight: bold;
-  text-transform: uppercase;
-  line-height: 1.35;
-}
-
 .item-refs-block {
-  margin-top: 4px;
-  font-size: 9.5px;
+  margin-top: 3px;
+  font-size: 9px;
   font-weight: bold;
-  line-height: 1.4;
+  line-height: 1.35;
   color: #111;
 }
 
-/* Height spacer for items table body */
-.items-table-spacer td {
-  height: 200px;
+/* 5. Bottom Section Container */
+.bottom-content {
+  width: 100%;
 }
 
-/* Amount Words Row */
-.amount-words-row td {
-  border-top: 1.5px solid #000 !important;
-  border-bottom: 1.5px solid #000 !important;
+/* Amount Words Strip */
+.amount-words-strip {
+  border-bottom: 1.5px solid #000;
   padding: 5px 6px;
   font-size: 10px;
 }
 
-/* Bank Details & Tax Section */
-.bank-tax-row td {
-  padding: 0;
-  border: none;
+/* 6. Bank Details & Tax Section */
+.bank-tax-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-bottom: 1.5px solid #000;
 }
 
 .bank-details-cell {
   width: 60%;
-  border-right: 1px solid #000 !important;
-  padding: 5px 6px !important;
+  border-right: 1px solid #000;
+  padding: 5px 6px;
   vertical-align: top;
 }
 
 .bank-heading {
   font-size: 10px;
   margin-bottom: 3px;
+  font-weight: bold;
 }
 
 .bank-item {
@@ -315,7 +414,7 @@ body {
 
 .tax-summary-cell {
   width: 40%;
-  padding: 0 !important;
+  padding: 0;
   vertical-align: top;
 }
 
@@ -325,14 +424,14 @@ body {
 }
 
 .tax-breakdown-table td {
-  border: none !important;
-  border-bottom: 1px solid #000 !important;
+  border: none;
+  border-bottom: 1px solid #000;
   padding: 3px 6px;
   font-size: 9.5px;
 }
 
 .tax-breakdown-table tr:last-child td {
-  border-bottom: none !important;
+  border-bottom: none;
 }
 
 .tax-title-col {
@@ -348,28 +447,27 @@ body {
 
 .total-after-tax-line td {
   font-size: 10px;
+  font-weight: bold;
   background: #f8fafc;
 }
 
-/* Footer Section */
+/* 7. Footer Section */
 .footer-layout-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 8px;
-}
-
-.footer-layout-table td {
-  vertical-align: top;
-  padding: 0 4px;
 }
 
 .footer-terms-col {
-  width: 48%;
+  width: 50%;
+  vertical-align: top;
+  padding: 6px;
+  border-right: 1px solid #000;
 }
 
 .terms-title {
   font-size: 9.5px;
   margin-bottom: 4px;
+  font-weight: bold;
 }
 
 .terms-list {
@@ -378,8 +476,23 @@ body {
   color: #334155;
 }
 
+.notes-text {
+  font-size: 8.5px;
+  color: #1f2937;
+  margin-top: 4px;
+}
+
+.footer-page-num {
+  margin-top: 6px;
+  font-size: 8.5px;
+  color: #334155;
+  font-weight: bold;
+}
+
 .footer-sign-col {
-  width: 52%;
+  width: 50%;
+  vertical-align: top;
+  padding: 6px;
   text-align: center;
 }
 
@@ -387,12 +500,14 @@ body {
   font-size: 8.5px;
   text-transform: uppercase;
   margin-bottom: 6px;
+  font-weight: bold;
 }
 
 .company-sign-title {
   font-size: 10.5px;
   color: #1e3a8a;
   margin-bottom: 4px;
+  font-weight: bold;
 }
 
 .signature-space {
@@ -401,6 +516,7 @@ body {
 
 .signatory-label {
   font-size: 10px;
+  font-weight: bold;
   text-align: right;
   padding-right: 15px;
 }
@@ -410,4 +526,3 @@ body {
 .uppercase { text-transform: uppercase; }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
-

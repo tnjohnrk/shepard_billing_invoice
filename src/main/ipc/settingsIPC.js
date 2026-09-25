@@ -35,14 +35,6 @@ export function registerSettingsIPC() {
     return getCompanyProfile();
   });
 
-  ipcMain.handle('customers:search', async (_, query) => {
-    return findCustomers(query);
-  });
-
-  ipcMain.handle('customers:save', async (_, customerData) => {
-    return saveCustomerInfo(customerData);
-  });
-
   // Security PIN IPCs
   ipcMain.handle('pin:isProtected', async () => {
     return isPinProtected();
