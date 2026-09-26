@@ -89,79 +89,80 @@ body {
 }
 
 .header-left-col {
-  width: 22%;
+  width: 24%;
   vertical-align: middle;
   text-align: center;
-  padding: 6px 8px;
+  padding: 8px 8px;
   border-right: 1.5px solid #000;
 }
 
 .header-logo-img {
-  width: 88px;
-  height: 88px;
+  width: 102px;
+  height: 102px;
   object-fit: contain;
   display: block;
   margin: 0 auto;
 }
 
 .company-sub-brand {
-  font-size: 9px;
-  font-weight: bold;
+  font-size: 10px;
+  font-weight: 900;
   text-transform: uppercase;
-  margin-top: 2px;
+  margin-top: 4px;
   letter-spacing: 0.5px;
-  color: #1e293b;
+  color: #0f172a;
 }
 
 .company-upi-tag {
-  font-size: 7.5px;
+  font-size: 8px;
   font-family: monospace;
-  font-weight: 600;
-  color: #334155;
+  font-weight: 700;
+  color: #1e293b;
   word-break: break-all;
   line-height: 1.25;
   margin-top: 3px;
-  max-width: 145px;
+  max-width: 155px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .header-center-col {
-  width: 78%;
+  width: 76%;
   vertical-align: middle;
   text-align: center;
-  padding: 8px 14px;
+  padding: 10px 14px;
 }
 
 .company-name {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.6px;
   color: #1e3a8a;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   line-height: 1.15;
 }
 
 .company-address {
-  font-size: 10.5px;
-  color: #1f2937;
-  margin-bottom: 3px;
+  font-size: 11.5px;
+  color: #0f172a;
+  margin-bottom: 4px;
   line-height: 1.35;
   text-transform: uppercase;
+  font-weight: 500;
 }
 
 .company-cell {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
-  color: #0f172a;
+  color: #020617;
   margin-bottom: 2px;
 }
 
 .company-email {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
-  color: #0f172a;
+  color: #020617;
 }
 
 /* 2. Sub Header Row Table */
@@ -172,13 +173,13 @@ body {
 }
 
 .sub-header-row td {
-  padding: 4px 6px;
+  padding: 6px 8px;
   vertical-align: middle;
 }
 
 .cell-gstin {
   width: 38%;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
   border-right: 1.5px solid #000;
 }
@@ -186,7 +187,7 @@ body {
 .cell-doc-title {
   width: 24%;
   text-align: center;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 900;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -197,7 +198,7 @@ body {
 .cell-copy-type {
   width: 38%;
   text-align: right;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -206,7 +207,7 @@ body {
 .page-num-text {
   margin-left: 6px;
   font-weight: bold;
-  font-size: 9.5px;
+  font-size: 10.5px;
 }
 
 .cont-sub-header {
@@ -224,21 +225,21 @@ body {
   width: 50%;
   border-right: 1.5px solid #000;
   border-bottom: 1.5px solid #000;
-  padding: 4px 6px;
+  padding: 6px 8px;
   vertical-align: top;
 }
 
 .meta-right-cell {
   width: 50%;
   border-bottom: 1.5px solid #000;
-  padding: 4px 6px;
+  padding: 6px 8px;
   vertical-align: top;
 }
 
 .meta-field {
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.35;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .meta-lbl {
@@ -255,19 +256,19 @@ body {
 
 /* Customer GSTIN Row */
 .customer-info-row td {
-  padding: 4px 6px;
+  padding: 6px 8px;
   vertical-align: middle;
 }
 
 .cust-gstin-cell {
   width: 50%;
   border-right: 1.5px solid #000;
-  font-size: 10px;
+  font-size: 11.5px;
 }
 
 .cust-state-cell {
   width: 50%;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 /* 4. Items Grid Table */
@@ -282,7 +283,7 @@ body {
   border-right: 1.5px solid #000;
   border-bottom: 2px solid #000;
   background: #ffffff;
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: bold;
   text-align: center;
   padding: 8px 8px;
@@ -294,7 +295,7 @@ body {
   border-bottom: none;
   border-top: none;
   padding: 16px 8px;
-  font-size: 10px;
+  font-size: 11px;
   vertical-align: middle;
 }
 
@@ -315,7 +316,7 @@ body {
   border-right: none !important;
   border-left: none !important;
   padding: 8px 8px !important;
-  font-size: 10px !important;
+  font-size: 11px !important;
   font-weight: normal !important;
   text-align: left !important;
   background: #ffffff !important;
@@ -363,7 +364,7 @@ body {
 .items-table td:nth-child(1) {
   font-weight: bold;
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: 11.5px;
   line-height: 1.35;
   word-break: break-word;
   overflow-wrap: break-word;
@@ -371,19 +372,19 @@ body {
 }
 
 .item-refs-block {
-  margin-top: 3px;
-  font-size: 9px;
+  margin-top: 4px;
+  font-size: 9.5px;
   font-weight: bold;
   line-height: 1.35;
-  color: #111;
+  color: #0f172a;
 }
 
 /* Page-wise Subtotal Row (Multi-page invoices) */
 .page-subtotal-row td {
   border-top: 2px solid #000;
   background: #f8fafc;
-  padding: 4px 6px;
-  font-size: 9.5px;
+  padding: 6px 8px;
+  font-size: 10.5px;
   font-weight: bold;
 }
 
@@ -396,19 +397,19 @@ body {
 
 .page-subtotal-amount {
   text-align: right;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .cont-notice {
   float: left;
-  font-size: 8.5px;
+  font-size: 9px;
   font-style: italic;
   font-weight: normal;
   color: #475569;
 }
 
 .page-breakdown-subtotal-row td {
-  font-size: 9px !important;
+  font-size: 10px !important;
   background: #f8fafc;
 }
 
@@ -420,8 +421,8 @@ body {
 /* Amount Words Strip */
 .amount-words-strip {
   border-bottom: 2px solid #000;
-  padding: 5px 6px;
-  font-size: 10px;
+  padding: 6px 8px;
+  font-size: 11px;
 }
 
 /* 6. Bank Details & Tax Section */
@@ -432,26 +433,26 @@ body {
 }
 
 .bank-details-cell {
-  width: 60%;
+  width: 58%;
   border-right: 1.5px solid #000;
-  padding: 5px 6px;
+  padding: 8px 8px;
   vertical-align: top;
 }
 
 .bank-heading {
-  font-size: 10px;
-  margin-bottom: 3px;
-  font-weight: bold;
+  font-size: 11.5px;
+  margin-bottom: 4px;
+  font-weight: 900;
 }
 
 .bank-item {
-  font-size: 9.5px;
+  font-size: 11px;
   line-height: 1.35;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .tax-summary-cell {
-  width: 40%;
+  width: 42%;
   padding: 0;
   vertical-align: top;
 }
@@ -464,8 +465,8 @@ body {
 .tax-breakdown-table td {
   border: none;
   border-bottom: 1.5px solid #000;
-  padding: 3px 6px;
-  font-size: 9.5px;
+  padding: 4px 8px;
+  font-size: 10.5px;
 }
 
 .tax-breakdown-table tr:last-child td {
@@ -473,19 +474,19 @@ body {
 }
 
 .tax-title-col {
-  width: 65%;
+  width: 62%;
   text-align: left;
 }
 
 .tax-num-col {
-  width: 35%;
+  width: 38%;
   text-align: right;
   font-family: inherit;
 }
 
 .total-after-tax-line td {
-  font-size: 10px;
-  font-weight: bold;
+  font-size: 12px;
+  font-weight: 900;
   background: #f8fafc;
 }
 
@@ -498,62 +499,62 @@ body {
 .footer-terms-col {
   width: 50%;
   vertical-align: top;
-  padding: 6px;
+  padding: 8px;
   border-right: 1.5px solid #000;
 }
 
 .terms-title {
-  font-size: 9.5px;
+  font-size: 11px;
   margin-bottom: 4px;
   font-weight: bold;
 }
 
 .terms-list {
-  font-size: 8.5px;
+  font-size: 9.5px;
   line-height: 1.35;
-  color: #334155;
+  color: #1e293b;
 }
 
 .notes-text {
-  font-size: 8.5px;
-  color: #1f2937;
+  font-size: 9.5px;
+  color: #0f172a;
   margin-top: 4px;
 }
 
 .footer-page-num {
   margin-top: 6px;
-  font-size: 8.5px;
-  color: #334155;
+  font-size: 9.5px;
+  color: #1e293b;
   font-weight: bold;
 }
 
 .footer-sign-col {
   width: 50%;
   vertical-align: top;
-  padding: 6px;
+  padding: 8px;
   text-align: center;
 }
 
 .certify-text {
-  font-size: 8.5px;
+  font-size: 9.5px;
   text-transform: uppercase;
   margin-bottom: 6px;
   font-weight: bold;
 }
 
 .company-sign-title {
-  font-size: 10.5px;
+  font-size: 12px;
   color: #1e3a8a;
   margin-bottom: 4px;
-  font-weight: bold;
+  font-weight: 900;
 }
 
 .signature-space {
-  height: 48px;
+  height: 40px;
 }
 
 .signatory-label {
-  font-size: 10px;
+  font-size: 11.5px;
   font-weight: bold;
   text-align: right;
   padding-right: 15px;

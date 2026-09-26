@@ -277,185 +277,185 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
               <div className="border-2 border-black w-full bg-white flex flex-col">
                 
                 <div className="w-full flex flex-col">
-                  {/* 1. Header Section (Only on Page 1) */}
-                  {page.isFirstPage ? (
-                  <>
-                    <table className="w-full border-collapse border-b-2 border-black" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
-                      <tbody>
-                        <tr>
-                          <td className="w-[22%] align-middle text-center p-2 border-r-[1.5px] border-black">
-                            <img
-                              src={shepherdInvoiceLogo}
-                              alt="Shepherd Enterprises"
-                              className="w-[88px] h-[88px] object-contain mx-auto block"
-                            />
-                            <div className="text-[9px] font-bold uppercase mt-1 text-slate-800 tracking-wider">
-                              SHEPHERD ENTERPRISES
-                            </div>
-                            <div className="text-[7.5px] font-mono font-semibold text-slate-700 break-all leading-tight mt-1 max-w-[140px] mx-auto">
-                              {COMPANY_CONFIG.upi_id || 'msshepherdenterprisesprivatelimited.eazypay@icici'}
-                            </div>
-                          </td>
-                          <td className="w-[78%] align-middle text-center p-3">
-                            <h1 className="text-[24px] font-black uppercase tracking-wide text-blue-900 mb-0.5 leading-tight">
-                              SHEPHERD ENTERPRISES PRIVATE LIMITED
-                            </h1>
-                            <p className="text-[10.5px] text-slate-800 leading-tight uppercase mb-1">
-                              No.4 &amp; 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062
-                            </p>
-                            <p className="text-[11px] font-bold text-slate-900 mb-0.5">
-                              Cell: +91 9025812298 / +91 8438435681
-                            </p>
-                            <p className="text-[11px] font-bold text-slate-900">
-                              Email: shepheredenterprisespvtltd@gmail.com
-                            </p>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    {/* 1. Header Section (Only on Page 1) */}
+                    {page.isFirstPage ? (
+                    <>
+                      <table className="w-full border-collapse border-b-2 border-black" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
+                        <tbody>
+                          <tr>
+                            <td className="w-[24%] align-middle text-center p-2.5 border-r-[1.5px] border-black">
+                              <img
+                                src={shepherdInvoiceLogo}
+                                alt="Shepherd Enterprises"
+                                className="w-[102px] h-[102px] object-contain mx-auto block"
+                              />
+                              <div className="text-[10px] font-black uppercase mt-1.5 text-slate-900 tracking-wider">
+                                SHEPHERD ENTERPRISES
+                              </div>
+                              <div className="text-[8px] font-mono font-bold text-slate-800 break-all leading-tight mt-1 max-w-[155px] mx-auto">
+                                {COMPANY_CONFIG.upi_id || 'msshepherdenterprisesprivatelimited.eazypay@icici'}
+                              </div>
+                            </td>
+                            <td className="w-[76%] align-middle text-center p-3.5">
+                              <h1 className="text-[26px] font-black uppercase tracking-wide text-blue-900 mb-1 leading-tight">
+                                SHEPHERD ENTERPRISES PRIVATE LIMITED
+                              </h1>
+                              <p className="text-[11.5px] text-slate-900 leading-tight uppercase font-medium mb-1.5">
+                                No.4 &amp; 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062
+                              </p>
+                              <p className="text-[12px] font-bold text-slate-950 mb-0.5">
+                                Cell: +91 9025812298 / +91 8438435681
+                              </p>
+                              <p className="text-[12px] font-bold text-slate-950">
+                                Email: shepheredenterprisespvtltd@gmail.com
+                              </p>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
 
-                    {/* 2. Sub-Header Row: GSTIN | DOC TYPE | COPY TYPE & PAGE NO */}
-                    <table className="w-full border-collapse border-b-2 border-black text-[10px]">
+                      {/* 2. Sub-Header Row: GSTIN | DOC TYPE | COPY TYPE & PAGE NO */}
+                      <table className="w-full border-collapse border-b-2 border-black text-[11px]">
+                        <tbody>
+                          <tr>
+                            <td className="w-[38%] p-2 font-bold border-r-[1.5px] border-black align-middle text-[12px]">
+                              GSTIN: {COMPANY_CONFIG.gstin || '33ABUCS2217H1Z8'}
+                            </td>
+                            <td className="w-[24%] p-2 font-black text-center text-blue-900 text-[17px] tracking-wider uppercase border-r-[1.5px] border-black align-middle">
+                              {isProforma ? 'PROFORMA INVOICE' : 'INVOICE'}
+                            </td>
+                            <td className="w-[38%] p-2 font-bold text-right uppercase tracking-wider text-[11px] align-middle">
+                              <span>{copyTypeBadge}</span>
+                              <span className="ml-2 font-bold text-[10.5px]">
+                                Page {page.pageNumber}/{page.totalPages}
+                              </span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                      {/* 3. Meta Grid: Invoice Details & Logistics (2 Columns) */}
+                      <table className="w-full border-collapse border-b-2 border-black text-[11px]">
+                        <tbody>
+                          <tr className="border-b-[1.5px] border-black">
+                            {/* Left Meta Column */}
+                            <td className="w-[50%] p-2 border-r-[1.5px] border-black align-top space-y-1">
+                              <div className="leading-tight">
+                                <span className="font-bold">INVOICE NO : </span>
+                                <span className="font-bold text-[11.5px]">{isProforma ? (fullData.proforma_number || fullData.invoice_number) : (fullData.invoice_number || fullData.proforma_number)}</span>
+                              </div>
+                              <div className="leading-tight">
+                                <span className="font-bold">INVOICE DATE: </span>
+                                <span>{(isProforma ? fullData.proforma_date : fullData.invoice_date) || fullData.invoice_date || fullData.proforma_date}</span>
+                              </div>
+                              <div className="leading-tight">
+                                <span className="font-bold">STATE: </span>
+                                <span className="uppercase">{COMPANY_CONFIG.state || 'TAMIL NADU'} </span>
+                                <span className="font-bold ml-2">STATE CODE: </span>
+                                <span>{COMPANY_CONFIG.state_code || '33'}</span>
+                              </div>
+                              <div className="pt-1">
+                                <div className="leading-tight">
+                                  <span className="font-bold">BUYER: </span>
+                                  <span className="font-black text-slate-950 text-[12px]">{fullData.buyer_name}</span>
+                                </div>
+                                <div className="leading-tight mt-1">
+                                  <span className="font-bold">CUSTOMER ADDRESS: </span>
+                                  <span className="text-[10.5px] text-slate-900 whitespace-pre-line font-medium">{fullData.buyer_address}</span>
+                                </div>
+                              </div>
+                            </td>
+
+                            {/* Right Meta Column */}
+                            <td className="w-[50%] p-2 align-top space-y-1">
+                              <div className="leading-tight">
+                                <span className="font-bold">TRANSPORTATION MODE: </span>
+                                <span>{fullData.transportation_mode || '-'}</span>
+                              </div>
+                              <div className="leading-tight">
+                                <span className="font-bold">VEHICLE NO: </span>
+                                <span>{fullData.vehicle_number || '-'}</span>
+                              </div>
+                              <div className="leading-tight">
+                                <span className="font-bold">DATE OF SUPPLY: </span>
+                                <span className="font-medium">
+                                  {(() => {
+                                    const from = (fullData.date_of_supply_from || fullData.date_of_supply || '').trim();
+                                    const to = (fullData.date_of_supply_to || fullData.date_of_supply_from || fullData.date_of_supply || '').trim();
+                                    const formatD = (d) => {
+                                      if (!d || d === '-') return '-';
+                                      const p = d.split('T')[0].split('-');
+                                      return p.length === 3 && p[0].length === 4 ? `${p[2]}/${p[1]}/${p[0]}` : d;
+                                    };
+                                    const f = from || (isProforma ? fullData.proforma_date : fullData.invoice_date);
+                                    const t = to || from || (isProforma ? fullData.proforma_date : fullData.invoice_date);
+                                    if (f && t) {
+                                      return `From ${formatD(f)} To ${formatD(t)}`;
+                                    }
+                                    if (f) {
+                                      return `From ${formatD(f)} To ${formatD(f)}`;
+                                    }
+                                    return '-';
+                                  })()}
+                                </span>
+                              </div>
+                              <div className="leading-tight">
+                                <span className="font-bold">DELIVERY ADDRESS: </span>
+                                <span>{fullData.delivery_address || fullData.buyer_address || '-'}</span>
+                              </div>
+                            </td>
+                          </tr>
+
+                          {/* Customer GSTIN & State Code Row */}
+                          <tr>
+                            <td className="w-[50%] p-2 border-r-[1.5px] border-black align-middle font-bold text-[11.5px]">
+                              CUSTOMER' GSTIN: {fullData.customer_gstin || 'N/A'}
+                            </td>
+                            <td className="w-[50%] p-2 align-middle space-y-0.5 text-[11px]">
+                              <div>
+                                <span className="font-bold">STATE: </span>
+                                <span className="uppercase">{fullData.customer_state || 'Tamil Nadu'}</span>
+                              </div>
+                              <div>
+                                <span className="font-bold">STATE CODE: </span>
+                                <span>{fullData.customer_state_code || '33'}</span>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </>
+                  ) : (
+                    /* Continuation Page Sub-Header Row with Page Number */
+                    <table className="w-full border-collapse border-b-2 border-black text-[11px]">
                       <tbody>
-                        <tr>
-                          <td className="w-[38%] p-1.5 font-bold border-r-[1.5px] border-black align-middle text-[11px]">
-                            GSTIN: {COMPANY_CONFIG.gstin || '33ABUCS2217H1Z8'}
+                        <tr className="bg-slate-50">
+                          <td className="w-[38%] p-2 font-bold border-r-[1.5px] border-black align-middle text-[12px]">
+                            INVOICE NO: {isProforma ? (fullData.proforma_number || fullData.invoice_number) : (fullData.invoice_number || fullData.proforma_number)}
                           </td>
-                          <td className="w-[24%] p-1.5 font-black text-center text-blue-900 text-sm tracking-wider uppercase border-r-[1.5px] border-black align-middle">
+                          <td className="w-[24%] p-2 font-black text-center text-blue-900 text-[17px] tracking-wider uppercase border-r-[1.5px] border-black align-middle">
                             {isProforma ? 'PROFORMA INVOICE' : 'INVOICE'}
                           </td>
-                          <td className="w-[38%] p-1.5 font-bold text-right uppercase tracking-wider text-[10px] align-middle">
+                          <td className="w-[38%] p-2 font-bold text-right uppercase tracking-wider text-[11px] align-middle">
                             <span>{copyTypeBadge}</span>
-                            <span className="ml-2 font-bold text-[9.5px]">
+                            <span className="ml-2 font-bold text-[10.5px]">
                               Page {page.pageNumber}/{page.totalPages}
                             </span>
                           </td>
                         </tr>
                       </tbody>
                     </table>
-
-                    {/* 3. Meta Grid: Invoice Details & Logistics (2 Columns) */}
-                    <table className="w-full border-collapse border-b-2 border-black text-[10px]">
-                      <tbody>
-                        <tr className="border-b-[1.5px] border-black">
-                          {/* Left Meta Column */}
-                          <td className="w-[50%] p-1.5 border-r-[1.5px] border-black align-top space-y-0.5">
-                            <div className="leading-tight">
-                              <span className="font-bold">INVOICE NO : </span>
-                              <span className="font-bold">{isProforma ? (fullData.proforma_number || fullData.invoice_number) : (fullData.invoice_number || fullData.proforma_number)}</span>
-                            </div>
-                            <div className="leading-tight">
-                              <span className="font-bold">INVOICE DATE: </span>
-                              <span>{(isProforma ? fullData.proforma_date : fullData.invoice_date) || fullData.invoice_date || fullData.proforma_date}</span>
-                            </div>
-                            <div className="leading-tight">
-                              <span className="font-bold">STATE: </span>
-                              <span className="uppercase">{COMPANY_CONFIG.state || 'TAMIL NADU'} </span>
-                              <span className="font-bold ml-2">STATE CODE: </span>
-                              <span>{COMPANY_CONFIG.state_code || '33'}</span>
-                            </div>
-                            <div className="pt-1">
-                              <div className="leading-tight">
-                                <span className="font-bold">BUYER: </span>
-                                <span className="font-bold text-slate-950">{fullData.buyer_name}</span>
-                              </div>
-                              <div className="leading-tight mt-0.5">
-                                <span className="font-bold">CUSTOMER ADDRESS: </span>
-                                <span className="text-[9.5px] text-slate-800 whitespace-pre-line">{fullData.buyer_address}</span>
-                              </div>
-                            </div>
-                          </td>
-
-                          {/* Right Meta Column */}
-                          <td className="w-[50%] p-1.5 align-top space-y-0.5">
-                            <div className="leading-tight">
-                              <span className="font-bold">TRANSPORTATION MODE: </span>
-                              <span>{fullData.transportation_mode || '-'}</span>
-                            </div>
-                            <div className="leading-tight">
-                              <span className="font-bold">VEHICLE NO: </span>
-                              <span>{fullData.vehicle_number || '-'}</span>
-                            </div>
-                            <div className="leading-tight">
-                              <span className="font-bold">DATE OF SUPPLY: </span>
-                              <span className="font-medium">
-                                {(() => {
-                                  const from = (fullData.date_of_supply_from || fullData.date_of_supply || '').trim();
-                                  const to = (fullData.date_of_supply_to || fullData.date_of_supply_from || fullData.date_of_supply || '').trim();
-                                  const formatD = (d) => {
-                                    if (!d || d === '-') return '-';
-                                    const p = d.split('T')[0].split('-');
-                                    return p.length === 3 && p[0].length === 4 ? `${p[2]}/${p[1]}/${p[0]}` : d;
-                                  };
-                                  const f = from || (isProforma ? fullData.proforma_date : fullData.invoice_date);
-                                  const t = to || from || (isProforma ? fullData.proforma_date : fullData.invoice_date);
-                                  if (f && t) {
-                                    return `From ${formatD(f)} To ${formatD(t)}`;
-                                  }
-                                  if (f) {
-                                    return `From ${formatD(f)} To ${formatD(f)}`;
-                                  }
-                                  return '-';
-                                })()}
-                              </span>
-                            </div>
-                            <div className="leading-tight">
-                              <span className="font-bold">DELIVERY ADDRESS: </span>
-                              <span>{fullData.delivery_address || fullData.buyer_address || '-'}</span>
-                            </div>
-                          </td>
-                        </tr>
-
-                        {/* Customer GSTIN & State Code Row */}
-                        <tr>
-                          <td className="w-[50%] p-1.5 border-r-[1.5px] border-black align-middle font-bold">
-                            CUSTOMER' GSTIN: {fullData.customer_gstin || 'N/A'}
-                          </td>
-                          <td className="w-[50%] p-1.5 align-middle space-y-0.5">
-                            <div>
-                              <span className="font-bold">STATE: </span>
-                              <span className="uppercase">{fullData.customer_state || 'Tamil Nadu'}</span>
-                            </div>
-                            <div>
-                              <span className="font-bold">STATE CODE: </span>
-                              <span>{fullData.customer_state_code || '33'}</span>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </>
-                ) : (
-                  /* Continuation Page Sub-Header Row with Page Number */
-                  <table className="w-full border-collapse border-b-2 border-black text-[10px]">
-                    <tbody>
-                      <tr className="bg-slate-50">
-                        <td className="w-[38%] p-1.5 font-bold border-r-[1.5px] border-black align-middle text-[11px]">
-                          INVOICE NO: {isProforma ? (fullData.proforma_number || fullData.invoice_number) : (fullData.invoice_number || fullData.proforma_number)}
-                        </td>
-                        <td className="w-[24%] p-1.5 font-black text-center text-blue-900 text-sm tracking-wider uppercase border-r-[1.5px] border-black align-middle">
-                          {isProforma ? 'PROFORMA INVOICE' : 'INVOICE'}
-                        </td>
-                        <td className="w-[38%] p-1.5 font-bold text-right uppercase tracking-wider text-[10px] align-middle">
-                          <span>{copyTypeBadge}</span>
-                          <span className="ml-2 font-bold text-[9.5px]">
-                            Page {page.pageNumber}/{page.totalPages}
-                          </span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                )}
+                  )}
 
                   {/* 4. Line Items Table */}
-                  <table className="w-full border-collapse border-b-2 border-black text-left text-[10px]" style={{ tableLayout: 'fixed' }}>
+                  <table className="w-full border-collapse border-b-2 border-black text-left text-[11px]" style={{ tableLayout: 'fixed' }}>
                     <thead>
-                      <tr className="bg-white border-b-2 border-black font-bold uppercase text-[9.5px]">
-                        <th className="py-2.5 px-2.5 border-r-[1.5px] border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
-                        <th className="py-2.5 px-2 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>HSN</th>
-                        <th className="py-2.5 px-2 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>QTY.</th>
-                        <th className="py-2.5 px-2 border-r-[1.5px] border-black text-right" style={{ width: '12%' }}>RATE</th>
-                        <th className="py-2.5 px-2 text-right" style={{ width: '12%' }}>AMOUNT</th>
+                      <tr className="bg-white border-b-2 border-black font-bold uppercase text-[10.5px]">
+                        <th className="py-2.5 px-3 border-r-[1.5px] border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
+                        <th className="py-2.5 px-2.5 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>HSN</th>
+                        <th className="py-2.5 px-2.5 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>QTY.</th>
+                        <th className="py-2.5 px-2.5 border-r-[1.5px] border-black text-right" style={{ width: '12%' }}>RATE</th>
+                        <th className="py-2.5 px-2.5 text-right" style={{ width: '12%' }}>AMOUNT</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y-0">
@@ -463,12 +463,12 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                         const isFirstOverallItem = page.isFirstPage && idx === 0;
                         return (
                           <tr key={idx} className="align-middle border-b-[1.5px] border-black">
-                            <td className="py-4 px-2.5 border-r-[1.5px] border-black align-middle" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                              <div className="font-bold uppercase text-slate-950 leading-normal text-[10px] whitespace-pre-wrap">
+                            <td className="py-4 px-3 border-r-[1.5px] border-black align-middle" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                              <div className="font-bold uppercase text-slate-950 leading-normal text-[11.5px] whitespace-pre-wrap">
                                 {item.description}
                               </div>
                               {isFirstOverallItem && (
-                                <div className="mt-2 font-bold text-[9px] text-slate-900 leading-tight space-y-0.5">
+                                <div className="mt-2 font-bold text-[9.5px] text-slate-900 leading-tight space-y-0.5">
                                   {fullData.so_po_number && (
                                     <div>
                                       S.O. No: {fullData.so_po_number}
@@ -484,12 +484,12 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 </div>
                               )}
                             </td>
-                            <td className="py-4 px-2 border-r-[1.5px] border-black text-center font-mono align-middle">{item.hsn_sac || '-'}</td>
-                            <td className="py-4 px-2 border-r-[1.5px] border-black text-center font-mono align-middle">{item.quantity}</td>
-                            <td className="py-4 px-2 border-r-[1.5px] border-black text-right font-mono align-middle">
+                            <td className="py-4 px-2.5 border-r-[1.5px] border-black text-center font-mono font-medium text-[11px] align-middle">{item.hsn_sac || '-'}</td>
+                            <td className="py-4 px-2.5 border-r-[1.5px] border-black text-center font-mono font-medium text-[11px] align-middle">{item.quantity}</td>
+                            <td className="py-4 px-2.5 border-r-[1.5px] border-black text-right font-mono font-medium text-[11px] align-middle">
                               {Number(item.rate).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
-                            <td className="py-4 px-2 text-right font-mono font-medium align-middle">
+                            <td className="py-4 px-2.5 text-right font-mono font-bold text-[11px] align-middle">
                               {Number(item.amount || (item.quantity * item.rate)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
                           </tr>
@@ -497,16 +497,16 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                       })}
                       {/* Page-wise Subtotal Row (When invoice has more than 1 page) */}
                       {page.totalPages > 1 && (
-                        <tr className="border-t-2 border-black bg-slate-50 font-bold text-[9.5px]">
-                          <td colSpan={4} className="py-2 px-2.5 border-r-[1.5px] border-black text-right uppercase tracking-wider">
+                        <tr className="border-t-2 border-black bg-slate-50 font-bold text-[10.5px]">
+                          <td colSpan={4} className="py-2 px-3 border-r-[1.5px] border-black text-right uppercase tracking-wider">
                             {!page.isLastPage && (
-                              <span className="float-left text-[8.5px] italic text-slate-500 font-normal">
+                              <span className="float-left text-[9px] italic text-slate-500 font-normal">
                                 Continued on Page {page.pageNumber + 1}...
                               </span>
                             )}
                             PAGE {page.pageNumber} SUB TOTAL:
                           </td>
-                          <td className="py-2 px-2 text-right font-bold text-[10px] font-mono">
+                          <td className="py-2 px-2.5 text-right font-bold text-[11px] font-mono">
                             {(page.items || []).reduce((sum, item) => sum + Number(item.amount || (item.quantity * item.rate) || 0), 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </td>
                         </tr>
@@ -514,8 +514,8 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
 
                       {/* Total Amount in Words Row (On last page, perfectly attached to vertical table lines) */}
                       {page.hasTotalsAndFooter && (
-                        <tr className="border-t-2 border-black bg-white font-normal text-[10px]">
-                          <td colSpan={5} className="py-2.5 px-2.5 text-left">
+                        <tr className="border-t-2 border-black bg-white font-normal text-[11px]">
+                          <td colSpan={5} className="py-2.5 px-3 text-left">
                             <span className="font-bold">TOTAL AMOUNT IN WORDS: </span>
                             {fullData.amount_in_words}
                           </td>
@@ -529,72 +529,72 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                 {page.hasTotalsAndFooter && (
                   <div className="w-full">
                     {/* 6. Bank Details & Tax Summary Row */}
-                    <table className="w-full border-collapse border-b-2 border-black text-[9.5px]">
+                    <table className="w-full border-collapse border-b-2 border-black text-[11px]">
                       <tbody>
                         <tr>
                           {/* Left: Bank Details */}
-                          <td className="w-[60%] p-1.5 border-r-[1.5px] border-black align-top space-y-0.5">
-                            <div className="font-bold text-[10px] uppercase text-slate-900 mb-1">BANK DETAILS</div>
+                          <td className="w-[58%] p-2.5 border-r-[1.5px] border-black align-top space-y-1">
+                            <div className="font-black text-[11.5px] uppercase text-slate-900 mb-1">BANK DETAILS</div>
                             <div><span className="font-bold">BANK NAME: </span>{COMPANY_CONFIG.bank_name}: {COMPANY_CONFIG.account_number}</div>
                             <div><span className="font-bold">BRANCH NAME: </span>{(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
                             <div><span className="font-bold">IFSC CODE: </span>{COMPANY_CONFIG.ifsc_code}</div>
                           </td>
 
                           {/* Right: Tax Breakdown */}
-                          <td className="w-[40%] p-0 align-top">
-                            <table className="w-full border-collapse text-[9.5px]">
+                          <td className="w-[42%] p-0 align-top">
+                            <table className="w-full border-collapse text-[11px]">
                               <tbody>
                                 {pages.length > 1 && pages.map((p) => {
                                   const pSub = (p.items || []).reduce((sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0), 0);
                                   return (
-                                    <tr key={p.pageNumber} className="border-b-[1.5px] border-black text-slate-800 bg-slate-50/80 text-[9px]">
-                                      <td className="p-1 text-left w-[65%]">PAGE {p.pageNumber} SUB TOTAL</td>
-                                      <td className="p-1 text-right w-[35%] font-medium font-mono">
+                                    <tr key={p.pageNumber} className="border-b-[1.5px] border-black text-slate-800 bg-slate-50/80 text-[10px]">
+                                      <td className="p-1.5 text-left w-[62%]">PAGE {p.pageNumber} SUB TOTAL</td>
+                                      <td className="p-1.5 text-right w-[38%] font-medium font-mono">
                                         {pSub.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
                                     </tr>
                                   );
                                 })}
                                 <tr className="border-b-[1.5px] border-black font-bold">
-                                  <td className="p-1 text-left w-[65%]">TOTAL AMOUNT BEFORE TAX</td>
-                                  <td className="p-1 text-right w-[35%] font-bold font-mono">
+                                  <td className="p-1.5 text-left w-[62%]">TOTAL AMOUNT BEFORE TAX</td>
+                                  <td className="p-1.5 text-right w-[38%] font-bold font-mono">
                                     {fullData.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                   </td>
                                 </tr>
                                 {totals.isIntraState ? (
                                   <>
                                     <tr className="border-b-[1.5px] border-black">
-                                      <td className="p-1 text-left">ADD CGST: {totals.cgstRate}%</td>
-                                      <td className="p-1 text-right font-medium font-mono">
+                                      <td className="p-1.5 text-left">ADD CGST: {totals.cgstRate}%</td>
+                                      <td className="p-1.5 text-right font-medium font-mono">
                                         {totals.cgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
                                     </tr>
                                     <tr className="border-b-[1.5px] border-black">
-                                      <td className="p-1 text-left">ADD SGST: {totals.sgstRate}%</td>
-                                      <td className="p-1 text-right font-medium font-mono">
+                                      <td className="p-1.5 text-left">ADD SGST: {totals.sgstRate}%</td>
+                                      <td className="p-1.5 text-right font-medium font-mono">
                                         {totals.sgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
                                     </tr>
                                   </>
                                 ) : (
                                   <tr className="border-b-[1.5px] border-black">
-                                    <td className="p-1 text-left">ADD IGST: {totals.igstRate}%</td>
-                                    <td className="p-1 text-right font-medium font-mono">
+                                    <td className="p-1.5 text-left">ADD IGST: {totals.igstRate}%</td>
+                                    <td className="p-1.5 text-right font-medium font-mono">
                                       {totals.igstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                     </td>
                                   </tr>
                                 )}
                                 {fullData.round_off !== 0 && fullData.round_off != null && (
                                   <tr className="border-b-[1.5px] border-black">
-                                    <td className="p-1 text-left">ROUND OFF</td>
-                                    <td className="p-1 text-right font-medium font-mono">
+                                    <td className="p-1.5 text-left">ROUND OFF</td>
+                                    <td className="p-1.5 text-right font-medium font-mono">
                                       {fullData.round_off > 0 ? '+' : ''}{Number(fullData.round_off).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                     </td>
                                   </tr>
                                 )}
-                                <tr className="bg-slate-50 font-bold text-[10px]">
-                                  <td className="p-1 text-left">TOTAL AMOUNT AFTER TAX:</td>
-                                  <td className="p-1 text-right font-mono">
+                                <tr className="bg-slate-50 font-black text-[12px]">
+                                  <td className="p-1.5 text-left">TOTAL AMOUNT AFTER TAX:</td>
+                                  <td className="p-1.5 text-right font-mono">
                                     {totals.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                   </td>
                                 </tr>
@@ -606,32 +606,32 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                     </table>
 
                     {/* 7. Footer: Terms & Signature inside the overall box */}
-                    <table className="w-full border-collapse text-[9px]">
+                    <table className="w-full border-collapse text-[10px]">
                       <tbody>
                         <tr>
-                          <td className="w-[50%] align-top p-2 border-r-[1.5px] border-black">
-                            <div className="font-bold uppercase text-[9.5px] text-slate-900 mb-1">TERMS AND CONDITIONS</div>
-                            <div className="text-[8.5px] text-slate-700 leading-tight">
+                          <td className="w-[50%] align-top p-2.5 border-r-[1.5px] border-black">
+                            <div className="font-bold uppercase text-[11px] text-slate-900 mb-1">TERMS AND CONDITIONS</div>
+                            <div className="text-[9.5px] text-slate-800 leading-tight">
                               We declare that this invoice shows the actual value of services described and that all particulars are true and correct.
                             </div>
                             {fullData.notes && (
-                              <div className="text-[8.5px] text-slate-700 mt-1">
+                              <div className="text-[9.5px] text-slate-800 mt-1">
                                 <strong>Notes:</strong> {fullData.notes}
                               </div>
                             )}
-                            <div className="mt-2 text-[8.5px] font-bold text-slate-700">
+                            <div className="mt-2 text-[9.5px] font-bold text-slate-800">
                               Page {page.pageNumber}/{page.totalPages}
                             </div>
                           </td>
-                          <td className="w-[50%] align-top p-2 text-center">
-                            <div className="font-bold text-[8.5px] uppercase text-slate-800 mb-1">
+                          <td className="w-[50%] align-top p-2.5 text-center">
+                            <div className="font-bold text-[9.5px] uppercase text-slate-800 mb-1">
                               CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT
                             </div>
-                            <div className="font-bold text-[10.5px] text-blue-900 mb-1">
+                            <div className="font-black text-[12px] text-blue-900 mb-1">
                               For SHEPHERD ENTERPRISES PRIVATE LIMITED
                             </div>
-                            <div className="h-12"></div>
-                            <div className="font-bold text-[10px] text-right pr-4 text-slate-900">
+                            <div className="h-10"></div>
+                            <div className="font-bold text-[11.5px] text-right pr-4 text-slate-950">
                               Director
                             </div>
                           </td>

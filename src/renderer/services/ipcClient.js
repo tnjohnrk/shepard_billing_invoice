@@ -86,80 +86,80 @@ function renderClientInvoiceHtml(data) {
     const headerHtml = page.isFirstPage ? `
       <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000;">
         <tr>
-          <td style="width: 22%; vertical-align: middle; text-align: center; border-right: 1.5px solid #000; padding: 6px 8px;">
-            <img src="${shepherdInvoiceLogo}" alt="Logo" style="width: 88px; height: 88px; object-fit: contain; display: block; margin: 0 auto;" />
-            <div style="font-size: 9px; font-weight: bold; text-transform: uppercase; margin-top: 2px; color: #1e293b; letter-spacing: 0.5px;">SHEPHERD ENTERPRISES</div>
-            <div style="font-size: 7.5px; font-family: monospace; font-weight: 600; color: #334155; word-break: break-all; line-height: 1.25; margin-top: 3px; max-width: 145px; margin-left: auto; margin-right: auto;">${upiId}</div>
+          <td style="width: 24%; vertical-align: middle; text-align: center; border-right: 1.5px solid #000; padding: 8px 8px;">
+            <img src="${shepherdInvoiceLogo}" alt="Logo" style="width: 102px; height: 102px; object-fit: contain; display: block; margin: 0 auto;" />
+            <div style="font-size: 10px; font-weight: 900; text-transform: uppercase; margin-top: 4px; color: #0f172a; letter-spacing: 0.5px;">SHEPHERD ENTERPRISES</div>
+            <div style="font-size: 8px; font-family: monospace; font-weight: 700; color: #1e293b; word-break: break-all; line-height: 1.25; margin-top: 3px; max-width: 155px; margin-left: auto; margin-right: auto;">${upiId}</div>
           </td>
-          <td style="width: 78%; vertical-align: middle; text-align: center; padding: 8px 14px;">
-            <div style="font-size: 24px; font-weight: 900; text-transform: uppercase; color: #1e3a8a; margin-bottom: 3px; line-height: 1.15; letter-spacing: 0.5px;">${COMPANY_CONFIG.name}</div>
-            <div style="font-size: 10.5px; text-transform: uppercase; margin-bottom: 3px; line-height: 1.35;">${COMPANY_CONFIG.address}</div>
-            <div style="font-size: 11px; font-weight: bold; color: #0f172a; margin-bottom: 2px;">Cell: ${COMPANY_CONFIG.phone}</div>
-            <div style="font-size: 11px; font-weight: bold; color: #0f172a;">Email: ${COMPANY_CONFIG.email}</div>
+          <td style="width: 76%; vertical-align: middle; text-align: center; padding: 10px 14px;">
+            <div style="font-size: 26px; font-weight: 900; text-transform: uppercase; color: #1e3a8a; margin-bottom: 4px; line-height: 1.15; letter-spacing: 0.5px;">${COMPANY_CONFIG.name}</div>
+            <div style="font-size: 11.5px; text-transform: uppercase; margin-bottom: 4px; line-height: 1.35; font-weight: 500;">${COMPANY_CONFIG.address}</div>
+            <div style="font-size: 12px; font-weight: bold; color: #020617; margin-bottom: 2px;">Cell: ${COMPANY_CONFIG.phone}</div>
+            <div style="font-size: 12px; font-weight: bold; color: #020617;">Email: ${COMPANY_CONFIG.email}</div>
           </td>
         </tr>
       </table>
 
       <!-- Sub-Header Row -->
-      <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000; font-size: 10px;">
+      <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000; font-size: 11px;">
         <tr>
-          <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 11px; border-right: 1.5px solid #000;">
+          <td style="width: 38%; padding: 6px 8px; font-weight: bold; font-size: 12px; border-right: 1.5px solid #000;">
             GSTIN: ${COMPANY_CONFIG.gstin || '33ABUCS2217H1Z8'}
           </td>
-          <td style="width: 24%; padding: 4px 6px; font-weight: 900; font-size: 15px; text-align: center; color: #1e3a8a; text-transform: uppercase; border-right: 1.5px solid #000;">
+          <td style="width: 24%; padding: 6px 8px; font-weight: 900; font-size: 17px; text-align: center; color: #1e3a8a; text-transform: uppercase; border-right: 1.5px solid #000;">
             ${docType}
           </td>
-          <td style="width: 38%; padding: 4px 6px; font-weight: bold; text-align: right; text-transform: uppercase; font-size: 10px;">
+          <td style="width: 38%; padding: 6px 8px; font-weight: bold; text-align: right; text-transform: uppercase; font-size: 11px;">
             <span>${copyTypeLabel}</span>
-            <span style="margin-left: 6px; font-weight: bold; font-size: 9.5px;">Page ${page.pageNumber}/${page.totalPages}</span>
+            <span style="margin-left: 6px; font-weight: bold; font-size: 10.5px;">Page ${page.pageNumber}/${page.totalPages}</span>
           </td>
         </tr>
       </table>
 
       <!-- Meta Grid -->
-      <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000; font-size: 10px;">
+      <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000; font-size: 11px;">
         <tr>
-          <td style="width: 50%; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; padding: 4px 6px; vertical-align: top;">
-            <div style="line-height: 1.35; margin-bottom: 2px;"><strong>INVOICE NO :</strong> <strong>${docNum}</strong></div>
-            <div style="line-height: 1.35; margin-bottom: 2px;"><strong>INVOICE DATE:</strong> ${docDate}</div>
-            <div style="line-height: 1.35; margin-bottom: 2px;">
+          <td style="width: 50%; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; padding: 6px 8px; vertical-align: top;">
+            <div style="line-height: 1.35; margin-bottom: 3px;"><strong>INVOICE NO :</strong> <strong style="font-size: 11.5px;">${docNum}</strong></div>
+            <div style="line-height: 1.35; margin-bottom: 3px;"><strong>INVOICE DATE:</strong> ${docDate}</div>
+            <div style="line-height: 1.35; margin-bottom: 3px;">
               <strong>STATE:</strong> <span style="text-transform: uppercase;">${COMPANY_CONFIG.state || 'TAMIL NADU'}</span>
               <strong style="margin-left: 10px;">STATE CODE:</strong> ${COMPANY_CONFIG.state_code || '33'}
             </div>
             <div style="margin-top: 4px;">
-              <div style="line-height: 1.35; margin-bottom: 2px;"><strong>BUYER:</strong> <strong>${data.buyer_name || ''}</strong></div>
-              <div style="line-height: 1.35; margin-bottom: 2px;"><strong>CUSTOMER ADDRESS:</strong> <span style="white-space: pre-line; font-size: 9.5px;">${data.buyer_address || ''}</span></div>
+              <div style="line-height: 1.35; margin-bottom: 3px;"><strong>BUYER:</strong> <strong style="font-size: 12px;">${data.buyer_name || ''}</strong></div>
+              <div style="line-height: 1.35; margin-bottom: 3px;"><strong>CUSTOMER ADDRESS:</strong> <span style="white-space: pre-line; font-size: 10.5px;">${data.buyer_address || ''}</span></div>
             </div>
           </td>
-          <td style="width: 50%; border-bottom: 1.5px solid #000; padding: 4px 6px; vertical-align: top;">
-            <div style="line-height: 1.35; margin-bottom: 2px;"><strong>TRANSPORTATION MODE:</strong> ${data.transportation_mode || '-'}</div>
-            <div style="line-height: 1.35; margin-bottom: 2px;"><strong>VEHICLE NO:</strong> ${data.vehicle_number || '-'}</div>
-            <div style="line-height: 1.35; margin-bottom: 2px;"><strong>DATE OF SUPPLY:</strong> <span style="font-weight: 500;">${supplyDateDisplay}</span></div>
-            <div style="line-height: 1.35; margin-bottom: 2px;"><strong>DELIVERY ADDRESS:</strong> ${deliveryAddress}</div>
+          <td style="width: 50%; border-bottom: 1.5px solid #000; padding: 6px 8px; vertical-align: top;">
+            <div style="line-height: 1.35; margin-bottom: 3px;"><strong>TRANSPORTATION MODE:</strong> ${data.transportation_mode || '-'}</div>
+            <div style="line-height: 1.35; margin-bottom: 3px;"><strong>VEHICLE NO:</strong> ${data.vehicle_number || '-'}</div>
+            <div style="line-height: 1.35; margin-bottom: 3px;"><strong>DATE OF SUPPLY:</strong> <span style="font-weight: 500;">${supplyDateDisplay}</span></div>
+            <div style="line-height: 1.35; margin-bottom: 3px;"><strong>DELIVERY ADDRESS:</strong> ${deliveryAddress}</div>
           </td>
         </tr>
         <tr>
-          <td style="width: 50%; border-right: 1.5px solid #000; padding: 4px 6px; font-size: 10px; font-weight: bold;">
+          <td style="width: 50%; border-right: 1.5px solid #000; padding: 6px 8px; font-size: 11.5px; font-weight: bold;">
             CUSTOMER' GSTIN: ${data.customer_gstin || 'N/A'}
           </td>
-          <td style="width: 50%; padding: 4px 6px; font-size: 10px;">
+          <td style="width: 50%; padding: 6px 8px; font-size: 11px;">
             <div><strong>STATE:</strong> ${(data.customer_state || 'Tamil Nadu').toUpperCase()}</div>
             <div style="margin-top: 2px;"><strong>STATE CODE:</strong> ${data.customer_state_code || '33'}</div>
           </td>
         </tr>
       </table>
     ` : `
-      <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000; font-size: 10px; background: #f8fafc;">
+      <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000; font-size: 11px; background: #f8fafc;">
         <tr>
-          <td style="width: 38%; padding: 4px 6px; font-weight: bold; font-size: 11px; border-right: 1.5px solid #000;">
+          <td style="width: 38%; padding: 6px 8px; font-weight: bold; font-size: 12px; border-right: 1.5px solid #000;">
             INVOICE NO: ${docNum}
           </td>
-          <td style="width: 24%; padding: 4px 6px; font-weight: 900; font-size: 15px; text-align: center; color: #1e3a8a; text-transform: uppercase; border-right: 1.5px solid #000;">
+          <td style="width: 24%; padding: 6px 8px; font-weight: 900; font-size: 17px; text-align: center; color: #1e3a8a; text-transform: uppercase; border-right: 1.5px solid #000;">
             ${docType}
           </td>
-          <td style="width: 38%; padding: 4px 6px; font-weight: bold; text-align: right; text-transform: uppercase; font-size: 10px;">
+          <td style="width: 38%; padding: 6px 8px; font-weight: bold; text-align: right; text-transform: uppercase; font-size: 11px;">
             <span>${copyTypeLabel}</span>
-            <span style="margin-left: 6px; font-weight: bold; font-size: 9.5px;">Page ${page.pageNumber}/${page.totalPages}</span>
+            <span style="margin-left: 6px; font-weight: bold; font-size: 10.5px;">Page ${page.pageNumber}/${page.totalPages}</span>
           </td>
         </tr>
       </table>
@@ -168,13 +168,13 @@ function renderClientInvoiceHtml(data) {
     const itemRows = page.items.map((item, idx) => {
       const isFirstOverallItem = page.isFirstPage && idx === 0;
       const formattedDesc = String(item.description || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\r?\n/g, '<br/>');
-      return `<tr><td style="width: 54%; padding: 16px 8px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; vertical-align: middle; word-break: break-word; overflow-wrap: break-word;"><div style="font-weight: bold; text-transform: uppercase; font-size: 10px; line-height: 1.4; word-break: break-word; overflow-wrap: break-word;">${formattedDesc}</div>${isFirstOverallItem ? refsHtml : ''}</td><td style="width: 11%; padding: 16px 8px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: center; vertical-align: middle; font-size: 10px; font-family: monospace;">${item.hsn_sac || '-'}</td><td style="width: 11%; padding: 16px 8px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: center; vertical-align: middle; font-size: 10px; font-family: monospace;">${item.quantity || 0}</td><td style="width: 12%; padding: 16px 8px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: right; vertical-align: middle; font-size: 10px; font-family: monospace;">${Number(item.rate || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td><td style="width: 12%; padding: 16px 8px; border-bottom: 1.5px solid #000; text-align: right; vertical-align: middle; font-size: 10px; font-family: monospace;">${Number(item.amount || ((item.quantity || 0) * (item.rate || 0))).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td></tr>`;
+      return `<tr><td style="width: 54%; padding: 16px 8px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; vertical-align: middle; word-break: break-word; overflow-wrap: break-word;"><div style="font-weight: bold; text-transform: uppercase; font-size: 11.5px; line-height: 1.4; word-break: break-word; overflow-wrap: break-word;">${formattedDesc}</div>${isFirstOverallItem ? refsHtml : ''}</td><td style="width: 11%; padding: 16px 8px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: center; vertical-align: middle; font-size: 11px; font-family: monospace;">${item.hsn_sac || '-'}</td><td style="width: 11%; padding: 16px 8px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: center; vertical-align: middle; font-size: 11px; font-family: monospace;">${item.quantity || 0}</td><td style="width: 12%; padding: 16px 8px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: right; vertical-align: middle; font-size: 11px; font-family: monospace;">${Number(item.rate || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td><td style="width: 12%; padding: 16px 8px; border-bottom: 1.5px solid #000; text-align: right; vertical-align: middle; font-size: 11px; font-family: monospace; font-weight: bold;">${Number(item.amount || ((item.quantity || 0) * (item.rate || 0))).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td></tr>`;
     }).join('');
 
     const itemsTableHtml = `
       <table style="width: 100%; table-layout: fixed; border-collapse: collapse; border-bottom: 2px solid #000;">
         <thead>
-          <tr style="background: #ffffff; border-bottom: 2px solid #000; font-size: 10px; font-weight: bold; text-align: center;">
+          <tr style="background: #ffffff; border-bottom: 2px solid #000; font-size: 10.5px; font-weight: bold; text-align: center;">
             <th style="padding: 8px 8px; border-right: 1.5px solid #000; text-align: left; width: 54%; height: 28px;">DESCRIPTION</th>
             <th style="padding: 8px 8px; border-right: 1.5px solid #000; width: 11%;">HSN</th>
             <th style="padding: 8px 8px; border-right: 1.5px solid #000; width: 11%;">QTY.</th>
@@ -186,7 +186,7 @@ function renderClientInvoiceHtml(data) {
           ${itemRows}
           ${page.hasTotalsAndFooter ? `
           <tr style="border-top: 2px solid #000; background: #fff;">
-            <td colspan="5" style="padding: 8px 8px; font-size: 10px; font-weight: normal; text-align: left;">
+            <td colspan="5" style="padding: 8px 8px; font-size: 11px; font-weight: normal; text-align: left;">
               <strong>TOTAL AMOUNT IN WORDS:</strong> ${data.amount_in_words || ''}
             </td>
           </tr>
@@ -201,22 +201,22 @@ function renderClientInvoiceHtml(data) {
         <div style="width: 100%;">
           <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000;">
             <tr>
-              <td style="width: 60%; border-right: 1.5px solid #000; padding: 5px 6px; vertical-align: top;">
-                <div style="font-weight: bold; font-size: 10px; margin-bottom: 3px;">BANK DETAILS</div>
-                <div style="font-size: 9.5px; line-height: 1.35; margin-bottom: 2px;"><strong>BANK NAME:</strong> ${COMPANY_CONFIG.bank_name}: ${COMPANY_CONFIG.account_number}</div>
-                <div style="font-size: 9.5px; line-height: 1.35; margin-bottom: 2px;"><strong>BRANCH NAME:</strong> ${COMPANY_CONFIG.branch_name}</div>
-                <div style="font-size: 9.5px; line-height: 1.35;"><strong>IFSC CODE:</strong> ${COMPANY_CONFIG.ifsc_code}</div>
+              <td style="width: 58%; border-right: 1.5px solid #000; padding: 8px 8px; vertical-align: top;">
+                <div style="font-weight: 900; font-size: 11.5px; margin-bottom: 4px;">BANK DETAILS</div>
+                <div style="font-size: 11px; line-height: 1.35; margin-bottom: 3px;"><strong>BANK NAME:</strong> ${COMPANY_CONFIG.bank_name}: ${COMPANY_CONFIG.account_number}</div>
+                <div style="font-size: 11px; line-height: 1.35; margin-bottom: 3px;"><strong>BRANCH NAME:</strong> ${(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
+                <div style="font-size: 11px; line-height: 1.35;"><strong>IFSC CODE:</strong> ${COMPANY_CONFIG.ifsc_code}</div>
               </td>
-              <td style="width: 40%; padding: 0; vertical-align: top;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 9.5px;">
+              <td style="width: 42%; padding: 0; vertical-align: top;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 10.5px;">
                   <tr>
-                    <td style="padding: 3px 6px; width: 65%; border-bottom: 1.5px solid #000;">TOTAL AMOUNT BEFORE TAX</td>
-                    <td style="padding: 3px 6px; width: 35%; text-align: right; border-bottom: 1.5px solid #000;">${Number(data.subtotal || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                    <td style="padding: 4px 8px; width: 62%; border-bottom: 1.5px solid #000; font-weight: bold;">TOTAL AMOUNT BEFORE TAX</td>
+                    <td style="padding: 4px 8px; width: 38%; text-align: right; border-bottom: 1.5px solid #000; font-weight: bold;">${Number(data.subtotal || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
                   </tr>
                   ${taxRows}
-                  <tr style="background: #f8fafc; font-weight: bold; font-size: 10px;">
-                    <td style="padding: 3px 6px;">TOTAL AMOUNT AFTER TAX:</td>
-                    <td style="padding: 3px 6px; text-align: right;">${Number(data.grand_total || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                  <tr style="background: #f8fafc; font-weight: 900; font-size: 12px;">
+                    <td style="padding: 4px 8px;">TOTAL AMOUNT AFTER TAX:</td>
+                    <td style="padding: 4px 8px; text-align: right;">${Number(data.grand_total || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
                   </tr>
                 </table>
               </td>
@@ -225,24 +225,24 @@ function renderClientInvoiceHtml(data) {
 
           <table style="width: 100%; border-collapse: collapse;">
             <tr>
-              <td style="width: 50%; vertical-align: top; padding: 6px; border-right: 1.5px solid #000;">
-                <div style="font-weight: bold; font-size: 9.5px; margin-bottom: 4px;">TERMS AND CONDITIONS</div>
-                <div style="font-size: 8.5px; color: #334155; line-height: 1.35;">
+              <td style="width: 50%; vertical-align: top; padding: 8px; border-right: 1.5px solid #000;">
+                <div style="font-weight: bold; font-size: 11px; margin-bottom: 4px;">TERMS AND CONDITIONS</div>
+                <div style="font-size: 9.5px; color: #1e293b; line-height: 1.35;">
                   We declare that this invoice shows the actual value of services described and that all particulars are true and correct.
                 </div>
-                <div style="margin-top: 6px; font-size: 8.5px; color: #334155; font-weight: bold;">
+                <div style="margin-top: 6px; font-size: 9.5px; color: #1e293b; font-weight: bold;">
                   Page ${page.pageNumber}/${page.totalPages}
                 </div>
               </td>
-              <td style="width: 50%; vertical-align: top; text-align: center; padding: 6px;">
-                <div style="font-weight: bold; font-size: 8.5px; text-transform: uppercase; margin-bottom: 4px;">
+              <td style="width: 50%; vertical-align: top; text-align: center; padding: 8px;">
+                <div style="font-weight: bold; font-size: 9.5px; text-transform: uppercase; margin-bottom: 4px;">
                   CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT
                 </div>
-                <div style="font-weight: bold; font-size: 10.5px; color: #1e3a8a; margin-bottom: 4px;">
+                <div style="font-weight: 900; font-size: 12px; color: #1e3a8a; margin-bottom: 4px;">
                   For ${COMPANY_CONFIG.name}
                 </div>
-                <div style="height: 48px;"></div>
-                <div style="font-weight: bold; font-size: 10px; text-align: right; padding-right: 15px;">
+                <div style="height: 40px;"></div>
+                <div style="font-weight: bold; font-size: 11.5px; text-align: right; padding-right: 15px;">
                   Director
                 </div>
               </td>
