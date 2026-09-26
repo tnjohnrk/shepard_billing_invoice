@@ -361,11 +361,6 @@ export function Dashboard({ onViewInvoice, onNavigateCreate, licenseStatus: prop
               </div>
             </div>
           </div>
-
-          <div className="flex items-center gap-2 self-start md:self-center px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 text-[11px] text-amber-800 dark:text-amber-200">
-            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-            <span>All records &amp; backups remain 100% permanently safe</span>
-          </div>
         </div>
       )}
 
