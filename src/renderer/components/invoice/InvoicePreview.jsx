@@ -281,7 +281,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                               <img
                                 src={shepherdInvoiceLogo}
                                 alt="Shepherd Enterprises"
-                                className="w-[102px] h-[102px] object-contain mx-auto block"
+                                className="w-[125px] h-[125px] object-contain mx-auto block"
                               />
                               <div className="text-[10px] font-black uppercase mt-1.5 text-slate-900 tracking-wider">
                                 SHEPHERD ENTERPRISES

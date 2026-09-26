@@ -87,7 +87,7 @@ function renderClientInvoiceHtml(data) {
       <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000;">
         <tr>
           <td style="width: 24%; vertical-align: middle; text-align: center; border-right: 1.5px solid #000; padding: 8px 8px;">
-            <img src="${shepherdInvoiceLogo}" alt="Logo" style="width: 102px; height: 102px; object-fit: contain; display: block; margin: 0 auto;" />
+            <img src="${shepherdInvoiceLogo}" alt="Logo" style="width: 125px; height: 125px; object-fit: contain; display: block; margin: 0 auto;" />
             <div style="font-size: 10px; font-weight: 900; text-transform: uppercase; margin-top: 4px; color: #0f172a; letter-spacing: 0.5px;">SHEPHERD ENTERPRISES</div>
             <div style="font-size: 8px; font-family: monospace; font-weight: 700; color: #1e293b; word-break: break-all; line-height: 1.25; margin-top: 3px; max-width: 155px; margin-left: auto; margin-right: auto;">${upiId}</div>
           </td>
