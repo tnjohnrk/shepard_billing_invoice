@@ -1,44 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Plus, Info } from 'lucide-react';
 import { ItemRow } from './ItemRow';
 import { Button } from '../common/Button';
-import { ipcClient } from '../../services/ipcClient';
 import { FEATURE_FLAGS } from '../../../shared/constants/featureFlags';
 
 export function ItemTable({ items = [], setItems }) {
-  const [catalogProducts, setCatalogProducts] = useState([]);
-
-  useEffect(() => {
-    let mounted = true;
-    ipcClient.listProducts().then(list => {
-      if (mounted && Array.isArray(list)) {
-        setCatalogProducts(list);
-      }
-    }).catch(() => {});
-    return () => { mounted = false; };
-  }, []);
-
-  const refreshCatalog = async () => {
-    try {
-      const list = await ipcClient.listProducts();
-      if (Array.isArray(list)) setCatalogProducts(list);
-    } catch {}
-  };
-
   const handleItemChange = (index, field, value) => {
     setItems(prevItems => {
       const list = Array.isArray(prevItems) ? [...prevItems] : [];
       if (!list[index]) list[index] = { description: '', hsn_sac: '', quantity: 1, rate: 0 };
       list[index] = { ...list[index], [field]: value };
-      return list;
-    });
-  };
-
-  const handleBatchItemChange = (index, newFields) => {
-    setItems(prevItems => {
-      const list = Array.isArray(prevItems) ? [...prevItems] : [];
-      if (!list[index]) list[index] = { description: '', hsn_sac: '', quantity: 1, rate: 0 };
-      list[index] = { ...list[index], ...newFields };
       return list;
     });
   };
@@ -84,10 +55,7 @@ export function ItemTable({ items = [], setItems }) {
                 key={idx}
                 index={idx}
                 item={item}
-                catalogProducts={catalogProducts}
-                onCatalogUpdated={refreshCatalog}
                 onChange={handleItemChange}
-                onBatchChange={handleBatchItemChange}
                 onDelete={handleDeleteItem}
                 canDelete={(items || []).length > 1}
               />
