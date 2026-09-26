@@ -265,10 +265,10 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                 padding: '8mm',
                 boxSizing: 'border-box'
               }}
-              className="bg-white text-black border border-slate-300 shadow-xl text-left font-sans text-xs flex flex-col overflow-hidden print:w-full print:p-0 print:border-none print:shadow-none print:break-after-avoid print:page-break-after-avoid"
+              className="invoice-preview-paper bg-white text-black border border-slate-300 shadow-xl text-left font-sans text-xs flex flex-col overflow-hidden print:w-full print:p-0 print:border-none print:shadow-none print:break-after-avoid print:page-break-after-avoid"
             >
               {/* Overall Box Layout Frame from Header to Footer (Direct natural attachment) */}
-              <div className="border-2 border-black w-full bg-white flex flex-col">
+              <div className="border-2 border-black w-full bg-white text-black flex flex-col">
                 
                 <div className="w-full flex flex-col">
                     {/* 1. Header Section (Only on Page 1) */}

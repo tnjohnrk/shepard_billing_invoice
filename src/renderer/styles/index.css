@@ -800,65 +800,141 @@ button:active:not(:disabled) {
 /* ========================================================================= */
 /* Invoice Sheet Guaranteed Pristine White Paper In All Modes                */
 /* ========================================================================= */
+.invoice-preview-paper,
+[id^="invoice-preview-sheet"],
 #invoice-preview-sheet,
+.dark .invoice-preview-paper,
+.dark [id^="invoice-preview-sheet"],
 .dark #invoice-preview-sheet,
+.light .invoice-preview-paper,
+.light [id^="invoice-preview-sheet"],
 .light #invoice-preview-sheet {
   background-color: #ffffff !important;
   color: #000000 !important;
 }
 
+.invoice-preview-paper *,
+[id^="invoice-preview-sheet"] *,
 #invoice-preview-sheet *,
+.dark .invoice-preview-paper *,
+.dark [id^="invoice-preview-sheet"] *,
 .dark #invoice-preview-sheet *,
+.light .invoice-preview-paper *,
+.light [id^="invoice-preview-sheet"] *,
 .light #invoice-preview-sheet * {
   color: #000000 !important;
+  border-color: #000000;
 }
 
+.invoice-preview-paper .text-blue-900,
+[id^="invoice-preview-sheet"] .text-blue-900,
 #invoice-preview-sheet .text-blue-900,
+.dark .invoice-preview-paper .text-blue-900,
+.dark [id^="invoice-preview-sheet"] .text-blue-900,
 .dark #invoice-preview-sheet .text-blue-900,
+.light .invoice-preview-paper .text-blue-900,
+.light [id^="invoice-preview-sheet"] .text-blue-900,
 .light #invoice-preview-sheet .text-blue-900 {
   color: #1e3a8a !important;
 }
 
+.invoice-preview-paper .text-slate-900,
+.invoice-preview-paper .text-slate-950,
+.invoice-preview-paper .text-slate-800,
+.dark .invoice-preview-paper .text-slate-900,
+.dark .invoice-preview-paper .text-slate-950,
+.dark .invoice-preview-paper .text-slate-800,
+[id^="invoice-preview-sheet"] .text-slate-900,
+[id^="invoice-preview-sheet"] .text-slate-950,
+[id^="invoice-preview-sheet"] .text-slate-800,
+.dark [id^="invoice-preview-sheet"] .text-slate-900,
+.dark [id^="invoice-preview-sheet"] .text-slate-950,
+.dark [id^="invoice-preview-sheet"] .text-slate-800 {
+  color: #000000 !important;
+}
+
+.invoice-preview-paper .text-slate-500,
+.dark .invoice-preview-paper .text-slate-500,
+[id^="invoice-preview-sheet"] .text-slate-500,
+.dark [id^="invoice-preview-sheet"] .text-slate-500 {
+  color: #64748b !important;
+}
+
+.invoice-preview-paper table,
+[id^="invoice-preview-sheet"] table,
 #invoice-preview-sheet table,
+.dark .invoice-preview-paper table,
+.dark [id^="invoice-preview-sheet"] table,
 .dark #invoice-preview-sheet table,
+.light .invoice-preview-paper table,
+.light [id^="invoice-preview-sheet"] table,
 .light #invoice-preview-sheet table {
   background-color: #ffffff !important;
   color: #000000 !important;
   border-color: #000000 !important;
 }
 
+.invoice-preview-paper thead tr,
+[id^="invoice-preview-sheet"] thead tr,
 #invoice-preview-sheet thead tr,
-.dark #invoice-preview-sheet thead tr,
-.light #invoice-preview-sheet thead tr {
-  background-color: #f8fafc !important;
+.dark .invoice-preview-paper thead tr,
+.dark [id^="invoice-preview-sheet"] thead tr,
+.dark #invoice-preview-sheet thead tr {
+  background-color: #ffffff !important;
   border-color: #000000 !important;
 }
 
+.invoice-preview-paper thead th,
+[id^="invoice-preview-sheet"] thead th,
 #invoice-preview-sheet thead th,
-.dark #invoice-preview-sheet thead th,
-.light #invoice-preview-sheet thead th {
-  background-color: #f8fafc !important;
-  color: #000000 !important;
-  border-color: #000000 !important;
-}
-
-#invoice-preview-sheet tbody td,
-.dark #invoice-preview-sheet tbody td,
-.light #invoice-preview-sheet tbody td {
+.dark .invoice-preview-paper thead th,
+.dark [id^="invoice-preview-sheet"] thead th,
+.dark #invoice-preview-sheet thead th {
   background-color: #ffffff !important;
   color: #000000 !important;
   border-color: #000000 !important;
 }
 
+.invoice-preview-paper tbody td,
+[id^="invoice-preview-sheet"] tbody td,
+#invoice-preview-sheet tbody td,
+.dark .invoice-preview-paper tbody td,
+.dark [id^="invoice-preview-sheet"] tbody td,
+.dark #invoice-preview-sheet tbody td {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+.invoice-preview-paper .bg-slate-50,
+.dark .invoice-preview-paper .bg-slate-50,
+[id^="invoice-preview-sheet"] .bg-slate-50,
+.dark [id^="invoice-preview-sheet"] .bg-slate-50,
 #invoice-preview-sheet .bg-slate-50,
-.dark #invoice-preview-sheet .bg-slate-50,
-.light #invoice-preview-sheet .bg-slate-50 {
+.dark #invoice-preview-sheet .bg-slate-50 {
   background-color: #f8fafc !important;
 }
 
-#invoice-preview-sheet tbody tr:hover,
-.dark #invoice-preview-sheet tbody tr:hover,
-.light #invoice-preview-sheet tbody tr:hover {
+.invoice-preview-paper .bg-white,
+.dark .invoice-preview-paper .bg-white,
+[id^="invoice-preview-sheet"] .bg-white,
+.dark [id^="invoice-preview-sheet"] .bg-white,
+#invoice-preview-sheet .bg-white,
+.dark #invoice-preview-sheet .bg-white {
+  background-color: #ffffff !important;
+}
+
+.invoice-preview-paper div,
+.dark .invoice-preview-paper div,
+[id^="invoice-preview-sheet"] div,
+.dark [id^="invoice-preview-sheet"] div {
+  border-color: #000000;
+}
+
+.invoice-preview-paper tbody tr:hover,
+.dark .invoice-preview-paper tbody tr:hover,
+[id^="invoice-preview-sheet"] tbody tr:hover,
+.dark [id^="invoice-preview-sheet"] tbody tr:hover {
   background-color: transparent !important;
 }
 
