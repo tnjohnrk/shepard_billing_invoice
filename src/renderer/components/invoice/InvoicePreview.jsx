@@ -267,17 +267,16 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                 backgroundColor: '#ffffff',
                 color: '#000000',
                 width: '210mm',
-                minHeight: '297mm',
-                height: '297mm',
+                minHeight: 'auto',
                 padding: '8mm',
                 boxSizing: 'border-box'
               }}
-              className="bg-white text-black border border-slate-300 shadow-xl text-left font-sans text-xs flex flex-col justify-between overflow-hidden print:w-full print:h-[281mm] print:min-h-[281mm] print:p-0 print:border-none print:shadow-none print:break-after-page print:page-break-after-always print:last:break-after-avoid"
+              className="bg-white text-black border border-slate-300 shadow-xl text-left font-sans text-xs flex flex-col overflow-hidden print:w-full print:p-0 print:border-none print:shadow-none print:break-after-avoid print:page-break-after-avoid"
             >
-              {/* Overall Box Layout Frame from Header to Footer */}
-              <div className="border-2 border-black w-full h-full bg-white flex flex-col justify-between flex-1">
+              {/* Overall Box Layout Frame from Header to Footer (Direct natural attachment) */}
+              <div className="border-2 border-black w-full bg-white flex flex-col">
                 
-                <div className="flex-1 flex flex-col min-h-0">
+                <div className="w-full flex flex-col">
                   {/* 1. Header Section (Only on Page 1) */}
                   {page.isFirstPage ? (
                   <>

@@ -31,9 +31,9 @@ body {
 .invoice-page {
   width: 100%;
   max-width: 194mm;
-  height: 284mm;
-  page-break-after: always;
-  break-after: page;
+  min-height: auto;
+  page-break-after: avoid;
+  break-after: avoid;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -46,34 +46,38 @@ body {
 
 .invoice-box-frame {
   width: 100%;
-  height: 100%;
+  height: auto;
   border: 2px solid #000;
   background: #fff;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
 .top-content {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  width: 100%;
 }
 
 .items-table {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  flex: 1;
-  display: table;
-  height: 100%;
+  height: auto;
+}
+
+.bottom-content {
+  width: 100%;
 }
 
 @media print {
   .invoice-page {
-    height: 284mm;
+    height: auto;
+    min-height: auto;
     margin-bottom: 0;
+    page-break-after: avoid;
+    break-after: avoid;
   }
 }
 
