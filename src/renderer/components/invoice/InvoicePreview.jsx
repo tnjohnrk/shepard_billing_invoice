@@ -458,8 +458,8 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                       {page.items.map((item, idx) => {
                         const isFirstOverallItem = page.isFirstPage && idx === 0;
                         return (
-                          <tr key={idx} className="align-top border-b-[1.5px] border-black">
-                            <td className="p-1.5 border-r-[1.5px] border-black" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                          <tr key={idx} className="align-middle border-b-[1.5px] border-black">
+                            <td className="p-1.5 border-r-[1.5px] border-black align-middle" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                               <div className="font-bold uppercase text-slate-950 leading-tight text-[10px] whitespace-pre-wrap">
                                 {item.description}
                               </div>
@@ -480,12 +480,12 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 </div>
                               )}
                             </td>
-                            <td className="p-1.5 border-r-[1.5px] border-black text-center font-mono">{item.hsn_sac || '-'}</td>
-                            <td className="p-1.5 border-r-[1.5px] border-black text-center font-mono">{item.quantity}</td>
-                            <td className="p-1.5 border-r-[1.5px] border-black text-right font-mono">
+                            <td className="p-1.5 border-r-[1.5px] border-black text-center font-mono align-middle">{item.hsn_sac || '-'}</td>
+                            <td className="p-1.5 border-r-[1.5px] border-black text-center font-mono align-middle">{item.quantity}</td>
+                            <td className="p-1.5 border-r-[1.5px] border-black text-right font-mono align-middle">
                               {Number(item.rate).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
-                            <td className="p-1.5 text-right font-mono font-medium">
+                            <td className="p-1.5 text-right font-mono font-medium align-middle">
                               {Number(item.amount || (item.quantity * item.rate)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
                           </tr>
