@@ -53,7 +53,11 @@ export async function generateInvoicePdf(invoiceData, targetFilePathOverride = n
       pageSize: 'A4',
       printBackground: true,
       landscape: false,
-      preferCSSPageSize: true
+      preferCSSPageSize: true,
+      displayHeaderFooter: false,
+      margins: {
+        marginType: 'none'
+      }
     });
 
     fs.writeFileSync(pdfPath, pdfBuffer);

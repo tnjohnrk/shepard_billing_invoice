@@ -255,12 +255,6 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
       <div className="bg-slate-100 dark:bg-slate-950 p-6 sm:p-8 flex flex-col items-center gap-8 overflow-x-auto print:bg-transparent print:p-0 print:border-none print:shadow-none print:gap-0">
         {pages.map((page) => (
           <div key={page.pageNumber} className="w-full flex flex-col items-center">
-            {pages.length > 1 && (
-              <div className="no-print self-center text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 px-3 py-1 bg-slate-300/80 dark:bg-slate-800 rounded-full">
-                Page {page.pageNumber} of {page.totalPages} ({page.pageNumber}/{page.totalPages})
-              </div>
-            )}
-
             <div
               id={`invoice-preview-sheet-page-${page.pageNumber}`}
               style={{

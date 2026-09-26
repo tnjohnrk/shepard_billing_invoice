@@ -34,7 +34,10 @@ export async function printInvoiceDocument(invoiceData, options = {}) {
         silent: options.silent || false,
         printBackground: true,
         deviceName: options.deviceName || '',
-        pageSize: 'A4'
+        pageSize: 'A4',
+        margins: {
+          marginType: 'none'
+        }
       },
       (success, errorType) => {
         if (!printWin.isDestroyed()) {
