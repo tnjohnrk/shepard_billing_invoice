@@ -159,7 +159,7 @@ export function renderInvoiceHtml(invoiceData) {
             <td class="meta-right-cell">
               <div class="meta-field"><span class="meta-lbl font-bold">TRANSPORTATION MODE:</span> <span class="meta-txt">${escapeHtml(invoiceData.transportation_mode || '-')}</span></div>
               <div class="meta-field"><span class="meta-lbl font-bold">VEHICLE NO:</span> <span class="meta-txt">${escapeHtml(invoiceData.vehicle_number || '-')}</span></div>
-              <div class="meta-field"><span class="meta-lbl font-bold">DATE OF SUPPLY:</span> <span class="meta-txt">${escapeHtml(invoiceData.date_of_supply || docDate || '-')}</span></div>
+              <div class="meta-field"><span class="meta-lbl font-bold">DATE OF SUPPLY:</span> <span class="meta-txt font-medium">${escapeHtml(formatSupplyDates(invoiceData.date_of_supply_from, invoiceData.date_of_supply_to, invoiceData.date_of_supply || docDate))}</span></div>
               <div class="meta-field"><span class="meta-lbl font-bold">DELIVERY ADDRESS:</span> <span class="meta-txt">${escapeHtml(deliveryAddress)}</span></div>
             </td>
           </tr>
@@ -237,13 +237,6 @@ export function renderInvoiceHtml(invoiceData) {
         </thead>
         <tbody>
           ${itemRowsHtml}
-          <tr class="table-spacer-row">
-            <td class="col-desc"></td>
-            <td class="col-hsn"></td>
-            <td class="col-qty"></td>
-            <td class="col-rate"></td>
-            <td class="col-amount"></td>
-          </tr>
           ${pageSubtotalRowHtml}
           ${totalWordsRowHtml}
         </tbody>
@@ -308,7 +301,7 @@ export function renderInvoiceHtml(invoiceData) {
                 <div class="certify-text font-bold">CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT</div>
                 <div class="company-sign-title font-bold">For ${escapeHtml(COMPANY_CONFIG.name)}</div>
                 <div class="signature-space"></div>
-                <div class="signatory-label font-bold">Proprietor</div>
+                <div class="signatory-label font-bold">Director</div>
               </td>
             </tr>
           </table>
@@ -344,6 +337,34 @@ export function renderInvoiceHtml(invoiceData) {
   </div>
 </body>
 </html>`;
+}
+
+function formatSupplyDates(fromDate, toDate, fallback) {
+  const cleanFrom = (fromDate || '').trim();
+  const cleanTo = (toDate || '').trim();
+  if (cleanFrom && cleanTo) {
+    if (cleanFrom === cleanTo) {
+      return formatDateStr(cleanFrom);
+    }
+    return `${formatDateStr(cleanFrom)} to ${formatDateStr(cleanTo)}`;
+  }
+  if (cleanFrom) return formatDateStr(cleanFrom);
+  if (cleanTo) return formatDateStr(cleanTo);
+  if (fallback) return formatDateStr(fallback);
+  return '-';
+}
+
+function formatDateStr(dateStr) {
+  if (!dateStr || dateStr === '-') return '-';
+  try {
+    const parts = String(dateStr).split('T')[0].split('-');
+    if (parts.length === 3 && parts[0].length === 4) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    return dateStr;
+  } catch {
+    return dateStr;
+  }
 }
 
 function formatCurrency(val) {

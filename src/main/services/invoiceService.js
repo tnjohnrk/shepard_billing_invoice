@@ -49,7 +49,9 @@ export async function saveNewInvoice(formData) {
 
     transportation_mode: formData.transportation_mode || null,
     vehicle_number: formData.vehicle_number || null,
-    date_of_supply: formData.date_of_supply || null,
+    date_of_supply: formData.date_of_supply || formData.date_of_supply_from || null,
+    date_of_supply_from: formData.date_of_supply_from || formData.date_of_supply || null,
+    date_of_supply_to: formData.date_of_supply_to || formData.date_of_supply_from || formData.date_of_supply || null,
     delivery_address: formData.delivery_address || null,
 
     buyer_name: formData.buyer_name,

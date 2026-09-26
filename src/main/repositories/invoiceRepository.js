@@ -11,14 +11,14 @@ export function createInvoice(invoiceData, items) {
     const res = db.prepare(`
       INSERT INTO invoices (
         invoice_number, invoice_type, invoice_date, copy_type, proforma_id,
-        transportation_mode, vehicle_number, date_of_supply, delivery_address,
+        transportation_mode, vehicle_number, date_of_supply, date_of_supply_from, date_of_supply_to, delivery_address,
         buyer_name, buyer_address, customer_gstin, customer_state, customer_state_code,
         so_po_number, so_po_date, gemc_number, additional_reference,
         subtotal, cgst_rate, cgst_amount, sgst_rate, sgst_amount, igst_rate, igst_amount,
         grand_total, amount_in_words, notes, pdf_path, is_deleted
       ) VALUES (
         @invoice_number, @invoice_type, @invoice_date, @copy_type, @proforma_id,
-        @transportation_mode, @vehicle_number, @date_of_supply, @delivery_address,
+        @transportation_mode, @vehicle_number, @date_of_supply, @date_of_supply_from, @date_of_supply_to, @delivery_address,
         @buyer_name, @buyer_address, @customer_gstin, @customer_state, @customer_state_code,
         @so_po_number, @so_po_date, @gemc_number, @additional_reference,
         @subtotal, @cgst_rate, @cgst_amount, @sgst_rate, @sgst_amount, @igst_rate, @igst_amount,
@@ -26,6 +26,8 @@ export function createInvoice(invoiceData, items) {
       )
     `).run({
       ...invoiceData,
+      date_of_supply_from: invoiceData.date_of_supply_from || invoiceData.date_of_supply || null,
+      date_of_supply_to: invoiceData.date_of_supply_to || invoiceData.date_of_supply_from || invoiceData.date_of_supply || null,
       copy_type: invoiceData.copy_type || 'ORIGINAL',
       proforma_id: invoiceData.proforma_id || null,
       pdf_path: invoiceData.pdf_path || null

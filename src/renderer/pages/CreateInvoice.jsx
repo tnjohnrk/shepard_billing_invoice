@@ -29,6 +29,8 @@ const defaultFormState = {
   transportation_mode: '',
   vehicle_number: '',
   date_of_supply: new Date().toISOString().split('T')[0],
+  date_of_supply_from: new Date().toISOString().split('T')[0],
+  date_of_supply_to: new Date().toISOString().split('T')[0],
   delivery_address: '',
 
   buyer_type: 'COMPANY',
@@ -140,7 +142,9 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
       proforma_number: type === 'PROFORMA' ? (proNum || 'PRO-001') : '',
       invoice_date: new Date().toISOString().split('T')[0],
       proforma_date: new Date().toISOString().split('T')[0],
-      date_of_supply: new Date().toISOString().split('T')[0]
+      date_of_supply: new Date().toISOString().split('T')[0],
+      date_of_supply_from: new Date().toISOString().split('T')[0],
+      date_of_supply_to: new Date().toISOString().split('T')[0]
     });
     setStep(1);
     if (toast) toast('info', 'Started a fresh invoice creation.');
@@ -202,9 +206,16 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
     const newErrors = {};
 
     if (step === 2) {
-      if (!formData.date_of_supply || !String(formData.date_of_supply).trim()) {
-        newErrors.date_of_supply = 'Date of supply is mandatory';
-        toast('error', 'Date of Supply is mandatory.');
+      const supplyFrom = formData.date_of_supply_from || formData.date_of_supply;
+      const supplyTo = formData.date_of_supply_to || formData.date_of_supply_from || formData.date_of_supply;
+
+      if (!supplyFrom || !String(supplyFrom).trim()) {
+        newErrors.date_of_supply_from = 'Date of supply (From) is mandatory';
+        toast('error', 'Date of Supply (From Date) is mandatory.');
+      }
+      if (!supplyTo || !String(supplyTo).trim()) {
+        newErrors.date_of_supply_to = 'Date of supply (To) is mandatory';
+        toast('error', 'Date of Supply (To Date) is mandatory.');
       }
       if (isProforma && (!formData.proforma_number || !formData.proforma_number.trim())) {
         newErrors.proforma_number = 'Proforma number is required';
@@ -241,7 +252,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
       }
       const missingHsnItem = formData.items.find(i => !i.hsn_sac || !String(i.hsn_sac).trim());
       if (missingHsnItem) {
-        toast('error', 'HSN / SAC code is mandatory. Please select an HSN code for all items to proceed.');
+        toast('error', 'HSN / SAC code is mandatory for all items. Please enter an HSN code to proceed.');
         return false;
       }
       const invalidItem = formData.items.find(i => !i.description || i.quantity <= 0 || i.rate < 0);

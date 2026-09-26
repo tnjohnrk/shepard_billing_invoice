@@ -13,6 +13,8 @@ export const invoiceSchema = z.object({
   transportation_mode: z.string().optional().nullable(),
   vehicle_number: z.string().optional().nullable(),
   date_of_supply: z.string().optional().nullable(),
+  date_of_supply_from: z.string().optional().nullable(),
+  date_of_supply_to: z.string().optional().nullable(),
   delivery_address: z.string().optional().nullable(),
 
   // Buyer Details

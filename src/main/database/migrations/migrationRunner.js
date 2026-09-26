@@ -215,6 +215,28 @@ export function runMigrations(db) {
     db.prepare('INSERT INTO schema_migrations (version) VALUES (3)').run();
   }
 
+  // Migration 4: Date of Supply From and To columns
+  const version4Count = db.prepare('SELECT COUNT(*) as count FROM schema_migrations WHERE version = 4').get().count;
+  if (version4Count === 0) {
+    const invoiceCols = db.prepare("PRAGMA table_info(invoices)").all().map(c => c.name);
+    if (!invoiceCols.includes('date_of_supply_from')) {
+      db.exec("ALTER TABLE invoices ADD COLUMN date_of_supply_from DATE;");
+    }
+    if (!invoiceCols.includes('date_of_supply_to')) {
+      db.exec("ALTER TABLE invoices ADD COLUMN date_of_supply_to DATE;");
+    }
+
+    const proformaCols = db.prepare("PRAGMA table_info(proformas)").all().map(c => c.name);
+    if (!proformaCols.includes('date_of_supply_from')) {
+      db.exec("ALTER TABLE proformas ADD COLUMN date_of_supply_from DATE;");
+    }
+    if (!proformaCols.includes('date_of_supply_to')) {
+      db.exec("ALTER TABLE proformas ADD COLUMN date_of_supply_to DATE;");
+    }
+
+    db.prepare('INSERT INTO schema_migrations (version) VALUES (4)').run();
+  }
+
   // Seed default company details if not present or sync address
   const companyCount = db.prepare('SELECT COUNT(*) as count FROM companies').get().count;
   if (companyCount === 0) {

@@ -11,16 +11,14 @@
  */
 export const FEATURE_FLAGS = {
   // Controls visibility and access to the Directory & Master Details Panel
-  DETAILS_PANEL_ENABLED: false,
-
-  // Allowed HSN codes when restricted to dropdown
-  ALLOWED_HSN_CODES: ['998513', '998514', '998519', '998515'],
+  DETAILS_PANEL_ENABLED: true,
 
   // Controls single-page invoice lock & maximum allowed line items
-  SINGLE_PAGE_INVOICE_LOCKED: true,
-  MAX_ITEMS_PER_INVOICE: 12,
+  SINGLE_PAGE_INVOICE_LOCKED: false,
+  MAX_ITEMS_PER_INVOICE: 50,
 
-  // Maximum character limit for product/service name & description
-  MAX_PRODUCT_NAME_LENGTH: 60
+  // Maximum character limit for product/service name & description (null = unlimited)
+  MAX_PRODUCT_NAME_LENGTH: null
 };
+
 

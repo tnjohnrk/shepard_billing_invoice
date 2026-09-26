@@ -288,26 +288,26 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                             <img
                               src={shepherdInvoiceLogo}
                               alt="Shepherd Enterprises"
-                              className="w-[78px] h-[78px] object-contain mx-auto block"
+                              className="w-[88px] h-[88px] object-contain mx-auto block"
                             />
-                            <div className="text-[8.5px] font-bold uppercase mt-1 text-slate-800 tracking-wider">
+                            <div className="text-[9px] font-bold uppercase mt-1 text-slate-800 tracking-wider">
                               SHEPHERD ENTERPRISES
                             </div>
-                            <div className="text-[8px] text-slate-600">
+                            <div className="text-[8.5px] text-slate-600">
                               {COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'icici'}` : '@icici'}
                             </div>
                           </td>
-                          <td className="w-[78%] align-middle text-center p-2.5">
-                            <h1 className="text-[21px] font-black uppercase tracking-wide text-blue-900 mb-0.5">
+                          <td className="w-[78%] align-middle text-center p-3">
+                            <h1 className="text-[24px] font-black uppercase tracking-wide text-blue-900 mb-0.5 leading-tight">
                               SHEPHERD ENTERPRISES PRIVATE LIMITED
                             </h1>
-                            <p className="text-[10px] text-slate-800 leading-tight uppercase mb-1">
-                              No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062
+                            <p className="text-[10.5px] text-slate-800 leading-tight uppercase mb-1">
+                              No.4 &amp; 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062
                             </p>
-                            <p className="text-[10.5px] font-bold text-slate-900 mb-0.5">
+                            <p className="text-[11px] font-bold text-slate-900 mb-0.5">
                               Cell: +91 9025812298 / +91 8438435681
                             </p>
-                            <p className="text-[10.5px] font-bold text-slate-900">
+                            <p className="text-[11px] font-bold text-slate-900">
                               Email: shepheredenterprisespvtltd@gmail.com
                             </p>
                           </td>
@@ -379,7 +379,21 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                             </div>
                             <div className="leading-tight">
                               <span className="font-bold">DATE OF SUPPLY: </span>
-                              <span>{fullData.date_of_supply || (isProforma ? fullData.proforma_date : fullData.invoice_date) || '-'}</span>
+                              <span className="font-medium">
+                                {(() => {
+                                  const from = (fullData.date_of_supply_from || fullData.date_of_supply || '').trim();
+                                  const to = (fullData.date_of_supply_to || fullData.date_of_supply_from || fullData.date_of_supply || '').trim();
+                                  const formatD = (d) => {
+                                    if (!d || d === '-') return '-';
+                                    const p = d.split('T')[0].split('-');
+                                    return p.length === 3 && p[0].length === 4 ? `${p[2]}/${p[1]}/${p[0]}` : d;
+                                  };
+                                  if (from && to) {
+                                    return from === to ? formatD(from) : `${formatD(from)} to ${formatD(to)}`;
+                                  }
+                                  return formatD(from || to || (isProforma ? fullData.proforma_date : fullData.invoice_date) || '-');
+                                })()}
+                              </span>
                             </div>
                             <div className="leading-tight">
                               <span className="font-bold">DELIVERY ADDRESS: </span>
@@ -430,7 +444,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                 )}
 
                   {/* 4. Line Items Table */}
-                  <table className="w-full border-collapse border-b-2 border-black text-left text-[10px] flex-1" style={{ tableLayout: 'fixed', height: '100%', display: 'table' }}>
+                  <table className="w-full border-collapse border-b-2 border-black text-left text-[10px]" style={{ tableLayout: 'fixed' }}>
                     <thead>
                       <tr className="bg-white border-b-2 border-black font-bold uppercase text-[9.5px]">
                         <th className="p-1.5 border-r-[1.5px] border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
@@ -440,13 +454,13 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                         <th className="p-1.5 text-right" style={{ width: '12%' }}>AMOUNT</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y-0" style={{ height: '100%' }}>
+                    <tbody className="divide-y-0">
                       {page.items.map((item, idx) => {
                         const isFirstOverallItem = page.isFirstPage && idx === 0;
                         return (
                           <tr key={idx} className="align-top border-b-[1.5px] border-black">
-                            <td className="p-1.5 border-r-[1.5px] border-black" style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
-                              <div className="font-bold uppercase text-slate-950 leading-tight text-[9.5px] whitespace-pre-wrap">
+                            <td className="p-1.5 border-r-[1.5px] border-black" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                              <div className="font-bold uppercase text-slate-950 leading-tight text-[10px] whitespace-pre-wrap">
                                 {item.description}
                               </div>
                               {isFirstOverallItem && (
@@ -466,25 +480,17 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 </div>
                               )}
                             </td>
-                            <td className="p-1.5 border-r-[1.5px] border-black text-center">{item.hsn_sac || '-'}</td>
-                            <td className="p-1.5 border-r-[1.5px] border-black text-center">{item.quantity}</td>
-                            <td className="p-1.5 border-r-[1.5px] border-black text-right">
+                            <td className="p-1.5 border-r-[1.5px] border-black text-center font-mono">{item.hsn_sac || '-'}</td>
+                            <td className="p-1.5 border-r-[1.5px] border-black text-center font-mono">{item.quantity}</td>
+                            <td className="p-1.5 border-r-[1.5px] border-black text-right font-mono">
                               {Number(item.rate).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
-                            <td className="p-1.5 text-right font-medium">
+                            <td className="p-1.5 text-right font-mono font-medium">
                               {Number(item.amount || (item.quantity * item.rate)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
                           </tr>
                         );
                       })}
-                      {/* Spacer Row to stretch table vertical border lines to bottom */}
-                      <tr className="table-spacer-row" style={{ height: '100%' }}>
-                        <td className="p-1.5 border-r-[1.5px] border-black"></td>
-                        <td className="p-1.5 border-r-[1.5px] border-black"></td>
-                        <td className="p-1.5 border-r-[1.5px] border-black"></td>
-                        <td className="p-1.5 border-r-[1.5px] border-black"></td>
-                        <td className="p-1.5"></td>
-                      </tr>
                       {/* Page-wise Subtotal Row (When invoice has more than 1 page) */}
                       {page.totalPages > 1 && (
                         <tr className="border-t-2 border-black bg-slate-50 font-bold text-[9.5px]">
@@ -496,7 +502,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                             )}
                             PAGE {page.pageNumber} SUB TOTAL:
                           </td>
-                          <td className="p-1.5 text-right font-bold text-[10px]">
+                          <td className="p-1.5 text-right font-bold text-[10px] font-mono">
                             {(page.items || []).reduce((sum, item) => sum + Number(item.amount || (item.quantity * item.rate) || 0), 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </td>
                         </tr>
@@ -539,7 +545,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                   return (
                                     <tr key={p.pageNumber} className="border-b-[1.5px] border-black text-slate-800 bg-slate-50/80 text-[9px]">
                                       <td className="p-1 text-left w-[65%]">PAGE {p.pageNumber} SUB TOTAL</td>
-                                      <td className="p-1 text-right w-[35%] font-medium">
+                                      <td className="p-1 text-right w-[35%] font-medium font-mono">
                                         {pSub.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
                                     </tr>
@@ -547,7 +553,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 })}
                                 <tr className="border-b-[1.5px] border-black font-bold">
                                   <td className="p-1 text-left w-[65%]">TOTAL AMOUNT BEFORE TAX</td>
-                                  <td className="p-1 text-right w-[35%] font-bold">
+                                  <td className="p-1 text-right w-[35%] font-bold font-mono">
                                     {fullData.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                   </td>
                                 </tr>
@@ -555,13 +561,13 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                   <>
                                     <tr className="border-b-[1.5px] border-black">
                                       <td className="p-1 text-left">ADD CGST: {totals.cgstRate}%</td>
-                                      <td className="p-1 text-right font-medium">
+                                      <td className="p-1 text-right font-medium font-mono">
                                         {totals.cgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
                                     </tr>
                                     <tr className="border-b-[1.5px] border-black">
                                       <td className="p-1 text-left">ADD SGST: {totals.sgstRate}%</td>
-                                      <td className="p-1 text-right font-medium">
+                                      <td className="p-1 text-right font-medium font-mono">
                                         {totals.sgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
                                     </tr>
@@ -569,7 +575,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 ) : (
                                   <tr className="border-b-[1.5px] border-black">
                                     <td className="p-1 text-left">ADD IGST: {totals.igstRate}%</td>
-                                    <td className="p-1 text-right font-medium">
+                                    <td className="p-1 text-right font-medium font-mono">
                                       {totals.igstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                     </td>
                                   </tr>
@@ -577,14 +583,14 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 {fullData.round_off !== 0 && fullData.round_off != null && (
                                   <tr className="border-b-[1.5px] border-black">
                                     <td className="p-1 text-left">ROUND OFF</td>
-                                    <td className="p-1 text-right font-medium">
+                                    <td className="p-1 text-right font-medium font-mono">
                                       {fullData.round_off > 0 ? '+' : ''}{Number(fullData.round_off).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                     </td>
                                   </tr>
                                 )}
                                 <tr className="bg-slate-50 font-bold text-[10px]">
                                   <td className="p-1 text-left">TOTAL AMOUNT AFTER TAX:</td>
-                                  <td className="p-1 text-right">
+                                  <td className="p-1 text-right font-mono">
                                     {totals.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                   </td>
                                 </tr>
@@ -622,7 +628,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                             </div>
                             <div className="h-12"></div>
                             <div className="font-bold text-[10px] text-right pr-4 text-slate-900">
-                              Proprietor
+                              Director
                             </div>
                           </td>
                         </tr>

@@ -88,20 +88,20 @@ body {
   width: 22%;
   vertical-align: middle;
   text-align: center;
-  padding: 6px;
+  padding: 6px 8px;
   border-right: 1.5px solid #000;
 }
 
 .header-logo-img {
-  width: 78px;
-  height: 78px;
+  width: 88px;
+  height: 88px;
   object-fit: contain;
   display: block;
   margin: 0 auto;
 }
 
 .company-sub-brand {
-  font-size: 8.5px;
+  font-size: 9px;
   font-weight: bold;
   text-transform: uppercase;
   margin-top: 2px;
@@ -110,7 +110,7 @@ body {
 }
 
 .company-upi-tag {
-  font-size: 8px;
+  font-size: 8.5px;
   color: #475569;
 }
 
@@ -118,35 +118,36 @@ body {
   width: 78%;
   vertical-align: middle;
   text-align: center;
-  padding: 6px 12px;
+  padding: 8px 14px;
 }
 
 .company-name {
-  font-size: 21px;
-  font-weight: 800;
+  font-size: 24px;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   color: #1e3a8a;
   margin-bottom: 3px;
+  line-height: 1.15;
 }
 
 .company-address {
-  font-size: 9.5px;
+  font-size: 10.5px;
   color: #1f2937;
   margin-bottom: 3px;
-  line-height: 1.3;
+  line-height: 1.35;
   text-transform: uppercase;
 }
 
 .company-cell {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: bold;
   color: #0f172a;
   margin-bottom: 2px;
 }
 
 .company-email {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: bold;
   color: #0f172a;
 }
@@ -261,58 +262,36 @@ body {
 .items-table {
   width: 100%;
   border-collapse: collapse;
-  flex: 1 1 auto;
-  height: 100%;
   table-layout: fixed;
   border-bottom: 2px solid #000;
-}
-
-.items-table tbody {
-  height: 100%;
 }
 
 .items-table th {
   border-right: 1.5px solid #000;
   border-bottom: 2px solid #000;
   background: #ffffff;
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: bold;
   text-align: center;
-  padding: 4px 6px;
-  height: 22px;
+  padding: 5px 6px;
+  height: 24px;
 }
 
 .items-table td {
   border-right: 1.5px solid #000;
   border-bottom: none;
   border-top: none;
-  padding: 4px 6px;
+  padding: 5px 6px;
   font-size: 10px;
   vertical-align: top;
 }
 
 .item-data-row td {
   border-bottom: 1.5px solid #000;
-  padding: 5px 6px;
+  padding: 6px 6px;
 }
 
 .items-table td:last-child {
-  border-right: none;
-}
-
-.items-table tr.table-spacer-row {
-  height: 100%;
-}
-
-.items-table tr.table-spacer-row td {
-  height: 100%;
-  padding: 0;
-  border-right: 1.5px solid #000;
-  border-bottom: none;
-  border-top: none;
-}
-
-.items-table tr.table-spacer-row td:last-child {
   border-right: none;
 }
 
@@ -322,7 +301,7 @@ body {
   border-bottom: none !important;
   border-right: none !important;
   border-left: none !important;
-  padding: 5px 6px !important;
+  padding: 6px 8px !important;
   font-size: 10px !important;
   font-weight: normal !important;
   text-align: left !important;
@@ -336,6 +315,7 @@ body {
   text-align: left;
   word-break: break-word;
   overflow-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .col-hsn,
@@ -370,8 +350,8 @@ body {
 .items-table td:nth-child(1) {
   font-weight: bold;
   text-transform: uppercase;
-  font-size: 9.5px;
-  line-height: 1.3;
+  font-size: 10px;
+  line-height: 1.35;
   word-break: break-word;
   overflow-wrap: break-word;
   text-align: left;

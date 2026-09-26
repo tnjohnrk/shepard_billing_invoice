@@ -40,7 +40,7 @@ export function InvoiceDetailsForm({ formData, onChange, errors = {}, isProforma
 
       <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 space-y-4 shadow-none">
         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Transportation & Supply Information</h4>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Input
             label="Transportation Mode"
             placeholder="e.g. By Road, Air, Courier"
@@ -56,11 +56,27 @@ export function InvoiceDetailsForm({ formData, onChange, errors = {}, isProforma
           />
 
           <Input
-            label="Date of Supply"
+            label="Date of Supply (From) *"
             type="date"
-            value={formData.date_of_supply || ''}
-            onChange={(e) => onChange('date_of_supply', e.target.value)}
-            error={errors?.date_of_supply}
+            value={formData.date_of_supply_from || formData.date_of_supply || ''}
+            onChange={(e) => {
+              const val = e.target.value;
+              onChange('date_of_supply_from', val);
+              onChange('date_of_supply', val);
+              if (!formData.date_of_supply_to) {
+                onChange('date_of_supply_to', val);
+              }
+            }}
+            error={errors?.date_of_supply_from || errors?.date_of_supply}
+            required
+          />
+
+          <Input
+            label="Date of Supply (To) *"
+            type="date"
+            value={formData.date_of_supply_to || formData.date_of_supply_from || formData.date_of_supply || ''}
+            onChange={(e) => onChange('date_of_supply_to', e.target.value)}
+            error={errors?.date_of_supply_to}
             required
           />
         </div>

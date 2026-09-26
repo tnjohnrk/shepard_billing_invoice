@@ -233,9 +233,8 @@ export function ProductDetailsTab({ toast }) {
               <Input
                 label="Product / Service Description *"
                 placeholder="e.g. Industrial Supply / Service Item"
-                maxLength={FEATURE_FLAGS.MAX_PRODUCT_NAME_LENGTH || 60}
                 value={form.name}
-                onChange={(e) => setForm(prev => ({ ...prev, name: (e.target.value || '').slice(0, FEATURE_FLAGS.MAX_PRODUCT_NAME_LENGTH || 60) }))}
+                onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
                 error={errors.name}
                 autoFocus
               />

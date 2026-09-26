@@ -6,14 +6,14 @@ export function createProforma(proformaData, items) {
     const res = db.prepare(`
       INSERT INTO proformas (
         proforma_number, proforma_date, status,
-        transportation_mode, vehicle_number, date_of_supply, delivery_address,
+        transportation_mode, vehicle_number, date_of_supply, date_of_supply_from, date_of_supply_to, delivery_address,
         buyer_name, buyer_address, customer_gstin, customer_state, customer_state_code,
         so_po_number, so_po_date, gemc_number, additional_reference,
         subtotal, cgst_rate, cgst_amount, sgst_rate, sgst_amount, igst_rate, igst_amount,
         grand_total, amount_in_words, notes, is_deleted
       ) VALUES (
         @proforma_number, @proforma_date, @status,
-        @transportation_mode, @vehicle_number, @date_of_supply, @delivery_address,
+        @transportation_mode, @vehicle_number, @date_of_supply, @date_of_supply_from, @date_of_supply_to, @delivery_address,
         @buyer_name, @buyer_address, @customer_gstin, @customer_state, @customer_state_code,
         @so_po_number, @so_po_date, @gemc_number, @additional_reference,
         @subtotal, @cgst_rate, @cgst_amount, @sgst_rate, @sgst_amount, @igst_rate, @igst_amount,
@@ -21,6 +21,8 @@ export function createProforma(proformaData, items) {
       )
     `).run({
       ...proformaData,
+      date_of_supply_from: proformaData.date_of_supply_from || proformaData.date_of_supply || null,
+      date_of_supply_to: proformaData.date_of_supply_to || proformaData.date_of_supply_from || proformaData.date_of_supply || null,
       status: proformaData.status || 'PENDING'
     });
 
