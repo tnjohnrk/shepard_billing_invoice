@@ -7,8 +7,8 @@ export function InvoiceStepper({ currentStep, setStep, steps }) {
   const isLight = theme === 'light';
 
   return (
-    <nav aria-label="Invoice Creation Steps" className="w-full bg-white dark:bg-slate-900 p-3 rounded-2xl border-2 border-slate-300 dark:border-slate-700 mb-6 select-none shadow-none">
-      <ol className="flex items-center justify-between overflow-x-auto gap-2 py-0.5 scrollbar-thin">
+    <nav aria-label="Invoice Creation Steps" className="w-full bg-white dark:bg-slate-900 p-2.5 rounded-2xl border-2 border-slate-300 dark:border-slate-700 mb-5 select-none shadow-none overflow-hidden">
+      <ol className="flex items-center justify-between overflow-x-auto gap-1.5 py-0.5 no-scrollbar">
         {steps.map((step, idx) => {
           const stepNum = idx + 1;
           const isCompleted = stepNum < currentStep;
@@ -16,13 +16,13 @@ export function InvoiceStepper({ currentStep, setStep, steps }) {
           const canNavigate = stepNum <= currentStep || (currentStep >= 7 && stepNum === 8);
 
           return (
-            <li key={step.id} className="flex items-center gap-2 shrink-0">
+            <li key={step.id} className="flex items-center gap-1.5 shrink-0">
               <button
                 type="button"
                 onClick={() => canNavigate && setStep(stepNum)}
                 disabled={!canNavigate}
                 aria-current={isCurrent ? 'step' : undefined}
-                className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer shadow-none min-h-[38px] ${
+                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer shadow-none min-h-[36px] ${
                   isCurrent
                     ? 'bg-emerald-600 text-white border-2 border-emerald-500'
                     : isCompleted
