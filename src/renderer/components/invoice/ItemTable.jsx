@@ -42,7 +42,9 @@ export function ItemTable({ items = [], setItems }) {
             <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-300 dark:border-slate-700 uppercase font-bold text-slate-700 dark:text-slate-300">
               <th className="px-3 py-3 text-center border-r border-slate-300 dark:border-slate-700" style={{ width: '5%' }}>#</th>
               <th className="px-3 py-3 border-r border-slate-300 dark:border-slate-700" style={{ width: '40%' }}>Description</th>
-              <th className="px-3 py-3 text-left border-r border-slate-300 dark:border-slate-700" style={{ width: '15%' }}>HSN / SAC</th>
+              <th className="px-3 py-3 text-left border-r border-slate-300 dark:border-slate-700" style={{ width: '15%' }}>
+                <span>HSN / SAC</span> <span className="text-rose-500">*</span>
+              </th>
               <th className="px-3 py-3 text-right border-r border-slate-300 dark:border-slate-700" style={{ width: '12%' }}>Qty</th>
               <th className="px-3 py-3 text-right border-r border-slate-300 dark:border-slate-700" style={{ width: '13%' }}>Rate (₹)</th>
               <th className="px-3 py-3 text-right border-r border-slate-300 dark:border-slate-700" style={{ width: '15%' }}>Amount (₹)</th>

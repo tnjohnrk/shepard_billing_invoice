@@ -29,15 +29,15 @@ export function ItemRow({
         />
       </td>
 
-      {/* 3. HSN / SAC (Pure Manual Entry, Mandatory Required, No Suggestions) */}
+      {/* 3. HSN / SAC (Pure Manual Entry, Strictly Mandatory) */}
       <td className="px-3 py-3 border-r border-slate-200 dark:border-slate-800">
         <input
           type="text"
           placeholder="HSN / SAC *"
-          title="Enter HSN/SAC code (Mandatory)"
-          className={`w-full bg-slate-50 dark:bg-slate-800 border rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-left placeholder-slate-400 focus:outline-none shadow-none font-mono font-bold ${
+          title="HSN / SAC Code is Mandatory"
+          className={`w-full bg-slate-50 dark:bg-slate-800 border rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-left placeholder-slate-400 focus:outline-none shadow-none font-mono font-bold transition-colors ${
             !item.hsn_sac || !String(item.hsn_sac).trim()
-              ? 'border-rose-400 dark:border-rose-600 focus:border-rose-500 bg-rose-50/20' 
+              ? 'border-rose-500 bg-rose-50/40 dark:bg-rose-950/30 ring-1 ring-rose-500/20 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/40' 
               : 'border-slate-300 dark:border-slate-700 focus:border-sky-500'
           }`}
           value={item.hsn_sac || ''}
@@ -47,8 +47,8 @@ export function ItemRow({
 
         {/* Missing HSN indicator */}
         {(!item.hsn_sac || !String(item.hsn_sac).trim()) && (
-          <div className="text-[9px] text-rose-500 font-semibold mt-0.5 text-left pl-0.5">
-            Required *
+          <div className="text-[10px] text-rose-600 dark:text-rose-400 font-bold mt-1 text-left flex items-center gap-1">
+            <span>* Mandatory</span>
           </div>
         )}
       </td>
