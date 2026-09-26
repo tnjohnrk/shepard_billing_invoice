@@ -64,7 +64,7 @@ function renderClientInvoiceHtml(data) {
     </tr>
   ` : '';
 
-  const upiHandle = COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'icici'}` : '@icici';
+  const upiId = COMPANY_CONFIG.upi_id || 'msshepherdenterprisesprivatelimited.eazypay@icici';
   const deliveryAddress = data.delivery_address || data.buyer_address || '';
   const pages = paginateInvoiceItems(data.items || [], data);
 
@@ -87,7 +87,7 @@ function renderClientInvoiceHtml(data) {
           <td style="width: 22%; vertical-align: middle; text-align: center; border-right: 1.5px solid #000; padding: 6px 8px;">
             <img src="${shepherdInvoiceLogo}" alt="Logo" style="width: 88px; height: 88px; object-fit: contain; display: block; margin: 0 auto;" />
             <div style="font-size: 9px; font-weight: bold; text-transform: uppercase; margin-top: 2px; color: #1e293b; letter-spacing: 0.5px;">SHEPHERD ENTERPRISES</div>
-            <div style="font-size: 8.5px; color: #475569;">${upiHandle}</div>
+            <div style="font-size: 7.5px; font-family: monospace; font-weight: 600; color: #334155; word-break: break-all; line-height: 1.25; margin-top: 3px; max-width: 145px; margin-left: auto; margin-right: auto;">${upiId}</div>
           </td>
           <td style="width: 78%; vertical-align: middle; text-align: center; padding: 8px 14px;">
             <div style="font-size: 24px; font-weight: 900; text-transform: uppercase; color: #1e3a8a; margin-bottom: 3px; line-height: 1.15; letter-spacing: 0.5px;">${COMPANY_CONFIG.name}</div>

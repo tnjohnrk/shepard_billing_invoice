@@ -30,7 +30,7 @@ export function renderInvoiceHtml(invoiceData) {
     logoHtml = `<img src="data:image/png;base64,${logoBase64}" alt="Shepherd Enterprises" class="header-logo-img" />`;
   }
 
-  const upiTag = COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'icici'}` : '@icici';
+  const upiId = COMPANY_CONFIG.upi_id || 'msshepherdenterprisesprivatelimited.eazypay@icici';
   const deliveryAddress = invoiceData.delivery_address || invoiceData.buyer_address || '-';
 
   // Build reference block string for line items (S.O. No, GEMC No, Ref)
@@ -114,7 +114,7 @@ export function renderInvoiceHtml(invoiceData) {
             <td class="header-left-col">
               ${logoHtml}
               <div class="company-sub-brand">SHEPHERD ENTERPRISES</div>
-              <div class="company-upi-tag">${upiTag}</div>
+              <div class="company-upi-tag">${escapeHtml(upiId)}</div>
             </td>
             <td class="header-center-col">
               <div class="company-name">${escapeHtml(COMPANY_CONFIG.name)}</div>

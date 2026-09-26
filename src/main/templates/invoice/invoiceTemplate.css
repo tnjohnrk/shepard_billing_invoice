@@ -110,8 +110,16 @@ body {
 }
 
 .company-upi-tag {
-  font-size: 8.5px;
-  color: #475569;
+  font-size: 7.5px;
+  font-family: monospace;
+  font-weight: 600;
+  color: #334155;
+  word-break: break-all;
+  line-height: 1.25;
+  margin-top: 3px;
+  max-width: 145px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .header-center-col {

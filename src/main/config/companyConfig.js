@@ -10,7 +10,7 @@ export const COMPANY_CONFIG = {
   account_number: '404205000920',
   ifsc_code: 'ICIC0004042',
   branch_name: 'Ambattur - Officer Colony',
-  upi_id: 'shepherd@icici',
+  upi_id: 'msshepherdenterprisesprivatelimited.eazypay@icici',
   backup_email: 'tnjohnrk@gmail.com'
 };
 

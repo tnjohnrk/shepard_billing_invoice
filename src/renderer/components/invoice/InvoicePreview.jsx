@@ -293,8 +293,8 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                             <div className="text-[9px] font-bold uppercase mt-1 text-slate-800 tracking-wider">
                               SHEPHERD ENTERPRISES
                             </div>
-                            <div className="text-[8.5px] text-slate-600">
-                              {COMPANY_CONFIG.upi_id ? `@${COMPANY_CONFIG.upi_id.split('@')[1] || 'icici'}` : '@icici'}
+                            <div className="text-[7.5px] font-mono font-semibold text-slate-700 break-all leading-tight mt-1 max-w-[140px] mx-auto">
+                              {COMPANY_CONFIG.upi_id || 'msshepherdenterprisesprivatelimited.eazypay@icici'}
                             </div>
                           </td>
                           <td className="w-[78%] align-middle text-center p-3">
