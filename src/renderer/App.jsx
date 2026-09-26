@@ -232,7 +232,7 @@ export default function App() {
 
         {activeTab === 'reports' && <Reports toast={showToast} />}
 
-        {activeTab === 'settings' && <Settings toast={showToast} />}
+        {activeTab === 'settings' && <Settings toast={showToast} licenseStatus={licenseStatus} />}
       </AppLayout>
 
       {/* Trial Expired Fullscreen Lockdown Overlay (Hides and locks everything when trial ends) */}
