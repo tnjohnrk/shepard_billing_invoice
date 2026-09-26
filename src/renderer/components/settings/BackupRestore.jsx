@@ -121,7 +121,7 @@ export function BackupRestore({ toast }) {
 
   const handleSendQueuedEmails = async () => {
     if (!backupEmail || !smtpUser || !smtpPass) {
-      toast('error', 'Please fill in Receiver Email, Sender Email, and App Password first.');
+      toast('error', 'Please fill in Receiver Email, Sender Email, and 16-character App Password first.');
       return;
     }
 
@@ -130,34 +130,43 @@ export function BackupRestore({ toast }) {
       return;
     }
 
+    const batchSize = 10;
+    const batchAttempt = Math.min(queueSummary.pendingCount, batchSize);
     setIsSendingQueue(true);
+
     try {
       // Save credentials first
       await ipcClient.setSetting('backup_email', backupEmail);
-      await ipcClient.setSetting('smtp_host', smtpHost);
-      await ipcClient.setSetting('smtp_port', smtpPort);
+      await ipcClient.setSetting('smtp_host', smtpHost || 'smtp.gmail.com');
+      await ipcClient.setSetting('smtp_port', smtpPort || '587');
       await ipcClient.setSetting('smtp_user', smtpUser);
       await ipcClient.setSetting('smtp_pass', smtpPass);
 
       const res = await ipcClient.sendQueuedEmailBackups({
         backup_email: backupEmail,
-        smtp_host: smtpHost,
-        smtp_port: smtpPort,
+        smtp_host: smtpHost || 'smtp.gmail.com',
+        smtp_port: smtpPort || '587',
         smtp_user: smtpUser,
         smtp_pass: smtpPass
-      });
+      }, batchSize);
 
       if (res && res.success) {
-        toast('success', res.message || `Successfully sent ${res.sent} queued backup(s) to ${backupEmail}!`);
+        const remaining = res.remainingPending !== undefined ? res.remainingPending : Math.max(0, queueSummary.pendingCount - (res.sent || batchAttempt));
+        if (remaining > 0) {
+          toast('success', `Batch sent! Dispatched ${res.sent || batchAttempt} invoice PDF(s) to ${backupEmail}. ${remaining} invoice(s) remaining in queue.`);
+        } else {
+          toast('success', `All done! Dispatched ${res.sent || batchAttempt} invoice PDF(s) to ${backupEmail}. Queue is now completely clear.`);
+        }
       } else if (res && res.sent > 0) {
-        toast('warning', res.message || `Sent ${res.sent} backups, but ${res.failed} failed.`);
+        toast('warning', `Dispatched ${res.sent} invoice(s), but ${res.failed || 1} failed. ${res.errors?.[0] || ''}`);
       } else {
-        toast('error', res?.errors?.[0] || res?.message || 'Failed to send queued emails. Check SMTP connection.');
+        const errorDetail = res?.errors?.[0] || res?.message || 'Failed to dispatch email batch. Please verify your Google App Password and connection.';
+        toast('error', errorDetail);
       }
 
       await loadQueueSummary();
     } catch (err) {
-      toast('error', err.message || 'Failed to dispatch email queue.');
+      toast('error', err.message || 'Failed to dispatch email queue. Please check your credentials.');
     } finally {
       setIsSendingQueue(false);
     }
@@ -206,6 +215,8 @@ export function BackupRestore({ toast }) {
       setIsRestoring(false);
     }
   };
+
+  const nextBatchCount = Math.min(queueSummary.pendingCount, 10);
 
   return (
     <div className="space-y-6">
@@ -290,7 +301,7 @@ export function BackupRestore({ toast }) {
                 {queueSummary.pendingCount > 0 ? (
                   <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
                     <Clock className="w-3.5 h-3.5" />
-                    {queueSummary.pendingCount} Pending Invoice PDF{queueSummary.pendingCount > 1 ? 's' : ''}
+                    {queueSummary.pendingCount} Queued Invoice PDF{queueSummary.pendingCount > 1 ? 's' : ''}
                   </span>
                 ) : (
                   <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
@@ -300,7 +311,7 @@ export function BackupRestore({ toast }) {
                 )}
               </div>
               <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                Every invoice and proforma saved is safely queued locally (works offline). Enter your credentials below and click <strong>Send All Queued Invoices</strong> to dispatch official PDF copies directly to your receiver email address.
+                Every saved invoice and proforma is queued for email backup. Dispatches occur in batches of <strong>10 invoices at a time</strong> for optimal Gmail reliability.
               </p>
             </div>
           </div>
@@ -317,12 +328,13 @@ export function BackupRestore({ toast }) {
           </Button>
         </div>
 
-        {/* Queue Metrics Dashboard */}
+        {/* 3 Queue Metrics Dashboard Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between shadow-none">
             <div>
-              <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pending PDFs in Queue</div>
+              <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Queued in System</div>
               <div className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 mt-0.5">{queueSummary.pendingCount}</div>
+              <div className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5">Awaiting transmission</div>
             </div>
             <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
               <Clock className="w-5 h-5" />
@@ -331,32 +343,84 @@ export function BackupRestore({ toast }) {
 
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between shadow-none">
             <div>
-              <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Successfully Dispatched</div>
-              <div className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 mt-0.5">{queueSummary.sentCount}</div>
+              <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Next Batch Ready</div>
+              <div className="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-0.5">{nextBatchCount} <span className="text-xs font-medium text-slate-500">/ 10 max</span></div>
+              <div className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5">Ready for next click</div>
             </div>
-            <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-              <Check className="w-5 h-5" />
+            <div className="p-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
+              <Send className="w-5 h-5" />
             </div>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between shadow-none">
             <div>
-              <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Last Sent Timestamp</div>
-              <div className="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-1">
-                {queueSummary.lastSentAt ? new Date(queueSummary.lastSentAt).toLocaleString() : 'No emails sent yet'}
+              <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Successfully Dispatched</div>
+              <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-0.5">{queueSummary.sentCount}</div>
+              <div className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5">
+                {queueSummary.lastSentAt ? `Last: ${new Date(queueSummary.lastSentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'No emails sent yet'}
               </div>
             </div>
-            <div className="p-2.5 rounded-lg bg-cyan-50 dark:bg-cyan-950 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800">
-              <Mail className="w-5 h-5" />
+            <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+              <Check className="w-5 h-5" />
             </div>
           </div>
         </div>
 
-        {/* Credentials Form */}
+        {/* 4-Step Google App Password Guide */}
+        <div className="p-4 bg-gradient-to-r from-sky-50 to-indigo-50 dark:from-slate-800 dark:to-slate-850 rounded-xl border border-sky-200 dark:border-slate-700 space-y-3 shadow-none">
+          <div className="flex items-center gap-2 text-xs font-bold text-sky-900 dark:text-sky-200">
+            <ShieldCheck className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+            <span>How to get your 16-character Google App Password (Required for Gmail)</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-sky-100 dark:border-slate-700 space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-sky-700 dark:text-sky-300">
+                <span className="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center text-[10px] font-bold">1</span>
+                <span>Open Google Security</span>
+              </div>
+              <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
+                Go to <strong className="text-slate-800 dark:text-slate-200">myaccount.google.com</strong> and click <strong className="text-slate-800 dark:text-slate-200">Security</strong>.
+              </p>
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-sky-100 dark:border-slate-700 space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-sky-700 dark:text-sky-300">
+                <span className="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center text-[10px] font-bold">2</span>
+                <span>2-Step Verification</span>
+              </div>
+              <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
+                Ensure <strong className="text-slate-800 dark:text-slate-200">2-Step Verification</strong> is switched <strong className="text-emerald-600 dark:text-emerald-400">ON</strong>.
+              </p>
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-sky-100 dark:border-slate-700 space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-sky-700 dark:text-sky-300">
+                <span className="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center text-[10px] font-bold">3</span>
+                <span>Search App Passwords</span>
+              </div>
+              <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
+                Type <strong className="text-slate-800 dark:text-slate-200">"App Passwords"</strong> in the search bar at top of Google Account.
+              </p>
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-sky-100 dark:border-slate-700 space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                <span className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-[10px] font-bold">4</span>
+                <span>Generate &amp; Paste</span>
+              </div>
+              <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
+                Name app <strong className="text-slate-800 dark:text-slate-200">"Shepherd Billing"</strong>, copy the 16-character code, and paste below.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Credentials Form (Cleaned: Host & Port hidden from view) */}
         <form onSubmit={handleSaveEmailSettings} className="space-y-4 pt-1">
           <Input
             label="Receiver Email Address (Destination for Invoice PDFs)"
-            placeholder="e.g. tnjohnrk@gmail.com"
+            placeholder="e.g. recipient-backup@gmail.com"
             value={backupEmail}
             onChange={(e) => setBackupEmail(e.target.value)}
             required
@@ -364,7 +428,7 @@ export function BackupRestore({ toast }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
-              label="Sender Email Address (SMTP Username / Google Account)"
+              label="Sender Email Address (Your Gmail Account)"
               placeholder="e.g. your-company@gmail.com"
               value={smtpUser}
               onChange={(e) => setSmtpUser(e.target.value)}
@@ -373,7 +437,7 @@ export function BackupRestore({ toast }) {
 
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
-                Google App Password (16 characters) / SMTP Password
+                Google App Password (16 characters)
               </label>
               <div className="relative">
                 <input
@@ -395,45 +459,23 @@ export function BackupRestore({ toast }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              label="SMTP Server Host"
-              placeholder="e.g. smtp.gmail.com"
-              value={smtpHost}
-              onChange={(e) => setSmtpHost(e.target.value)}
-            />
-
-            <Input
-              label="SMTP Port"
-              placeholder="e.g. 587 (TLS) or 465 (SSL)"
-              value={smtpPort}
-              onChange={(e) => setSmtpPort(e.target.value)}
-            />
-          </div>
-
-          {/* Google App Password Guide Note */}
-          <div className="p-3.5 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] text-slate-700 dark:text-slate-300 space-y-1.5 shadow-none">
-            <div className="font-bold text-slate-900 dark:text-slate-200 flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span>Gmail Setup Note:</span>
-            </div>
-            <div>• Use <strong>smtp.gmail.com</strong> on port <strong>587</strong> (TLS).</div>
-            <div>• Google requires a <strong>16-character App Password</strong> (not your regular account password).</div>
-            <div>• Generate one in: <em>Google Account &gt; Security &gt; 2-Step Verification &gt; App Passwords</em>.</div>
-          </div>
-
-          {/* Action Button Strip */}
+          {/* Action Button Strip with 10-Invoice Batch Dispatch */}
           <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
             <div className="flex flex-wrap items-center gap-3">
-              {/* Primary Send Button */}
+              {/* Batch Send Button */}
               <Button 
                 type="button" 
                 variant="primary" 
                 icon={Send} 
                 onClick={handleSendQueuedEmails} 
                 isLoading={isSendingQueue}
+                disabled={queueSummary.pendingCount === 0}
               >
-                Send All Queued Invoices ({queueSummary.pendingCount})
+                {queueSummary.pendingCount > 10 
+                  ? `Send Next Batch (10 Invoices)` 
+                  : queueSummary.pendingCount > 0 
+                    ? `Send Batch (${queueSummary.pendingCount} Invoice${queueSummary.pendingCount > 1 ? 's' : ''})`
+                    : 'Queue All Clear'}
               </Button>
 
               <Button 
@@ -443,7 +485,7 @@ export function BackupRestore({ toast }) {
                 onClick={handleTestEmail} 
                 isLoading={isTestingEmail}
               >
-                Test SMTP Connection
+                Test Connection
               </Button>
 
               <Button 
@@ -460,7 +502,7 @@ export function BackupRestore({ toast }) {
               <button
                 type="button"
                 onClick={handleClearSent}
-                className="text-[11px] text-slate-500 hover:text-rose-400 flex items-center gap-1 transition-colors px-2 py-1"
+                className="text-[11px] text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 flex items-center gap-1 transition-colors px-2 py-1 cursor-pointer"
                 title="Clear sent queue history"
               >
                 <Trash2 className="w-3.5 h-3.5" />

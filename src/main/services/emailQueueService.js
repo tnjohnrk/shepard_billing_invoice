@@ -1,7 +1,8 @@
 import fs from 'fs';
 import { 
   enqueueEmail, 
-  getPendingEmails, 
+  getPendingEmails,
+  getPendingEmailsBatch,
   updateEmailQueueStatus, 
   getEmailQueueSummary as repoGetSummary,
   clearSentEmails as repoClearSent
@@ -35,14 +36,20 @@ export function clearSentEmailQueue() {
   return repoClearSent();
 }
 
-export async function processPendingEmailQueue(overrideSettings = {}) {
-  const pending = getPendingEmails();
-  if (pending.length === 0) {
+export async function processPendingEmailQueue(overrideSettings = {}, batchSize = 10) {
+  const safeLimit = Math.max(1, parseInt(batchSize, 10) || 10);
+  const pending = getPendingEmailsBatch(safeLimit);
+
+  if (!pending || pending.length === 0) {
+    const summary = repoGetSummary();
     return {
       success: true,
+      batchSize: safeLimit,
       total: 0,
       sent: 0,
       failed: 0,
+      remainingPending: summary.pendingCount,
+      totalSentOverall: summary.sentCount,
       message: 'No pending backup emails in queue.'
     };
   }
@@ -96,24 +103,30 @@ export async function processPendingEmailQueue(overrideSettings = {}) {
       sentCount++;
     } catch (err) {
       failedCount++;
-      errors.push(`Queue #${item.id}: ${err.message}`);
+      const userFriendlyMsg = err.message || 'Transmission failed.';
+      errors.push(userFriendlyMsg);
       updateEmailQueueStatus(item.id, {
         status: 'FAILED',
-        error_message: err.message
+        error_message: userFriendlyMsg
       });
     }
   }
 
+  const updatedSummary = repoGetSummary();
+
   return {
     success: failedCount === 0,
-    total: pending.length,
+    batchSize: safeLimit,
+    batchAttempted: pending.length,
     sent: sentCount,
     failed: failedCount,
+    remainingPending: updatedSummary.pendingCount,
+    totalSentOverall: updatedSummary.sentCount,
     recipient: activeRecipient,
     errors,
     message: failedCount === 0 
-      ? `Successfully sent ${sentCount} invoice PDF(s) to ${activeRecipient}.` 
-      : `Sent ${sentCount} invoice(s), but ${failedCount} failed.`
+      ? `Successfully sent batch of ${sentCount} invoice(s) to ${activeRecipient}.` 
+      : `Dispatched ${sentCount} invoice(s), but ${failedCount} encountered errors.`
   };
 }
 

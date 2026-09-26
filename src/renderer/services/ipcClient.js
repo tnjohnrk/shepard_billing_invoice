@@ -1418,22 +1418,37 @@ export const ipcClient = {
     };
   },
 
-  sendQueuedEmailBackups: async (settings) => {
+  sendQueuedEmailBackups: async (settings, batchSize = 10) => {
     if (isElectron && window.electronAPI?.sendQueuedEmailBackups) {
-      return window.electronAPI.sendQueuedEmailBackups(settings);
+      return window.electronAPI.sendQueuedEmailBackups(settings, batchSize);
     }
+    const limit = Math.max(1, parseInt(batchSize, 10) || 10);
     const localQueue = JSON.parse(localStorage.getItem('shepherd_email_queue') || '[]');
-    const count = localQueue.filter(q => q.status !== 'SENT').length;
-    localQueue.forEach(q => { q.status = 'SENT'; q.sent_at = new Date().toISOString(); });
+    const pendingItems = localQueue.filter(q => q.status !== 'SENT');
+    const batch = pendingItems.slice(0, limit);
+    const batchCount = batch.length;
+    
+    batch.forEach(q => {
+      q.status = 'SENT';
+      q.sent_at = new Date().toISOString();
+    });
+    
     localStorage.setItem('shepherd_email_queue', JSON.stringify(localQueue));
     localStorage.setItem('shepherd_email_last_sent', new Date().toISOString());
+    
+    const remainingCount = localQueue.filter(q => q.status !== 'SENT').length;
+    const sentCount = localQueue.filter(q => q.status === 'SENT').length;
+
     return {
       success: true,
-      total: count,
-      sent: count,
+      batchSize: limit,
+      batchAttempted: batchCount,
+      sent: batchCount,
       failed: 0,
+      remainingPending: remainingCount,
+      totalSentOverall: sentCount,
       recipient: settings?.backup_email || 'test@example.com',
-      message: `Simulated browser dispatch: sent ${count} queued email(s).`
+      message: `Simulated batch dispatch: sent ${batchCount} invoice PDF(s) to ${settings?.backup_email || 'recipient'}.`
     };
   },
 

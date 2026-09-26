@@ -85,7 +85,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   downloadUpdate: () => ipcRenderer.invoke('app:downloadUpdate'),
   retryEmailQueue: () => ipcRenderer.invoke('app:retryEmailQueue'),
   getEmailQueueSummary: () => ipcRenderer.invoke('emailQueue:getSummary'),
-  sendQueuedEmailBackups: (settings) => ipcRenderer.invoke('emailQueue:sendAll', settings),
+  sendQueuedEmailBackups: (settings, batchSize = 10) => ipcRenderer.invoke('emailQueue:sendAll', settings, batchSize),
   clearSentEmailQueue: () => ipcRenderer.invoke('emailQueue:clearSent'),
 
   // Listeners

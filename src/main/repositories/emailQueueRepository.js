@@ -18,6 +18,17 @@ export function getPendingEmails() {
   `).all();
 }
 
+export function getPendingEmailsBatch(limit = 10) {
+  const db = getDatabase();
+  const safeLimit = Math.max(1, parseInt(limit, 10) || 10);
+  return db.prepare(`
+    SELECT * FROM email_queue 
+    WHERE status IN ('PENDING', 'FAILED')
+    ORDER BY created_at ASC
+    LIMIT ?
+  `).all(safeLimit);
+}
+
 export function getEmailQueueSummary() {
   const db = getDatabase();
   const pendingRow = db.prepare(`

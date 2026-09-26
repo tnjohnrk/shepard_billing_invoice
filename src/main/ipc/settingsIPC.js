@@ -25,8 +25,8 @@ export function registerSettingsIPC() {
     return getEmailQueueStatus();
   });
 
-  ipcMain.handle('emailQueue:sendAll', async (_, settings) => {
-    return await processPendingEmailQueue(settings || {});
+  ipcMain.handle('emailQueue:sendAll', async (_, settings, batchSize = 10) => {
+    return await processPendingEmailQueue(settings || {}, batchSize || 10);
   });
 
   ipcMain.handle('emailQueue:clearSent', async () => {
