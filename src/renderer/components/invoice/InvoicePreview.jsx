@@ -446,11 +446,11 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                   <table className="w-full border-collapse border-b-2 border-black text-left text-[10px]" style={{ tableLayout: 'fixed' }}>
                     <thead>
                       <tr className="bg-white border-b-2 border-black font-bold uppercase text-[9.5px]">
-                        <th className="p-1.5 border-r-[1.5px] border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
-                        <th className="p-1.5 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>HSN</th>
-                        <th className="p-1.5 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>QTY.</th>
-                        <th className="p-1.5 border-r-[1.5px] border-black text-right" style={{ width: '12%' }}>RATE</th>
-                        <th className="p-1.5 text-right" style={{ width: '12%' }}>AMOUNT</th>
+                        <th className="py-2.5 px-2.5 border-r-[1.5px] border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
+                        <th className="py-2.5 px-2 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>HSN</th>
+                        <th className="py-2.5 px-2 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>QTY.</th>
+                        <th className="py-2.5 px-2 border-r-[1.5px] border-black text-right" style={{ width: '12%' }}>RATE</th>
+                        <th className="py-2.5 px-2 text-right" style={{ width: '12%' }}>AMOUNT</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y-0">
@@ -458,12 +458,12 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                         const isFirstOverallItem = page.isFirstPage && idx === 0;
                         return (
                           <tr key={idx} className="align-middle border-b-[1.5px] border-black">
-                            <td className="p-1.5 border-r-[1.5px] border-black align-middle" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                              <div className="font-bold uppercase text-slate-950 leading-tight text-[10px] whitespace-pre-wrap">
+                            <td className="py-4 px-2.5 border-r-[1.5px] border-black align-middle" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                              <div className="font-bold uppercase text-slate-950 leading-normal text-[10px] whitespace-pre-wrap">
                                 {item.description}
                               </div>
                               {isFirstOverallItem && (
-                                <div className="mt-1 font-bold text-[9px] text-slate-900 leading-tight space-y-0.5">
+                                <div className="mt-2 font-bold text-[9px] text-slate-900 leading-tight space-y-0.5">
                                   {fullData.so_po_number && (
                                     <div>
                                       S.O. No: {fullData.so_po_number}
@@ -479,12 +479,12 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 </div>
                               )}
                             </td>
-                            <td className="p-1.5 border-r-[1.5px] border-black text-center font-mono align-middle">{item.hsn_sac || '-'}</td>
-                            <td className="p-1.5 border-r-[1.5px] border-black text-center font-mono align-middle">{item.quantity}</td>
-                            <td className="p-1.5 border-r-[1.5px] border-black text-right font-mono align-middle">
+                            <td className="py-4 px-2 border-r-[1.5px] border-black text-center font-mono align-middle">{item.hsn_sac || '-'}</td>
+                            <td className="py-4 px-2 border-r-[1.5px] border-black text-center font-mono align-middle">{item.quantity}</td>
+                            <td className="py-4 px-2 border-r-[1.5px] border-black text-right font-mono align-middle">
                               {Number(item.rate).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
-                            <td className="p-1.5 text-right font-mono font-medium align-middle">
+                            <td className="py-4 px-2 text-right font-mono font-medium align-middle">
                               {Number(item.amount || (item.quantity * item.rate)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
                           </tr>
@@ -493,7 +493,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                       {/* Page-wise Subtotal Row (When invoice has more than 1 page) */}
                       {page.totalPages > 1 && (
                         <tr className="border-t-2 border-black bg-slate-50 font-bold text-[9.5px]">
-                          <td colSpan={4} className="p-1.5 border-r-[1.5px] border-black text-right uppercase tracking-wider">
+                          <td colSpan={4} className="py-2 px-2.5 border-r-[1.5px] border-black text-right uppercase tracking-wider">
                             {!page.isLastPage && (
                               <span className="float-left text-[8.5px] italic text-slate-500 font-normal">
                                 Continued on Page {page.pageNumber + 1}...
@@ -501,7 +501,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                             )}
                             PAGE {page.pageNumber} SUB TOTAL:
                           </td>
-                          <td className="p-1.5 text-right font-bold text-[10px] font-mono">
+                          <td className="py-2 px-2 text-right font-bold text-[10px] font-mono">
                             {(page.items || []).reduce((sum, item) => sum + Number(item.amount || (item.quantity * item.rate) || 0), 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </td>
                         </tr>
@@ -510,7 +510,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                       {/* Total Amount in Words Row (On last page, perfectly attached to vertical table lines) */}
                       {page.hasTotalsAndFooter && (
                         <tr className="border-t-2 border-black bg-white font-normal text-[10px]">
-                          <td colSpan={5} className="p-1.5 text-left">
+                          <td colSpan={5} className="py-2.5 px-2.5 text-left">
                             <span className="font-bold">TOTAL AMOUNT IN WORDS: </span>
                             {fullData.amount_in_words}
                           </td>

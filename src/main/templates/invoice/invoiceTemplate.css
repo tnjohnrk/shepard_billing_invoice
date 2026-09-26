@@ -285,22 +285,22 @@ body {
   font-size: 10px;
   font-weight: bold;
   text-align: center;
-  padding: 5px 6px;
-  height: 24px;
+  padding: 8px 8px;
+  height: 28px;
 }
 
 .items-table td {
   border-right: 1.5px solid #000;
   border-bottom: none;
   border-top: none;
-  padding: 6px 6px;
+  padding: 16px 8px;
   font-size: 10px;
   vertical-align: middle;
 }
 
 .item-data-row td {
   border-bottom: 1.5px solid #000;
-  padding: 6px 6px;
+  padding: 16px 8px;
   vertical-align: middle;
 }
 
@@ -314,7 +314,7 @@ body {
   border-bottom: none !important;
   border-right: none !important;
   border-left: none !important;
-  padding: 6px 8px !important;
+  padding: 8px 8px !important;
   font-size: 10px !important;
   font-weight: normal !important;
   text-align: left !important;

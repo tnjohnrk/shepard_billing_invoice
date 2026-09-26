@@ -166,25 +166,25 @@ function renderClientInvoiceHtml(data) {
     const itemRows = page.items.map((item, idx) => {
       const isFirstOverallItem = page.isFirstPage && idx === 0;
       const formattedDesc = String(item.description || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\r?\n/g, '<br/>');
-      return `<tr><td style="width: 54%; padding: 6px 6px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; vertical-align: middle; word-break: break-word; overflow-wrap: break-word;"><div style="font-weight: bold; text-transform: uppercase; font-size: 10px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">${formattedDesc}</div>${isFirstOverallItem ? refsHtml : ''}</td><td style="width: 11%; padding: 6px 6px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: center; vertical-align: middle; font-size: 10px; font-family: monospace;">${item.hsn_sac || '-'}</td><td style="width: 11%; padding: 6px 6px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: center; vertical-align: middle; font-size: 10px; font-family: monospace;">${item.quantity || 0}</td><td style="width: 12%; padding: 6px 6px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: right; vertical-align: middle; font-size: 10px; font-family: monospace;">${Number(item.rate || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td><td style="width: 12%; padding: 6px 6px; border-bottom: 1.5px solid #000; text-align: right; vertical-align: middle; font-size: 10px; font-family: monospace;">${Number(item.amount || ((item.quantity || 0) * (item.rate || 0))).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td></tr>`;
+      return `<tr><td style="width: 54%; padding: 16px 8px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; vertical-align: middle; word-break: break-word; overflow-wrap: break-word;"><div style="font-weight: bold; text-transform: uppercase; font-size: 10px; line-height: 1.4; word-break: break-word; overflow-wrap: break-word;">${formattedDesc}</div>${isFirstOverallItem ? refsHtml : ''}</td><td style="width: 11%; padding: 16px 8px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: center; vertical-align: middle; font-size: 10px; font-family: monospace;">${item.hsn_sac || '-'}</td><td style="width: 11%; padding: 16px 8px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: center; vertical-align: middle; font-size: 10px; font-family: monospace;">${item.quantity || 0}</td><td style="width: 12%; padding: 16px 8px; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: right; vertical-align: middle; font-size: 10px; font-family: monospace;">${Number(item.rate || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td><td style="width: 12%; padding: 16px 8px; border-bottom: 1.5px solid #000; text-align: right; vertical-align: middle; font-size: 10px; font-family: monospace;">${Number(item.amount || ((item.quantity || 0) * (item.rate || 0))).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td></tr>`;
     }).join('');
 
     const itemsTableHtml = `
       <table style="width: 100%; table-layout: fixed; border-collapse: collapse; border-bottom: 2px solid #000;">
         <thead>
           <tr style="background: #ffffff; border-bottom: 2px solid #000; font-size: 10px; font-weight: bold; text-align: center;">
-            <th style="padding: 5px 6px; border-right: 1.5px solid #000; text-align: left; width: 54%; height: 24px;">DESCRIPTION</th>
-            <th style="padding: 5px 6px; border-right: 1.5px solid #000; width: 11%;">HSN</th>
-            <th style="padding: 5px 6px; border-right: 1.5px solid #000; width: 11%;">QTY.</th>
-            <th style="padding: 5px 6px; border-right: 1.5px solid #000; width: 12%; text-align: right;">RATE</th>
-            <th style="padding: 5px 6px; width: 12%; text-align: right;">AMOUNT</th>
+            <th style="padding: 8px 8px; border-right: 1.5px solid #000; text-align: left; width: 54%; height: 28px;">DESCRIPTION</th>
+            <th style="padding: 8px 8px; border-right: 1.5px solid #000; width: 11%;">HSN</th>
+            <th style="padding: 8px 8px; border-right: 1.5px solid #000; width: 11%;">QTY.</th>
+            <th style="padding: 8px 8px; border-right: 1.5px solid #000; width: 12%; text-align: right;">RATE</th>
+            <th style="padding: 8px 8px; width: 12%; text-align: right;">AMOUNT</th>
           </tr>
         </thead>
         <tbody>
           ${itemRows}
           ${page.hasTotalsAndFooter ? `
           <tr style="border-top: 2px solid #000; background: #fff;">
-            <td colspan="5" style="padding: 6px 8px; font-size: 10px; font-weight: normal; text-align: left;">
+            <td colspan="5" style="padding: 8px 8px; font-size: 10px; font-weight: normal; text-align: left;">
               <strong>TOTAL AMOUNT IN WORDS:</strong> ${data.amount_in_words || ''}
             </td>
           </tr>
