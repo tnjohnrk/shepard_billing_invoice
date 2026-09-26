@@ -527,7 +527,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                       <tbody>
                         <tr>
                           {/* Left: Bank Details */}
-                          <td className="w-[58%] p-2.5 border-r-[1.5px] border-black align-top space-y-1">
+                          <td className="w-[52%] p-2.5 border-r-[1.5px] border-black align-top space-y-1">
                             <div className="font-black text-[11.5px] uppercase text-slate-900 mb-1">BANK DETAILS</div>
                             <div><span className="font-bold">BANK NAME: </span>{COMPANY_CONFIG.bank_name}: {COMPANY_CONFIG.account_number}</div>
                             <div><span className="font-bold">BRANCH NAME: </span>{(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
@@ -535,60 +535,60 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                           </td>
 
                           {/* Right: Tax Breakdown */}
-                          <td className="w-[42%] p-0 align-top">
+                          <td className="w-[48%] p-0 align-top">
                             <table className="w-full border-collapse text-[11px]">
                               <tbody>
                                 {pages.length > 1 && pages.map((p) => {
                                   const pSub = (p.items || []).reduce((sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0), 0);
                                   return (
                                     <tr key={p.pageNumber} className="border-b-[1.5px] border-black text-slate-800 bg-slate-50/80 text-[10px]">
-                                      <td className="p-1.5 text-left w-[62%]">SUB TOTAL</td>
-                                      <td className="p-1.5 text-right w-[38%] font-medium font-mono">
+                                      <td className="p-1.5 text-left w-[68%] whitespace-nowrap">SUB TOTAL</td>
+                                      <td className="p-1.5 text-right w-[32%] font-medium font-mono whitespace-nowrap">
                                         {pSub.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
                                     </tr>
                                   );
                                 })}
                                 <tr className="border-b-[1.5px] border-black font-bold">
-                                  <td className="p-1.5 text-left w-[62%]">TOTAL AMOUNT BEFORE TAX</td>
-                                  <td className="p-1.5 text-right w-[38%] font-bold font-mono">
+                                  <td className="p-1.5 text-left w-[68%] whitespace-nowrap">TOTAL AMOUNT BEFORE TAX</td>
+                                  <td className="p-1.5 text-right w-[32%] font-bold font-mono whitespace-nowrap">
                                     {fullData.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                   </td>
                                 </tr>
                                 {totals.isIntraState ? (
                                   <>
                                     <tr className="border-b-[1.5px] border-black">
-                                      <td className="p-1.5 text-left">ADD CGST: {totals.cgstRate}%</td>
-                                      <td className="p-1.5 text-right font-medium font-mono">
+                                      <td className="p-1.5 text-left whitespace-nowrap">ADD CGST: {totals.cgstRate}%</td>
+                                      <td className="p-1.5 text-right font-medium font-mono whitespace-nowrap">
                                         {totals.cgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
                                     </tr>
                                     <tr className="border-b-[1.5px] border-black">
-                                      <td className="p-1.5 text-left">ADD SGST: {totals.sgstRate}%</td>
-                                      <td className="p-1.5 text-right font-medium font-mono">
+                                      <td className="p-1.5 text-left whitespace-nowrap">ADD SGST: {totals.sgstRate}%</td>
+                                      <td className="p-1.5 text-right font-medium font-mono whitespace-nowrap">
                                         {totals.sgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
                                     </tr>
                                   </>
                                 ) : (
                                   <tr className="border-b-[1.5px] border-black">
-                                    <td className="p-1.5 text-left">ADD IGST: {totals.igstRate}%</td>
-                                    <td className="p-1.5 text-right font-medium font-mono">
+                                    <td className="p-1.5 text-left whitespace-nowrap">ADD IGST: {totals.igstRate}%</td>
+                                    <td className="p-1.5 text-right font-medium font-mono whitespace-nowrap">
                                       {totals.igstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                     </td>
                                   </tr>
                                 )}
                                 {fullData.round_off !== 0 && fullData.round_off != null && (
                                   <tr className="border-b-[1.5px] border-black">
-                                    <td className="p-1.5 text-left">ROUND OFF</td>
-                                    <td className="p-1.5 text-right font-medium font-mono">
+                                    <td className="p-1.5 text-left whitespace-nowrap">ROUND OFF</td>
+                                    <td className="p-1.5 text-right font-medium font-mono whitespace-nowrap">
                                       {fullData.round_off > 0 ? '+' : ''}{Number(fullData.round_off).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                     </td>
                                   </tr>
                                 )}
-                                <tr className="bg-slate-50 font-black text-[12px]">
-                                  <td className="p-1.5 text-left">TOTAL AMOUNT AFTER TAX:</td>
-                                  <td className="p-1.5 text-right font-mono">
+                                <tr className="bg-slate-50 font-black text-[11.5px]">
+                                  <td className="p-1.5 text-left whitespace-nowrap">TOTAL AMOUNT AFTER TAX:</td>
+                                  <td className="p-1.5 text-right font-mono whitespace-nowrap">
                                     {totals.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                   </td>
                                 </tr>

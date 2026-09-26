@@ -199,22 +199,22 @@ function renderClientInvoiceHtml(data) {
         <div style="width: 100%;">
           <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000;">
             <tr>
-              <td style="width: 58%; border-right: 1.5px solid #000; padding: 8px 8px; vertical-align: top;">
+              <td style="width: 52%; border-right: 1.5px solid #000; padding: 8px 8px; vertical-align: top;">
                 <div style="font-weight: 900; font-size: 11.5px; margin-bottom: 4px;">BANK DETAILS</div>
                 <div style="font-size: 11px; line-height: 1.35; margin-bottom: 3px;"><strong>BANK NAME:</strong> ${COMPANY_CONFIG.bank_name}: ${COMPANY_CONFIG.account_number}</div>
                 <div style="font-size: 11px; line-height: 1.35; margin-bottom: 3px;"><strong>BRANCH NAME:</strong> ${(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
                 <div style="font-size: 11px; line-height: 1.35;"><strong>IFSC CODE:</strong> ${COMPANY_CONFIG.ifsc_code}</div>
               </td>
-              <td style="width: 42%; padding: 0; vertical-align: top;">
+              <td style="width: 48%; padding: 0; vertical-align: top;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 10.5px;">
                   <tr>
-                    <td style="padding: 4px 8px; width: 62%; border-bottom: 1.5px solid #000; font-weight: bold;">TOTAL AMOUNT BEFORE TAX</td>
-                    <td style="padding: 4px 8px; width: 38%; text-align: right; border-bottom: 1.5px solid #000; font-weight: bold;">${Number(data.subtotal || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                    <td style="padding: 4px 8px; width: 68%; border-bottom: 1.5px solid #000; font-weight: bold; white-space: nowrap;">TOTAL AMOUNT BEFORE TAX</td>
+                    <td style="padding: 4px 8px; width: 32%; text-align: right; border-bottom: 1.5px solid #000; font-weight: bold; white-space: nowrap;">${Number(data.subtotal || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
                   </tr>
                   ${taxRows}
-                  <tr style="background: #f8fafc; font-weight: 900; font-size: 12px;">
-                    <td style="padding: 4px 8px;">TOTAL AMOUNT AFTER TAX:</td>
-                    <td style="padding: 4px 8px; text-align: right;">${Number(data.grand_total || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                  <tr style="background: #f8fafc; font-weight: 900; font-size: 11.5px;">
+                    <td style="padding: 4px 8px; white-space: nowrap;">TOTAL AMOUNT AFTER TAX:</td>
+                    <td style="padding: 4px 8px; text-align: right; white-space: nowrap;">${Number(data.grand_total || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
                   </tr>
                 </table>
               </td>

@@ -433,7 +433,7 @@ body {
 }
 
 .bank-details-cell {
-  width: 58%;
+  width: 52%;
   border-right: 1.5px solid #000;
   padding: 8px 8px;
   vertical-align: top;
@@ -452,7 +452,7 @@ body {
 }
 
 .tax-summary-cell {
-  width: 42%;
+  width: 48%;
   padding: 0;
   vertical-align: top;
 }
@@ -467,6 +467,7 @@ body {
   border-bottom: 1.5px solid #000;
   padding: 4px 8px;
   font-size: 10.5px;
+  white-space: nowrap;
 }
 
 .tax-breakdown-table tr:last-child td {
@@ -474,20 +475,23 @@ body {
 }
 
 .tax-title-col {
-  width: 62%;
+  width: 68%;
   text-align: left;
+  white-space: nowrap;
 }
 
 .tax-num-col {
-  width: 38%;
+  width: 32%;
   text-align: right;
   font-family: inherit;
+  white-space: nowrap;
 }
 
 .total-after-tax-line td {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 900;
   background: #f8fafc;
+  white-space: nowrap;
 }
 
 /* 7. Footer Section */
