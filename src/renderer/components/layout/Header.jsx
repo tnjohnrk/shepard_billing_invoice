@@ -2,29 +2,21 @@ import React from 'react';
 import { Building2, Lock, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { COMPANY_CONFIG } from '../../../main/config/companyConfig';
-import headerLogo from '../../assets/billing_image.png';
 
 export function Header({ title, subtitle, onLockApp }) {
   const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-300 dark:border-slate-800 px-6 flex items-center justify-between sticky top-0 z-30 select-none shadow-none">
-      <div className="flex items-center gap-3">
-        <img
-          src={headerLogo}
-          alt="Shepherd Enterprises Logo"
-          className="w-8 h-8 object-contain shrink-0"
-        />
-        <div className="flex flex-col justify-center">
-          <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-tight">
-            {title}
-          </h2>
-          {subtitle && (
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
-              {subtitle}
-            </p>
-          )}
-        </div>
+      <div className="flex flex-col justify-center">
+        <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-tight">
+          {title}
+        </h2>
+        {subtitle && (
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+            {subtitle}
+          </p>
+        )}
       </div>
 
       <div className="flex items-center gap-2.5">
