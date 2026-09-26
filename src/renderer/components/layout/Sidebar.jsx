@@ -1,6 +1,6 @@
 import React from 'react';
 import { LayoutDashboard, FilePlus, History, BarChart3, Layers, Settings, ShieldCheck } from 'lucide-react';
-import companyLogo from '../../assets/logo.png';
+import companyLogo from '../../assets/logo_without_bg.png';
 import { FEATURE_FLAGS } from '../../../shared/constants/featureFlags';
 
 export function Sidebar({ activeTab, setActiveTab }) {
@@ -17,14 +17,14 @@ export function Sidebar({ activeTab, setActiveTab }) {
     <aside className="w-64 bg-white dark:bg-slate-950 border-r border-slate-300 dark:border-slate-800 flex flex-col justify-between select-none shadow-none">
       <div>
         {/* Company Branding Header */}
-        <div className="h-16 px-5 border-b border-slate-300 dark:border-slate-800 flex items-center gap-3">
+        <div className="h-16 px-4 border-b border-slate-300 dark:border-slate-800 flex items-center gap-3">
           <img
             src={companyLogo}
             alt="Shepherd Enterprises"
-            className="w-9 h-9 object-contain rounded-full border border-slate-300 dark:border-slate-700 shadow-none flex-shrink-0"
+            className="w-10 h-10 object-contain shadow-none flex-shrink-0"
           />
           <div className="overflow-hidden">
-            <h1 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100 leading-tight truncate">
+            <h1 className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-slate-100 leading-tight truncate">
               Shepherd Enterprises
             </h1>
             <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">Billing System v1.0</p>

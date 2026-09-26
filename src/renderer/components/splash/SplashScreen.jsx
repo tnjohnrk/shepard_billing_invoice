@@ -1,5 +1,5 @@
 import React from 'react';
-import companyLogo from '../../assets/logo.png';
+import companyLogo from '../../assets/logo_without_bg.png';
 
 export function SplashScreen() {
   return (

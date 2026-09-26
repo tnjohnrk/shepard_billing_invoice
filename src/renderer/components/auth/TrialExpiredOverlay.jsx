@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ShieldAlert, Sparkles, KeyRound, CheckCircle2, Clock, Eye, EyeOff, Lock, ArrowRight } from 'lucide-react';
-import companyLogo from '../../assets/logo.png';
+import companyLogo from '../../assets/logo_without_bg.png';
 import { Button } from '../common/Button';
 import { Toast } from '../common/Toast';
 import { ipcClient } from '../../services/ipcClient';
@@ -107,7 +107,7 @@ export function TrialExpiredOverlay({ licenseStatus, onLicenseUpdated, onLockApp
             <img
               src={companyLogo}
               alt="Shepherd Enterprises"
-              className="w-20 h-20 object-contain rounded-full shadow-md"
+              className="w-20 h-20 object-contain shadow-md"
             />
             <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-rose-600 border-2 border-slate-900 flex items-center justify-center text-white shadow-lg">
               <ShieldAlert className="w-4 h-4" />
