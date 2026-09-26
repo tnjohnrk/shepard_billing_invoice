@@ -1,6 +1,6 @@
 import React from 'react';
 import { LayoutDashboard, FilePlus, History, BarChart3, Layers, Settings, ShieldCheck } from 'lucide-react';
-import companyLogo from '../../assets/logo_without_bg.png';
+import companyLogo from '../../assets/billing_image.png';
 import { FEATURE_FLAGS } from '../../../shared/constants/featureFlags';
 
 export function Sidebar({ activeTab, setActiveTab }) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Eye, EyeOff, ShieldCheck, KeyRound, ArrowRight, Wrench, Clock, ShieldAlert, Sparkles, CheckCircle2, Shield, Lock, ShieldX } from 'lucide-react';
-import companyLogo from '../../assets/logo_without_bg.png';
+import companyLogo from '../../assets/billing_image.png';
 import { Button } from '../common/Button';
 import { Toast } from '../common/Toast';
 import { ipcClient } from '../../services/ipcClient';
