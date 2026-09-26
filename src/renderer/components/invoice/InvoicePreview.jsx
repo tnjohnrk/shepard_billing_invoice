@@ -7,7 +7,7 @@ import { SHEPHERD_DEFAULT_STATE_CODE } from '../../../shared/constants/applicati
 import { getCopyTypeLabel } from '../../../shared/constants/copyTypes';
 import { COMPANY_CONFIG } from '../../../main/config/companyConfig';
 import { paginateInvoiceItems } from '../../../shared/utils/invoicePagination';
-import shepherdInvoiceLogo from '../../assets/shepherd_invoice_logo.png';
+import shepherdInvoiceLogo from '../../assets/logo_without_bg.png';
 
 export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNewInvoice, toast }) {
   const [isSaving, setIsSaving] = useState(false);
