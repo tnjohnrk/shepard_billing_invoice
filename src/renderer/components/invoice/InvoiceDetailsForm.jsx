@@ -56,7 +56,7 @@ export function InvoiceDetailsForm({ formData, onChange, errors = {}, isProforma
           />
 
           <Input
-            label="Date of Supply (From) *"
+            label="Date of Supply (From)"
             type="date"
             value={formData.date_of_supply_from || formData.date_of_supply || ''}
             onChange={(e) => {
@@ -72,7 +72,7 @@ export function InvoiceDetailsForm({ formData, onChange, errors = {}, isProforma
           />
 
           <Input
-            label="Date of Supply (To) *"
+            label="Date of Supply (To)"
             type="date"
             value={formData.date_of_supply_to || formData.date_of_supply_from || formData.date_of_supply || ''}
             onChange={(e) => onChange('date_of_supply_to', e.target.value)}
