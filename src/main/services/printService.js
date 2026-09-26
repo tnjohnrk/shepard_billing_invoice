@@ -1,8 +1,13 @@
+import path from 'path';
+import fs from 'fs';
+import os from 'os';
 import { BrowserWindow } from 'electron';
 import { renderInvoiceHtml } from '../templates/invoice/invoiceRenderer.js';
 
 export async function printInvoiceDocument(invoiceData, options = {}) {
   const htmlContent = renderInvoiceHtml(invoiceData);
+  const tempHtmlPath = path.join(os.tmpdir(), `shepherd_print_${Date.now()}_${Math.random().toString(36).substring(7)}.html`);
+  fs.writeFileSync(tempHtmlPath, htmlContent, 'utf8');
 
   const printWin = new BrowserWindow({
     width: 1200,
@@ -14,47 +19,54 @@ export async function printInvoiceDocument(invoiceData, options = {}) {
     }
   });
 
-  const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`;
-  await printWin.loadURL(dataUrl);
+  try {
+    await printWin.loadFile(tempHtmlPath);
 
-  // Wait until document layout, images, and fonts are completely rendered
-  await printWin.webContents.executeJavaScript(`
-    new Promise(resolve => {
-      if (document.readyState === 'complete') {
-        setTimeout(resolve, 300);
-      } else {
-        window.addEventListener('load', () => setTimeout(resolve, 300));
-      }
-    })
-  `);
-
-  return new Promise((resolve, reject) => {
-    printWin.webContents.print(
-      {
-        silent: options.silent || false,
-        printBackground: true,
-        deviceName: options.deviceName || '',
-        pageSize: 'A4',
-        margins: {
-          marginType: 'none'
-        }
-      },
-      (success, errorType) => {
-        if (!printWin.isDestroyed()) {
-          printWin.close();
-        }
-        if (!success) {
-          if (errorType === 'Print job canceled' || String(errorType).toLowerCase().includes('cancel')) {
-            resolve({ success: false, canceled: true });
-          } else {
-            reject(new Error(`Physical printing failed: ${errorType}`));
-          }
+    // Wait until document layout, images, and fonts are completely rendered
+    await printWin.webContents.executeJavaScript(`
+      new Promise(resolve => {
+        if (document.readyState === 'complete') {
+          setTimeout(resolve, 300);
         } else {
-          resolve({ success: true, canceled: false });
+          window.addEventListener('load', () => setTimeout(resolve, 300));
         }
+      })
+    `);
+
+    return await new Promise((resolve, reject) => {
+      printWin.webContents.print(
+        {
+          silent: options.silent || false,
+          printBackground: true,
+          deviceName: options.deviceName || '',
+          pageSize: 'A4',
+          margins: {
+            marginType: 'none'
+          }
+        },
+        (success, errorType) => {
+          if (!printWin.isDestroyed()) {
+            printWin.close();
+          }
+          if (!success) {
+            if (errorType === 'Print job canceled' || String(errorType).toLowerCase().includes('cancel')) {
+              resolve({ success: false, canceled: true });
+            } else {
+              reject(new Error(`Physical printing failed: ${errorType}`));
+            }
+          } else {
+            resolve({ success: true, canceled: false });
+          }
+        }
+      );
+    });
+  } finally {
+    try {
+      if (fs.existsSync(tempHtmlPath)) {
+        fs.unlinkSync(tempHtmlPath);
       }
-    );
-  });
+    } catch {}
+  }
 }
 
 export async function getAvailablePrinters() {

@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 import { BrowserWindow } from 'electron';
 import { renderInvoiceHtml } from '../templates/invoice/invoiceRenderer.js';
 import { ensureDirectoriesExist } from '../utils/filesystem.js';
@@ -23,6 +24,9 @@ export async function generateInvoicePdf(invoiceData, targetFilePathOverride = n
     }
   }
 
+  const tempHtmlPath = path.join(os.tmpdir(), `shepherd_invoice_${Date.now()}_${Math.random().toString(36).substring(7)}.html`);
+  fs.writeFileSync(tempHtmlPath, htmlContent, 'utf8');
+
   // Create hidden BrowserWindow with A4 dimensions for PDF rendering
   const win = new BrowserWindow({
     width: 1200,
@@ -35,8 +39,7 @@ export async function generateInvoicePdf(invoiceData, targetFilePathOverride = n
   });
 
   try {
-    const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`;
-    await win.loadURL(dataUrl);
+    await win.loadFile(tempHtmlPath);
 
     // Wait until document layout, images, and fonts are completely rendered
     await win.webContents.executeJavaScript(`
@@ -66,5 +69,10 @@ export async function generateInvoicePdf(invoiceData, targetFilePathOverride = n
     if (!win.isDestroyed()) {
       win.close();
     }
+    try {
+      if (fs.existsSync(tempHtmlPath)) {
+        fs.unlinkSync(tempHtmlPath);
+      }
+    } catch {}
   }
 }
