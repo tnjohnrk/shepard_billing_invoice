@@ -58,7 +58,7 @@ export function PinSettings({ toast }) {
   };
 
   return (
-    <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 space-y-5 shadow-none">
+    <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 space-y-6 shadow-none">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
@@ -78,90 +78,119 @@ export function PinSettings({ toast }) {
         </span>
       </div>
 
-      <form onSubmit={handleSavePin} className="space-y-4 max-w-lg pt-1">
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
-            Current Security Password <span className="text-rose-500">*</span>
-          </label>
-          <div className="relative flex items-center">
-            <input
-              type={showOld ? 'text' : 'password'}
-              placeholder="Enter current password"
-              value={oldPin}
-              onChange={(e) => setOldPin(e.target.value)}
-              required
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-colors font-mono shadow-none"
-            />
-            <button
-              type="button"
-              onClick={() => setShowOld(!showOld)}
-              className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1"
-              title={showOld ? 'Hide password' : 'Show password'}
-            >
-              {showOld ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
+      {/* Main Grid: Form on left, Security Guidelines on right */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-1">
+        {/* Left Form: Spans 7 columns on large displays */}
+        <form onSubmit={handleSavePin} className="lg:col-span-7 xl:col-span-7 space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
+              Current Security Password <span className="text-rose-500">*</span>
+            </label>
+            <div className="relative flex items-center">
+              <input
+                type={showOld ? 'text' : 'password'}
+                placeholder="Enter current password"
+                value={oldPin}
+                onChange={(e) => setOldPin(e.target.value)}
+                required
+                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-colors font-mono shadow-none"
+              />
+              <button
+                type="button"
+                onClick={() => setShowOld(!showOld)}
+                className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1"
+                title={showOld ? 'Hide password' : 'Show password'}
+              >
+                {showOld ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                New Security Password <span className="text-rose-500">*</span>
+              </label>
+              <div className="relative flex items-center">
+                <input
+                  type={showNew ? 'text' : 'password'}
+                  placeholder="Enter new password (min. 4 chars)"
+                  value={newPin}
+                  onChange={(e) => setNewPin(e.target.value)}
+                  required
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-colors font-mono shadow-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNew(!showNew)}
+                  className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1"
+                  title={showNew ? 'Hide password' : 'Show password'}
+                >
+                  {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                Confirm New Password <span className="text-rose-500">*</span>
+              </label>
+              <div className="relative flex items-center">
+                <input
+                  type={showConfirm ? 'text' : 'password'}
+                  placeholder="Re-enter new password"
+                  value={confirmPin}
+                  onChange={(e) => setConfirmPin(e.target.value)}
+                  required
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-colors font-mono shadow-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1"
+                  title={showConfirm ? 'Hide password' : 'Show password'}
+                >
+                  {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <Button type="submit" variant="primary" icon={KeyRound} isLoading={isLoading}>
+              Update Security Password
+            </Button>
+          </div>
+        </form>
+
+        {/* Right Info Box: Spans 5 columns on large displays */}
+        <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3 shadow-none">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-slate-100">
+              <Shield className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              <span>Security &amp; Protection Policy</span>
+            </div>
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+              To safeguard financial and GST records, security lock protection is permanently enforced and cannot be disabled.
+            </p>
+          </div>
+
+          <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-700 text-[11px] text-slate-600 dark:text-slate-400">
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+              <span>Minimum 4 characters required for new passwords.</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+              <span>Required when launching application or unlocking screen.</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+              <span>Safely encrypted locally on this machine.</span>
+            </div>
           </div>
         </div>
-
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
-            New Security Password <span className="text-rose-500">*</span>
-          </label>
-          <div className="relative flex items-center">
-            <input
-              type={showNew ? 'text' : 'password'}
-              placeholder="Enter new password (min. 4 characters)"
-              value={newPin}
-              onChange={(e) => setNewPin(e.target.value)}
-              required
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-colors font-mono shadow-none"
-            />
-            <button
-              type="button"
-              onClick={() => setShowNew(!showNew)}
-              className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1"
-              title={showNew ? 'Hide password' : 'Show password'}
-            >
-              {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
-          </div>
-        </div>
-
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
-            Confirm New Password <span className="text-rose-500">*</span>
-          </label>
-          <div className="relative flex items-center">
-            <input
-              type={showConfirm ? 'text' : 'password'}
-              placeholder="Re-enter new password"
-              value={confirmPin}
-              onChange={(e) => setConfirmPin(e.target.value)}
-              required
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-colors font-mono shadow-none"
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1"
-              title={showConfirm ? 'Hide password' : 'Show password'}
-            >
-              {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
-          </div>
-        </div>
-
-        <div className="p-3.5 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300 leading-relaxed shadow-none space-y-1">
-          <span className="font-bold text-slate-900 dark:text-slate-100 block">Security Policy:</span>
-          <span>For the protection of financial and GST records, password security is permanently required and cannot be disabled.</span>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3 pt-2">
-          <Button type="submit" variant="primary" icon={KeyRound} isLoading={isLoading}>
-            Update Security Password
-          </Button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 }
