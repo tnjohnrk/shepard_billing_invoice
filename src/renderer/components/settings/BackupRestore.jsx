@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   HardDriveDownload, RotateCcw, Mail, RefreshCw, Save, Laptop, 
   ArrowRight, CheckCircle2, ShieldCheck, HelpCircle, Send, 
-  Clock, AlertCircle, Eye, EyeOff, Check, Trash2 
+  Clock, AlertCircle, Eye, EyeOff, Check 
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
@@ -27,6 +27,7 @@ export function BackupRestore({ toast }) {
   const [queueSummary, setQueueSummary] = useState({
     pendingCount: 0,
     sentCount: 0,
+    todaySentCount: 0,
     totalCount: 0,
     lastSentAt: null,
     lastRecipient: null
@@ -169,16 +170,6 @@ export function BackupRestore({ toast }) {
       toast('error', err.message || 'Failed to dispatch email queue. Please check your credentials.');
     } finally {
       setIsSendingQueue(false);
-    }
-  };
-
-  const handleClearSent = async () => {
-    try {
-      await ipcClient.clearSentEmailQueue();
-      toast('info', 'Cleaned up sent backup history records.');
-      await loadQueueSummary();
-    } catch (err) {
-      toast('error', err.message || 'Failed to clear sent queue.');
     }
   };
 
@@ -354,10 +345,10 @@ export function BackupRestore({ toast }) {
 
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between shadow-none">
             <div>
-              <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Successfully Dispatched</div>
-              <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-0.5">{queueSummary.sentCount}</div>
+              <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Dispatched Today</div>
+              <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-0.5">{queueSummary.todaySentCount || 0}</div>
               <div className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5">
-                {queueSummary.lastSentAt ? `Last: ${new Date(queueSummary.lastSentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'No emails sent yet'}
+                {queueSummary.lastSentAt ? `Last: ${new Date(queueSummary.lastSentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'No emails sent today'}
               </div>
             </div>
             <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
@@ -410,7 +401,7 @@ export function BackupRestore({ toast }) {
                 <span>Generate &amp; Paste</span>
               </div>
               <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
-                Name app <strong className="text-slate-800 dark:text-slate-200">"Shepherd Billing"</strong>, copy the 16-character code, and paste below.
+                Name app <strong className="text-slate-800 dark:text-slate-200">"Shepherd Billing"</strong>, copy 16-character code, and paste below.
               </p>
             </div>
           </div>
@@ -497,18 +488,6 @@ export function BackupRestore({ toast }) {
                 Save Credentials
               </Button>
             </div>
-
-            {queueSummary.sentCount > 0 && (
-              <button
-                type="button"
-                onClick={handleClearSent}
-                className="text-[11px] text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 flex items-center gap-1 transition-colors px-2 py-1 cursor-pointer"
-                title="Clear sent queue history"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Clear Sent History ({queueSummary.sentCount})</span>
-              </button>
-            )}
           </div>
         </form>
       </div>

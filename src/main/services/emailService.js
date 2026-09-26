@@ -62,7 +62,7 @@ function getSmtpConfig(overrideSettings = {}) {
   const rawPort = overrideSettings.smtp_port || getSetting('smtp_port', '587');
   const smtpPort = parseInt(rawPort, 10) || 587;
   const smtpUser = (overrideSettings.smtp_user || getSetting('smtp_user', '')).trim();
-  const smtpPass = (overrideSettings.smtp_pass || getSetting('smtp_pass', '')).trim();
+  const smtpPass = (overrideSettings.smtp_pass || getSetting('smtp_pass', '')).trim().replace(/\s+/g, '');
   const recipient = (overrideSettings.backup_email || getSetting('backup_email', '') || COMPANY_CONFIG.backup_email || '').trim();
 
   return { smtpHost, smtpPort, smtpUser, smtpPass, recipient };

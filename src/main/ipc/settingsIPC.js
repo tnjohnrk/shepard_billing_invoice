@@ -5,7 +5,7 @@ import { getLicenseStatus, setLicenseMode } from '../services/licenseService.js'
 import { getCompanyProfile } from '../services/companyService.js';
 import { findCustomers, saveCustomerInfo } from '../services/customerService.js';
 import { processPendingEmailQueue, getEmailQueueStatus, clearSentEmailQueue } from '../services/emailQueueService.js';
-import { testSmtpConnection } from '../services/emailService.js';
+import { testSmtpConnection, translateSmtpError } from '../services/emailService.js';
 import { getActivationDetails, activateProductKey, createInitialPassword } from '../services/activationService.js';
 
 export function registerSettingsIPC() {
@@ -18,7 +18,14 @@ export function registerSettingsIPC() {
   });
 
   ipcMain.handle('settings:testEmail', async (_, settings) => {
-    return await testSmtpConnection(settings);
+    try {
+      return await testSmtpConnection(settings);
+    } catch (err) {
+      return {
+        success: false,
+        error: translateSmtpError(err)
+      };
+    }
   });
 
   ipcMain.handle('emailQueue:getSummary', async () => {
@@ -26,7 +33,17 @@ export function registerSettingsIPC() {
   });
 
   ipcMain.handle('emailQueue:sendAll', async (_, settings, batchSize = 10) => {
-    return await processPendingEmailQueue(settings || {}, batchSize || 10);
+    try {
+      return await processPendingEmailQueue(settings || {}, batchSize || 10);
+    } catch (err) {
+      return {
+        success: false,
+        sent: 0,
+        failed: 1,
+        message: translateSmtpError(err),
+        errors: [translateSmtpError(err)]
+      };
+    }
   });
 
   ipcMain.handle('emailQueue:clearSent', async () => {

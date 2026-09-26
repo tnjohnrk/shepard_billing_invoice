@@ -39,6 +39,11 @@ export function getEmailQueueSummary() {
     SELECT COUNT(*) as count FROM email_queue WHERE status = 'SENT'
   `).get();
 
+  const todaySentRow = db.prepare(`
+    SELECT COUNT(*) as count FROM email_queue 
+    WHERE status = 'SENT' AND (date(sent_at, 'localtime') = date('now', 'localtime') OR date(sent_at) = date('now'))
+  `).get();
+
   const totalRow = db.prepare(`
     SELECT COUNT(*) as count FROM email_queue
   `).get();
@@ -50,6 +55,7 @@ export function getEmailQueueSummary() {
   return {
     pendingCount: pendingRow ? pendingRow.count : 0,
     sentCount: sentRow ? sentRow.count : 0,
+    todaySentCount: todaySentRow ? todaySentRow.count : 0,
     totalCount: totalRow ? totalRow.count : 0,
     lastSentAt: lastSentRow ? lastSentRow.sent_at : null,
     lastRecipient: lastSentRow ? lastSentRow.recipient : null

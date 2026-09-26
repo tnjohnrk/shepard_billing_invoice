@@ -1407,11 +1407,14 @@ export const ipcClient = {
       return window.electronAPI.getEmailQueueSummary();
     }
     const localQueue = JSON.parse(localStorage.getItem('shepherd_email_queue') || '[]');
+    const todayStr = new Date().toISOString().split('T')[0];
     const pending = localQueue.filter(q => q.status === 'PENDING' || q.status === 'FAILED').length;
     const sent = localQueue.filter(q => q.status === 'SENT').length;
+    const sentToday = localQueue.filter(q => q.status === 'SENT' && q.sent_at && q.sent_at.startsWith(todayStr)).length;
     return {
       pendingCount: pending,
       sentCount: sent,
+      todaySentCount: sentToday,
       totalCount: localQueue.length,
       lastSentAt: localStorage.getItem('shepherd_email_last_sent') || null,
       lastRecipient: localStorage.getItem('shepherd_backup_email') || null
