@@ -77,9 +77,11 @@ function renderClientInvoiceHtml(data) {
 
     const fromDate = (data.date_of_supply_from || data.date_of_supply || '').trim();
     const toDate = (data.date_of_supply_to || data.date_of_supply_from || data.date_of_supply || '').trim();
-    const supplyDateDisplay = (fromDate && toDate)
-      ? (fromDate === toDate ? formatD(fromDate) : `${formatD(fromDate)} to ${formatD(toDate)}`)
-      : formatD(fromDate || toDate || docDate || '-');
+    const f = fromDate || docDate;
+    const t = toDate || fromDate || docDate;
+    const supplyDateDisplay = (f && t)
+      ? `From ${formatD(f)} To ${formatD(t)}`
+      : (f ? `From ${formatD(f)} To ${formatD(f)}` : '-');
 
     const headerHtml = page.isFirstPage ? `
       <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000;">

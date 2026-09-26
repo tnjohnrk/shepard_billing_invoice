@@ -387,10 +387,15 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                     const p = d.split('T')[0].split('-');
                                     return p.length === 3 && p[0].length === 4 ? `${p[2]}/${p[1]}/${p[0]}` : d;
                                   };
-                                  if (from && to) {
-                                    return from === to ? formatD(from) : `${formatD(from)} to ${formatD(to)}`;
+                                  const f = from || (isProforma ? fullData.proforma_date : fullData.invoice_date);
+                                  const t = to || from || (isProforma ? fullData.proforma_date : fullData.invoice_date);
+                                  if (f && t) {
+                                    return `From ${formatD(f)} To ${formatD(t)}`;
                                   }
-                                  return formatD(from || to || (isProforma ? fullData.proforma_date : fullData.invoice_date) || '-');
+                                  if (f) {
+                                    return `From ${formatD(f)} To ${formatD(f)}`;
+                                  }
+                                  return '-';
                                 })()}
                               </span>
                             </div>

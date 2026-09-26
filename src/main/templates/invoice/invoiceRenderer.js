@@ -342,15 +342,12 @@ export function renderInvoiceHtml(invoiceData) {
 function formatSupplyDates(fromDate, toDate, fallback) {
   const cleanFrom = (fromDate || '').trim();
   const cleanTo = (toDate || '').trim();
-  if (cleanFrom && cleanTo) {
-    if (cleanFrom === cleanTo) {
-      return formatDateStr(cleanFrom);
-    }
-    return `${formatDateStr(cleanFrom)} to ${formatDateStr(cleanTo)}`;
+  const f = cleanFrom || fallback;
+  const t = cleanTo || cleanFrom || fallback;
+  if (f && t) {
+    return `From ${formatDateStr(f)} To ${formatDateStr(t)}`;
   }
-  if (cleanFrom) return formatDateStr(cleanFrom);
-  if (cleanTo) return formatDateStr(cleanTo);
-  if (fallback) return formatDateStr(fallback);
+  if (f) return `From ${formatDateStr(f)} To ${formatDateStr(f)}`;
   return '-';
 }
 
