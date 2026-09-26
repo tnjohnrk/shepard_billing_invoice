@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { AppLayout } from './components/layout/AppLayout';
 import { SplashScreen } from './components/splash/SplashScreen';
 import { LockScreen } from './components/auth/LockScreen';
+import { ProductKeyActivation } from './components/auth/ProductKeyActivation';
 import { TrialExpiredOverlay } from './components/auth/TrialExpiredOverlay';
 import { Toast } from './components/common/Toast';
 import { Dashboard } from './pages/Dashboard';
@@ -19,22 +20,35 @@ export default function App() {
   const [toastState, setToastState] = useState(null);
   const [createInitialData, setCreateInitialData] = useState(null);
 
-  // Security & License status
+  // Security, Activation & License status
+  const [isActivated, setIsActivated] = useState(false);
+  const [isPasswordSet, setIsPasswordSet] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [licenseStatus, setLicenseStatus] = useState(null);
 
   const checkLicenseAndLockState = useCallback(async () => {
     try {
-      const [isProtected, license] = await Promise.all([
+      const [activationDetails, isProtected, license] = await Promise.all([
+        ipcClient.getActivationDetails(),
         ipcClient.isPinProtected(),
         ipcClient.getLicenseStatus()
       ]);
 
+      const activated = Boolean(activationDetails?.isActivated);
+      const passSet = Boolean(isProtected || activationDetails?.isPasswordSet);
+
+      setIsActivated(activated);
+      setIsPasswordSet(passSet);
       setLicenseStatus(license);
 
       const isSessionUnlocked = sessionStorage.getItem('session_unlocked') === 'true';
-      if (isProtected && !isSessionUnlocked) {
+
+      if (!activated || !passSet) {
+        setIsLocked(false);
+      } else if (!isSessionUnlocked) {
         setIsLocked(true);
+      } else {
+        setIsLocked(false);
       }
     } catch (e) {
       console.error('Error checking security & license status:', e);
@@ -110,6 +124,28 @@ export default function App() {
     return <SplashScreen />;
   }
 
+  // 1. FRESH INSTALL / RE-INSTALL: Needs Product Key Activation or Initial Mandatory Password Setup
+  if (!isActivated || !isPasswordSet) {
+    return (
+      <>
+        <ProductKeyActivation
+          onActivationComplete={async () => {
+            await checkLicenseAndLockState();
+            showToast('success', 'Welcome to Shepherd Enterprises Billing System!');
+          }}
+        />
+        {toastState && (
+          <Toast
+            type={toastState.type}
+            message={toastState.message}
+            onClose={() => setToastState(null)}
+          />
+        )}
+      </>
+    );
+  }
+
+  // 2. DAILY USAGE: Password Lock Screen (prompts for security password)
   if (isLocked) {
     return (
       <>

@@ -63,6 +63,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteProduct: (id) => ipcRenderer.invoke('products:delete', id),
   getProduct: (id) => ipcRenderer.invoke('products:get', id),
 
+  // Product Key Activation & Setup
+  getActivationDetails: () => ipcRenderer.invoke('activation:getDetails'),
+  activateProductKey: (productKey) => ipcRenderer.invoke('activation:activate', productKey),
+  createInitialPassword: (password) => ipcRenderer.invoke('activation:createInitialPassword', password),
+
   // Security PIN
   isPinProtected: () => ipcRenderer.invoke('pin:isProtected'),
   verifyPin: (pin) => ipcRenderer.invoke('pin:verify', pin),

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, KeyRound, Lock, Unlock, Eye, EyeOff, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Shield, KeyRound, Lock, Eye, EyeOff, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { ipcClient } from '../../services/ipcClient';
 
 export function PinSettings({ toast }) {
-  const [isProtected, setIsProtected] = useState(false);
+  const [isProtected, setIsProtected] = useState(true);
   const [oldPin, setOldPin] = useState('');
   const [newPin, setNewPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
@@ -22,7 +22,7 @@ export function PinSettings({ toast }) {
       const protectedState = await ipcClient.isPinProtected();
       setIsProtected(Boolean(protectedState));
     } catch (e) {
-      setIsProtected(false);
+      setIsProtected(true);
     }
   };
 
@@ -40,33 +40,13 @@ export function PinSettings({ toast }) {
     setIsLoading(true);
     try {
       await ipcClient.setSecurityPin(oldPin, newPin);
-      toast('success', isProtected ? 'Security password updated successfully!' : 'Security password enabled! You will now be prompted before entering the app.');
+      toast('success', 'Security password updated successfully!');
       setOldPin('');
       setNewPin('');
       setConfirmPin('');
       await checkPinStatus();
     } catch (err) {
       toast('error', err.message || 'Failed to update security password.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDisablePin = async () => {
-    if (!oldPin) {
-      toast('error', 'Please enter your current security password to disable.');
-      return;
-    }
-    setIsLoading(true);
-    try {
-      await ipcClient.disableSecurityPin(oldPin);
-      toast('info', 'Security password lock has been disabled.');
-      setOldPin('');
-      setNewPin('');
-      setConfirmPin('');
-      await checkPinStatus();
-    } catch (err) {
-      toast('error', err.message || 'Failed to disable password lock.');
     } finally {
       setIsLoading(false);
     }
@@ -80,62 +60,47 @@ export function PinSettings({ toast }) {
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">Application Password Lock</h3>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">Application Security Password</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Secure the billing application. Once enabled, the password must be verified before opening the app.
+              Mandatory application security lock. You can update or change your security password below.
             </p>
           </div>
         </div>
 
-        <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
-          isProtected 
-            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' 
-            : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-700'
-        }`}>
-          {isProtected ? (
-            <>
-              <Lock className="w-3 h-3" />
-              <span>Password Active</span>
-            </>
-          ) : (
-            <>
-              <Unlock className="w-3 h-3" />
-              <span>Protection Disabled</span>
-            </>
-          )}
+        <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+          <Lock className="w-3 h-3" />
+          <span>Security Active</span>
         </span>
       </div>
 
       <form onSubmit={handleSavePin} className="space-y-4 max-w-lg pt-1">
-        {isProtected && (
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
-              Current Security Password <span className="text-rose-500">*</span>
-            </label>
-            <div className="relative flex items-center">
-              <input
-                type={showOld ? 'text' : 'password'}
-                placeholder="Enter current password"
-                value={oldPin}
-                onChange={(e) => setOldPin(e.target.value)}
-                required
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-colors font-mono shadow-none"
-              />
-              <button
-                type="button"
-                onClick={() => setShowOld(!showOld)}
-                className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1"
-                title={showOld ? 'Hide password' : 'Show password'}
-              >
-                {showOld ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
+        <div className="space-y-1.5">
+          <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
+            Current Security Password <span className="text-rose-500">*</span>
+          </label>
+          <div className="relative flex items-center">
+            <input
+              type={showOld ? 'text' : 'password'}
+              placeholder="Enter current password"
+              value={oldPin}
+              onChange={(e) => setOldPin(e.target.value)}
+              required
+              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-colors font-mono shadow-none"
+            />
+            <button
+              type="button"
+              onClick={() => setShowOld(!showOld)}
+              className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1"
+              title={showOld ? 'Hide password' : 'Show password'}
+            >
+              {showOld ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
           </div>
-        )}
+        </div>
 
         <div className="space-y-1.5">
           <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
-            {isProtected ? 'New Security Password' : 'Create Security Password'} <span className="text-rose-500">*</span>
+            New Security Password <span className="text-rose-500">*</span>
           </label>
           <div className="relative flex items-center">
             <input
@@ -159,7 +124,7 @@ export function PinSettings({ toast }) {
 
         <div className="space-y-1.5">
           <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
-            Confirm Security Password <span className="text-rose-500">*</span>
+            Confirm New Password <span className="text-rose-500">*</span>
           </label>
           <div className="relative flex items-center">
             <input
@@ -182,20 +147,14 @@ export function PinSettings({ toast }) {
         </div>
 
         <div className="p-3.5 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300 leading-relaxed shadow-none space-y-1">
-          <span className="font-bold text-slate-900 dark:text-slate-100 block">Security Note:</span>
-          <span>When enabled, every time the application is opened or refreshed, you must enter this password to view invoices and billing records.</span>
+          <span className="font-bold text-slate-900 dark:text-slate-100 block">Security Policy:</span>
+          <span>For the protection of financial and GST records, password security is permanently required and cannot be disabled.</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 pt-2">
           <Button type="submit" variant="primary" icon={KeyRound} isLoading={isLoading}>
-            {isProtected ? 'Update Password' : 'Enable Password Protection'}
+            Update Security Password
           </Button>
-
-          {isProtected && (
-            <Button type="button" variant="danger" icon={Unlock} onClick={handleDisablePin} isLoading={isLoading}>
-              Disable Password Lock
-            </Button>
-          )}
         </div>
       </form>
     </div>

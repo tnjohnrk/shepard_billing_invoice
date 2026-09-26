@@ -1,6 +1,7 @@
 import { getCopyTypeLabel } from '../../shared/constants/copyTypes';
 import { COMPANY_CONFIG } from '../../main/config/companyConfig';
 import { paginateInvoiceItems } from '../../shared/utils/invoicePagination';
+import { PRODUCT_KEY_CONFIG } from '../../shared/constants/security';
 import shepherdInvoiceLogo from '../assets/shepherd_invoice_logo.png';
 
 const isElectron = typeof window !== 'undefined' && Boolean(window.electronAPI);
@@ -1131,6 +1132,67 @@ export const ipcClient = {
     } catch {
       return false;
     }
+  },
+
+  // Product Key Activation APIs
+  getActivationDetails: async () => {
+    if (isElectron && typeof window.electronAPI?.getActivationDetails === 'function') {
+      return window.electronAPI.getActivationDetails();
+    }
+    const isActivated = localStorage.getItem('shepherd_product_key_activated') === 'true';
+    const activatedAt = localStorage.getItem('shepherd_product_key_activated_at');
+    const isPasswordSet = Boolean(localStorage.getItem('shepherd_security_password_hash'));
+    return {
+      isActivated,
+      activatedAt,
+      isPasswordSet
+    };
+  },
+
+  activateProductKey: async (productKey) => {
+    if (isElectron && typeof window.electronAPI?.activateProductKey === 'function') {
+      return window.electronAPI.activateProductKey(productKey);
+    }
+    const raw = String(productKey || '').trim();
+    if (!raw) throw new Error('Product key cannot be empty.');
+
+    // In web browser preview, calculate SHA-256 using subtle crypto
+    let keyHash = '';
+    try {
+      const msgUint8 = new TextEncoder().encode(raw);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      keyHash = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('').toLowerCase();
+    } catch {
+      keyHash = raw;
+    }
+
+    const isDevKey = raw === PRODUCT_KEY_CONFIG.DEVELOPER_MASTER_KEY;
+    const isMatch = PRODUCT_KEY_CONFIG.VALID_KEY_HASHES.map((h) => h.toLowerCase()).includes(keyHash);
+
+    if (!isDevKey && !isMatch) {
+      throw new Error('Invalid Product Key. Please contact the developer for installation activation.');
+    }
+
+    localStorage.setItem('shepherd_product_key_activated', 'true');
+    localStorage.setItem('shepherd_product_key_activated_at', new Date().toISOString());
+    return {
+      success: true,
+      message: 'Product key activated successfully!',
+      isPasswordSet: Boolean(localStorage.getItem('shepherd_security_password_hash'))
+    };
+  },
+
+  createInitialPassword: async (newPassword) => {
+    if (isElectron && typeof window.electronAPI?.createInitialPassword === 'function') {
+      return window.electronAPI.createInitialPassword(newPassword);
+    }
+    const str = String(newPassword || '').trim();
+    if (str.length < 4) {
+      throw new Error('Security password must be at least 4 characters long.');
+    }
+    localStorage.setItem('shepherd_security_password_hash', btoa(str));
+    return { success: true };
   },
 
   // Security Password / PIN APIs

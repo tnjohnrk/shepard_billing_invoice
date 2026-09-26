@@ -6,6 +6,7 @@ import { getCompanyProfile } from '../services/companyService.js';
 import { findCustomers, saveCustomerInfo } from '../services/customerService.js';
 import { processPendingEmailQueue, getEmailQueueStatus, clearSentEmailQueue } from '../services/emailQueueService.js';
 import { testSmtpConnection } from '../services/emailService.js';
+import { getActivationDetails, activateProductKey, createInitialPassword } from '../services/activationService.js';
 
 export function registerSettingsIPC() {
   ipcMain.handle('settings:getAll', async () => {
@@ -34,6 +35,19 @@ export function registerSettingsIPC() {
 
   ipcMain.handle('company:getProfile', async () => {
     return getCompanyProfile();
+  });
+
+  // Product Key Activation IPCs
+  ipcMain.handle('activation:getDetails', async () => {
+    return getActivationDetails();
+  });
+
+  ipcMain.handle('activation:activate', async (_, productKey) => {
+    return activateProductKey(productKey);
+  });
+
+  ipcMain.handle('activation:createInitialPassword', async (_, password) => {
+    return createInitialPassword(password);
   });
 
   // Security PIN IPCs
