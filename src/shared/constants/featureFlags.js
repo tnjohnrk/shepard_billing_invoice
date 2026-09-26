@@ -10,8 +10,8 @@
  * - true: Caps line items to MAX_ITEMS_PER_INVOICE and locks invoice to a single A4 page.
  */
 export const FEATURE_FLAGS = {
-  // Controls visibility and access to the Directory & Master Details Panel
-  DETAILS_PANEL_ENABLED: true,
+  // Controls visibility and access to the Directory & Master Details Panel (Locked & Hidden)
+  DETAILS_PANEL_ENABLED: false,
 
   // Controls single-page invoice lock & maximum allowed line items
   SINGLE_PAGE_INVOICE_LOCKED: false,
