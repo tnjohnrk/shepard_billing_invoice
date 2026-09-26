@@ -33,6 +33,16 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const formatCleanError = (err, fallback = 'Verification failed.') => {
+    if (!err) return fallback;
+    const raw = typeof err === 'string' ? err : (err.message || String(err));
+    return raw
+      .replace(/^Error invoking remote method '.*?': Error: /i, '')
+      .replace(/^Error invoking remote method '.*?': /i, '')
+      .replace(/^Error: /i, '')
+      .trim() || fallback;
+  };
+
   useEffect(() => {
     fetchLicense();
   }, []);
@@ -143,7 +153,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
         setIsVerifying(false);
       }
     } catch (err) {
-      setError(err.message || 'Verification failed.');
+      setError(formatCleanError(err, 'Verification failed.'));
       setIsVerifying(false);
     }
   };

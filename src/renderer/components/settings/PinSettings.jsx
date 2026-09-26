@@ -46,7 +46,12 @@ export function PinSettings({ toast }) {
       setConfirmPin('');
       await checkPinStatus();
     } catch (err) {
-      toast('error', err.message || 'Failed to update security password.');
+      const msg = (err?.message || String(err || ''))
+        .replace(/^Error invoking remote method '.*?': Error: /i, '')
+        .replace(/^Error invoking remote method '.*?': /i, '')
+        .replace(/^Error: /i, '')
+        .trim() || 'Failed to update security password.';
+      toast('error', msg);
     } finally {
       setIsLoading(false);
     }

@@ -21,6 +21,16 @@ export function ProductKeyActivation({ onActivationComplete }) {
   const [error, setError] = useState('');
   const [toastState, setToastState] = useState(null);
 
+  const formatCleanError = (err) => {
+    if (!err) return 'Invalid Product Key. Please check the key and try again.';
+    const raw = typeof err === 'string' ? err : (err.message || String(err));
+    return raw
+      .replace(/^Error invoking remote method '.*?': Error: /i, '')
+      .replace(/^Error invoking remote method '.*?': /i, '')
+      .replace(/^Error: /i, '')
+      .trim();
+  };
+
   // Step 1: Submit Product Key
   const handleVerifyProductKey = async (e) => {
     if (e) e.preventDefault();
@@ -51,7 +61,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
         }
       }
     } catch (err) {
-      setError(err.message || 'Invalid Product Key. Please check the key and try again.');
+      setError(formatCleanError(err));
       setIsLoading(false);
     }
   };
@@ -85,7 +95,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
         onActivationComplete();
       }, 1000);
     } catch (err) {
-      setError(err.message || 'Failed to set password. Please try again.');
+      setError(formatCleanError(err));
       setIsLoading(false);
     }
   };
