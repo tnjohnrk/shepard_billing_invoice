@@ -29,7 +29,7 @@ describe('activationService', () => {
   });
 
   it('successfully activates with valid product key', () => {
-    const res = activateProductKey('SHEPHERD-2026-PROD-KEY');
+    const res = activateProductKey('v2c_live_1UFnNrF7aOXoHIWz0RssPR0Oka9jEysX');
     expect(res.success).toBe(true);
     expect(settingsRepo.setSetting).toHaveBeenCalledWith('product_key_activated', 'true');
   });
@@ -41,14 +41,14 @@ describe('activationService', () => {
 
   it('creates initial password after activation', () => {
     // activate first
-    activateProductKey('SHEPHERD-2026-KEY');
+    activateProductKey('v2c_live_1UFnNrF7aOXoHIWz0RssPR0Oka9jEysX');
     const res = createInitialPassword('Admin@123');
     expect(res.success).toBe(true);
     expect(settingsRepo.setSetting).toHaveBeenCalledWith('security_pin_hash', expect.any(String));
   });
 
   it('rejects passwords shorter than 4 characters', () => {
-    activateProductKey('SHEPHERD-2026-KEY');
+    activateProductKey('v2c_live_1UFnNrF7aOXoHIWz0RssPR0Oka9jEysX');
     expect(() => createInitialPassword('12')).toThrow(/at least 4 characters/);
   });
 });
