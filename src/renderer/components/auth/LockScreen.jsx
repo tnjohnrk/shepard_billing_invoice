@@ -578,14 +578,6 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                   </div>
                 )}
 
-                {/* Zero Data Loss Guarantee */}
-                <div className="flex items-center gap-2 p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-[11px] text-slate-600 dark:text-slate-400">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span>
-                    <strong>Data Protection Guarantee:</strong> All customer records, invoices, proformas, and backups are never deleted when trial ends.
-                  </span>
-                </div>
-
                 {/* Submit Button */}
                 <div className="space-y-2 pt-1">
                   <Button
