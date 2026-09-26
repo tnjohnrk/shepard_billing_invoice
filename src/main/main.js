@@ -21,9 +21,8 @@ import { processPendingEmailQueue } from './services/emailQueueService.js';
 let mainWindow = null;
 
 function createMainWindow() {
-  const iconPathPng = path.join(__dirname, '../renderer/assets/logo.png');
-  const iconPathAvif = path.join(__dirname, '../renderer/assets/logo.avif');
-  const appIcon = fs.existsSync(iconPathPng) ? iconPathPng : (fs.existsSync(iconPathAvif) ? iconPathAvif : undefined);
+  const iconPath = path.join(__dirname, '../renderer/assets/billing_image.png');
+  const appIcon = fs.existsSync(iconPath) ? iconPath : undefined;
 
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -182,6 +181,11 @@ if (!gotTheLock) {
   });
 
   app.whenReady().then(() => {
+    // Set App User Model ID for Windows Taskbar Icon & grouping
+    if (process.platform === 'win32') {
+      app.setAppUserModelId('com.shepherd.billing');
+    }
+
     // 1. Initialize SQLite database & migrations
     initializeDatabase();
 
