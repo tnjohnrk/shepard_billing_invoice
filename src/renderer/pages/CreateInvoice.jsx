@@ -158,6 +158,9 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
       ...(type === 'PROFORMA' ? { invoice_number: '' } : { proforma_number: '' })
     }));
 
+    // Auto advance to Step 2 (Invoice Details)
+    setStep(2);
+
     try {
       if (type === 'PROFORMA') {
         const proNum = await ipcClient.getNextProformaNumber();
