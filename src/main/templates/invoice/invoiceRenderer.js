@@ -125,7 +125,7 @@ export function renderInvoiceHtml(invoiceData) {
           </tr>
         </table>
 
-        <!-- 2. Sub-Header Row: GSTIN | DOC TYPE | COPY TYPE & PAGE -->
+        <!-- 2. Sub-Header Row: GSTIN | DOC TYPE | COPY TYPE -->
         <table class="sub-header-table">
           <tr class="sub-header-row">
             <td class="cell-gstin">
@@ -136,7 +136,6 @@ export function renderInvoiceHtml(invoiceData) {
             </td>
             <td class="cell-copy-type">
               <span>${copyTypeLabel}</span>
-              <span class="page-num-text">Page ${page.pageNumber}/${page.totalPages}</span>
             </td>
           </tr>
         </table>
@@ -187,7 +186,6 @@ export function renderInvoiceHtml(invoiceData) {
             </td>
             <td class="cell-copy-type">
               <span>${copyTypeLabel}</span>
-              <span class="page-num-text">Page ${page.pageNumber}/${page.totalPages}</span>
             </td>
           </tr>
         </table>
@@ -209,8 +207,8 @@ export function renderInvoiceHtml(invoiceData) {
     const pageSubtotalRowHtml = page.totalPages > 1 ? `
       <tr class="page-subtotal-row">
         <td colspan="4" class="page-subtotal-label">
-          ${!page.isLastPage ? `<span class="cont-notice">Continued on Page ${page.pageNumber + 1}...</span>` : ''}
-          PAGE ${page.pageNumber} SUB TOTAL:
+          ${!page.isLastPage ? `<span class="cont-notice">Continued on Next Page...</span>` : ''}
+          SUB TOTAL:
         </td>
         <td class="col-amount page-subtotal-amount">${formatCurrency(pageSubtotal)}</td>
       </tr>
@@ -249,7 +247,7 @@ export function renderInvoiceHtml(invoiceData) {
         const pSub = (p.items || []).reduce((sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0), 0);
         return `
           <tr class="page-breakdown-subtotal-row">
-            <td class="tax-title-col">PAGE ${p.pageNumber} SUB TOTAL</td>
+            <td class="tax-title-col">SUB TOTAL</td>
             <td class="tax-num-col">${formatCurrency(pSub)}</td>
           </tr>
         `;
@@ -293,9 +291,6 @@ export function renderInvoiceHtml(invoiceData) {
                   ${termsHtml}
                 </div>
                 ${notesHtml}
-                <div class="footer-page-num">
-                  Page ${page.pageNumber}/${page.totalPages}
-                </div>
               </td>
               <td class="footer-sign-col">
                 <div class="certify-text font-bold">CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT</div>

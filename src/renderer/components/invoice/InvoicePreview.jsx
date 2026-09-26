@@ -314,7 +314,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                         </tbody>
                       </table>
 
-                      {/* 2. Sub-Header Row: GSTIN | DOC TYPE | COPY TYPE & PAGE NO */}
+                      {/* 2. Sub-Header Row: GSTIN | DOC TYPE | COPY TYPE */}
                       <table className="w-full border-collapse border-b-2 border-black text-[11px]">
                         <tbody>
                           <tr>
@@ -326,9 +326,6 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                             </td>
                             <td className="w-[38%] p-2 font-bold text-right uppercase tracking-wider text-[11px] align-middle">
                               <span>{copyTypeBadge}</span>
-                              <span className="ml-2 font-bold text-[10.5px]">
-                                Page {page.pageNumber}/{page.totalPages}
-                              </span>
                             </td>
                           </tr>
                         </tbody>
@@ -426,7 +423,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                       </table>
                     </>
                   ) : (
-                    /* Continuation Page Sub-Header Row with Page Number */
+                    /* Continuation Page Sub-Header Row */
                     <table className="w-full border-collapse border-b-2 border-black text-[11px]">
                       <tbody>
                         <tr className="bg-slate-50">
@@ -438,9 +435,6 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                           </td>
                           <td className="w-[38%] p-2 font-bold text-right uppercase tracking-wider text-[11px] align-middle">
                             <span>{copyTypeBadge}</span>
-                            <span className="ml-2 font-bold text-[10.5px]">
-                              Page {page.pageNumber}/{page.totalPages}
-                            </span>
                           </td>
                         </tr>
                       </tbody>
@@ -501,10 +495,10 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                           <td colSpan={4} className="py-2 px-3 border-r-[1.5px] border-black text-right uppercase tracking-wider">
                             {!page.isLastPage && (
                               <span className="float-left text-[9px] italic text-slate-500 font-normal">
-                                Continued on Page {page.pageNumber + 1}...
+                                Continued on Next Page...
                               </span>
                             )}
-                            PAGE {page.pageNumber} SUB TOTAL:
+                            SUB TOTAL:
                           </td>
                           <td className="py-2 px-2.5 text-right font-bold text-[11px] font-mono">
                             {(page.items || []).reduce((sum, item) => sum + Number(item.amount || (item.quantity * item.rate) || 0), 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -548,7 +542,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                   const pSub = (p.items || []).reduce((sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0), 0);
                                   return (
                                     <tr key={p.pageNumber} className="border-b-[1.5px] border-black text-slate-800 bg-slate-50/80 text-[10px]">
-                                      <td className="p-1.5 text-left w-[62%]">PAGE {p.pageNumber} SUB TOTAL</td>
+                                      <td className="p-1.5 text-left w-[62%]">SUB TOTAL</td>
                                       <td className="p-1.5 text-right w-[38%] font-medium font-mono">
                                         {pSub.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
@@ -619,9 +613,6 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 <strong>Notes:</strong> {fullData.notes}
                               </div>
                             )}
-                            <div className="mt-2 text-[9.5px] font-bold text-slate-800">
-                              Page {page.pageNumber}/{page.totalPages}
-                            </div>
                           </td>
                           <td className="w-[50%] align-top p-2.5 text-center">
                             <div className="font-bold text-[9.5px] uppercase text-slate-800 mb-1">

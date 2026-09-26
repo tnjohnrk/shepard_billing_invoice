@@ -111,7 +111,6 @@ function renderClientInvoiceHtml(data) {
           </td>
           <td style="width: 38%; padding: 6px 8px; font-weight: bold; text-align: right; text-transform: uppercase; font-size: 11px;">
             <span>${copyTypeLabel}</span>
-            <span style="margin-left: 6px; font-weight: bold; font-size: 10.5px;">Page ${page.pageNumber}/${page.totalPages}</span>
           </td>
         </tr>
       </table>
@@ -159,7 +158,6 @@ function renderClientInvoiceHtml(data) {
           </td>
           <td style="width: 38%; padding: 6px 8px; font-weight: bold; text-align: right; text-transform: uppercase; font-size: 11px;">
             <span>${copyTypeLabel}</span>
-            <span style="margin-left: 6px; font-weight: bold; font-size: 10.5px;">Page ${page.pageNumber}/${page.totalPages}</span>
           </td>
         </tr>
       </table>
@@ -229,9 +227,6 @@ function renderClientInvoiceHtml(data) {
                 <div style="font-weight: bold; font-size: 11px; margin-bottom: 4px;">TERMS AND CONDITIONS</div>
                 <div style="font-size: 9.5px; color: #1e293b; line-height: 1.35;">
                   We declare that this invoice shows the actual value of services described and that all particulars are true and correct.
-                </div>
-                <div style="margin-top: 6px; font-size: 9.5px; color: #1e293b; font-weight: bold;">
-                  Page ${page.pageNumber}/${page.totalPages}
                 </div>
               </td>
               <td style="width: 50%; vertical-align: top; text-align: center; padding: 8px;">

@@ -71,7 +71,6 @@ describe('invoiceRenderer HTML generation', () => {
     };
 
     const html = renderInvoiceHtml(invoiceData);
-    expect(html).toContain('Page 1/1');
     expect(html).toContain('Director');
     expect(html).toContain('TOTAL AMOUNT IN WORDS:');
     expect(html).toContain('Five Hundred Sixty Six Rupees Only');
