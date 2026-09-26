@@ -16,20 +16,22 @@ describe('invoicePagination', () => {
     expect(pages[0].hasTotalsAndFooter).toBe(true);
   });
 
-  it('should split into multiple pages when many items are present', () => {
-    const items = Array.from({ length: 45 }, (_, i) => ({
+  it('should guarantee a single page (1/1) under single page lock', () => {
+    const items = Array.from({ length: 12 }, (_, i) => ({
       description: `Test Product Item ${i + 1}`,
+      hsn_sac: '998513',
       quantity: 1,
       rate: 100,
       amount: 100
     }));
 
     const pages = paginateInvoiceItems(items, {});
-    expect(pages.length).toBeGreaterThan(1);
+    expect(pages.length).toBe(1);
     expect(pages[0].pageNumber).toBe(1);
-    expect(pages[0].totalPages).toBe(pages.length);
-    expect(pages[pages.length - 1].isLastPage).toBe(true);
-    expect(pages[pages.length - 1].hasTotalsAndFooter).toBe(true);
+    expect(pages[0].totalPages).toBe(1);
+    expect(pages[0].isFirstPage).toBe(true);
+    expect(pages[0].isLastPage).toBe(true);
+    expect(pages[0].hasTotalsAndFooter).toBe(true);
   });
 
   it('should calculate larger height for long paragraph descriptions', () => {

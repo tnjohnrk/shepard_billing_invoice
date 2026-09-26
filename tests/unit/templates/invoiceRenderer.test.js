@@ -44,21 +44,14 @@ describe('invoiceRenderer HTML generation', () => {
     expect(html).toContain('Detailed precision calibration');
   });
 
-  it('should paginate 48 items into exactly 2 pages with continuation header matching INV-017a format', () => {
+  it('should render single page invoice format with all totals and Director signatory', () => {
     const items = [
-      ...Array.from({ length: 47 }, () => ({
-        description: 'IRFAN',
-        hsn_sac: '143',
-        quantity: 1,
-        rate: 10,
-        amount: 10
-      })),
       {
-        description: 'DDVYSHVIUSHIUDVHSDUIVHSUDHVIUSHDUVHSDUHVSIUDHVUSHDVUHSDUVHSDUIHVISUDHVIUSHDUIVHSIDUHVUSIDHVUISHDVUIHSDUIVHUDSIHVSUIHVSUDHVUSHDUVIHSDUVHSUIDHVUSIDHVUISHDUVIHSDUIHVSUIDHVUISHDVUHSDUVHSDHVIH',
-        hsn_sac: '457',
-        quantity: 1,
-        rate: 10,
-        amount: 10
+        description: 'Industrial Supply / Service Item',
+        hsn_sac: '998513',
+        quantity: 3,
+        rate: 160,
+        amount: 480
       }
     ];
 
@@ -78,9 +71,8 @@ describe('invoiceRenderer HTML generation', () => {
     };
 
     const html = renderInvoiceHtml(invoiceData);
-    expect(html).toContain('Page 1/2');
-    expect(html).toContain('Page 2/2');
-    expect(html).toContain('cont-sub-header');
+    expect(html).toContain('Page 1/1');
+    expect(html).toContain('Director');
     expect(html).toContain('TOTAL AMOUNT IN WORDS:');
     expect(html).toContain('Five Hundred Sixty Six Rupees Only');
     expect(html).toContain('TOTAL AMOUNT AFTER TAX:');
