@@ -29,19 +29,33 @@ export function ItemRow({
         />
       </td>
 
-      {/* 3. HSN / SAC (Pure Manual Entry, Strictly Mandatory) */}
+      {/* 3. HSN / SAC (Pure Manual Entry, Strictly Mandatory, Integers Only) */}
       <td className="px-3 py-3 border-r border-slate-200 dark:border-slate-800">
         <input
           type="text"
-          placeholder="HSN / SAC *"
-          title="HSN / SAC Code is Mandatory"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          placeholder="HSN Code *"
+          title="HSN Code (Digits Only, Mandatory)"
           className={`w-full bg-slate-50 dark:bg-slate-800 border rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-left placeholder-slate-400 focus:outline-none shadow-none font-mono font-bold transition-colors ${
             !item.hsn_sac || !String(item.hsn_sac).trim()
               ? 'border-rose-500 bg-rose-50/40 dark:bg-rose-950/30 ring-1 ring-rose-500/20 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/40' 
               : 'border-slate-300 dark:border-slate-700 focus:border-sky-500'
           }`}
           value={item.hsn_sac || ''}
-          onChange={(e) => onChange(index, 'hsn_sac', e.target.value)}
+          onChange={(e) => {
+            const onlyDigits = e.target.value.replace(/\D/g, '');
+            onChange(index, 'hsn_sac', onlyDigits);
+          }}
+          onKeyDown={(e) => {
+            if (['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter', 'Escape'].includes(e.key) ||
+                (e.ctrlKey || e.metaKey)) {
+              return;
+            }
+            if (!/^[0-9]$/.test(e.key)) {
+              e.preventDefault();
+            }
+          }}
           required
         />
 
