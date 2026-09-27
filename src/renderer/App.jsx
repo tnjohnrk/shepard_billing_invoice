@@ -127,6 +127,7 @@ export default function App() {
     } catch (err) {
       return false;
     }
+  };
   const handleDuplicateInvoice = (invoiceData) => {
     setCreateInitialData(invoiceData);
     setActiveTab('create');

@@ -151,8 +151,15 @@ export function renderInvoiceHtml(invoiceData) {
                 <span class="meta-lbl font-bold" style="margin-left: 10px;">STATE CODE:</span> <span class="meta-txt">${escapeHtml(COMPANY_CONFIG.state_code || '33')}</span>
               </div>
               <div class="buyer-block">
-                <div class="meta-field"><span class="meta-lbl font-bold">BUYER:</span> <span class="meta-txt font-bold buyer-name">${escapeHtml(invoiceData.buyer_name || '')}</span></div>
-                <div class="meta-field"><span class="meta-lbl font-bold">CUSTOMER ADDRESS:</span> <span class="meta-txt buyer-addr" style="white-space: pre-line;">${escapeHtml(invoiceData.buyer_address || '')}</span></div>
+                <table class="buyer-layout-table">
+                  <tr>
+                    <td class="buyer-lbl-cell"><span class="meta-lbl font-bold">BUYER:</span></td>
+                    <td class="buyer-content-cell">
+                      <div class="meta-txt font-bold buyer-name">${escapeHtml(invoiceData.buyer_name || '')}</div>
+                      ${invoiceData.buyer_address ? `<div class="meta-txt buyer-addr">${escapeHtml(invoiceData.buyer_address)}</div>` : ''}
+                    </td>
+                  </tr>
+                </table>
               </div>
             </td>
             <td class="meta-right-cell">
