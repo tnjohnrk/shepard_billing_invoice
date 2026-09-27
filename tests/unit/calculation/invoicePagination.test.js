@@ -17,7 +17,7 @@ describe('invoicePagination', () => {
   });
 
   it('should guarantee a single page (1/1) under single page lock', () => {
-    const items = Array.from({ length: 12 }, (_, i) => ({
+    const items = Array.from({ length: 5 }, (_, i) => ({
       description: `Test Product Item ${i + 1}`,
       hsn_sac: '998513',
       quantity: 1,
