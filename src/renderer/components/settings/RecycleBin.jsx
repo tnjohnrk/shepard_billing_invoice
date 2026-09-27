@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, RotateCcw, Search, RefreshCw, Trash } from 'lucide-react';
+import { Trash2, RotateCcw, AlertTriangle, Search, RefreshCw, Trash } from 'lucide-react';
 import { Table } from '../common/Table';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
@@ -115,14 +115,14 @@ export function RecycleBin({ toast }) {
   return (
     <div className="space-y-6">
       {/* Header & Controls Card */}
-      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-4 shadow-xs">
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border-2 border-slate-300 dark:border-slate-700 space-y-4 shadow-none">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
+            <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
               <Trash2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Recycle Bin</h3>
+              <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">Recycle Bin</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Manage deleted invoices and proforma documents. Restore them back to active state or delete permanently.
               </p>
@@ -155,7 +155,7 @@ export function RecycleBin({ toast }) {
         </div>
 
         {/* Search Input Filter */}
-        <div className="pt-1">
+        <div className="pt-2">
           <Input
             placeholder="Search deleted records by invoice #, buyer name, or GSTIN..."
             icon={Search}
@@ -170,11 +170,11 @@ export function RecycleBin({ toast }) {
 
       {/* Content / Table View */}
       {loading ? (
-        <div className="bg-white/80 dark:bg-slate-900/80 p-6 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none">
           <Loading text="Loading Recycle Bin items..." />
         </div>
       ) : items.length === 0 ? (
-        <div className="bg-white/80 dark:bg-slate-900/80 p-6 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none">
           <EmptyState
             title="Recycle Bin is Empty"
             description="There are no deleted invoices or proformas. Deleted documents will appear here for recovery."
@@ -182,12 +182,12 @@ export function RecycleBin({ toast }) {
           />
         </div>
       ) : filteredItems.length === 0 ? (
-        <div className="bg-white/80 dark:bg-slate-900/80 p-6 rounded-xl border border-slate-200/80 dark:border-slate-800 text-center py-10 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border-2 border-slate-300 dark:border-slate-700 text-center py-10 shadow-none">
           <p className="text-sm text-slate-500 dark:text-slate-400">No deleted records match your search query "{search}".</p>
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="bg-white/80 dark:bg-slate-900/80 rounded-xl border border-slate-200/80 dark:border-slate-800 overflow-hidden shadow-xs">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 overflow-hidden shadow-none">
             <Table headers={headers}>
               {paginatedItems.map((item, idx) => {
                 const isProforma = String(item.invoice_type || item.item_type).toUpperCase() === 'PROFORMA';
@@ -208,7 +208,11 @@ export function RecycleBin({ toast }) {
                       {docNum}
                     </td>
                     <td className="px-4 py-3.5 border-r border-slate-200 dark:border-slate-800">
-                      <span className="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-[#21262d] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#30363d]">
+                      <span className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
+                        isProforma 
+                          ? 'bg-cyan-50 dark:bg-cyan-950 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800' 
+                          : 'bg-indigo-50 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
+                      }`}>
                         {isProforma ? 'PROFORMA' : (item.invoice_type || 'NORMAL')}
                       </span>
                     </td>
@@ -229,7 +233,7 @@ export function RecycleBin({ toast }) {
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => setRestoreTarget(item)}
-                          className="rounded-lg text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 bg-slate-100/80 dark:bg-[#21262d] hover:bg-slate-200 dark:hover:bg-[#30363d] transition-colors flex items-center gap-1 text-xs font-semibold px-2.5 py-1 border border-slate-200 dark:border-[#30363d] cursor-pointer shadow-none"
+                          className="px-2.5 py-1.5 rounded-lg text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors flex items-center gap-1.5 text-xs font-semibold border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/50 dark:bg-emerald-950/30 cursor-pointer shadow-2xs active:scale-95"
                           title="Restore to Active Invoices"
                         >
                           <RotateCcw className="w-3.5 h-3.5" />
@@ -238,7 +242,7 @@ export function RecycleBin({ toast }) {
 
                         <button
                           onClick={() => setPermDeleteTarget(item)}
-                          className="rounded-lg text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 bg-slate-100/80 dark:bg-[#21262d] hover:bg-rose-500/10 dark:hover:bg-rose-950/40 transition-colors flex items-center gap-1 text-xs font-semibold px-2.5 py-1 border border-slate-200 dark:border-[#30363d] cursor-pointer shadow-none"
+                          className="px-2.5 py-1.5 rounded-lg text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors flex items-center gap-1.5 text-xs font-semibold border border-rose-200 dark:border-rose-800/60 bg-rose-50/50 dark:bg-rose-950/30 cursor-pointer shadow-2xs active:scale-95"
                           title="Delete Permanently"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
