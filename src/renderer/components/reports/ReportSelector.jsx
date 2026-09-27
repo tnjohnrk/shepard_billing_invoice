@@ -10,17 +10,24 @@ export function ReportSelector({ activeType, onSelectType }) {
   ];
 
   return (
-    <div className="inline-flex flex-wrap items-center gap-2 p-1.5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none w-fit">
-      {types.map((t) => (
-        <Button
-          key={t.id}
-          variant={activeType === t.id ? 'primary' : 'ghost'}
-          size="sm"
-          onClick={() => onSelectType(t.id)}
-        >
-          {t.label}
-        </Button>
-      ))}
+    <div className="inline-flex flex-wrap items-center gap-1 p-1 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs w-fit">
+      {types.map((t) => {
+        const isActive = activeType === t.id;
+        return (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => onSelectType(t.id)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              isActive
+                ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
+            }`}
+          >
+            {t.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

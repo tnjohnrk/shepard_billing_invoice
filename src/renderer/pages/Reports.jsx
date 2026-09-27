@@ -106,7 +106,7 @@ export function Reports({ toast }) {
       </div>
 
       {/* Date controls per report type */}
-      <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 flex flex-wrap items-center gap-4 text-xs shadow-none">
+      <div className="p-3 px-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center gap-4 text-xs shadow-xs">
         {reportType === 'daily' && (
           <div className="w-48">
             <Input
@@ -162,7 +162,7 @@ export function Reports({ toast }) {
 
         {reportType === 'customer' && (
           <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-            <Users className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+            <Users className="w-4 h-4 text-indigo-500" />
             <span>Aggregated billing summary across all registered client accounts.</span>
           </div>
         )}
@@ -172,9 +172,9 @@ export function Reports({ toast }) {
         <Loading text="Generating Financial Report..." />
       ) : isCustomerReport ? (
         <div className="space-y-4">
-          <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none">
+          <div className="p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Customer Account Summary</h3>
+              <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">Customer Account Summary</h3>
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">{customerList.length} Clients Recorded</span>
             </div>
 

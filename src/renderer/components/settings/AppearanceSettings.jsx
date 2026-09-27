@@ -25,13 +25,13 @@ export function AppearanceSettings() {
   ];
 
   return (
-    <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 space-y-6 shadow-none">
+    <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-5 shadow-xs">
       <div>
         <div className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-sky-500 dark:text-sky-400" />
-          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">Appearance & Themes</h3>
+          <Sparkles className="w-4 h-4 text-indigo-500" />
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Appearance & Themes</h3>
         </div>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
           Customize the visual theme and contrast mode for your billing workspace.
         </p>
       </div>
@@ -45,49 +45,49 @@ export function AppearanceSettings() {
             <div
               key={t.id}
               onClick={() => setTheme(t.id)}
-              className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between shadow-none ${
+              className={`relative p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between shadow-xs ${
                 isSelected
-                  ? 'border-sky-500 bg-sky-50/60 dark:bg-sky-950/40 dark:border-sky-500'
-                  : 'border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 bg-slate-50 dark:bg-slate-800'
+                  ? 'border-indigo-600 bg-indigo-50/40 dark:bg-indigo-950/30 dark:border-indigo-500 ring-1 ring-indigo-500/20'
+                  : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40'
               }`}
             >
               {isSelected && (
-                <div className="absolute top-4 right-4 flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-100 dark:bg-sky-900/60 border border-sky-300 dark:border-sky-700 text-[10px] font-bold text-sky-700 dark:text-sky-300">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
+                <div className="absolute top-3.5 right-3.5 flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-100/80 dark:bg-indigo-900/60 border border-indigo-200 dark:border-indigo-700 text-[10px] font-bold text-indigo-700 dark:text-indigo-300">
+                  <CheckCircle2 className="w-3 h-3" />
                   <span>Active</span>
                 </div>
               )}
 
               <div>
-                <div className="flex items-center gap-3 mb-3">
+                <div className="flex items-center gap-2.5 mb-2.5">
                   <div
-                    className={`p-2.5 rounded-xl ${
+                    className={`p-2 rounded-lg ${
                       isSelected
-                        ? 'bg-sky-500 text-white'
+                        ? 'bg-indigo-600 text-white'
                         : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600'
                     }`}
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">{t.name}</h4>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{t.subtitle}</p>
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">{t.name}</h4>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400">{t.subtitle}</p>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
                   {t.description}
                 </p>
               </div>
 
               {/* Color Swatch Preview */}
-              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
-                <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Palette preview</span>
+              <div className="mt-3.5 pt-2.5 border-t border-slate-200/60 dark:border-slate-800/80 flex items-center justify-between">
+                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Palette preview</span>
                 <div className="flex items-center gap-1.5">
                   {t.colors.map((c, i) => (
                     <span
                       key={i}
-                      className="w-4 h-4 rounded-full border border-slate-300 dark:border-slate-600"
+                      className="w-3.5 h-3.5 rounded-full border border-slate-200 dark:border-slate-700 shadow-xs"
                       style={{ backgroundColor: c }}
                     />
                   ))}
@@ -98,10 +98,10 @@ export function AppearanceSettings() {
         })}
       </div>
 
-      <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-start gap-3 shadow-none">
-        <Monitor className="w-4 h-4 text-slate-500 dark:text-slate-400 mt-0.5 shrink-0" />
-        <div className="text-xs text-slate-600 dark:text-slate-300">
-          <span className="font-semibold text-slate-900 dark:text-slate-100">Instant Preference Saving:</span> Your theme preference is automatically remembered on this computer across application restarts.
+      <div className="p-3.5 rounded-xl bg-slate-50/60 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 flex items-start gap-2.5 shadow-xs">
+        <Monitor className="w-4 h-4 text-indigo-500 mt-0.5 shrink-0" />
+        <div className="text-xs text-slate-600 dark:text-slate-400">
+          <span className="font-semibold text-slate-800 dark:text-slate-200">Instant Preference Saving:</span> Your theme preference is automatically remembered on this computer across application restarts.
         </div>
       </div>
     </div>

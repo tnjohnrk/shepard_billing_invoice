@@ -212,20 +212,20 @@ export function BackupRestore({ toast }) {
   return (
     <div className="space-y-6">
       {/* System Migration & Transfer Card */}
-      <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 space-y-5 shadow-none">
+      <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-4 shadow-xs">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
-              <Laptop className="w-6 h-6" />
+            <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
+              <Laptop className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Data Migration & Computer Transfer</h3>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 uppercase">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Data Migration & Computer Transfer</h3>
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 uppercase">
                   System Transfer
                 </span>
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                 Easily move 100% of your billing data (all Tax Invoices, Proformas, Customers, and Settings) from this computer to any new computer or laptop.
               </p>
             </div>
@@ -234,9 +234,9 @@ export function BackupRestore({ toast }) {
 
         {/* 3-Step Migration Guide */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
-            <div className="flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-400">
-              <span className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center text-[10px]">1</span>
+          <div className="p-3 rounded-xl bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 space-y-1">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400">
+              <span className="w-4 h-4 rounded-full bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center text-[10px]">1</span>
               <span>Export on Old PC</span>
             </div>
             <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
@@ -244,9 +244,9 @@ export function BackupRestore({ toast }) {
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
-            <div className="flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-400">
-              <span className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center text-[10px]">2</span>
+          <div className="p-3 rounded-xl bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 space-y-1">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400">
+              <span className="w-4 h-4 rounded-full bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center text-[10px]">2</span>
               <span>Install on New PC</span>
             </div>
             <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
@@ -254,9 +254,9 @@ export function BackupRestore({ toast }) {
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-              <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-[10px]">3</span>
+          <div className="p-3 rounded-xl bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 space-y-1">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-[10px]">3</span>
               <span>Import on New PC</span>
             </div>
             <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
@@ -266,7 +266,7 @@ export function BackupRestore({ toast }) {
         </div>
 
         {/* Action Buttons for Migration */}
-        <div className="flex flex-wrap gap-4 pt-2">
+        <div className="flex flex-wrap gap-3 pt-1">
           <Button variant="primary" icon={HardDriveDownload} onClick={handleCreateBackup} isLoading={isBackingUp}>
             Export Migration Package (.zip)
           </Button>
@@ -278,30 +278,30 @@ export function BackupRestore({ toast }) {
       </div>
 
       {/* Email Backup & Queue Section */}
-      <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 space-y-6 shadow-none">
+      <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-5 shadow-xs">
         
         {/* Header with Title & Queue Status Badge */}
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800">
-              <Mail className="w-6 h-6" />
+            <div className="p-2.5 rounded-xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800">
+              <Mail className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2.5">
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Email Dispatch Queue (Invoice PDFs)</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Email Dispatch Queue (Invoice PDFs)</h3>
                 {queueSummary.pendingCount > 0 ? (
-                  <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
-                    <Clock className="w-3.5 h-3.5" />
-                    {queueSummary.pendingCount} Queued Invoice PDF{queueSummary.pendingCount > 1 ? 's' : ''}
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                    <Clock className="w-3 h-3" />
+                    {queueSummary.pendingCount} Queued PDF{queueSummary.pendingCount > 1 ? 's' : ''}
                   </span>
                 ) : (
-                  <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                    <CheckCircle2 className="w-3 h-3" />
                     Queue All Clear
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                 Every saved invoice and proforma is queued for email backup. Dispatches occur in batches of <strong>10 invoices at a time</strong> for optimal Gmail reliability.
               </p>
             </div>

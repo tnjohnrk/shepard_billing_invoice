@@ -115,14 +115,14 @@ export function RecycleBin({ toast }) {
   return (
     <div className="space-y-6">
       {/* Header & Controls Card */}
-      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border-2 border-slate-300 dark:border-slate-700 space-y-4 shadow-none">
+      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-4 shadow-xs">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
+            <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
               <Trash2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">Recycle Bin</h3>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Recycle Bin</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Manage deleted invoices and proforma documents. Restore them back to active state or delete permanently.
               </p>
@@ -155,7 +155,7 @@ export function RecycleBin({ toast }) {
         </div>
 
         {/* Search Input Filter */}
-        <div className="pt-2">
+        <div className="pt-1">
           <Input
             placeholder="Search deleted records by invoice #, buyer name, or GSTIN..."
             icon={Search}
@@ -170,11 +170,11 @@ export function RecycleBin({ toast }) {
 
       {/* Content / Table View */}
       {loading ? (
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none">
+        <div className="bg-white/80 dark:bg-slate-900/80 p-6 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
           <Loading text="Loading Recycle Bin items..." />
         </div>
       ) : items.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-none">
+        <div className="bg-white/80 dark:bg-slate-900/80 p-6 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
           <EmptyState
             title="Recycle Bin is Empty"
             description="There are no deleted invoices or proformas. Deleted documents will appear here for recovery."
@@ -182,12 +182,12 @@ export function RecycleBin({ toast }) {
           />
         </div>
       ) : filteredItems.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border-2 border-slate-300 dark:border-slate-700 text-center py-10 shadow-none">
+        <div className="bg-white/80 dark:bg-slate-900/80 p-6 rounded-xl border border-slate-200/80 dark:border-slate-800 text-center py-10 shadow-xs">
           <p className="text-sm text-slate-500 dark:text-slate-400">No deleted records match your search query "{search}".</p>
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 overflow-hidden shadow-none">
+          <div className="bg-white/80 dark:bg-slate-900/80 rounded-xl border border-slate-200/80 dark:border-slate-800 overflow-hidden shadow-xs">
             <Table headers={headers}>
               {paginatedItems.map((item, idx) => {
                 const isProforma = String(item.invoice_type || item.item_type).toUpperCase() === 'PROFORMA';

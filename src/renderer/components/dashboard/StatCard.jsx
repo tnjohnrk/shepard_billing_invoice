@@ -2,20 +2,28 @@ import React from 'react';
 
 export function StatCard({ title, value, subtitle, badge }) {
   return (
-    <div className="p-5 rounded-2xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-none flex flex-col justify-between transition-all hover:border-slate-400 dark:hover:border-slate-600">
+    <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800/90 bg-white dark:bg-slate-900 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700/80 transition-all flex flex-col justify-between group">
       <div>
-        <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{title}</span>
-        <div className="text-2xl font-black text-slate-900 dark:text-slate-100 mt-1.5 tracking-tight">{value}</div>
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            {title}
+          </span>
+          {badge && (
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">
+              {badge}
+            </span>
+          )}
+        </div>
+        <div className="text-xl font-bold text-slate-900 dark:text-slate-100 mt-2 tracking-tight font-mono">
+          {value}
+        </div>
       </div>
 
-      <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/60">
-        {subtitle && <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">{subtitle}</span>}
-        {badge && (
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 ml-auto">
-            {badge}
-          </span>
-        )}
-      </div>
+      {subtitle && (
+        <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+          <span>{subtitle}</span>
+        </div>
+      )}
     </div>
   );
 }

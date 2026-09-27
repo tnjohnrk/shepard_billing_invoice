@@ -394,7 +394,7 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
         <div 
           ref={formContainerRef}
           onKeyDown={handleKeyDown}
-          className="p-6 sm:p-8 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 flex flex-col justify-between shadow-none min-h-[380px]"
+          className="p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-2xl border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between shadow-xs min-h-[380px]"
         >
           <div className="flex-1">
             {step === 1 && (

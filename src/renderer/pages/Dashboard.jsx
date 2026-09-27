@@ -369,27 +369,27 @@ export function Dashboard({ onViewInvoice, onNavigateCreate, licenseStatus: prop
     <PageContainer>
       {/* Test Mode Banner Box (Visible when Test Mode is Active) */}
       {isTestMode && (
-        <div className="p-4 rounded-2xl border-2 border-amber-400 dark:border-amber-600/80 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent dark:from-amber-950/40 dark:via-amber-950/20 text-slate-900 dark:text-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
-          <div className="flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 dark:bg-amber-500/30 flex items-center justify-center shrink-0 border border-amber-500/30 text-amber-600 dark:text-amber-400">
-              <Clock className="w-5 h-5" />
+        <div className="p-3.5 px-4 rounded-xl border border-amber-300 dark:border-amber-800/60 bg-amber-500/10 dark:bg-amber-950/30 text-slate-900 dark:text-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-amber-500/20 dark:bg-amber-500/30 flex items-center justify-center shrink-0 border border-amber-500/30 text-amber-600 dark:text-amber-400">
+              <Clock className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-amber-500 text-white dark:bg-amber-600">
+                <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-amber-500 text-white dark:bg-amber-600 shadow-xs">
                   Test / Trial Mode Active
                 </span>
                 <span className="text-xs font-bold text-amber-700 dark:text-amber-300 font-mono">
                   {getRemainingTimeText(licenseStatus?.endDateTime)}
                 </span>
               </div>
-              <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-slate-300">
+              <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-slate-600 dark:text-slate-400">
                 <span>
-                  <strong className="text-slate-800 dark:text-slate-100">Started:</strong> {formatDateTime(licenseStatus?.startDateTime)}
+                  <strong className="text-slate-700 dark:text-slate-200">Started:</strong> {formatDateTime(licenseStatus?.startDateTime)}
                 </span>
                 <span>•</span>
                 <span>
-                  <strong className="text-slate-800 dark:text-slate-100">Trial Ends:</strong> {formatDateTime(licenseStatus?.endDateTime)}
+                  <strong className="text-slate-700 dark:text-slate-200">Trial Ends:</strong> {formatDateTime(licenseStatus?.endDateTime)}
                 </span>
               </div>
             </div>
@@ -398,84 +398,48 @@ export function Dashboard({ onViewInvoice, onNavigateCreate, licenseStatus: prop
       )}
 
       {/* Interactive Time Period & Month Selector Control Bar */}
-      <div className="p-4 rounded-2xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mr-1">
+      <div className="p-2.5 px-3 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mr-1.5">
             <Filter className="w-3.5 h-3.5 text-indigo-500" />
-            <span>Time Range:</span>
+            <span>Range:</span>
           </div>
 
-          <button
-            type="button"
-            onClick={() => handleQuickPeriodChange('all_time')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              selectedPeriod === 'all_time'
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-            }`}
-          >
-            All Recorded Months
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleQuickPeriodChange('current_fy')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              selectedPeriod === 'current_fy'
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-            }`}
-          >
-            Current FY
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleQuickPeriodChange('last_12_months')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              selectedPeriod === 'last_12_months'
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-            }`}
-          >
-            Past 12 Months
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleQuickPeriodChange('last_6_months')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              selectedPeriod === 'last_6_months'
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-            }`}
-          >
-            Past 6 Months
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleQuickPeriodChange('this_month')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              selectedPeriod === 'this_month'
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-            }`}
-          >
-            This Month
-          </button>
+          {[
+            { id: 'all_time', label: 'All Recorded' },
+            { id: 'current_fy', label: 'Current FY' },
+            { id: 'last_12_months', label: 'Past 12M' },
+            { id: 'last_6_months', label: 'Past 6M' },
+            { id: 'this_month', label: 'This Month' },
+          ].map(tab => {
+            const isActive = selectedPeriod === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => handleQuickPeriodChange(tab.id)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Specific Month Dropdown */}
         <div className="flex items-center gap-2 shrink-0">
-          <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
             <CalendarDays className="w-3.5 h-3.5 text-indigo-500" />
-            <span className="font-semibold text-slate-700 dark:text-slate-300">Select Month:</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Custom Month:</span>
           </div>
           <select
             value={selectedPeriod === 'custom_month' ? customMonth : ''}
             onChange={handleCustomMonthChange}
-            className="px-3 py-1.5 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer"
+            className="px-2.5 py-1 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer"
           >
             <option value="" disabled>-- Pick Month --</option>
             {availableMonthOptions.map(opt => (

@@ -7,8 +7,8 @@ export function InvoiceStepper({ currentStep, setStep, steps }) {
   const isLight = theme === 'light';
 
   return (
-    <nav aria-label="Invoice Creation Steps" className="w-full bg-white dark:bg-slate-900 p-2.5 rounded-2xl border-2 border-slate-300 dark:border-slate-700 mb-5 select-none shadow-none overflow-hidden">
-      <ol className="flex items-center justify-between overflow-x-auto gap-1.5 py-0.5 no-scrollbar">
+    <nav aria-label="Invoice Creation Steps" className="w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-2 rounded-xl border border-slate-200/80 dark:border-slate-800 mb-4 select-none shadow-xs overflow-hidden">
+      <ol className="flex items-center justify-between overflow-x-auto gap-1 py-0.5 no-scrollbar">
         {steps.map((step, idx) => {
           const stepNum = idx + 1;
           const isCompleted = stepNum < currentStep;
@@ -16,32 +16,32 @@ export function InvoiceStepper({ currentStep, setStep, steps }) {
           const canNavigate = stepNum <= currentStep || (currentStep >= 7 && stepNum === 8);
 
           return (
-            <li key={step.id} className="flex items-center gap-1.5 shrink-0">
+            <li key={step.id} className="flex items-center gap-1 shrink-0">
               <button
                 type="button"
                 onClick={() => canNavigate && setStep(stepNum)}
                 disabled={!canNavigate}
                 aria-current={isCurrent ? 'step' : undefined}
-                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer shadow-none min-h-[36px] ${
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
                   isCurrent
-                    ? 'bg-emerald-600 text-white border-2 border-emerald-500'
+                    ? 'bg-indigo-600 text-white shadow-xs'
                     : isCompleted
-                    ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900'
+                    ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/40'
                     : canNavigate
-                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
-                    : 'bg-slate-50 dark:bg-slate-900/60 text-slate-400 dark:text-slate-600 border border-slate-200 dark:border-slate-800 cursor-not-allowed'
+                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    : 'bg-transparent text-slate-400 dark:text-slate-600 border border-transparent cursor-not-allowed'
                 }`}
               >
                 <span
-                  className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 transition-colors ${
+                  className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 transition-colors ${
                     isCurrent
-                      ? 'bg-white text-emerald-700 font-extrabold'
+                      ? 'bg-white text-indigo-700 font-extrabold'
                       : isCompleted
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
                   }`}
                 >
-                  {isCompleted ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : stepNum}
+                  {isCompleted ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : stepNum}
                 </span>
                 <span className="whitespace-nowrap">{step.label}</span>
               </button>
@@ -49,14 +49,10 @@ export function InvoiceStepper({ currentStep, setStep, steps }) {
               {idx < steps.length - 1 && (
                 <div
                   aria-hidden="true"
-                  className={`w-3.5 h-[2px] hidden lg:block rounded-full ${
+                  className={`w-3 h-[2px] hidden lg:block rounded-full ${
                     isCompleted
-                      ? isLight
-                        ? 'bg-emerald-400'
-                        : 'bg-emerald-600'
-                      : isLight
-                      ? 'bg-slate-200'
-                      : 'bg-slate-800'
+                      ? 'bg-indigo-500'
+                      : 'bg-slate-200 dark:bg-slate-800'
                   }`}
                 />
               )}

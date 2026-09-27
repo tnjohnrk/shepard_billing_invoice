@@ -53,41 +53,46 @@ export function StatusBar() {
   }, []);
 
   return (
-    <footer className="h-7 bg-white dark:bg-slate-950 border-t border-slate-300 dark:border-slate-800 px-4 flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400 select-none shadow-none">
+    <footer className="h-6 bg-slate-50/90 dark:bg-slate-950/90 border-t border-slate-200 dark:border-slate-800/80 px-4 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 select-none backdrop-blur-md">
       <div className="flex items-center gap-3">
-        {/* SQL Database Symbol with Green / Red Connection Signal */}
+        {/* SQL Database Symbol with Connection Signal */}
         <div 
           className="flex items-center gap-1.5 cursor-default" 
           title={isDbConnected ? 'SQL Database: Connected' : 'SQL Database: Disconnected'}
         >
-          <Database className={`w-3.5 h-3.5 ${isDbConnected ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`} />
+          <Database className={`w-3 h-3 ${isDbConnected ? 'text-emerald-500' : 'text-rose-500'}`} />
           <span 
-            className={`w-2 h-2 rounded-full transition-colors ${
+            className={`w-1.5 h-1.5 rounded-full ${
               isDbConnected 
-                ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.7)] animate-pulse' 
-                : 'bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.7)]'
+                ? 'bg-emerald-500 animate-pulse' 
+                : 'bg-rose-500'
             }`} 
           />
+          <span className="text-[10px] font-medium text-slate-600 dark:text-slate-400">SQLite Active</span>
         </div>
-        <span className="text-slate-300 dark:text-slate-700">|</span>
-        <span className="flex items-center gap-1.5">
-          <Mail className={`w-3 h-3 ${pendingCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-sky-600 dark:text-cyan-400'}`} />
+        <span className="text-slate-300 dark:text-slate-700">•</span>
+        <span className="flex items-center gap-1.5 text-[10px]">
+          <Mail className={`w-3 h-3 ${pendingCount > 0 ? 'text-amber-500' : 'text-slate-400'}`} />
           <span>
-            {pendingCount > 0 ? `Email Queue: ${pendingCount} Pending` : 'Email Queue: Ready'}
+            {pendingCount > 0 ? `Queue: ${pendingCount} Pending` : 'Queue: Idle'}
           </span>
         </span>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold ${isOnline ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800'}`}>
+        <div className={`flex items-center gap-1.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${
+          isOnline 
+            ? 'text-emerald-600 dark:text-emerald-400' 
+            : 'text-amber-600 dark:text-amber-400'
+        }`}>
           {isOnline ? (
             <>
-              <Wifi className="w-3 h-3" />
-              <span>System Online</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span>Online</span>
             </>
           ) : (
             <>
-              <WifiOff className="w-3 h-3" />
+              <WifiOff className="w-2.5 h-2.5" />
               <span>Offline Mode</span>
             </>
           )}

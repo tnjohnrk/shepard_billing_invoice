@@ -200,31 +200,31 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
   return (
     <div className="space-y-6">
       {/* Buyer Type Selector (Company vs Personal) */}
-      <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+      <div className="space-y-1.5">
+        <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Buyer Category / Type
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <button
             type="button"
             onClick={() => handleBuyerTypeChange('COMPANY')}
-            className={`p-3.5 rounded-2xl border-2 flex items-center gap-3 transition-all text-left cursor-pointer shadow-none ${
+            className={`p-3 rounded-xl border flex items-center gap-3 transition-all text-left cursor-pointer shadow-xs ${
               buyerType === 'COMPANY'
-                ? 'bg-emerald-50/50 dark:bg-emerald-950/40 border-emerald-600 dark:border-emerald-500 text-emerald-900 dark:text-emerald-200'
-                : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600'
+                ? 'bg-indigo-50/40 dark:bg-indigo-950/30 border-indigo-600 dark:border-indigo-500 text-indigo-900 dark:text-indigo-200 ring-1 ring-indigo-500/20'
+                : 'bg-white dark:bg-slate-900/60 border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
             }`}
           >
-            <div className={`p-2.5 rounded-xl border ${
+            <div className={`p-2 rounded-lg border shrink-0 ${
               buyerType === 'COMPANY'
-                ? 'bg-emerald-600 text-white border-emerald-600'
+                ? 'bg-indigo-600 text-white border-indigo-600'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
             }`}>
-              <Building2 className="w-5 h-5" />
+              <Building2 className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-sm font-bold flex items-center gap-1.5 text-slate-900 dark:text-slate-100">
+              <div className="text-xs font-bold flex items-center gap-1.5 text-slate-900 dark:text-slate-100">
                 <span>Company / Business</span>
-                {buyerType === 'COMPANY' && <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />}
+                {buyerType === 'COMPANY' && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />}
               </div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400">Registered GST business entity with GSTIN</div>
             </div>
@@ -233,23 +233,23 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
           <button
             type="button"
             onClick={() => handleBuyerTypeChange('INDIVIDUAL')}
-            className={`p-3.5 rounded-2xl border-2 flex items-center gap-3 transition-all text-left cursor-pointer shadow-none ${
+            className={`p-3 rounded-xl border flex items-center gap-3 transition-all text-left cursor-pointer shadow-xs ${
               buyerType === 'INDIVIDUAL'
-                ? 'bg-teal-50/50 dark:bg-teal-950/40 border-teal-600 dark:border-teal-500 text-teal-900 dark:text-teal-200'
-                : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600'
+                ? 'bg-cyan-50/40 dark:bg-cyan-950/30 border-cyan-600 dark:border-cyan-500 text-cyan-900 dark:text-cyan-200 ring-1 ring-cyan-500/20'
+                : 'bg-white dark:bg-slate-900/60 border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
             }`}
           >
-            <div className={`p-2.5 rounded-xl border ${
+            <div className={`p-2 rounded-lg border shrink-0 ${
               buyerType === 'INDIVIDUAL'
-                ? 'bg-teal-600 text-white border-teal-600'
+                ? 'bg-cyan-600 text-white border-cyan-600'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
             }`}>
-              <User className="w-5 h-5" />
+              <User className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-sm font-bold flex items-center gap-1.5 text-slate-900 dark:text-slate-100">
+              <div className="text-xs font-bold flex items-center gap-1.5 text-slate-900 dark:text-slate-100">
                 <span>Personal / Individual</span>
-                {buyerType === 'INDIVIDUAL' && <CheckCircle2 className="w-4 h-4 text-teal-600 dark:text-teal-400" />}
+                {buyerType === 'INDIVIDUAL' && <CheckCircle2 className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />}
               </div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400">Individual consumer or unregistered client</div>
             </div>
@@ -272,8 +272,8 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
         />
 
         {FEATURE_FLAGS.DETAILS_PANEL_ENABLED && showNameSuggestions && nameSuggestions.length > 0 && (
-          <div className="absolute z-50 w-full mt-1.5 rounded-2xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-none max-h-60 overflow-y-auto divide-y divide-slate-200 dark:divide-slate-800">
-            <div className="p-2.5 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800">
+          <div className="absolute z-50 w-full mt-1.5 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-lg max-h-60 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/60">
+            <div className="p-2 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
               <span>Matching Saved Companies (Click to Auto-Fill):</span>
             </div>
@@ -284,13 +284,13 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
                   e.preventDefault();
                   autoFillFromCustomer(c);
                 }}
-                className="p-3.5 cursor-pointer transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="p-3 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60"
               >
-                <div className="font-bold text-sm text-slate-900 dark:text-slate-100">{c.name}</div>
-                {c.address && <div className="text-xs mt-0.5 truncate text-slate-600 dark:text-slate-400">{c.address}</div>}
+                <div className="font-bold text-xs text-slate-900 dark:text-slate-100">{c.name}</div>
+                {c.address && <div className="text-[11px] mt-0.5 truncate text-slate-500 dark:text-slate-400">{c.address}</div>}
                 {c.gstin && (
-                  <div className="text-[11px] font-mono mt-1 flex items-center gap-1.5 font-bold text-indigo-600 dark:text-indigo-400">
-                    <span className="text-slate-500 dark:text-slate-400">GSTIN:</span>
+                  <div className="text-[10px] font-mono mt-1 flex items-center gap-1.5 font-bold text-indigo-600 dark:text-indigo-400">
+                    <span className="text-slate-400 dark:text-slate-500">GSTIN:</span>
                     <span>{c.gstin}</span>
                   </div>
                 )}
@@ -314,7 +314,7 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
               <button
                 type="button"
                 onClick={handleQuickSaveToDirectory}
-                className="inline-flex items-center gap-1 text-[11px] font-bold text-sky-600 dark:text-sky-400 hover:text-sky-700 hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 hover:underline cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Save "{formData.buyer_name}" to Details Directory</span>
@@ -326,13 +326,13 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
 
       {/* Address */}
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-bold uppercase tracking-wider flex items-center gap-1 text-slate-700 dark:text-slate-300">
+        <label className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 text-slate-500 dark:text-slate-400">
           <span>{buyerType === 'COMPANY' ? 'Company Registered Address' : 'Customer Address'}</span>
           <span className="text-rose-500">*</span>
         </label>
         <textarea
           rows={3}
-          className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-0 transition-colors shadow-none"
+          className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-xs"
           placeholder={buyerType === 'COMPANY' ? 'Enter company unit / street / city / postal address...' : 'Enter customer residence or billing address...'}
           value={formData.buyer_address || ''}
           onChange={(e) => onChange('buyer_address', e.target.value)}
@@ -356,8 +356,8 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
           />
 
           {FEATURE_FLAGS.DETAILS_PANEL_ENABLED && showGstinSuggestions && gstinSuggestions.length > 0 && (
-            <div className="absolute z-50 w-full mt-1.5 rounded-2xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-none max-h-60 overflow-y-auto divide-y divide-slate-200 dark:divide-slate-800">
-              <div className="p-2.5 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800">
+            <div className="absolute z-50 w-full mt-1.5 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-lg max-h-60 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/60">
+              <div className="p-2 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800">
                 <Sparkles className="w-3.5 h-3.5 text-cyan-500" />
                 <span>Matching GSTIN Records (Click to Auto-Fill):</span>
               </div>
@@ -368,11 +368,11 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
                     e.preventDefault();
                     autoFillFromCustomer(c);
                   }}
-                  className="p-3.5 cursor-pointer transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="p-3 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60"
                 >
                   <div className="text-cyan-600 dark:text-cyan-400 font-bold font-mono text-xs">{c.gstin || 'No GSTIN'}</div>
                   <div className="font-semibold text-xs mt-0.5 text-slate-900 dark:text-slate-100">{c.name}</div>
-                  {c.address && <div className="text-[11px] truncate mt-0.5 text-slate-600 dark:text-slate-400">{c.address}</div>}
+                  {c.address && <div className="text-[11px] truncate mt-0.5 text-slate-500 dark:text-slate-400">{c.address}</div>}
                 </div>
               ))}
             </div>
