@@ -2,6 +2,7 @@
  * Centralized Keyboard Shortcuts Configuration
  * Shepherd Invoice Application
  */
+import { FEATURE_FLAGS } from './featureFlags';
 
 export const SHORTCUT_CATEGORIES = {
   NAVIGATION: 'navigation',
@@ -9,7 +10,7 @@ export const SHORTCUT_CATEGORIES = {
   DOCUMENT: 'document'
 };
 
-export const KEYBOARD_SHORTCUTS = [
+const navigationShortcuts = [
   // 1. Global Navigation Shortcuts
   {
     id: 'nav_dashboard',
@@ -41,36 +42,59 @@ export const KEYBOARD_SHORTCUTS = [
     targetTab: 'history',
     isGlobal: true
   },
-  {
-    id: 'nav_details',
-    category: SHORTCUT_CATEGORIES.NAVIGATION,
-    label: 'Master Directory',
-    description: 'Open Buyers & Product Catalog Directory',
-    keys: ['Alt', '4'],
-    altKeys: ['Ctrl', 'Shift', 'D'],
-    targetTab: 'details',
-    isGlobal: true
-  },
-  {
-    id: 'nav_reports',
-    category: SHORTCUT_CATEGORIES.NAVIGATION,
-    label: 'Reports',
-    description: 'Open Daily, Monthly, and FY Reports',
-    keys: ['Alt', '5'],
-    altKeys: ['Ctrl', 'Shift', 'R'],
-    targetTab: 'reports',
-    isGlobal: true
-  },
-  {
-    id: 'nav_settings',
-    category: SHORTCUT_CATEGORIES.NAVIGATION,
-    label: 'Settings',
-    description: 'Open Backup, Passwords, Themes & Support',
-    keys: ['Alt', '6'],
-    altKeys: ['Ctrl', 'Shift', 'S'],
-    targetTab: 'settings',
-    isGlobal: true
-  },
+  ...(FEATURE_FLAGS.DETAILS_PANEL_ENABLED ? [
+    {
+      id: 'nav_details',
+      category: SHORTCUT_CATEGORIES.NAVIGATION,
+      label: 'Master Directory',
+      description: 'Open Buyers & Product Catalog Directory',
+      keys: ['Alt', '4'],
+      altKeys: ['Ctrl', 'Shift', 'D'],
+      targetTab: 'details',
+      isGlobal: true
+    },
+    {
+      id: 'nav_reports',
+      category: SHORTCUT_CATEGORIES.NAVIGATION,
+      label: 'Reports',
+      description: 'Open Daily, Monthly, and FY Reports',
+      keys: ['Alt', '5'],
+      altKeys: ['Ctrl', 'Shift', 'R'],
+      targetTab: 'reports',
+      isGlobal: true
+    },
+    {
+      id: 'nav_settings',
+      category: SHORTCUT_CATEGORIES.NAVIGATION,
+      label: 'Settings',
+      description: 'Open Backup, Passwords, Themes & Support',
+      keys: ['Alt', '6'],
+      altKeys: ['Ctrl', 'Shift', 'S'],
+      targetTab: 'settings',
+      isGlobal: true
+    }
+  ] : [
+    {
+      id: 'nav_reports',
+      category: SHORTCUT_CATEGORIES.NAVIGATION,
+      label: 'Reports',
+      description: 'Open Daily, Monthly, and FY Reports',
+      keys: ['Alt', '4'],
+      altKeys: ['Ctrl', 'Shift', 'R'],
+      targetTab: 'reports',
+      isGlobal: true
+    },
+    {
+      id: 'nav_settings',
+      category: SHORTCUT_CATEGORIES.NAVIGATION,
+      label: 'Settings',
+      description: 'Open Backup, Passwords, Themes & Support',
+      keys: ['Alt', '5'],
+      altKeys: ['Ctrl', 'Shift', 'S'],
+      targetTab: 'settings',
+      isGlobal: true
+    }
+  ]),
   {
     id: 'nav_lock',
     category: SHORTCUT_CATEGORIES.NAVIGATION,
@@ -87,7 +111,11 @@ export const KEYBOARD_SHORTCUTS = [
     keys: ['F1'],
     altKeys: ['Shift', '?'],
     isGlobal: true
-  },
+  }
+];
+
+export const KEYBOARD_SHORTCUTS = [
+  ...navigationShortcuts,
 
   // 2. Invoice Wizard & Form Data Entry
   {
@@ -112,7 +140,6 @@ export const KEYBOARD_SHORTCUTS = [
     label: 'Next Wizard Step',
     description: 'Advance to next step in invoice creation wizard',
     keys: ['Alt', 'N'],
-    altKeys: ['Alt', '→'],
     isGlobal: false
   },
   {
@@ -121,7 +148,6 @@ export const KEYBOARD_SHORTCUTS = [
     label: 'Previous Wizard Step',
     description: 'Go back to previous step without losing entered data',
     keys: ['Alt', 'P'],
-    altKeys: ['Alt', '←'],
     isGlobal: false
   },
   {

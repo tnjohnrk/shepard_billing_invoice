@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { FEATURE_FLAGS } from '../../shared/constants/featureFlags';
 
 /**
  * Global Keyboard Shortcuts Hook
@@ -51,14 +52,20 @@ export function useKeyboardShortcuts({
         return;
       }
 
-      // 3. Global Navigation via Alt + Number (Alt + 1..6)
+      // 3. Global Navigation via Alt + Number
       if (isAlt && !isCtrlOrMeta) {
         if (key === '1') { e.preventDefault(); onNavigate?.('dashboard'); return; }
         if (key === '2') { e.preventDefault(); onNavigate?.('create'); return; }
         if (key === '3') { e.preventDefault(); onNavigate?.('history'); return; }
-        if (key === '4') { e.preventDefault(); onNavigate?.('details'); return; }
-        if (key === '5') { e.preventDefault(); onNavigate?.('reports'); return; }
-        if (key === '6') { e.preventDefault(); onNavigate?.('settings'); return; }
+        
+        if (FEATURE_FLAGS.DETAILS_PANEL_ENABLED) {
+          if (key === '4') { e.preventDefault(); onNavigate?.('details'); return; }
+          if (key === '5') { e.preventDefault(); onNavigate?.('reports'); return; }
+          if (key === '6') { e.preventDefault(); onNavigate?.('settings'); return; }
+        } else {
+          if (key === '4') { e.preventDefault(); onNavigate?.('reports'); return; }
+          if (key === '5') { e.preventDefault(); onNavigate?.('settings'); return; }
+        }
       }
 
       // 4. Global Navigation via Ctrl + Shift + Key
@@ -67,7 +74,9 @@ export function useKeyboardShortcuts({
         if (lowerKey === '1') { e.preventDefault(); onNavigate?.('dashboard'); return; }
         if (lowerKey === 'n') { e.preventDefault(); onNavigate?.('create'); return; }
         if (lowerKey === 'h') { e.preventDefault(); onNavigate?.('history'); return; }
-        if (lowerKey === 'd') { e.preventDefault(); onNavigate?.('details'); return; }
+        if (FEATURE_FLAGS.DETAILS_PANEL_ENABLED && lowerKey === 'd') {
+          e.preventDefault(); onNavigate?.('details'); return;
+        }
         if (lowerKey === 'r') { e.preventDefault(); onNavigate?.('reports'); return; }
         if (lowerKey === 's') { e.preventDefault(); onNavigate?.('settings'); return; }
       }

@@ -41,7 +41,7 @@ export default function App() {
     }
   }, []);
 
-  // Global Keyboard Shortcuts (Alt+1..6, Ctrl+Shift+N/H/D/R/S/L, F1, Shift+?)
+  // Global Keyboard Shortcuts (Alt+1..5, Ctrl+Shift+N/H/R/S/L, F1, Shift+?)
   useKeyboardShortcuts({
     onNavigate: (tab) => {
       if (tab !== 'create') setCreateInitialData(null);
@@ -52,6 +52,13 @@ export default function App() {
     onToggleHelp: () => setIsShortcutsModalOpen(prev => !prev),
     isLocked: isLocked || isInitializing || !isActivated || !isPasswordSet
   });
+
+  // Automatically reset to dashboard if activeTab is details and feature is disabled
+  useEffect(() => {
+    if (!FEATURE_FLAGS.DETAILS_PANEL_ENABLED && activeTab === 'details') {
+      setActiveTab('dashboard');
+    }
+  }, [activeTab]);
 
   const checkLicenseAndLockState = useCallback(async () => {
     try {
@@ -128,6 +135,7 @@ export default function App() {
       return false;
     }
   };
+
   const handleDuplicateInvoice = (invoiceData) => {
     setCreateInitialData(invoiceData);
     setActiveTab('create');
@@ -283,5 +291,3 @@ export default function App() {
     </>
   );
 }
-
-
