@@ -8,7 +8,7 @@ app.whenReady().then(async () => {
     const blankInvoice = {
       invoice_type: 'TAX',
       invoice_number: 'SEPL/2024-25/____',
-      invoice_date: new Date().toISOString().split('T')[0],
+      invoice_date: '___ / ___ / 2026',
       buyer_name: '',
       buyer_address: '',
       customer_gstin: '',
@@ -27,6 +27,13 @@ app.whenReady().then(async () => {
           quantity: '',
           rate: '',
           amount: ''
+        },
+        {
+          description: '',
+          hsn_sac: '',
+          quantity: '',
+          rate: '',
+          amount: ''
         }
       ],
       subtotal: 0,
@@ -38,7 +45,7 @@ app.whenReady().then(async () => {
       igst_amount: 0,
       round_off: 0,
       grand_total: 0,
-      amount_in_words: 'Zero Rupees Only',
+      amount_in_words: '',
       notes: ''
     };
 
@@ -83,7 +90,7 @@ app.whenReady().then(async () => {
     });
 
     fs.writeFileSync(outputPath, pdfBuffer);
-    console.log('Successfully generated Blank Invoice PDF:', outputPath);
+    console.log('Successfully generated clean Blank Invoice PDF:', outputPath);
   } catch (err) {
     console.error('Error generating PDF:', err);
   } finally {

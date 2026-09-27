@@ -196,7 +196,15 @@ export function renderInvoiceHtml(invoiceData) {
     const itemRowsHtml = page.items.map((item, idx) => {
       const isFirstOverallItem = page.isFirstPage && idx === 0;
       const formattedDesc = escapeHtml(item.description || '').replace(/\r?\n/g, '<br/>');
-      return `<tr class="item-data-row"><td class="col-desc"><div class="item-desc-text">${formattedDesc}</div>${isFirstOverallItem ? refsHtml : ''}</td><td class="col-hsn">${escapeHtml(item.hsn_sac || '-')}</td><td class="col-qty">${item.quantity || 0}</td><td class="col-rate">${formatCurrency(item.rate)}</td><td class="col-amount">${formatCurrency(item.amount || (item.quantity * item.rate))}</td></tr>`;
+      const isBlankItem = !item.description && !item.quantity && !item.rate && !item.amount;
+
+      const descHtml = formattedDesc ? `<div class="item-desc-text">${formattedDesc}</div>` : '&nbsp;';
+      const hsnHtml = isBlankItem || !item.hsn_sac || item.hsn_sac === '-' ? '&nbsp;' : escapeHtml(item.hsn_sac);
+      const qtyHtml = isBlankItem || item.quantity === '' || item.quantity == null ? '&nbsp;' : item.quantity;
+      const rateHtml = isBlankItem || item.rate === '' || item.rate == null ? '&nbsp;' : formatCurrency(item.rate);
+      const amountHtml = isBlankItem || item.amount === '' || item.amount == null ? '&nbsp;' : formatCurrency(item.amount || (item.quantity * item.rate));
+
+      return `<tr class="item-data-row"><td class="col-desc">${descHtml}${isFirstOverallItem ? refsHtml : ''}</td><td class="col-hsn">${hsnHtml}</td><td class="col-qty">${qtyHtml}</td><td class="col-rate">${rateHtml}</td><td class="col-amount">${amountHtml}</td></tr>`;
     }).join('');
 
     const fillerRowsHtml = page.hasTotalsAndFooter ? `
