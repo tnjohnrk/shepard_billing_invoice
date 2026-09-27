@@ -78,17 +78,6 @@ export function SplashScreen() {
             </span>
           </div>
         </div>
-
-        {/* Footer Badges */}
-        <div className="pt-2 border-t border-slate-100 dark:border-[#30363d]/80 w-full flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 font-semibold">
-          <span className="flex items-center gap-1">
-            <ShieldCheck className="w-3 h-3 text-emerald-500" /> Offline Local Mode
-          </span>
-          <span className="font-mono bg-slate-100 dark:bg-[#0d1117] px-1.5 py-0.5 rounded border border-slate-200 dark:border-[#30363d]">
-            v1.0
-          </span>
-        </div>
-
       </div>
     </div>
   );
