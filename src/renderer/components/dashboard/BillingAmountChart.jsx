@@ -38,7 +38,7 @@ export function BillingAmountChart({ data = [], title = "Billing Revenue Trend (
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke={isLight ? '#e2e8f0' : '#334155'} vertical={false} />
-            <XAxis dataKey="month" stroke={isLight ? '#64748b' : '#94a3b8'} fontSize={11} tickLine={false} />
+            <XAxis dataKey="month" stroke={isLight ? '#64748b' : '#94a3b8'} fontSize={11} tickLine={false} minTickGap={16} />
             <YAxis 
               stroke={isLight ? '#64748b' : '#94a3b8'} 
               fontSize={11} 

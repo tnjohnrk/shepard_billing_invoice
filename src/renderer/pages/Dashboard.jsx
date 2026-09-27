@@ -260,26 +260,59 @@ export function Dashboard({ onViewInvoice, onNavigateCreate, licenseStatus: prop
     const periodBilling = periodInvoices.reduce((acc, i) => acc + (Number(i.grand_total) || 0), 0);
     const avgInvoiceValue = periodInvoices.length > 0 ? Math.round(periodBilling / periodInvoices.length) : 0;
 
-    // Build Chart Data
-    const actData = activeMonths.map(({ key, label }) => {
-      const invCount = rawInvoices.filter(i => (i.invoice_date || '').startsWith(key)).length;
-      const proCount = rawProformas.filter(p => ((p.proforma_date || p.invoice_date) || '').startsWith(key)).length;
-      return {
-        month: label,
-        invoices: invCount,
-        proformas: proCount
-      };
-    });
+    // Build Chart Data: Daily breakdown when viewing a single month, Monthly breakdown otherwise
+    let actData = [];
+    let revData = [];
 
-    const revData = activeMonths.map(({ key, label }) => {
-      const rev = rawInvoices
-        .filter(i => (i.invoice_date || '').startsWith(key))
-        .reduce((acc, i) => acc + (Number(i.grand_total) || 0), 0);
-      return {
-        month: label,
-        amount: Math.round(rev)
-      };
-    });
+    if (activeMonths.length === 1) {
+      const targetKey = activeMonths[0].key; // e.g. "2026-09"
+      const [yStr, mStr] = targetKey.split('-');
+      const year = parseInt(yStr, 10);
+      const monthIdx = parseInt(mStr, 10) - 1;
+      const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+      const shortMonth = MONTH_NAMES[monthIdx];
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dayStr = String(d).padStart(2, '0');
+        const dayKey = `${targetKey}-${dayStr}`;
+        const dayLabel = `${d} ${shortMonth}`;
+
+        const invsOnDay = rawInvoices.filter(i => (i.invoice_date || '').startsWith(dayKey));
+        const prosOnDay = rawProformas.filter(p => ((p.proforma_date || p.invoice_date) || '').startsWith(dayKey));
+        const revOnDay = invsOnDay.reduce((acc, i) => acc + (Number(i.grand_total) || 0), 0);
+
+        actData.push({
+          month: dayLabel,
+          invoices: invsOnDay.length,
+          proformas: prosOnDay.length
+        });
+
+        revData.push({
+          month: dayLabel,
+          amount: Math.round(revOnDay)
+        });
+      }
+    } else {
+      actData = activeMonths.map(({ key, label }) => {
+        const invCount = rawInvoices.filter(i => (i.invoice_date || '').startsWith(key)).length;
+        const proCount = rawProformas.filter(p => ((p.proforma_date || p.invoice_date) || '').startsWith(key)).length;
+        return {
+          month: label,
+          invoices: invCount,
+          proformas: proCount
+        };
+      });
+
+      revData = activeMonths.map(({ key, label }) => {
+        const rev = rawInvoices
+          .filter(i => (i.invoice_date || '').startsWith(key))
+          .reduce((acc, i) => acc + (Number(i.grand_total) || 0), 0);
+        return {
+          month: label,
+          amount: Math.round(rev)
+        };
+      });
+    }
 
     // Recent combined invoices
     const combinedRaw = [
