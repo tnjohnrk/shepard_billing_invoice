@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, RotateCcw, AlertTriangle, Search, RefreshCw, Trash } from 'lucide-react';
+import { Trash2, RotateCcw, Search, RefreshCw, Trash } from 'lucide-react';
 import { Table } from '../common/Table';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
@@ -208,11 +208,7 @@ export function RecycleBin({ toast }) {
                       {docNum}
                     </td>
                     <td className="px-4 py-3.5 border-r border-slate-200 dark:border-slate-800">
-                      <span className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
-                        isProforma 
-                          ? 'bg-cyan-50 dark:bg-cyan-950 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800' 
-                          : 'bg-indigo-50 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
-                      }`}>
+                      <span className="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-[#21262d] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#30363d]">
                         {isProforma ? 'PROFORMA' : (item.invoice_type || 'NORMAL')}
                       </span>
                     </td>
@@ -233,7 +229,7 @@ export function RecycleBin({ toast }) {
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => setRestoreTarget(item)}
-                          className="p-1.5 rounded-lg text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900 transition-colors flex items-center gap-1 text-xs font-semibold px-2.5 py-1 border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950 cursor-pointer shadow-none"
+                          className="rounded-lg text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 bg-slate-100/80 dark:bg-[#21262d] hover:bg-slate-200 dark:hover:bg-[#30363d] transition-colors flex items-center gap-1 text-xs font-semibold px-2.5 py-1 border border-slate-200 dark:border-[#30363d] cursor-pointer shadow-none"
                           title="Restore to Active Invoices"
                         >
                           <RotateCcw className="w-3.5 h-3.5" />
@@ -242,7 +238,7 @@ export function RecycleBin({ toast }) {
 
                         <button
                           onClick={() => setPermDeleteTarget(item)}
-                          className="p-1.5 rounded-lg text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900 transition-colors flex items-center gap-1 text-xs font-semibold px-2.5 py-1 border border-rose-300 dark:border-rose-800 bg-rose-50 dark:bg-rose-950 cursor-pointer shadow-none"
+                          className="rounded-lg text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 bg-slate-100/80 dark:bg-[#21262d] hover:bg-rose-500/10 dark:hover:bg-rose-950/40 transition-colors flex items-center gap-1 text-xs font-semibold px-2.5 py-1 border border-slate-200 dark:border-[#30363d] cursor-pointer shadow-none"
                           title="Delete Permanently"
                         >
                           <Trash2 className="w-3.5 h-3.5" />

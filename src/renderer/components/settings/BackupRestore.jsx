@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   HardDriveDownload, RotateCcw, Mail, RefreshCw, Save, Laptop, 
-  ArrowRight, CheckCircle2, ShieldCheck, HelpCircle, Send, 
-  Clock, AlertCircle, Eye, EyeOff, Check 
+  CheckCircle2, ShieldCheck, Send, 
+  Clock, Eye, EyeOff, Check 
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';

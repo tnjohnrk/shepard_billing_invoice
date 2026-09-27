@@ -285,7 +285,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 alt="Shepherd Enterprises"
                                 className="w-[125px] h-[125px] object-contain mx-auto block"
                               />
-                              <div className="text-[10px] font-black uppercase mt-1.5 text-slate-900 tracking-wider">
+                              <div className="text-[10px] font-black uppercase mt-1.5 text-slate-900 tracking-wider whitespace-nowrap">
                                 SHEPHERD ENTERPRISES
                               </div>
                               <div className="text-[8px] font-mono font-bold text-slate-800 break-all leading-tight mt-1 max-w-[155px] mx-auto">
@@ -293,10 +293,10 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                               </div>
                             </td>
                             <td className="w-[76%] align-middle text-center p-3">
-                              <div className="text-[40px] font-black uppercase tracking-[11px] text-blue-900 leading-none pl-[11px] whitespace-nowrap">
+                              <div className="text-[42px] font-black uppercase tracking-[12px] text-blue-900 leading-none pl-[12px] whitespace-nowrap">
                                 SHEPHERD
                               </div>
-                              <div className="text-[17.5px] font-black uppercase tracking-[5px] text-blue-900 leading-tight mt-1.5 pl-[5px] whitespace-nowrap">
+                              <div className="text-[19px] font-black uppercase tracking-[7px] text-blue-900 leading-tight mt-2 pl-[7px] whitespace-nowrap">
                                 ENTERPRISES PRIVATE LIMITED
                               </div>
                               <p className="text-[8.8px] font-bold text-slate-900 leading-tight uppercase tracking-[0.2px] mt-2.5 mb-1 whitespace-nowrap">
@@ -402,7 +402,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                           {/* Customer GSTIN & State Code Row */}
                           <tr>
                             <td className="w-[50%] p-2 border-r-[1.5px] border-black align-middle font-bold text-[11.5px]">
-                              CUSTOMER' GSTIN: {fullData.customer_gstin || 'N/A'}
+                              CUSTOMER'S GSTIN: {fullData.customer_gstin || 'N/A'}
                             </td>
                             <td className="w-[50%] p-2 align-middle space-y-0.5 text-[11px]">
                               <div>
@@ -612,25 +612,25 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                     <table className="w-full border-collapse text-[10px]">
                       <tbody>
                         <tr>
-                          <td className="w-[50%] align-top p-2.5 border-r-[1.5px] border-black">
-                            <div className="font-bold uppercase text-[11px] text-slate-900 mb-1">TERMS AND CONDITIONS</div>
-                            <div className="text-[9.5px] text-slate-800 leading-tight">
+                          <td className="w-[50%] align-top p-3 border-r-[1.5px] border-black">
+                            <div className="font-bold uppercase text-[11px] text-slate-900 mb-1.5">TERMS AND CONDITIONS</div>
+                            <div className="text-[9.5px] text-slate-800 leading-relaxed">
                               We declare that this invoice shows the actual value of services described and that all particulars are true and correct.
                             </div>
                             {fullData.notes && (
-                              <div className="text-[9.5px] text-slate-800 mt-1">
+                              <div className="text-[9.5px] text-slate-800 mt-2">
                                 <strong>Notes:</strong> {fullData.notes}
                               </div>
                             )}
                           </td>
-                          <td className="w-[50%] align-top p-2.5 text-center">
+                          <td className="w-[50%] align-top p-3 text-center">
                             <div className="font-bold text-[9.5px] uppercase text-slate-800 mb-1">
                               CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT
                             </div>
                             <div className="font-black text-[12px] text-blue-900 mb-1">
                               For SHEPHERD ENTERPRISES PRIVATE LIMITED
                             </div>
-                            <div className="h-10"></div>
+                            <div className="h-[88px]"></div>
                             <div className="font-bold text-[11.5px] text-right pr-4 text-slate-950">
                               Director
                             </div>

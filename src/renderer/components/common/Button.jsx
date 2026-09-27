@@ -21,9 +21,9 @@ export function Button({
   };
 
   const variantStyles = {
-    primary: 'btn-primary bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-xs hover:shadow-sm border border-indigo-500/30',
+    primary: 'btn-primary bg-[#0969da] hover:bg-[#085ac5] active:bg-[#074ea8] dark:bg-[#1f6feb] dark:hover:bg-[#388bfd] text-white shadow-xs hover:shadow-sm border border-[#0969da]/30 dark:border-[#1f6feb]/30',
     secondary: 'btn-secondary bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700',
-    accent: 'btn-accent bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/60',
+    accent: 'btn-accent bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-[#0969da] dark:text-[#388bfd] border border-blue-200/80 dark:border-blue-900/60',
     success: 'btn-success bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white shadow-xs border border-emerald-500/30',
     danger: 'btn-danger bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60',
     ghost: 'btn-ghost bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800/70 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 border border-transparent'

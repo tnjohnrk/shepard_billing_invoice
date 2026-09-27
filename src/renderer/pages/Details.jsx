@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PageContainer } from '../components/layout/PageContainer';
 import { CompanyDetailsTab } from '../components/details/CompanyDetailsTab';
 import { ProductDetailsTab } from '../components/details/ProductDetailsTab';
-import { Building2, Package, Sparkles } from 'lucide-react';
+import { Building2, Package } from 'lucide-react';
 
 export function Details({ toast }) {
   const [activeSubTab, setActiveSubTab] = useState('companies'); // 'companies' | 'products'
@@ -16,7 +16,7 @@ export function Details({ toast }) {
             onClick={() => setActiveSubTab('companies')}
             className={`flex items-center gap-2.5 px-5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeSubTab === 'companies'
-                ? 'bg-sky-500 dark:bg-sky-600 text-white shadow-none'
+                ? 'bg-[#0969da] dark:bg-[#1f6feb] text-white shadow-none'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
@@ -28,7 +28,7 @@ export function Details({ toast }) {
             onClick={() => setActiveSubTab('products')}
             className={`flex items-center gap-2.5 px-5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeSubTab === 'products'
-                ? 'bg-sky-500 dark:bg-sky-600 text-white shadow-none'
+                ? 'bg-[#0969da] dark:bg-[#1f6feb] text-white shadow-none'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >

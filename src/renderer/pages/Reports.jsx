@@ -8,7 +8,7 @@ import { Button } from '../components/common/Button';
 import { Input } from '../components/common/Input';
 import { Select } from '../components/common/Select';
 import { Table } from '../components/common/Table';
-import { FileSpreadsheet, Download, Users, FileText } from 'lucide-react';
+import { FileSpreadsheet, Download, Users } from 'lucide-react';
 import { ipcClient } from '../services/ipcClient';
 
 export function Reports({ toast }) {
@@ -162,7 +162,7 @@ export function Reports({ toast }) {
 
         {reportType === 'customer' && (
           <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-            <Users className="w-4 h-4 text-indigo-500" />
+            <Users className="w-4 h-4 text-[#0969da] dark:text-[#388bfd]" />
             <span>Aggregated billing summary across all registered client accounts.</span>
           </div>
         )}
