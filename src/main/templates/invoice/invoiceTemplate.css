@@ -130,6 +130,7 @@ body {
   margin-top: 6px;
   letter-spacing: 0.5px;
   color: #0f172a;
+  white-space: nowrap;
 }
 
 .company-upi-tag {

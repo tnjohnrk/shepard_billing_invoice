@@ -285,7 +285,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 alt="Shepherd Enterprises"
                                 className="w-[125px] h-[125px] object-contain mx-auto block"
                               />
-                              <div className="text-[10px] font-black uppercase mt-1.5 text-slate-900 tracking-wider">
+                              <div className="text-[10px] font-black uppercase mt-1.5 text-slate-900 tracking-wider whitespace-nowrap">
                                 SHEPHERD ENTERPRISES
                               </div>
                               <div className="text-[8px] font-mono font-bold text-slate-800 break-all leading-tight mt-1 max-w-[155px] mx-auto">
