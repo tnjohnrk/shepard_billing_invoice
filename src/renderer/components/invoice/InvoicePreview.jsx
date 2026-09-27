@@ -630,7 +630,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                             <div className="font-black text-[12px] text-blue-900 mb-1">
                               For SHEPHERD ENTERPRISES PRIVATE LIMITED
                             </div>
-                            <div className="h-16"></div>
+                            <div className="h-[88px]"></div>
                             <div className="font-bold text-[11.5px] text-right pr-4 text-slate-950">
                               Director
                             </div>

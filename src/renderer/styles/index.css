@@ -204,7 +204,7 @@ button:active:not(:disabled) {
 }
 
 /* ========================================================================= */
-/* DARK MODE THEME SYSTEM (Task Manager Dark Aesthetic)                      */
+/* DARK MODE THEME SYSTEM (GitHub Dark Dimmed / Flat Matte Light-Black)      */
 /* ========================================================================= */
 
 .dark {
@@ -216,81 +216,190 @@ button:active:not(:disabled) {
 .dark body,
 .dark #root,
 .dark main {
-  background-color: #090d16;
-  color: #f8fafc;
+  background-color: #0d1117;
+  color: #e6edf3;
+}
+
+/* Remove all translucent glass, blur, neon rings, and glow effects in Dark Mode */
+.dark,
+.dark * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  text-shadow: none !important;
+}
+
+.dark [class*="backdrop-blur"],
+.dark [class*="backdrop-blur-sm"],
+.dark [class*="backdrop-blur-md"],
+.dark [class*="backdrop-blur-lg"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.dark [class*="ring-"] {
+  --tw-ring-shadow: none !important;
+  --tw-ring-offset-shadow: none !important;
+  box-shadow: none !important;
+}
+
+/* Eliminate glowing semi-transparent badges and card highlights */
+.dark .bg-indigo-950\/30,
+.dark .bg-indigo-900\/60,
+.dark .bg-indigo-500\/10,
+.dark .bg-indigo-500\/20,
+.dark .bg-sky-500\/10,
+.dark .bg-sky-500\/20,
+.dark .bg-blue-500\/10,
+.dark .bg-blue-500\/20,
+.dark .bg-emerald-500\/10,
+.dark .bg-amber-500\/10,
+.dark .bg-amber-500\/20,
+.dark .bg-rose-500\/10 {
+  background-color: #1c2128 !important;
+}
+
+.dark .border-indigo-500,
+.dark .border-indigo-500\/20,
+.dark .border-indigo-500\/30,
+.dark .border-indigo-700,
+.dark .border-sky-500\/30,
+.dark .border-blue-500\/30,
+.dark .border-emerald-500\/30,
+.dark .border-amber-500\/20,
+.dark .border-rose-500\/20 {
+  border-color: #30363d !important;
+}
+
+/* Make primary action gradients flat matte in dark mode */
+.dark button.bg-gradient-to-r,
+.dark button.bg-gradient-to-br,
+.dark div.bg-gradient-to-r,
+.dark div.bg-gradient-to-br {
+  background-image: none !important;
+  background-color: #1f6feb !important;
 }
 
 /* Layout & Backgrounds in Dark Mode */
-.dark .bg-slate-950 {
-  background-color: #090d16;
+.dark .bg-slate-950,
+.dark .bg-slate-950\/90,
+.dark .bg-slate-950\/80 {
+  background-color: #0d1117 !important;
 }
 
-.dark .bg-slate-900 {
-  background-color: #0f172a;
+.dark .bg-slate-900,
+.dark .bg-slate-900\/80,
+.dark .bg-slate-900\/60,
+.dark .bg-slate-900\/50,
+.dark .bg-white\/80,
+.dark .bg-white\/90 {
+  background-color: #161b22 !important;
+}
+
+.dark .bg-slate-800,
+.dark .bg-slate-800\/60,
+.dark .bg-slate-800\/40,
+.dark .bg-slate-50\/50,
+.dark .bg-slate-50\/60 {
+  background-color: #161b22 !important;
+}
+
+.dark .hover\:bg-slate-800:hover,
+.dark .hover\:bg-slate-800\/60:hover,
+.dark .hover\:bg-slate-700\/60:hover {
+  background-color: #21262d !important;
+}
+
+/* Borders in Dark Mode (Soft, relaxed border without eye clash) */
+.dark .border-slate-800,
+.dark .border-slate-800\/80,
+.dark .border-slate-700,
+.dark .border-slate-700\/60,
+.dark .border-slate-200\/80,
+.dark .border-slate-300 {
+  border-color: #30363d !important;
 }
 
 /* Sidebar & Navigation in Dark Mode */
 .dark aside {
-  background-color: #0c111d;
-  border-color: #1e293b;
+  background-color: #161b22 !important;
+  border-color: #30363d !important;
 }
 
 /* Header & Status Bar in Dark Mode */
 .dark header {
-  background-color: rgba(15, 23, 42, 0.85);
-  border-color: #1e293b;
+  background-color: #161b22 !important;
+  border-color: #30363d !important;
 }
 
 .dark footer {
-  background-color: #0c111d;
-  border-color: #1e293b;
-  color: #94a3b8;
+  background-color: #161b22 !important;
+  border-color: #30363d !important;
+  color: #8b949e !important;
 }
 
 /* Glass Panels and Cards in Dark Mode */
 .dark .glass-panel,
 .dark .glass-card {
-  background: #0f172a;
-  border-color: #1e293b;
+  background: #161b22 !important;
+  border-color: #30363d !important;
 }
 
 /* Form Controls (Inputs, Selects, Textareas) in Dark Mode */
 .dark input:not([type="checkbox"]):not([type="radio"]),
 .dark select,
 .dark textarea {
-  background-color: #0f172a;
-  border-color: #1e293b;
-  color: #f8fafc;
+  background-color: #0d1117;
+  border-color: #30363d;
+  color: #e6edf3;
 }
 
 .dark input:not([type="checkbox"]):not([type="radio"]):focus,
 .dark select:focus,
 .dark textarea:focus {
-  border-color: #6366f1;
+  border-color: #1f6feb;
 }
 
 .dark input::placeholder,
 .dark textarea::placeholder {
-  color: #64748b;
+  color: #6e7681;
 }
 
 .dark select option {
-  background-color: #0f172a;
-  color: #f8fafc;
+  background-color: #161b22;
+  color: #e6edf3;
+}
+
+/* Text hierarchy for readability and zero eye clash */
+.dark .text-slate-100,
+.dark .text-slate-200 {
+  color: #f0f6fc;
+}
+
+.dark .text-slate-300 {
+  color: #c9d1d9;
+}
+
+.dark .text-slate-400 {
+  color: #8b949e;
+}
+
+.dark .text-slate-500 {
+  color: #7d8590;
 }
 
 /* Scrollbars in Dark Mode */
 .dark ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #0d1117;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #21262d;
   border-radius: 9999px;
+  border: 1px solid #30363d;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #30363d;
 }
 
 @keyframes toast-progress {
