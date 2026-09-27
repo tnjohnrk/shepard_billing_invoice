@@ -401,7 +401,7 @@ export function Dashboard({ onViewInvoice, onNavigateCreate, licenseStatus: prop
       <div className="p-2.5 px-3 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
         <div className="flex flex-wrap items-center gap-1.5">
           <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mr-1.5">
-            <Filter className="w-3.5 h-3.5 text-[#0078d4]" />
+            <Filter className="w-3.5 h-3.5 text-indigo-500" />
             <span>Range:</span>
           </div>
 
@@ -420,7 +420,7 @@ export function Dashboard({ onViewInvoice, onNavigateCreate, licenseStatus: prop
                 onClick={() => handleQuickPeriodChange(tab.id)}
                 className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-[#0078d4] text-white shadow-xs font-bold'
+                    ? 'bg-indigo-600 text-white shadow-xs font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
                 }`}
               >
@@ -433,13 +433,13 @@ export function Dashboard({ onViewInvoice, onNavigateCreate, licenseStatus: prop
         {/* Specific Month Dropdown */}
         <div className="flex items-center gap-2 shrink-0">
           <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-            <CalendarDays className="w-3.5 h-3.5 text-[#0078d4]" />
+            <CalendarDays className="w-3.5 h-3.5 text-indigo-500" />
             <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Custom Month:</span>
           </div>
           <select
             value={selectedPeriod === 'custom_month' ? customMonth : ''}
             onChange={handleCustomMonthChange}
-            className="px-2.5 py-1 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4] cursor-pointer"
+            className="px-2.5 py-1 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer"
           >
             <option value="" disabled>-- Pick Month --</option>
             {availableMonthOptions.map(opt => (

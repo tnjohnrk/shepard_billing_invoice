@@ -144,7 +144,7 @@ export function ProductDetailsTab({ toast }) {
             placeholder="Search product name or HSN code..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#0078d4] shadow-none"
+            className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-sky-500 shadow-none"
           />
         </div>
 
@@ -189,7 +189,7 @@ export function ProductDetailsTab({ toast }) {
                 <div className="flex items-center justify-end gap-1.5">
                   <button
                     onClick={() => handleOpenEdit(prod)}
-                    className="p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-[#0078d4] dark:hover:text-[#4cc2ff] hover:bg-[#0078d4]/5 dark:hover:bg-[#0078d4]/20 transition-colors cursor-pointer"
+                    className="p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 hover:bg-sky-50 dark:hover:bg-sky-950 transition-colors cursor-pointer"
                     title="Edit Product"
                   >
                     <Edit2 className="w-4 h-4" />

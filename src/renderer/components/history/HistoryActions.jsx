@@ -16,7 +16,7 @@ export function HistoryActions({ invoice, onView, onPrint, onPdf, onExcel, onDup
 
       <button
         onClick={() => onPrint(invoice)}
-        className="p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-[#0078d4] dark:hover:text-[#4cc2ff] hover:bg-[#0078d4]/5 dark:hover:bg-[#0078d4]/20/60 transition-colors"
+        className="p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 transition-colors"
         title="Print Document"
       >
         <Printer className="w-4 h-4" />
@@ -49,7 +49,7 @@ export function HistoryActions({ invoice, onView, onPrint, onPdf, onExcel, onDup
       ) : (
         <button
           onClick={() => onConvert(invoice)}
-          className="p-1.5 rounded-lg text-[#006cb8] dark:text-[#4cc2ff] hover:bg-[#0078d4]/10 dark:hover:bg-[#005fa3]/60 transition-colors flex items-center gap-1 text-[11px] font-bold px-2 py-1 bg-[#0078d4]/5 dark:bg-[#0078d4]/20 border border-[#0078d4]/30 dark:border-[#005fa3]/40"
+          className="p-1.5 rounded-lg text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-colors flex items-center gap-1 text-[11px] font-bold px-2 py-1 bg-indigo-50 dark:bg-indigo-950 border border-indigo-200 dark:border-indigo-800/40"
           title="Convert Proforma to Tax Invoice"
         >
           <ArrowRightLeft className="w-3.5 h-3.5" />

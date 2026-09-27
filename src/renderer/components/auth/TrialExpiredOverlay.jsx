@@ -227,7 +227,7 @@ export function TrialExpiredOverlay({ licenseStatus, onLicenseUpdated, onLockApp
                       }}
                       autoFocus
                       required
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 pr-10 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#0078d4] font-mono"
+                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 pr-10 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 font-mono"
                     />
                     <button
                       type="button"

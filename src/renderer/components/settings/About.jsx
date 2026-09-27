@@ -21,7 +21,7 @@ export function About() {
       </div>
 
       <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs space-y-2 text-slate-700 dark:text-slate-300 shadow-none">
-        <div className="font-bold uppercase tracking-wider text-[10px] text-[#0078d4] dark:text-[#4cc2ff]">Developer-Locked System Policy</div>
+        <div className="font-bold uppercase tracking-wider text-[10px] text-indigo-600 dark:text-indigo-400">Developer-Locked System Policy</div>
         <p className="leading-relaxed">
           The invoice design, company GSTIN, company address, bank account details, QR codes, signature blocks, and declarations are strictly fixed and developer-controlled for complete audit and GST compliance.
         </p>
@@ -36,7 +36,7 @@ export function About() {
       </div>
 
       <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-1">
-        <span>Powered by <strong className="text-[#0078d4] dark:text-[#4cc2ff]">Vibe2Code</strong></span>
+        <span>Powered by <strong className="text-indigo-600 dark:text-indigo-400">Vibe2Code</strong></span>
         <span>Website: <strong className="text-slate-700 dark:text-slate-300">vibe2code.in</strong></span>
       </div>
     </div>

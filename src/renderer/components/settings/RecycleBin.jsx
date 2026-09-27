@@ -211,7 +211,7 @@ export function RecycleBin({ toast }) {
                       <span className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
                         isProforma 
                           ? 'bg-cyan-50 dark:bg-cyan-950 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800' 
-                          : 'bg-[#0078d4]/5 dark:bg-[#0078d4]/20 text-[#005fa3] dark:text-[#4cc2ff] border border-[#0078d4]/30 dark:border-[#005fa3]'
+                          : 'bg-indigo-50 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
                       }`}>
                         {isProforma ? 'PROFORMA' : (item.invoice_type || 'NORMAL')}
                       </span>

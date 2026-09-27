@@ -68,7 +68,7 @@ export function RecentInvoices({ invoices = [], onViewInvoice }) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search recent..."
-              className="pl-8 pr-7 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-[#30363d] bg-slate-50/50 dark:bg-[#0d1117] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-2 focus:ring-[#0078d4]/25 focus:border-[#0078d4] w-36 sm:w-44 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+              className="pl-8 pr-7 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-[#30363d] bg-slate-50/50 dark:bg-[#0d1117] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 w-36 sm:w-44 placeholder:text-slate-400 dark:placeholder:text-slate-500"
             />
             {searchQuery && (
               <button

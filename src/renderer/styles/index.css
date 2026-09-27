@@ -6,14 +6,14 @@
 @layer base {
   body {
     font-family: "Segoe UI Variable Text", "Segoe UI Variable Display", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
-    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 }
 
 /* ========================================================================= */
-/* Custom Windows Fluent Scrollbars                                          */
+/* Custom Scrollbars                                                         */
 /* ========================================================================= */
 
 ::-webkit-scrollbar {
@@ -22,24 +22,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(15, 23, 42, 0.6);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.35);
+  background: rgba(51, 65, 85, 0.8);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.65);
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(71, 85, 105, 1);
 }
 
 /* ========================================================================= */
@@ -47,8 +39,8 @@
 /* ========================================================================= */
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(2px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes progressPulse {
@@ -64,7 +56,7 @@
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-progress {
@@ -74,6 +66,49 @@
 
 .animate-shake {
   animation: shake 0.35s ease-in-out;
+}
+
+/* ========================================================================= */
+/* Clean Flat Utilities (LockScreen Aesthetic)                               */
+/* ========================================================================= */
+
+*, ::before, ::after {
+  --tw-shadow: 0 0 #0000 !important;
+  --tw-shadow-colored: 0 0 #0000 !important;
+  box-shadow: none !important;
+}
+
+/* Refined Border Radius Scale (Reduced for Clean, Sharp Enterprise Look) */
+.rounded-3xl {
+  border-radius: 0.875rem !important;
+}
+
+.rounded-2xl {
+  border-radius: 0.625rem !important; /* 10px instead of 16px */
+}
+
+.rounded-xl {
+  border-radius: 0.5rem !important;   /* 8px instead of 12px */
+}
+
+.rounded-lg {
+  border-radius: 0.375rem !important; /* 6px instead of 8px */
+}
+
+.rounded-md {
+  border-radius: 0.25rem !important;  /* 4px instead of 6px */
+}
+
+.glass-panel {
+  background: #0f172a;
+  border: 1px solid #334155;
+  box-shadow: none !important;
+}
+
+.glass-card {
+  background: #0f172a;
+  border: 1px solid #334155;
+  box-shadow: none !important;
 }
 
 /* Smooth button press feedback */
@@ -86,41 +121,7 @@ button:active:not(:disabled) {
 }
 
 /* ========================================================================= */
-/* Task Manager Accent Colors & Utility Overrides                            */
-/* ========================================================================= */
-
-/* Primary buttons in Light & Dark Mode */
-.btn-primary,
-button.bg-primary,
-button[class*="bg-[#0078d4]"] {
-  background-color: #0078d4 !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-}
-
-.btn-primary:hover,
-button.bg-primary:hover,
-button[class*="bg-[#0078d4]"]:hover {
-  background-color: #006cb8 !important;
-}
-
-.btn-primary:active,
-button.bg-primary:active,
-button[class*="bg-[#0078d4]"]:active {
-  background-color: #005fa3 !important;
-}
-
-/* Focus Rings on Inputs */
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: #0078d4 !important;
-  outline: none !important;
-  box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.25) !important;
-}
-
-/* ========================================================================= */
-/* LIGHT MODE THEME SYSTEM (Windows Fluent Task Manager Light)               */
+/* LIGHT MODE THEME SYSTEM (Executive Enterprise Styling)                    */
 /* ========================================================================= */
 
 .light,
@@ -128,127 +129,672 @@ textarea:focus {
 .light body,
 .light #root,
 .light main {
-  background-color: #f9f9fb;
-  color: #1a1a1a;
+  background-color: #ffffff !important;
+  color: #0f172a;
 }
 
+/* Layout Root & Backgrounds in Light Mode */
+.light .bg-white,
+.light .bg-slate-900,
+.light .bg-slate-950,
+.light [class*="bg-slate-900"],
+.light [class*="bg-slate-950"],
+.light [class*="bg-slate-800"] {
+  background-color: #ffffff !important;
+}
+
+.light .bg-gradient-to-b {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
+/* Sidebar & Navigation in Light Mode */
 .light aside {
-  background-color: #f3f3f5;
-  border-color: #e5e5ea;
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
 }
 
+.light aside nav button:not(.bg-sky-500):not(.bg-indigo-600) {
+  color: #475569 !important;
+}
+
+.light aside nav button:not(.bg-sky-500):not(.bg-indigo-600):hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.light aside nav button.bg-sky-500,
+.light aside nav button.bg-indigo-600 {
+  background-color: #0ea5e9 !important; /* Vibrant Light Blue (Sky 500) */
+  color: #ffffff !important;
+  box-shadow: none !important;
+  border-color: #38bdf8 !important;
+}
+
+/* Header in Light Mode */
 .light header {
-  background-color: #ffffff;
-  border-color: #e5e5ea;
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
 }
 
+/* Footer / Status Bar in Light Mode */
 .light footer {
-  background-color: #f3f3f5;
-  border-color: #e5e5ea;
-  color: #616161;
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #64748b !important;
 }
 
-/* Sidebar active items in Light Mode */
-.light aside nav button.active-nav,
-.light aside nav button[class*="bg-[#0078d4]/10"] {
-  background-color: rgba(0, 120, 212, 0.1) !important;
-  color: #0078d4 !important;
-  border-color: rgba(0, 120, 212, 0.25) !important;
+/* Glass Panels and Cards in Light Mode */
+.light .glass-panel {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
 }
 
-.light aside nav button.active-nav svg,
-.light aside nav button[class*="bg-[#0078d4]/10"] svg {
-  color: #0078d4 !important;
+.light .glass-card {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
+}
+
+/* Typography / Text Colors in Light Mode */
+.light .text-slate-100,
+.light .text-slate-200 {
+  color: #0f172a !important;
+}
+
+.light .text-slate-300 {
+  color: #334155 !important;
+}
+
+.light .text-slate-400 {
+  color: #64748b !important;
+}
+
+.light .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+/* Borders in Light Mode */
+.light .border-slate-900,
+.light .border-slate-800,
+.light .border-slate-700,
+.light [class*="border-slate-900"],
+.light [class*="border-slate-800"],
+.light [class*="border-slate-700"] {
+  border-color: #cbd5e1 !important;
+}
+
+.light .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+.light .divide-slate-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #cbd5e1 !important;
+}
+
+/* Form Controls (Inputs, Selects, Textareas) in Light Mode */
+.light input:not([type="checkbox"]):not([type="radio"]),
+.light select,
+.light textarea {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: none !important;
+}
+
+.light input:not([type="checkbox"]):not([type="radio"]):focus,
+.light select:focus,
+.light textarea:focus {
+  border-color: #0284c7 !important;
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.light input::placeholder,
+.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
 }
 
 /* ========================================================================= */
-/* DARK MODE THEME SYSTEM (Windows Fluent Task Manager Dark)                 */
+/* Buttons in Light Mode                                                     */
 /* ========================================================================= */
+
+.light .btn-primary {
+  background-color: #e0f2fe !important;
+  border-color: #7dd3fc !important;
+  color: #0369a1 !important;
+  box-shadow: none !important;
+}
+
+.light .btn-primary:hover {
+  background-color: #bae6fd !important;
+  border-color: #38bdf8 !important;
+  color: #0c4a6e !important;
+  box-shadow: none !important;
+}
+
+.light .btn-secondary {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
+}
+
+.light .btn-secondary:hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+.light .btn-ghost {
+  color: #475569 !important;
+}
+
+.light .btn-ghost:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.light .btn-accent {
+  background-color: #ecfeff !important;
+  border-color: #a5f3fc !important;
+  color: #0e7490 !important;
+  box-shadow: none !important;
+}
+
+.light .btn-accent:hover {
+  background-color: #cffafe !important;
+  border-color: #67e8f9 !important;
+  color: #155e75 !important;
+}
+
+.light .btn-success {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+  box-shadow: none !important;
+}
+
+.light .btn-success:hover {
+  background-color: #d1fae5 !important;
+  border-color: #6ee7b7 !important;
+  color: #065f46 !important;
+}
+
+.light .btn-danger {
+  background-color: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+  color: #e11d48 !important;
+  box-shadow: none !important;
+}
+
+.light .btn-danger:hover {
+  background-color: #ffe4e6 !important;
+  border-color: #fda4af !important;
+  color: #be123c !important;
+}
+
+/* Generic Fallback for Buttons styled with slate in Light Mode */
+.light button.bg-slate-800:not(.bg-indigo-600):not(.bg-emerald-600):not(.bg-rose-600):not(.bg-cyan-600) {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light button.bg-slate-800:not(.bg-indigo-600):not(.bg-emerald-600):not(.bg-rose-600):not(.bg-cyan-600):hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* ========================================================================= */
+/* Badges & Color Tints in Light Mode                                        */
+/* ========================================================================= */
+
+.light [class*="bg-indigo-950"] {
+  background-color: #eef2ff !important;
+  border-color: #c7d2fe !important;
+  color: #4338ca !important;
+}
+
+.light [class*="bg-cyan-950"] {
+  background-color: #ecfeff !important;
+  border-color: #a5f3fc !important;
+  color: #0e7490 !important;
+}
+
+.light [class*="bg-emerald-950"] {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+.light [class*="bg-amber-950"] {
+  background-color: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #b45309 !important;
+}
+
+.light [class*="bg-rose-950"] {
+  background-color: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+  color: #e11d48 !important;
+}
+
+/* ========================================================================= */
+/* Tables in Light Mode                                                      */
+/* ========================================================================= */
+
+.light table {
+  background-color: #ffffff !important;
+  border-collapse: collapse !important;
+}
+
+.light thead tr {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light thead th {
+  color: #334155 !important;
+  font-weight: 700 !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  border-right: 1px solid #cbd5e1 !important;
+}
+
+.light thead th:last-child {
+  border-right: none !important;
+}
+
+.light tbody td {
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-right: 1px solid #e2e8f0 !important;
+}
+
+.light tbody td:last-child {
+  border-right: none !important;
+}
+
+.light tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Tables in Dark Mode */
+.dark table thead th {
+  border-bottom: 1px solid #334155;
+  border-right: 1px solid #334155;
+}
+
+.dark table thead th:last-child {
+  border-right: none;
+}
+
+.dark table tbody td {
+  border-bottom: 1px solid #1e293b;
+  border-right: 1px solid #1e293b;
+}
+
+.dark table tbody td:last-child {
+  border-right: none;
+}
+
+/* History Row Action Buttons in Light Mode */
+.light button[title="View / Preview"] {
+  color: #475569 !important;
+}
+.light button[title="View / Preview"]:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.light button[title="Print Document"] {
+  color: #4f46e5 !important;
+}
+.light button[title="Print Document"]:hover {
+  background-color: #eef2ff !important;
+  color: #4338ca !important;
+}
+
+.light button[title="Export PDF"] {
+  color: #0891b2 !important;
+}
+.light button[title="Export PDF"]:hover {
+  background-color: #ecfeff !important;
+  color: #0e7490 !important;
+}
+
+.light button[title="Export Excel"] {
+  color: #059669 !important;
+}
+.light button[title="Export Excel"]:hover {
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+.light button[title="Duplicate Invoice"] {
+  color: #d97706 !important;
+}
+.light button[title="Duplicate Invoice"]:hover {
+  background-color: #fffbeb !important;
+  color: #b45309 !important;
+}
+
+.light button[title="Delete (Move to Recycle Bin)"],
+.light button[title="Delete Permanently"] {
+  color: #e11d48 !important;
+}
+.light button[title="Delete (Move to Recycle Bin)"]:hover,
+.light button[title="Delete Permanently"]:hover {
+  background-color: #fff1f2 !important;
+  color: #be123c !important;
+}
+
+/* Modals & Dialogs in Light Mode */
+.light .fixed .glass-panel,
+.light .fixed .bg-slate-900,
+.light .fixed .bg-slate-800 {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
+}
+
+/* Scrollbars in Light Mode */
+.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ========================================================================= */
+/* DARK MODE THEME SYSTEM (Executive Enterprise Dark Styling)                */
+/* ========================================================================= */
+
+.dark {
+  color-scheme: dark;
+}
 
 .dark,
 .dark html,
 .dark body,
 .dark #root {
-  background-color: #181818;
-  color: #f3f3f3;
+  background-color: #0b0f19 !important;
+  color: #f8fafc !important;
 }
 
+/* Layout & Backgrounds in Dark Mode */
+.dark .bg-slate-950,
 .dark main {
-  background-color: #1c1c1c;
+  background-color: #0b0f19 !important;
 }
 
+.dark .bg-white,
+.dark .bg-slate-900 {
+  background-color: #0f172a !important;
+}
+
+.dark .bg-slate-50,
+.dark .bg-slate-100,
+.dark .bg-slate-800 {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-slate-200 {
+  background-color: #334155 !important;
+}
+
+/* Sidebar & Navigation in Dark Mode */
 .dark aside {
-  background-color: #181818;
-  border-color: #2e2e2e;
+  background-color: #0b0f19 !important;
+  border-color: #1e293b !important;
 }
 
+.dark aside nav button:not(.bg-sky-500):not(.bg-sky-600) {
+  color: #94a3b8 !important;
+}
+
+.dark aside nav button:not(.bg-sky-500):not(.bg-sky-600):hover {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+.dark aside nav button.bg-sky-500,
+.dark aside nav button.bg-sky-600 {
+  background-color: #0284c7 !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+}
+
+/* Header & Status Bar in Dark Mode */
 .dark header {
-  background-color: #202020;
-  border-color: #2e2e2e;
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
 }
 
 .dark footer {
-  background-color: #181818;
-  border-color: #2e2e2e;
-  color: #9e9e9e;
+  background-color: #0b0f19 !important;
+  border-color: #1e293b !important;
+  color: #94a3b8 !important;
 }
 
-/* Sidebar active items in Dark Mode */
-.dark aside nav button.active-nav,
-.dark aside nav button[class*="dark:bg-[#0078d4]/20"] {
-  background-color: rgba(0, 120, 212, 0.2) !important;
-  color: #4cc2ff !important;
-  border-color: rgba(0, 120, 212, 0.4) !important;
+/* Glass Panels and Cards in Dark Mode */
+.dark .glass-panel,
+.dark .glass-card {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  box-shadow: none !important;
 }
 
-.dark aside nav button.active-nav svg,
-.dark aside nav button[class*="dark:bg-[#0078d4]/20"] svg {
-  color: #4cc2ff !important;
+/* Typography / Text Colors in Dark Mode */
+.dark .text-slate-900,
+.dark .text-slate-800 {
+  color: #f8fafc !important;
 }
 
-/* ========================================================================= */
-/* Tables                                                                    */
-/* ========================================================================= */
-
-.light table {
-  background-color: #ffffff;
+.dark .text-slate-700 {
+  color: #e2e8f0 !important;
 }
 
-.light thead tr {
-  background-color: #f3f3f5;
-  border-color: #e5e5ea;
+.dark .text-slate-600 {
+  color: #cbd5e1 !important;
 }
 
-.light thead th {
-  color: #424242;
-  font-weight: 700;
-  border-bottom: 1px solid #e5e5ea;
+.dark .text-slate-500 {
+  color: #94a3b8 !important;
 }
 
-.light tbody td {
-  border-bottom: 1px solid #f0f0f2;
+.dark .text-slate-400 {
+  color: #94a3b8 !important;
 }
 
-.light tbody tr:hover {
-  background-color: rgba(0, 120, 212, 0.04);
+/* Borders in Dark Mode */
+.dark .border-slate-300,
+.dark .border-slate-400,
+.dark .border-slate-700 {
+  border-color: #334155 !important;
 }
 
-.dark thead tr {
-  background-color: #242424;
-  border-color: #333333;
+.dark .border-slate-200,
+.dark .border-slate-800 {
+  border-color: #1e293b !important;
 }
 
-.dark thead th {
-  color: #cccccc;
-  border-bottom: 1px solid #333333;
+.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-300 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-700 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-800 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1e293b !important;
 }
 
-.dark tbody td {
-  border-bottom: 1px solid #282828;
+/* Form Controls (Inputs, Selects, Textareas) in Dark Mode */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark select,
+.dark textarea {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+  box-shadow: none !important;
 }
 
-.dark tbody tr:hover {
-  background-color: rgba(76, 194, 255, 0.05);
+.dark input:not([type="checkbox"]):not([type="radio"]):focus,
+.dark select:focus,
+.dark textarea:focus {
+  border-color: #38bdf8 !important;
+  background-color: #0f172a !important;
+  box-shadow: none !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+.dark select option {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+/* Buttons in Dark Mode */
+.dark .btn-primary {
+  background-color: #0284c7 !important;
+  border-color: #0369a1 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.dark .btn-primary:hover {
+  background-color: #0369a1 !important;
+  border-color: #0284c7 !important;
+}
+
+.dark .btn-secondary {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+  border-color: #334155 !important;
+  box-shadow: none !important;
+}
+
+.dark .btn-secondary:hover {
+  background-color: #334155 !important;
+  color: #ffffff !important;
+}
+
+.dark .btn-ghost {
+  color: #94a3b8 !important;
+}
+
+.dark .btn-ghost:hover {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+}
+
+.dark .btn-success {
+  background-color: #059669 !important;
+  border-color: #047857 !important;
+  color: #ffffff !important;
+}
+
+.dark .btn-success:hover {
+  background-color: #047857 !important;
+}
+
+.dark .btn-danger {
+  background-color: #e11d48 !important;
+  border-color: #be123c !important;
+  color: #ffffff !important;
+}
+
+.dark .btn-danger:hover {
+  background-color: #be123c !important;
+}
+
+.dark .btn-accent {
+  background-color: #0d9488 !important;
+  border-color: #0f766e !important;
+  color: #ffffff !important;
+}
+
+.dark .btn-accent:hover {
+  background-color: #0f766e !important;
+}
+
+/* Badges in Dark Mode */
+.dark [class*="bg-indigo-950"] {
+  background-color: #1e1b4b !important;
+  border-color: #3730a3 !important;
+  color: #c7d2fe !important;
+}
+
+.dark [class*="bg-cyan-950"] {
+  background-color: #083344 !important;
+  border-color: #155e75 !important;
+  color: #a5f3fc !important;
+}
+
+.dark [class*="bg-sky-950"] {
+  background-color: #082f49 !important;
+  border-color: #0369a1 !important;
+  color: #bae6fd !important;
+}
+
+.dark [class*="bg-emerald-950"] {
+  background-color: #022c22 !important;
+  border-color: #065f46 !important;
+  color: #a7f3d0 !important;
+}
+
+.dark [class*="bg-amber-950"] {
+  background-color: #451a03 !important;
+  border-color: #92400e !important;
+  color: #fde68a !important;
+}
+
+.dark [class*="bg-rose-950"] {
+  background-color: #4c0519 !important;
+  border-color: #9f1239 !important;
+  color: #fecdd3 !important;
+}
+
+/* Modals & Dialogs in Dark Mode */
+.dark .fixed .glass-panel,
+.dark .fixed .bg-slate-900,
+.dark .fixed .bg-slate-800 {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  box-shadow: none !important;
+}
+
+/* Scrollbars in Dark Mode */
+.dark ::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+@keyframes toast-progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
 }
 
 /* ========================================================================= */
@@ -391,3 +937,4 @@ textarea:focus {
 .dark [id^="invoice-preview-sheet"] tbody tr:hover {
   background-color: transparent !important;
 }
+

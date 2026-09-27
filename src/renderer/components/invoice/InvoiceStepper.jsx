@@ -24,9 +24,9 @@ export function InvoiceStepper({ currentStep, setStep, steps }) {
                 aria-current={isCurrent ? 'step' : undefined}
                 className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
                   isCurrent
-                    ? 'bg-[#0078d4] text-white shadow-xs'
+                    ? 'bg-indigo-600 text-white shadow-xs'
                     : isCompleted
-                    ? 'bg-[#0078d4]/5 dark:bg-[#0078d4]/20/40 text-[#006cb8] dark:text-[#4cc2ff] border border-[#0078d4]/30/60 dark:border-[#005fa3]/60 hover:bg-[#0078d4]/10 dark:hover:bg-[#005fa3]/40'
+                    ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/40'
                     : canNavigate
                     ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
                     : 'bg-transparent text-slate-400 dark:text-slate-600 border border-transparent cursor-not-allowed'
@@ -35,9 +35,9 @@ export function InvoiceStepper({ currentStep, setStep, steps }) {
                 <span
                   className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 transition-colors ${
                     isCurrent
-                      ? 'bg-white text-[#006cb8] font-extrabold'
+                      ? 'bg-white text-indigo-700 font-extrabold'
                       : isCompleted
-                      ? 'bg-[#0078d4] text-white'
+                      ? 'bg-indigo-600 text-white'
                       : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
                   }`}
                 >
@@ -51,7 +51,7 @@ export function InvoiceStepper({ currentStep, setStep, steps }) {
                   aria-hidden="true"
                   className={`w-3 h-[2px] hidden lg:block rounded-full ${
                     isCompleted
-                      ? 'bg-[#0078d4]'
+                      ? 'bg-indigo-500'
                       : 'bg-slate-200 dark:bg-slate-800'
                   }`}
                 />

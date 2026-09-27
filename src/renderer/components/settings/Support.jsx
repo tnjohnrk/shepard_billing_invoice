@@ -50,7 +50,7 @@ export function Support({ toast }) {
       {/* Hero Banner Card */}
       <div className="p-6 sm:p-7 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0078d4] to-[#006cb8] flex items-center justify-center text-white shrink-0 shadow-xs">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white shrink-0 shadow-xs">
             <Code2 className="w-6 h-6" />
           </div>
           <div>
@@ -70,7 +70,7 @@ export function Support({ toast }) {
         <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between shadow-xs space-y-4">
           <div className="space-y-2.5">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-lg bg-[#0078d4]/5 dark:bg-[#0078d4]/20/50 text-[#0078d4] dark:text-[#4cc2ff] border border-[#0078d4]/30 dark:border-[#005fa3] shrink-0">
+              <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 shrink-0">
                 <Mail className="w-4 h-4" />
               </div>
               <div>
@@ -104,7 +104,7 @@ export function Support({ toast }) {
               <button
                 type="button"
                 onClick={handleOpenEmail}
-                className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#0078d4] text-white hover:bg-[#006cb8] transition-colors cursor-pointer inline-flex items-center gap-1"
+                className="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 transition-colors cursor-pointer inline-flex items-center gap-1"
                 title="Compose Email"
               >
                 Compose <ExternalLink className="w-3 h-3" />

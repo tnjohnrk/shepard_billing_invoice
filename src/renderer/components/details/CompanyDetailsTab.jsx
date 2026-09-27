@@ -172,7 +172,7 @@ export function CompanyDetailsTab({ toast }) {
             placeholder="Search company name, GSTIN, or address..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#0078d4] shadow-none"
+            className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-sky-500 shadow-none"
           />
         </div>
 
@@ -204,7 +204,7 @@ export function CompanyDetailsTab({ toast }) {
               </td>
               <td className="px-3 py-3 text-center border-r border-slate-200 dark:border-slate-800 text-xs font-mono">
                 {comp.gstin ? (
-                  <span className="px-2 py-0.5 rounded bg-[#0078d4]/5 dark:bg-[#0078d4]/20 text-[#006cb8] dark:text-[#4cc2ff] font-bold border border-[#0078d4]/30 dark:border-[#005fa3] text-[11px]">
+                  <span className="px-2 py-0.5 rounded bg-sky-50 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-bold border border-sky-200 dark:border-sky-800 text-[11px]">
                     {comp.gstin}
                   </span>
                 ) : (
@@ -222,7 +222,7 @@ export function CompanyDetailsTab({ toast }) {
                 <div className="flex items-center justify-end gap-1.5">
                   <button
                     onClick={() => handleOpenEdit(comp)}
-                    className="p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-[#0078d4] dark:hover:text-[#4cc2ff] hover:bg-[#0078d4]/5 dark:hover:bg-[#0078d4]/20 transition-colors cursor-pointer"
+                    className="p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 hover:bg-sky-50 dark:hover:bg-sky-950 transition-colors cursor-pointer"
                     title="Edit Company"
                   >
                     <Edit2 className="w-4 h-4" />
@@ -247,7 +247,7 @@ export function CompanyDetailsTab({ toast }) {
           <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-700 shadow-2xl max-w-lg w-full p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-[#0078d4]/5 dark:bg-[#0078d4]/20 text-[#0078d4] dark:text-[#4cc2ff] border border-[#0078d4]/30 dark:border-[#005fa3]">
+                <div className="p-2 rounded-xl bg-sky-50 dark:bg-sky-950 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800">
                   <Building2 className="w-5 h-5" />
                 </div>
                 <div>
@@ -280,7 +280,7 @@ export function CompanyDetailsTab({ toast }) {
                   placeholder="Street, City, Pincode"
                   value={form.address}
                   onChange={(e) => setForm(prev => ({ ...prev, address: e.target.value }))}
-                  className={`w-full text-xs rounded-xl border bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 placeholder-slate-400 focus:outline-none focus:border-[#0078d4] shadow-none ${
+                  className={`w-full text-xs rounded-xl border bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 placeholder-slate-400 focus:outline-none focus:border-sky-500 shadow-none ${
                     errors.address ? 'border-rose-500' : 'border-slate-300 dark:border-slate-700'
                   }`}
                 />

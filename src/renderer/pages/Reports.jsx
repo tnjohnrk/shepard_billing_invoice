@@ -162,7 +162,7 @@ export function Reports({ toast }) {
 
         {reportType === 'customer' && (
           <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-            <Users className="w-4 h-4 text-[#0078d4]" />
+            <Users className="w-4 h-4 text-indigo-500" />
             <span>Aggregated billing summary across all registered client accounts.</span>
           </div>
         )}

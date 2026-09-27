@@ -23,7 +23,7 @@ export function ItemRow({
         <input
           type="text"
           placeholder="Description of Goods / Services"
-          className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4] shadow-xs font-medium"
+          className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-xs font-medium"
           value={item.description || ''}
           onChange={(e) => onChange(index, 'description', e.target.value)}
         />
@@ -40,7 +40,7 @@ export function ItemRow({
           className={`w-full bg-slate-50/70 dark:bg-slate-800/70 border rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-left placeholder-slate-400 focus:outline-none shadow-xs font-mono font-bold transition-colors ${
             !item.hsn_sac || !String(item.hsn_sac).trim()
               ? 'border-rose-400 dark:border-rose-600 bg-rose-50/40 dark:bg-rose-950/30 ring-1 ring-rose-500/20 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/40' 
-              : 'border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4]'
+              : 'border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500'
           }`}
           value={item.hsn_sac || ''}
           onChange={(e) => {
@@ -74,7 +74,7 @@ export function ItemRow({
           step="any"
           min="0"
           placeholder="Qty"
-          className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-right placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4] shadow-xs font-mono"
+          className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-right placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-xs font-mono"
           value={item.quantity || ''}
           onChange={(e) => onChange(index, 'quantity', parseFloat(e.target.value) || 0)}
         />
@@ -87,7 +87,7 @@ export function ItemRow({
           step="any"
           min="0"
           placeholder="Rate"
-          className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-right placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4] shadow-xs font-mono font-medium"
+          className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-right placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-xs font-mono font-medium"
           value={item.rate || ''}
           onChange={(e) => onChange(index, 'rate', parseFloat(e.target.value) || 0)}
         />

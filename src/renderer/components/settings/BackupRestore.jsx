@@ -215,13 +215,13 @@ export function BackupRestore({ toast }) {
       <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-4 shadow-xs">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#0078d4]/5 dark:bg-[#0078d4]/20 text-[#0078d4] dark:text-[#4cc2ff] border border-[#0078d4]/30 dark:border-[#005fa3]">
+            <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
               <Laptop className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Data Migration & Computer Transfer</h3>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#0078d4]/5 dark:bg-[#0078d4]/20/60 text-[#006cb8] dark:text-[#4cc2ff] border border-[#0078d4]/30 dark:border-[#005fa3] uppercase">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 uppercase">
                   System Transfer
                 </span>
               </div>
@@ -235,8 +235,8 @@ export function BackupRestore({ toast }) {
         {/* 3-Step Migration Guide */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
           <div className="p-3 rounded-xl bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 space-y-1">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-[#0078d4] dark:text-[#4cc2ff]">
-              <span className="w-4 h-4 rounded-full bg-[#0078d4]/10 dark:bg-[#0078d4]/20 flex items-center justify-center text-[10px]">1</span>
+            <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400">
+              <span className="w-4 h-4 rounded-full bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center text-[10px]">1</span>
               <span>Export on Old PC</span>
             </div>
             <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
@@ -245,8 +245,8 @@ export function BackupRestore({ toast }) {
           </div>
 
           <div className="p-3 rounded-xl bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 space-y-1">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-[#0078d4] dark:text-[#4cc2ff]">
-              <span className="w-4 h-4 rounded-full bg-[#0078d4]/10 dark:bg-[#0078d4]/20 flex items-center justify-center text-[10px]">2</span>
+            <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400">
+              <span className="w-4 h-4 rounded-full bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center text-[10px]">2</span>
               <span>Install on New PC</span>
             </div>
             <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
@@ -335,10 +335,10 @@ export function BackupRestore({ toast }) {
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between shadow-none">
             <div>
               <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Next Batch Ready</div>
-              <div className="text-2xl font-extrabold text-[#0078d4] dark:text-[#4cc2ff] mt-0.5">{nextBatchCount} <span className="text-xs font-medium text-slate-500">/ 10 max</span></div>
+              <div className="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-0.5">{nextBatchCount} <span className="text-xs font-medium text-slate-500">/ 10 max</span></div>
               <div className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5">Ready for next click</div>
             </div>
-            <div className="p-2.5 rounded-lg bg-[#0078d4]/5 dark:bg-[#0078d4]/20 text-[#0078d4] dark:text-[#4cc2ff] border border-[#0078d4]/30 dark:border-[#005fa3]">
+            <div className="p-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
               <Send className="w-5 h-5" />
             </div>
           </div>
@@ -358,16 +358,16 @@ export function BackupRestore({ toast }) {
         </div>
 
         {/* 4-Step Google App Password Guide */}
-        <div className="p-4 bg-gradient-to-r from-[#0078d4]/5 to-[#0078d4]/5 dark:from-slate-800 dark:to-slate-850 rounded-xl border border-[#0078d4]/30 dark:border-slate-700 space-y-3 shadow-none">
-          <div className="flex items-center gap-2 text-xs font-bold text-[#005fa3] dark:text-[#0078d4]/30">
-            <ShieldCheck className="w-4 h-4 text-[#0078d4] dark:text-[#4cc2ff]" />
+        <div className="p-4 bg-gradient-to-r from-sky-50 to-indigo-50 dark:from-slate-800 dark:to-slate-850 rounded-xl border border-sky-200 dark:border-slate-700 space-y-3 shadow-none">
+          <div className="flex items-center gap-2 text-xs font-bold text-sky-900 dark:text-sky-200">
+            <ShieldCheck className="w-4 h-4 text-sky-600 dark:text-sky-400" />
             <span>How to get your 16-character Google App Password (Required for Gmail)</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
-            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-[#0078d4]/10 dark:border-slate-700 space-y-1">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#006cb8] dark:text-[#4cc2ff]">
-                <span className="w-4 h-4 rounded-full bg-[#0078d4]/10 dark:bg-[#0078d4]/20 text-[#006cb8] dark:text-[#4cc2ff] flex items-center justify-center text-[10px] font-bold">1</span>
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-sky-100 dark:border-slate-700 space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-sky-700 dark:text-sky-300">
+                <span className="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center text-[10px] font-bold">1</span>
                 <span>Open Google Security</span>
               </div>
               <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
@@ -375,9 +375,9 @@ export function BackupRestore({ toast }) {
               </p>
             </div>
 
-            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-[#0078d4]/10 dark:border-slate-700 space-y-1">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#006cb8] dark:text-[#4cc2ff]">
-                <span className="w-4 h-4 rounded-full bg-[#0078d4]/10 dark:bg-[#0078d4]/20 text-[#006cb8] dark:text-[#4cc2ff] flex items-center justify-center text-[10px] font-bold">2</span>
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-sky-100 dark:border-slate-700 space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-sky-700 dark:text-sky-300">
+                <span className="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center text-[10px] font-bold">2</span>
                 <span>2-Step Verification</span>
               </div>
               <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
@@ -385,9 +385,9 @@ export function BackupRestore({ toast }) {
               </p>
             </div>
 
-            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-[#0078d4]/10 dark:border-slate-700 space-y-1">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#006cb8] dark:text-[#4cc2ff]">
-                <span className="w-4 h-4 rounded-full bg-[#0078d4]/10 dark:bg-[#0078d4]/20 text-[#006cb8] dark:text-[#4cc2ff] flex items-center justify-center text-[10px] font-bold">3</span>
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-sky-100 dark:border-slate-700 space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-sky-700 dark:text-sky-300">
+                <span className="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center text-[10px] font-bold">3</span>
                 <span>Search App Passwords</span>
               </div>
               <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
@@ -395,7 +395,7 @@ export function BackupRestore({ toast }) {
               </p>
             </div>
 
-            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-[#0078d4]/10 dark:border-slate-700 space-y-1">
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-sky-100 dark:border-slate-700 space-y-1">
               <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
                 <span className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-[10px] font-bold">4</span>
                 <span>Generate &amp; Paste</span>
@@ -436,7 +436,7 @@ export function BackupRestore({ toast }) {
                   placeholder="Enter 16-character App Password"
                   value={smtpPass}
                   onChange={(e) => setSmtpPass(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#0078d4] transition-colors pr-10 shadow-none font-mono"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-sky-500 transition-colors pr-10 shadow-none font-mono"
                 />
                 <button
                   type="button"

@@ -20,21 +20,21 @@ export function Toast({ type = 'error', message, onClose, duration = 5000 }) {
     success: <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />,
     error: <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />,
     warning: <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />,
-    info: <Info className="w-4 h-4 text-[#0078d4] dark:text-[#4cc2ff] shrink-0" />
+    info: <Info className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
   };
 
   const styles = {
     success: 'bg-emerald-50 dark:bg-emerald-950/90 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200',
     error: 'bg-rose-50 dark:bg-rose-950/90 border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200',
     warning: 'bg-amber-50 dark:bg-amber-950/90 border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200',
-    info: 'bg-[#0078d4]/5 dark:bg-[#0078d4]/20/90 border-[#0078d4]/30 dark:border-[#005fa3] text-[#005fa3] dark:text-[#0078d4]/30'
+    info: 'bg-sky-50 dark:bg-sky-950/90 border-sky-200 dark:border-sky-800 text-sky-900 dark:text-sky-200'
   };
 
   const progressColors = {
     success: 'bg-emerald-500 dark:bg-emerald-400',
     error: 'bg-rose-500 dark:bg-rose-400',
     warning: 'bg-amber-500 dark:bg-amber-400',
-    info: 'bg-[#0078d4] dark:bg-[#4cc2ff]'
+    info: 'bg-sky-500 dark:bg-sky-400'
   };
 
   return (

@@ -23,7 +23,7 @@ export function Button({
   const variantStyles = {
     primary: 'bg-[#0969da] hover:bg-[#085ac5] active:bg-[#074ea7] dark:bg-[#1f6feb] dark:hover:bg-[#388bfd] text-white shadow-2xs border border-transparent',
     secondary: 'bg-white hover:bg-slate-50 active:bg-slate-100 dark:bg-[#21262d] dark:hover:bg-[#30363d] text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-[#30363d] shadow-2xs',
-    accent: 'bg-[#0078d4] hover:bg-[#006cb8] active:bg-[#005fa3] dark:bg-[#0078d4] dark:hover:bg-[#0078d4] text-white shadow-2xs border border-transparent',
+    accent: 'bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white shadow-2xs border border-transparent',
     success: 'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white shadow-2xs border border-transparent',
     danger: 'bg-rose-600 hover:bg-rose-700 active:bg-rose-800 dark:bg-rose-600 dark:hover:bg-rose-500 text-white shadow-2xs border border-transparent',
     'danger-subtle': 'bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60 shadow-2xs',

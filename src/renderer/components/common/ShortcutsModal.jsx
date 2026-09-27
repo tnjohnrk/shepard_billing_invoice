@@ -33,11 +33,11 @@ export function ShortcutsModal({ isOpen, onClose }) {
   const getCategoryIcon = (cat) => {
     switch (cat) {
       case SHORTCUT_CATEGORIES.NAVIGATION:
-        return <Compass className="w-4 h-4 text-[#0078d4]" />;
+        return <Compass className="w-4 h-4 text-indigo-500" />;
       case SHORTCUT_CATEGORIES.INVOICE:
         return <FileText className="w-4 h-4 text-emerald-500" />;
       default:
-        return <FolderKanban className="w-4 h-4 text-[#0078d4]" />;
+        return <FolderKanban className="w-4 h-4 text-sky-500" />;
     }
   };
 
@@ -54,7 +54,7 @@ export function ShortcutsModal({ isOpen, onClose }) {
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-[#30363d] flex items-center justify-between gap-3 bg-slate-50/70 dark:bg-[#0d1117]/60 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-[#0078d4]/5 dark:bg-[#0078d4]/20/60 text-[#0078d4] dark:text-[#4cc2ff] border border-[#0078d4]/30 dark:border-[#005fa3]">
+            <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
               <Keyboard className="w-5 h-5" />
             </div>
             <div>
@@ -85,7 +85,7 @@ export function ShortcutsModal({ isOpen, onClose }) {
               placeholder="Search shortcut name, action, or key..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-[#30363d] bg-slate-50/70 dark:bg-[#0d1117] text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#0078d4] focus:ring-2 focus:ring-[#0078d4]/20"
+              className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-[#30363d] bg-slate-50/70 dark:bg-[#0d1117] text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
               autoFocus
             />
           </div>
@@ -164,7 +164,7 @@ export function ShortcutsModal({ isOpen, onClose }) {
         {/* Modal Footer */}
         <div className="p-3 px-5 border-t border-slate-200 dark:border-[#30363d] bg-slate-50/70 dark:bg-[#0d1117]/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 shrink-0">
           <span>Press <kbd className="px-1 py-0.5 rounded bg-white dark:bg-[#161b22] border border-slate-300 dark:border-[#30363d] font-mono text-[10px] font-bold">Esc</kbd> or <kbd className="px-1 py-0.5 rounded bg-white dark:bg-[#161b22] border border-slate-300 dark:border-[#30363d] font-mono text-[10px] font-bold">F1</kbd> to close</span>
-          <span className="font-semibold text-[#0078d4] dark:text-[#4cc2ff]">Windows Non-Conflicting</span>
+          <span className="font-semibold text-indigo-600 dark:text-indigo-400">Windows Non-Conflicting</span>
         </div>
       </div>
     </div>

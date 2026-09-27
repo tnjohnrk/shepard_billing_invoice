@@ -61,7 +61,7 @@ export function PinSettings({ toast }) {
     <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-5 shadow-xs">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#0078d4]/5 dark:bg-[#0078d4]/20 text-[#0078d4] dark:text-[#4cc2ff] border border-[#0078d4]/30 dark:border-[#005fa3]">
+          <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
@@ -88,7 +88,7 @@ export function PinSettings({ toast }) {
                 value={oldPin}
                 onChange={(e) => setOldPin(e.target.value)}
                 required
-                className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 pr-10 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4] transition-all font-mono shadow-xs"
+                className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 pr-10 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-mono shadow-xs"
               />
               <button
                 type="button"
@@ -113,7 +113,7 @@ export function PinSettings({ toast }) {
                   value={newPin}
                   onChange={(e) => setNewPin(e.target.value)}
                   required
-                  className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 pr-10 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4] transition-all font-mono shadow-xs"
+                  className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 pr-10 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-mono shadow-xs"
                 />
                 <button
                   type="button"
@@ -137,7 +137,7 @@ export function PinSettings({ toast }) {
                   value={confirmPin}
                   onChange={(e) => setConfirmPin(e.target.value)}
                   required
-                  className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 pr-10 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4] transition-all font-mono shadow-xs"
+                  className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 pr-10 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-mono shadow-xs"
                 />
                 <button
                   type="button"
@@ -162,7 +162,7 @@ export function PinSettings({ toast }) {
         <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-between p-4 bg-slate-50/60 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-xs">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-slate-100">
-              <Shield className="w-4 h-4 text-[#0078d4]" />
+              <Shield className="w-4 h-4 text-indigo-500" />
               <span>Security &amp; Protection Policy</span>
             </div>
             <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
