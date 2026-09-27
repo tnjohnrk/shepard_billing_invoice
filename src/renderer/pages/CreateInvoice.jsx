@@ -302,6 +302,56 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
   };
 
   const handleKeyDown = (e) => {
+    const isAlt = e.altKey;
+    const isCtrl = e.ctrlKey || e.metaKey;
+
+    // Alt + N or Alt + ArrowRight -> Next Step
+    if (isAlt && (e.key === 'n' || e.key === 'N' || e.key === 'ArrowRight')) {
+      e.preventDefault();
+      handleNext();
+      return;
+    }
+
+    // Alt + P or Alt + ArrowLeft -> Previous Step
+    if (isAlt && (e.key === 'p' || e.key === 'P' || e.key === 'ArrowLeft')) {
+      e.preventDefault();
+      handlePrev();
+      return;
+    }
+
+    // Alt + A -> Add Item in Step 5
+    if (isAlt && (e.key === 'a' || e.key === 'A')) {
+      if (step === 5) {
+        e.preventDefault();
+        const currentItems = formData.items || [];
+        handleFieldChange('items', [
+          ...currentItems,
+          { description: '', hsn_sac: '', quantity: 1, rate: 0 }
+        ]);
+        return;
+      }
+    }
+
+    // Alt + R -> Reset Draft
+    if (isAlt && (e.key === 'r' || e.key === 'R')) {
+      e.preventDefault();
+      handleResetDraft();
+      return;
+    }
+
+    // Ctrl + S -> Save & Advance to Preview
+    if (isCtrl && !isAlt && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      if (step < 8) {
+        if (step === 7) {
+          handleNext();
+        } else {
+          handleNext();
+        }
+      }
+      return;
+    }
+
     if (e.key === 'Enter') {
       const target = e.target;
       const tagName = target?.tagName?.toLowerCase();

@@ -4,9 +4,10 @@ import { AppearanceSettings } from '../components/settings/AppearanceSettings';
 import { BackupRestore } from '../components/settings/BackupRestore';
 import { RecycleBin } from '../components/settings/RecycleBin';
 import { PinSettings } from '../components/settings/PinSettings';
+import { ShortcutsSettings } from '../components/settings/ShortcutsSettings';
 import { Support } from '../components/settings/Support';
 import { About } from '../components/settings/About';
-import { Palette, HardDrive, Trash2, Shield, Info, Headphones } from 'lucide-react';
+import { Palette, HardDrive, Trash2, Shield, Info, Headphones, Keyboard } from 'lucide-react';
 import { ipcClient } from '../services/ipcClient';
 
 export function Settings({ toast, licenseStatus: initialLicenseStatus }) {
@@ -28,6 +29,7 @@ export function Settings({ toast, licenseStatus: initialLicenseStatus }) {
   const tabs = [
     ...(isLive ? [{ id: 'backup', label: 'Backup & Restore', icon: HardDrive }] : []),
     { id: 'pin', label: 'Security Password', icon: Shield },
+    { id: 'shortcuts', label: 'Keyboard Shortcuts', icon: Keyboard },
     { id: 'bin', label: 'Recycle Bin', icon: Trash2 },
     { id: 'appearance', label: 'Appearance', icon: Palette },
     { id: 'support', label: 'Support', icon: Headphones },
@@ -72,6 +74,7 @@ export function Settings({ toast, licenseStatus: initialLicenseStatus }) {
         <div>
           {isLive && activeTab === 'backup' && <BackupRestore toast={toast} />}
           {activeTab === 'pin' && <PinSettings toast={toast} />}
+          {activeTab === 'shortcuts' && <ShortcutsSettings />}
           {activeTab === 'bin' && <RecycleBin toast={toast} />}
           {activeTab === 'appearance' && <AppearanceSettings />}
           {activeTab === 'support' && <Support toast={toast} />}

@@ -3,7 +3,7 @@ import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { StatusBar } from './StatusBar';
 
-export function AppLayout({ activeTab, setActiveTab, title, subtitle, onLockApp, children }) {
+export function AppLayout({ activeTab, setActiveTab, title, subtitle, onLockApp, onOpenShortcuts, children }) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   const handleSelectTab = (tab) => {
@@ -39,6 +39,7 @@ export function AppLayout({ activeTab, setActiveTab, title, subtitle, onLockApp,
           title={title} 
           subtitle={subtitle} 
           onLockApp={onLockApp} 
+          onOpenShortcuts={onOpenShortcuts}
           onToggleMobileMenu={() => setMobileSidebarOpen(prev => !prev)} 
         />
         <main className="flex-1 overflow-y-auto bg-white dark:bg-[#0d1117] min-w-0">

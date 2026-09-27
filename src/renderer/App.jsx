@@ -11,6 +11,8 @@ import { History } from './pages/History';
 import { Details } from './pages/Details';
 import { Reports } from './pages/Reports';
 import { Settings } from './pages/Settings';
+import { ShortcutsModal } from './components/common/ShortcutsModal';
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { ipcClient } from './services/ipcClient';
 import { FEATURE_FLAGS } from '../shared/constants/featureFlags';
 
@@ -19,12 +21,37 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [toastState, setToastState] = useState(null);
   const [createInitialData, setCreateInitialData] = useState(null);
+  const [historySelectedInvoice, setHistorySelectedInvoice] = useState(null);
+  const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState(false);
 
   // Security, Activation & License status
   const [isActivated, setIsActivated] = useState(false);
   const [isPasswordSet, setIsPasswordSet] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [licenseStatus, setLicenseStatus] = useState(null);
+
+  const handleLockApp = useCallback(async () => {
+    const isProtected = await ipcClient.isPinProtected();
+    if (isProtected) {
+      sessionStorage.removeItem('session_unlocked');
+      setIsLocked(true);
+    } else {
+      setToastState({ type: 'info', message: 'Please enable Security Password in Settings first.' });
+      setActiveTab('settings');
+    }
+  }, []);
+
+  // Global Keyboard Shortcuts (Alt+1..6, Ctrl+Shift+N/H/D/R/S/L, F1, Shift+?)
+  useKeyboardShortcuts({
+    onNavigate: (tab) => {
+      if (tab !== 'create') setCreateInitialData(null);
+      if (tab !== 'history') setHistorySelectedInvoice(null);
+      setActiveTab(tab);
+    },
+    onLock: handleLockApp,
+    onToggleHelp: () => setIsShortcutsModalOpen(prev => !prev),
+    isLocked: isLocked || isInitializing || !isActivated || !isPasswordSet
+  });
 
   const checkLicenseAndLockState = useCallback(async () => {
     try {
@@ -181,16 +208,8 @@ export default function App() {
         }}
         title={tabTitles[activeTab]?.title}
         subtitle={tabTitles[activeTab]?.subtitle}
-        onLockApp={async () => {
-          const isProtected = await ipcClient.isPinProtected();
-          if (isProtected) {
-            sessionStorage.removeItem('session_unlocked');
-            setIsLocked(true);
-          } else {
-            showToast('info', 'Please enable Security Password in Settings first.');
-            setActiveTab('settings');
-          }
-        }}
+        onLockApp={handleLockApp}
+        onOpenShortcuts={() => setIsShortcutsModalOpen(true)}
       >
         {activeTab === 'dashboard' && (
           <Dashboard
@@ -234,6 +253,12 @@ export default function App() {
 
         {activeTab === 'settings' && <Settings toast={showToast} licenseStatus={licenseStatus} />}
       </AppLayout>
+
+      {/* Keyboard Shortcuts Cheat Sheet Modal */}
+      <ShortcutsModal
+        isOpen={isShortcutsModalOpen}
+        onClose={() => setIsShortcutsModalOpen(false)}
+      />
 
       {/* Trial Expired Fullscreen Lockdown Overlay (Hides and locks everything when trial ends) */}
       {licenseStatus?.isExpired && (
