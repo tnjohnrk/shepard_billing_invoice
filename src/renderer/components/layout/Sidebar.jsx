@@ -42,12 +42,12 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
               <div className="overflow-hidden flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <h1 className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate tracking-tight">
-                    Shepherd Billing
+                    Shepherd Billing Enterprise
                   </h1>
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
                 </div>
                 <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate flex items-center gap-1">
-                  <span>Enterprise v1.0</span>
+                  <span> v1.0</span>
                   <span className="text-slate-300 dark:text-slate-700">•</span>
                   <span className="text-blue-600 dark:text-blue-400 font-semibold">Active</span>
                 </p>
@@ -79,7 +79,7 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
               <span>New Invoice</span>
             </div>
             <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-800/60 text-indigo-200 border border-indigo-500/30">
-              Ctrl+N
+              ALT + 2
             </span>
           </button>
         </div>
