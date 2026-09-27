@@ -21,7 +21,6 @@ npm-debug.log*
 # OS & IDE Files
 .DS_Store
 Thumbs.db
-.vscode/
 .idea/
 
 # Exported user test documents

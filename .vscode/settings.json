@@ -1,0 +1,36 @@
+{
+  "css.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.includeLanguages": {
+    "javascript": "javascriptreact",
+    "javascriptreact": "javascriptreact",
+    "typescript": "typescriptreact",
+    "typescriptreact": "typescriptreact",
+    "html": "html",
+    "css": "css"
+  },
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass"
+  ],
+  "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["twMerge\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["cva\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "tailwindCSS.lint.invalidApply": "ignore",
+  "tailwindCSS.lint.invalidScreen": "ignore",
+  "tailwindCSS.lint.invalidVariant": "ignore",
+  "tailwindCSS.lint.invalidConfigPath": "ignore",
+  "tailwindCSS.lint.unknownAtRules": "ignore",
+  "tailwindCSS.lint.cssConflict": "ignore",
+  "tailwindCSS.lint.recommendedVariantOrder": "ignore",
+  "editor.quickSuggestions": {
+    "strings": "on"
+  }
+}
