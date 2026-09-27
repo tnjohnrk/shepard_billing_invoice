@@ -293,10 +293,10 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                               </div>
                             </td>
                             <td className="w-[76%] align-middle text-center p-3">
-                              <div className="text-[40px] font-black uppercase tracking-[11px] text-blue-900 leading-none pl-[11px] whitespace-nowrap">
+                              <div className="text-[42px] font-black uppercase tracking-[12px] text-blue-900 leading-none pl-[12px] whitespace-nowrap">
                                 SHEPHERD
                               </div>
-                              <div className="text-[17.5px] font-black uppercase tracking-[5px] text-blue-900 leading-tight mt-1.5 pl-[5px] whitespace-nowrap">
+                              <div className="text-[19px] font-black uppercase tracking-[7px] text-blue-900 leading-tight mt-2 pl-[7px] whitespace-nowrap">
                                 ENTERPRISES PRIVATE LIMITED
                               </div>
                               <p className="text-[8.8px] font-bold text-slate-900 leading-tight uppercase tracking-[0.2px] mt-2.5 mb-1 whitespace-nowrap">

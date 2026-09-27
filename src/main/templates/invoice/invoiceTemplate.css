@@ -153,26 +153,26 @@ body {
 }
 
 .company-brand-title {
-  font-size: 40px;
+  font-size: 42px;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 11px;
+  letter-spacing: 12px;
   color: #1e3a8a;
   line-height: 1;
   margin: 0;
-  padding-left: 11px;
+  padding-left: 12px;
   white-space: nowrap;
 }
 
 .company-sub-title {
-  font-size: 17.5px;
+  font-size: 19px;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 5px;
+  letter-spacing: 7px;
   color: #1e3a8a;
   line-height: 1.15;
   margin-top: 6px;
-  padding-left: 5px;
+  padding-left: 7px;
   white-space: nowrap;
 }
 
