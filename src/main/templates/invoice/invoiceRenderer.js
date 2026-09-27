@@ -164,7 +164,7 @@ export function renderInvoiceHtml(invoiceData) {
           </tr>
           <tr class="customer-info-row">
             <td class="cust-gstin-cell">
-              <span class="font-bold">CUSTOMER' GSTIN:</span> ${escapeHtml(invoiceData.customer_gstin || 'N/A')}
+              <span class="font-bold">CUSTOMER'S GSTIN:</span> ${escapeHtml(invoiceData.customer_gstin || 'N/A')}
             </td>
             <td class="cust-state-cell">
               <div class="meta-field"><span class="meta-lbl font-bold">STATE:</span> <span class="meta-txt uppercase">${escapeHtml(invoiceData.customer_state || 'Tamil Nadu')}</span></div>

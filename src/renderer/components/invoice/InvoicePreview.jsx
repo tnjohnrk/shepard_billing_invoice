@@ -402,7 +402,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                           {/* Customer GSTIN & State Code Row */}
                           <tr>
                             <td className="w-[50%] p-2 border-r-[1.5px] border-black align-middle font-bold text-[11.5px]">
-                              CUSTOMER' GSTIN: {fullData.customer_gstin || 'N/A'}
+                              CUSTOMER'S GSTIN: {fullData.customer_gstin || 'N/A'}
                             </td>
                             <td className="w-[50%] p-2 align-middle space-y-0.5 text-[11px]">
                               <div>
