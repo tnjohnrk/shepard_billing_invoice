@@ -290,8 +290,7 @@ button:active:not(:disabled) {
 .bg-indigo-600,
 .bg-blue-600,
 .bg-sky-500,
-.bg-sky-600,
-.btn-primary {
+.bg-sky-600 {
   background-color: var(--primary-blue) !important;
 }
 

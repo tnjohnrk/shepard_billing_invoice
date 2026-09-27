@@ -544,8 +544,8 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                           </td>
 
                           {/* Right: Tax Breakdown */}
-                          <td className="w-[50%] p-0 align-top">
-                            <table className="w-full border-collapse text-[11px]">
+                          <td className="w-[50%] p-0 align-top h-full">
+                            <table className="w-full h-full border-collapse text-[11px]">
                               <tbody>
                                 {pages.length > 1 && pages.map((p) => {
                                   const pSub = (p.items || []).reduce((sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0), 0);
@@ -596,8 +596,8 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                   </tr>
                                 )}
                                 <tr className="bg-slate-50 font-black text-[11.5px]">
-                                  <td className="p-1.5 text-left whitespace-nowrap border-r-[1.5px] border-black">TOTAL AMOUNT AFTER TAX:</td>
-                                  <td className="p-1.5 text-right font-mono whitespace-nowrap">
+                                  <td className="p-1.5 text-left whitespace-nowrap border-r-[1.5px] border-black border-b-0">TOTAL AMOUNT AFTER TAX:</td>
+                                  <td className="p-1.5 text-right font-mono whitespace-nowrap border-b-0">
                                     {totals.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                   </td>
                                 </tr>

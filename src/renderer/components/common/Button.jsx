@@ -21,7 +21,7 @@ export function Button({
   };
 
   const variantStyles = {
-    primary: 'btn-primary bg-[#0969da] hover:bg-[#085ac5] active:bg-[#074ea8] dark:bg-[#1f6feb] dark:hover:bg-[#388bfd] text-white shadow-xs hover:shadow-sm border border-[#0969da]/30 dark:border-[#1f6feb]/30',
+    primary: 'btn-primary bg-sky-50 hover:bg-sky-100 active:bg-sky-200 dark:bg-sky-950/50 dark:hover:bg-sky-900/60 text-sky-700 dark:text-sky-300 border border-sky-300 dark:border-sky-700 shadow-2xs hover:border-sky-400 dark:hover:border-sky-600',
     secondary: 'btn-secondary bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700',
     accent: 'btn-accent bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-[#0969da] dark:text-[#388bfd] border border-blue-200/80 dark:border-blue-900/60',
     success: 'btn-success bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white shadow-xs border border-emerald-500/30',
