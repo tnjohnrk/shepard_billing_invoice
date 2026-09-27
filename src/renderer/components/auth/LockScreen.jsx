@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Eye, EyeOff, ShieldCheck, KeyRound, ArrowRight, Wrench, Clock, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Eye, EyeOff, ShieldCheck, KeyRound, ArrowRight, Clock, Sparkles, CheckCircle2 } from 'lucide-react';
 import companyLogo from '../../assets/billing_image.png';
 import { Button } from '../common/Button';
 import { Toast } from '../common/Toast';
@@ -62,7 +62,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
           setTrialEnd(status.endDateTime.slice(0, 16));
         } else {
           const d = new Date();
-          d.setDate(d.getDate() + 30);
+          d.setDate(d.getDate() + 10);
           setTrialEnd(d.toISOString().slice(0, 16));
         }
       }
@@ -158,7 +158,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
     }
   };
 
-  // Preset Days helper
+  // Preset Days helper (5 Days or 10 Days)
   const handleApplyPreset = (days) => {
     const now = new Date();
     const startStr = now.toISOString().slice(0, 16);
@@ -196,7 +196,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
       });
 
       setLicenseStatus(updatedLicense);
-      setSuccessMsg('License activation updated successfully!');
+      setSuccessMsg('License updated successfully!');
       
       setTimeout(async () => {
         await onUnlock('DEV_UNLOCKED');
@@ -239,7 +239,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
     setError('');
     try {
       await ipcClient.disableSecurityPin('developer@v2c');
-      setSuccessMsg('Password protection removed. Entering app...');
+      setSuccessMsg('Password protection removed.');
       setTimeout(async () => {
         await onUnlock('');
       }, 700);
@@ -252,54 +252,44 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
   const isExpired = licenseStatus?.isExpired;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm text-slate-900 dark:text-slate-100 select-none p-4 overflow-y-auto">
-      <div className={`relative w-full ${isDevControlOpen ? 'max-w-xl' : 'max-w-md'} bg-white dark:bg-slate-900 p-7 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-2xl transition-all duration-300 my-auto`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-100/90 dark:bg-[#090d13]/95 backdrop-blur-md text-slate-900 dark:text-slate-100 select-none p-4 overflow-y-auto transition-colors">
+      <div className={`relative w-full ${isDevControlOpen ? 'max-w-lg' : 'max-w-sm sm:max-w-md'} bg-white dark:bg-[#161b22] p-6 sm:p-7 rounded-2xl border border-slate-200 dark:border-[#30363d] shadow-xl transition-all duration-300 my-auto`}>
         {/* Brand & Header */}
         <div className="flex flex-col items-center text-center">
           <img
             src={companyLogo}
             alt="Shepherd Enterprises"
-            className="w-24 h-24 object-contain shadow-none mb-1"
+            className="w-20 h-20 sm:w-22 sm:h-22 object-contain shadow-none mb-1"
           />
 
           <div className="mt-1">
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-wide uppercase">
+            <h2 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-slate-100 tracking-wide uppercase">
               Shepherd Enterprises
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
               Private Limited • Billing &amp; Invoice System
             </p>
           </div>
         </div>
 
         {/* State Banner */}
-        {!isDevControlOpen ? (
-          <div className="mt-5 flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 text-xs text-sky-900 dark:text-sky-200 font-medium">
-            <ShieldCheck className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
-            <span>Application is locked. Enter your 4-digit PIN to access billing records.</span>
-          </div>
-        ) : (
-          <div className="mt-4 flex items-start gap-2.5 px-3.5 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800/60 text-xs text-amber-900 dark:text-amber-200">
-            <Wrench className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-            <div>
-              <strong className="text-amber-800 dark:text-amber-300">Developer Control Panel:</strong>
-              <span className="ml-1 text-amber-700 dark:text-amber-200/90">
-                Manage System License or Reset User Passwords below.
-              </span>
-            </div>
+        {!isDevControlOpen && (
+          <div className="mt-4 flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/60 text-xs text-blue-900 dark:text-blue-200 font-medium">
+            <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+            <span>Application is locked. Enter your 4-digit PIN to continue.</span>
           </div>
         )}
 
         {/* Normal Login Form vs Developer Master Code vs Developer Control Panel */}
         {!isDevControlOpen ? (
-          <form onSubmit={handleSubmitUnlock} className="mt-5 space-y-5">
+          <form onSubmit={handleSubmitUnlock} className="mt-4 space-y-4">
             {!isDeveloperMode ? (
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 text-center block">
                     Enter 4-Digit User PIN
                   </label>
-                  <div className="flex justify-center gap-3">
+                  <div className="flex justify-center gap-2.5 sm:gap-3">
                     {[0, 1, 2, 3].map((index) => (
                       <input
                         key={index}
@@ -310,12 +300,12 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                         onChange={(e) => handlePinChange(index, e.target.value)}
                         onKeyDown={(e) => handlePinKeyDown(index, e)}
                         onPaste={handlePinPaste}
-                        className={`w-12 h-14 p-0 leading-[3.5rem] font-mono text-center text-2xl font-bold rounded-xl focus:outline-none transition-all shadow-sm ${
+                        className={`w-11 h-13 sm:w-12 sm:h-14 p-0 leading-[3.5rem] font-mono text-center text-2xl font-bold rounded-xl focus:outline-none transition-all shadow-2xs ${
                           error
-                            ? 'bg-rose-100 border-2 border-rose-500 text-rose-900 dark:bg-rose-950/80 dark:border-rose-600'
+                            ? 'bg-rose-50 border-2 border-rose-500 text-rose-900 dark:bg-rose-950/80 dark:border-rose-600'
                             : isSuccess
-                            ? 'bg-emerald-100 border-2 border-emerald-500 text-emerald-900 dark:bg-emerald-950/80 dark:border-emerald-600'
-                            : 'bg-sky-50 dark:bg-slate-900 border-2 border-sky-200 dark:border-slate-700 text-sky-900 dark:text-slate-100'
+                            ? 'bg-emerald-50 border-2 border-emerald-500 text-emerald-900 dark:bg-emerald-950/80 dark:border-emerald-600'
+                            : 'bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] text-slate-900 dark:text-slate-100 focus:border-blue-500'
                         }`}
                         autoFocus={index === 0}
                       />
@@ -326,7 +316,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                 <Button
                   type="submit"
                   variant="primary"
-                  className="w-full justify-center py-2.5 text-sm font-semibold"
+                  className="w-full justify-center py-2.5 text-xs sm:text-sm font-bold bg-[#0969da] hover:bg-[#085ac5] dark:bg-[#1f6feb] dark:hover:bg-[#388bfd]"
                   isLoading={isVerifying}
                 >
                   <div className="flex items-center gap-2">
@@ -341,7 +331,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                       setIsDeveloperMode(true);
                       setError('');
                     }}
-                    className="text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
+                    className="text-xs font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
                   >
                     Developer Recovery Mode
                   </button>
@@ -364,12 +354,12 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                         if (error) setError('');
                       }}
                       autoFocus
-                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-colors font-mono shadow-none"
+                      className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2.5 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors font-mono"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 cursor-pointer"
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -380,7 +370,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                 <Button
                   type="submit"
                   variant="primary"
-                  className="w-full justify-center py-2.5 text-sm font-semibold"
+                  className="w-full justify-center py-2.5 text-xs sm:text-sm font-bold bg-[#0969da] hover:bg-[#085ac5] dark:bg-[#1f6feb] dark:hover:bg-[#388bfd]"
                   isLoading={isVerifying}
                 >
                   <div className="flex items-center gap-2">
@@ -395,7 +385,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                       setIsDeveloperMode(false);
                       setError('');
                     }}
-                    className="text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
+                    className="text-xs font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
                   >
                     Back to PIN Login
                   </button>
@@ -404,11 +394,11 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
             )}
           </form>
         ) : (
-          /* Developer Control Panel with SEPARATE TABS */
+          /* Developer Control Panel */
           <div className="mt-4 space-y-4">
-            {/* Top Distinct Tab Switcher */}
+            {/* Tab Switcher */}
             {!isExpired ? (
-              <div className="grid grid-cols-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 gap-1">
+              <div className="grid grid-cols-2 p-1 bg-slate-100 dark:bg-[#0d1117] rounded-xl border border-slate-200 dark:border-[#30363d] gap-1">
                 <button
                   type="button"
                   onClick={() => {
@@ -417,12 +407,12 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                   }}
                   className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     devActiveTab === 'license'
-                      ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-slate-700'
+                      ? 'bg-white dark:bg-[#161b22] text-blue-600 dark:text-blue-400 shadow-2xs border border-slate-200/80 dark:border-[#30363d]'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
                   <Sparkles className="w-4 h-4" />
-                  <span>System License Mode</span>
+                  <span>License Mode</span>
                 </button>
 
                 <button
@@ -433,7 +423,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                   }}
                   className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     devActiveTab === 'password'
-                      ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-slate-700'
+                      ? 'bg-white dark:bg-[#161b22] text-blue-600 dark:text-blue-400 shadow-2xs border border-slate-200/80 dark:border-[#30363d]'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
@@ -442,9 +432,9 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                 </button>
               </div>
             ) : (
-              <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 text-xs font-bold text-amber-900 dark:text-amber-200 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                <span>License Reactivation Required (Password editing locked until active)</span>
+              <div className="p-2.5 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-xs font-semibold text-blue-900 dark:text-blue-200 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                <span>Reactivate System License</span>
               </div>
             )}
 
@@ -452,105 +442,79 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
             {devActiveTab === 'license' && (
               <form onSubmit={handleSaveLicenseSettings} className="space-y-4">
                 {/* Mode Selector Cards */}
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
-                    Choose License Activation Mode
-                  </label>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {/* Live Mode Card */}
-                    <div
-                      onClick={() => setSelectedLicenseMode('LIVE')}
-                      className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all ${
-                        selectedLicenseMode === 'LIVE'
-                          ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100 ring-2 ring-emerald-500/20'
-                          : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:border-slate-300'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-1.5">
-                        <div className="flex items-center gap-1.5 font-bold text-sm">
-                          <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                          <span>Live Mode</span>
-                        </div>
-                        {selectedLicenseMode === 'LIVE' && (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                        )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Live Mode Card */}
+                  <div
+                    onClick={() => setSelectedLicenseMode('LIVE')}
+                    className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+                      selectedLicenseMode === 'LIVE'
+                        ? 'border-emerald-500 bg-emerald-50/60 dark:bg-emerald-950/30 text-emerald-950 dark:text-emerald-100 ring-2 ring-emerald-500/20'
+                        : 'border-slate-200 dark:border-[#30363d] bg-slate-50/60 dark:bg-[#0d1117]/50 text-slate-700 dark:text-slate-300 hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 font-bold text-xs sm:text-sm">
+                        <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                        <span>Live Mode</span>
                       </div>
-                      <p className="text-[11px] leading-relaxed opacity-90">
-                        <strong>Permanently Activated.</strong> Full commercial license with zero time restriction.
-                      </p>
+                      {selectedLicenseMode === 'LIVE' && (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                      )}
                     </div>
+                  </div>
 
-                    {/* Test Mode Card */}
-                    <div
-                      onClick={() => setSelectedLicenseMode('TEST')}
-                      className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all ${
-                        selectedLicenseMode === 'TEST'
-                          ? 'border-amber-500 bg-amber-50/70 dark:bg-amber-950/40 text-amber-950 dark:text-amber-100 ring-2 ring-amber-500/20'
-                          : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:border-slate-300'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-1.5">
-                        <div className="flex items-center gap-1.5 font-bold text-sm">
-                          <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                          <span>Test / Trial Mode</span>
-                        </div>
-                        {selectedLicenseMode === 'TEST' && (
-                          <CheckCircle2 className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                        )}
+                  {/* Test Mode Card */}
+                  <div
+                    onClick={() => setSelectedLicenseMode('TEST')}
+                    className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+                      selectedLicenseMode === 'TEST'
+                        ? 'border-blue-500 bg-blue-50/60 dark:bg-blue-950/30 text-blue-950 dark:text-blue-100 ring-2 ring-blue-500/20'
+                        : 'border-slate-200 dark:border-[#30363d] bg-slate-50/60 dark:bg-[#0d1117]/50 text-slate-700 dark:text-slate-300 hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 font-bold text-xs sm:text-sm">
+                        <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        <span>Test / Trial Mode</span>
                       </div>
-                      <p className="text-[11px] leading-relaxed opacity-90">
-                        <strong>Timed Evaluation.</strong> Configurable start and end date/time.
-                      </p>
+                      {selectedLicenseMode === 'TEST' && (
+                        <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {/* Test Mode Datetime Pickers (Only visible when Test Mode is selected) */}
+                {/* Test Mode Datetime Pickers with 5 Days and 10 Days presets */}
                 {selectedLicenseMode === 'TEST' && (
-                  <div className="p-4 rounded-xl border border-amber-300 dark:border-amber-800/80 bg-amber-50/50 dark:bg-amber-950/30 space-y-3">
+                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#30363d] bg-slate-50/60 dark:bg-[#0d1117]/50 space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                        Trial Period Settings
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                        Trial Period
                       </span>
 
-                      {/* Quick Preset Buttons */}
-                      <div className="flex items-center gap-1">
+                      {/* Presets: 5 Days & 10 Days only */}
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleApplyPreset(5)}
+                          className="px-2.5 py-0.5 text-xs font-semibold rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 transition-colors cursor-pointer"
+                        >
+                          5 Days
+                        </button>
                         <button
                           type="button"
                           onClick={() => handleApplyPreset(10)}
-                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors cursor-pointer"
+                          className="px-2.5 py-0.5 text-xs font-semibold rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 transition-colors cursor-pointer"
                         >
-                          +10 Days
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleApplyPreset(15)}
-                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors"
-                        >
-                          +15 Days
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleApplyPreset(30)}
-                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors"
-                        >
-                          +30 Days
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleApplyPreset(60)}
-                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 transition-colors"
-                        >
-                          +60 Days
+                          10 Days
                         </button>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                        <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
                           Start Date &amp; Time:
                         </label>
                         <input
@@ -558,20 +522,20 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                           value={trialStart}
                           onChange={(e) => setTrialStart(e.target.value)}
                           required
-                          className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-amber-500"
+                          className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-slate-300 dark:border-[#30363d] bg-white dark:bg-[#161b22] text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-500"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                          End Date &amp; Time (Expiry):
+                        <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                          End Date &amp; Time:
                         </label>
                         <input
                           type="datetime-local"
                           value={trialEnd}
                           onChange={(e) => setTrialEnd(e.target.value)}
                           required
-                          className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-amber-500"
+                          className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-slate-300 dark:border-[#30363d] bg-white dark:bg-[#161b22] text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-500"
                         />
                       </div>
                     </div>
@@ -583,11 +547,11 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                   <Button
                     type="submit"
                     variant="primary"
-                    className="w-full justify-center py-2.5 text-sm font-semibold"
+                    className="w-full justify-center py-2.5 text-xs sm:text-sm font-bold bg-[#0969da] hover:bg-[#085ac5] dark:bg-[#1f6feb] dark:hover:bg-[#388bfd]"
                     isLoading={isVerifying}
                     icon={Sparkles}
                   >
-                    Save &amp; Apply License Mode
+                    Save &amp; Apply License
                   </Button>
 
                   <button
@@ -597,9 +561,9 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                       setIsDeveloperMode(false);
                       setError('');
                     }}
-                    className="w-full py-1.5 text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors text-center"
+                    className="w-full py-1 text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors text-center cursor-pointer"
                   >
-                    Cancel &amp; Exit Developer Mode
+                    Cancel &amp; Exit
                   </button>
                 </div>
               </form>
@@ -607,10 +571,10 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
 
             {/* TAB 2: Password Reset */}
             {devActiveTab === 'password' && (
-              <form onSubmit={handleSaveNewPassword} className="space-y-4">
-                <div className="space-y-1.5">
+              <form onSubmit={handleSaveNewPassword} className="space-y-3.5">
+                <div className="space-y-1">
                   <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                    Create New Password / 4-Digit PIN <span className="text-rose-400">*</span>
+                    Create New Password / PIN
                   </label>
                   <div className="relative">
                     <input
@@ -623,21 +587,21 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                       }}
                       autoFocus
                       required
-                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-colors font-mono shadow-none"
+                      className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors font-mono"
                     />
                     <button
                       type="button"
                       onClick={() => setShowNew(!showNew)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
                     >
                       {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                    Confirm New Password / PIN <span className="text-rose-400">*</span>
+                    Confirm New Password / PIN
                   </label>
                   <div className="relative">
                     <input
@@ -649,36 +613,36 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                         if (error) setError('');
                       }}
                       required
-                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-colors font-mono shadow-none"
+                      className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors font-mono"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirm(!showConfirm)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
                     >
                       {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
 
-                <div className="space-y-2 pt-2">
+                <div className="space-y-2 pt-1">
                   <Button
                     type="submit"
                     variant="primary"
-                    className="w-full justify-center py-2.5 text-sm font-semibold"
+                    className="w-full justify-center py-2.5 text-xs sm:text-sm font-bold bg-[#0969da] hover:bg-[#085ac5] dark:bg-[#1f6feb] dark:hover:bg-[#388bfd]"
                     isLoading={isVerifying}
                     icon={KeyRound}
                   >
-                    Save New Password &amp; Enter
+                    Save New Password
                   </Button>
 
                   <button
                     type="button"
                     onClick={handleDisablePassword}
                     disabled={isVerifying}
-                    className="w-full py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/40 rounded-lg transition-colors cursor-pointer text-center"
+                    className="w-full py-1.5 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/40 rounded-lg transition-colors cursor-pointer text-center"
                   >
-                    Disable Password Protection &amp; Enter
+                    Disable Password Protection
                   </button>
 
                   <button
@@ -688,9 +652,9 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                       setIsDeveloperMode(false);
                       setError('');
                     }}
-                    className="w-full py-1.5 text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors text-center"
+                    className="w-full py-1 text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors text-center cursor-pointer"
                   >
-                    Cancel &amp; Exit Developer Mode
+                    Cancel &amp; Exit
                   </button>
                 </div>
               </form>
@@ -719,5 +683,3 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
     </div>
   );
 }
-
-
