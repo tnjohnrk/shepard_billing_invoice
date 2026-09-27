@@ -308,40 +308,44 @@ button:active:not(:disabled) {
   background-color: var(--primary-blue-active) !important;
 }
 
-/* Primary Button Styling (Image 1 Style: Light blue pill with blue border & blue text) */
+/* Primary Button Styling (Solid Blue with White Text) */
+.btn-primary,
 .light .btn-primary {
-  background-color: #ddf4ff !important;
-  border: 1px solid #54aeff !important;
-  color: #0969da !important;
+  background-color: #0969da !important;
+  border: 1px solid #0969da !important;
+  color: #ffffff !important;
   box-shadow: none !important;
 }
 
+.btn-primary:hover,
 .light .btn-primary:hover {
-  background-color: #b6e3ff !important;
-  border-color: #218bff !important;
-  color: #0550ae !important;
+  background-color: #085ac5 !important;
+  border-color: #085ac5 !important;
+  color: #ffffff !important;
 }
 
 .dark .btn-primary {
-  background-color: rgba(12, 45, 107, 0.6) !important;
-  border: 1px solid rgba(31, 111, 235, 0.6) !important;
-  color: #58a6ff !important;
+  background-color: #1f6feb !important;
+  border: 1px solid #1f6feb !important;
+  color: #ffffff !important;
   box-shadow: none !important;
 }
 
 .dark .btn-primary:hover {
-  background-color: #0c2d6b !important;
+  background-color: #388bfd !important;
   border-color: #388bfd !important;
-  color: #79c0ff !important;
+  color: #ffffff !important;
 }
 
-/* Solid Button Styling (Image 2 Style: Solid blue button with white text) */
+/* Solid Button Styling */
+.btn-solid,
 .light .btn-solid {
   background-color: #0969da !important;
   border: 1px solid #0969da !important;
   color: #ffffff !important;
 }
 
+.btn-solid:hover,
 .light .btn-solid:hover {
   background-color: #085cc0 !important;
 }
