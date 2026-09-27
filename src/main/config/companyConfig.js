@@ -1,8 +1,8 @@
 export const COMPANY_CONFIG = {
   name: 'SHEPHERD ENTERPRISES PRIVATE LIMITED',
-  address: 'No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062',
+  address: 'NO.4 & 5 JENILA NAGAR, THIRUMULLAIVOYAL SALAI, KOVILPADAGAI, POONAMALLEE, TIRUVALLUR - 600062.',
   phone: '+91 9025812298 / +91 8438435681',
-  email: 'shepheredenterprisespvtltd@gmail.com',
+  email: 'shepherdenterprisespvtltd@gmail.com',
   gstin: '33ABUCS2217H1Z8',
   state: 'Tamil Nadu',
   state_code: '33',

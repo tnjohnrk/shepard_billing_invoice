@@ -290,18 +290,18 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 {COMPANY_CONFIG.upi_id || 'msshepherdenterprisesprivatelimited.eazypay@icici'}
                               </div>
                             </td>
-                            <td className="w-[76%] align-middle text-center p-3.5">
-                              <h1 className="text-[26px] font-black uppercase tracking-wide text-blue-900 mb-1 leading-tight">
-                                SHEPHERD ENTERPRISES PRIVATE LIMITED
-                              </h1>
-                              <p className="text-[11.5px] text-slate-900 leading-tight uppercase font-medium mb-1.5">
-                                No.4 &amp; 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062
+                            <td className="w-[76%] align-middle text-center p-3">
+                              <div className="text-[40px] font-black uppercase tracking-[11px] text-blue-900 leading-none pl-[11px] whitespace-nowrap">
+                                SHEPHERD
+                              </div>
+                              <div className="text-[17.5px] font-black uppercase tracking-[5px] text-blue-900 leading-tight mt-1.5 pl-[5px] whitespace-nowrap">
+                                ENTERPRISES PRIVATE LIMITED
+                              </div>
+                              <p className="text-[8.8px] font-bold text-slate-900 leading-tight uppercase tracking-[0.2px] mt-2.5 mb-1 whitespace-nowrap">
+                                NO.4 & 5 JENILA NAGAR, THIRUMULLAIVOYAL SALAI, KOVILPADAGAI, POONAMALLEE, TIRUVALLUR - 600062.
                               </p>
-                              <p className="text-[12px] font-bold text-slate-950 mb-0.5">
-                                Cell: +91 9025812298 / +91 8438435681
-                              </p>
-                              <p className="text-[12px] font-bold text-slate-950">
-                                Email: shepheredenterprisespvtltd@gmail.com
+                              <p className="text-[9.5px] font-bold text-slate-950 leading-tight tracking-[0.2px] whitespace-nowrap">
+                                Cell: +91 9025812298 / +91 8438435681 &nbsp;&middot;&nbsp; Email: shepherdenterprisespvtltd@gmail.com
                               </p>
                             </td>
                           </tr>

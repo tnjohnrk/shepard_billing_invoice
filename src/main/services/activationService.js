@@ -32,13 +32,10 @@ export function activateProductKey(inputKey) {
 
   const keyHash = hashString(rawKey);
 
-  // Check against developer master key
-  const isDevKey = rawKey === PRODUCT_KEY_CONFIG.DEVELOPER_MASTER_KEY;
-
   // Check against configured SHA-256 hashes
   const isHashMatch = PRODUCT_KEY_CONFIG.VALID_KEY_HASHES.map(h => h.toLowerCase()).includes(keyHash);
 
-  if (!isDevKey && !isHashMatch) {
+  if (!isHashMatch) {
     throw new Error('Invalid Product Key. Please contact the developer for installation activation.');
   }
 

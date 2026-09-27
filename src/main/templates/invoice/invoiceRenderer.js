@@ -117,10 +117,10 @@ export function renderInvoiceHtml(invoiceData) {
               <div class="company-upi-tag">${escapeHtml(upiId)}</div>
             </td>
             <td class="header-center-col">
-              <div class="company-name">${escapeHtml(COMPANY_CONFIG.name)}</div>
-              <div class="company-address">${escapeHtml(COMPANY_CONFIG.address)}</div>
-              <div class="company-cell">Cell: ${escapeHtml(COMPANY_CONFIG.phone)}</div>
-              <div class="company-email">Email: ${escapeHtml(COMPANY_CONFIG.email)}</div>
+              <div class="company-brand-title">SHEPHERD</div>
+              <div class="company-sub-title">ENTERPRISES PRIVATE LIMITED</div>
+              <div class="company-address-line">${escapeHtml(COMPANY_CONFIG.address)}</div>
+              <div class="company-contact-line">Cell: ${escapeHtml(COMPANY_CONFIG.phone)} &nbsp;&middot;&nbsp; Email: ${escapeHtml(COMPANY_CONFIG.email)}</div>
             </td>
           </tr>
         </table>
