@@ -270,18 +270,71 @@ button:active:not(:disabled) {
   border-color: #30363d !important;
 }
 
-/* Make primary action gradients flat matte with soft, reduced-intensity blue */
-.dark button.bg-gradient-to-r,
-.dark button.bg-gradient-to-br,
-.dark div.bg-gradient-to-r,
-.dark div.bg-gradient-to-br {
-  background-image: none !important;
-  background-color: #2b5ea7 !important;
+/* ========================================================================= */
+/* UNIFIED ENTERPRISE BLUE ACCENT (Light & Dark Theme)                       */
+/* ========================================================================= */
+
+:root {
+  --primary-blue: #0969da;
+  --primary-blue-hover: #085cc0;
+  --primary-blue-active: #074da3;
 }
 
-.dark button.bg-gradient-to-r:hover,
-.dark button.bg-gradient-to-br:hover {
-  background-color: #336ebd !important;
+.dark {
+  --primary-blue: #1f6feb;
+  --primary-blue-hover: #388bfd;
+  --primary-blue-active: #1a5ac9;
+}
+
+/* Primary buttons and actions across all themes */
+.bg-indigo-600,
+.bg-blue-600,
+.bg-sky-500,
+.bg-sky-600,
+.btn-primary {
+  background-color: var(--primary-blue) !important;
+}
+
+.hover\:bg-indigo-500:hover,
+.hover\:bg-blue-500:hover,
+.hover\:bg-sky-400:hover,
+.hover\:bg-indigo-600:hover,
+.hover\:bg-blue-600:hover {
+  background-color: var(--primary-blue-hover) !important;
+}
+
+.active\:bg-indigo-700:active,
+.active\:bg-blue-700:active,
+.active\:bg-sky-700:active {
+  background-color: var(--primary-blue-active) !important;
+}
+
+/* Make primary action gradients use unified clean blue */
+button.bg-gradient-to-r,
+button.bg-gradient-to-br,
+div.bg-gradient-to-r,
+div.bg-gradient-to-br {
+  background-image: none !important;
+  background-color: var(--primary-blue) !important;
+}
+
+button.bg-gradient-to-r:hover,
+button.bg-gradient-to-br:hover {
+  background-color: var(--primary-blue-hover) !important;
+}
+
+/* Primary text accents in UI (excluding invoice paper) */
+body:not(.invoice-preview-paper) .text-indigo-600,
+body:not(.invoice-preview-paper) .text-blue-600,
+body:not(.invoice-preview-paper) .text-sky-500,
+body:not(.invoice-preview-paper) .text-sky-600 {
+  color: var(--primary-blue) !important;
+}
+
+.dark body:not(.invoice-preview-paper) .text-indigo-400,
+.dark body:not(.invoice-preview-paper) .text-blue-400,
+.dark body:not(.invoice-preview-paper) .text-sky-400 {
+  color: #58a6ff !important;
 }
 
 /* Layout & Backgrounds in Dark Mode */
