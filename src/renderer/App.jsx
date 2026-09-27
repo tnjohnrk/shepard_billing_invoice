@@ -127,10 +127,6 @@ export default function App() {
     } catch (err) {
       return false;
     }
-  };
-
-  const [historySelectedInvoice, setHistorySelectedInvoice] = useState(null);
-
   const handleDuplicateInvoice = (invoiceData) => {
     setCreateInitialData(invoiceData);
     setActiveTab('create');
