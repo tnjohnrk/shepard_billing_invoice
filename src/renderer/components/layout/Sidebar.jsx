@@ -22,7 +22,7 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
   ];
 
   const managementItems = [
-    ...(FEATURE_FLAGS.DETAILS_PANEL_ENABLED ? [{ id: 'details', label: 'Details View', icon: Layers, badge: null }] : []),
+    ...(FEATURE_FLAGS.DETAILS_PANEL_ENABLED ? [{ id: 'details', label: 'Directory & Masters', icon: Layers, badge: null }] : []),
     { id: 'reports', label: 'GST & Reports', icon: BarChart3, badge: null },
     { id: 'settings', label: 'Settings', icon: Settings, badge: null }
   ];
@@ -31,13 +31,13 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
     <aside className="w-64 h-full bg-slate-50 dark:bg-[#161b22] border-r border-slate-200 dark:border-[#30363d] flex flex-col justify-between select-none transition-all duration-200 shrink-0">
       <div className="flex flex-col h-full">
         {/* Workspace Brand Header */}
-        <div className="p-3 border-b border-slate-200 dark:border-[#30363d] space-y-2.5">
+        <div className="p-3.5 border-b border-slate-200 dark:border-[#30363d] space-y-3">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] shadow-xs flex-1 min-w-0">
               <img
                 src={companyLogo}
                 alt="Shepherd Enterprises"
-                className="w-8 h-8 rounded-lg object-contain bg-slate-50 dark:bg-[#161b22] p-0.5 border border-slate-100 dark:border-[#30363d] shrink-0"
+                className="w-8.5 h-8.5 rounded-lg object-contain bg-slate-50 dark:bg-[#161b22] p-0.5 border border-slate-100 dark:border-[#30363d] shrink-0"
               />
               <div className="overflow-hidden flex-1 min-w-0">
                 <div className="flex items-center justify-between">
@@ -47,7 +47,7 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
                 </div>
                 <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate flex items-center gap-1">
-                  <span> v1.0</span>
+                  <span>v1.0</span>
                   <span className="text-slate-300 dark:text-slate-700">•</span>
                   <span className="text-blue-600 dark:text-blue-400 font-semibold">Active</span>
                 </p>
@@ -72,10 +72,10 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
               setActiveTab('create');
               if (isMobile && onClose) onClose();
             }}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold bg-[#0969da] hover:bg-[#085ac5] dark:bg-[#1f6feb] dark:hover:bg-[#388bfd] text-white shadow-none transition-all duration-150 cursor-pointer active:scale-[0.99] group"
+            className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold bg-[#0969da] hover:bg-[#085ac5] dark:bg-[#1f6feb] dark:hover:bg-[#388bfd] text-white shadow-2xs transition-all duration-150 cursor-pointer active:scale-[0.99] group"
           >
             <div className="flex items-center gap-2">
-              <Plus className="w-3.5 h-3.5 transition-transform group-hover:rotate-90 duration-200" />
+              <Plus className="w-4 h-4 transition-transform group-hover:rotate-90 duration-200" />
               <span>New Invoice</span>
             </div>
             <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-black/20 text-white/90 border border-white/20">
@@ -91,7 +91,7 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
             <div className="px-3 mb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Operations
             </div>
-            <nav className="space-y-0.5">
+            <nav className="space-y-1">
               {operationsItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
@@ -102,9 +102,9 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
                       setActiveTab(item.id);
                       if (isMobile && onClose) onClose();
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer group ${
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-[13px] font-medium transition-all duration-150 cursor-pointer group ${
                       isActive
-                        ? 'bg-slate-200/80 dark:bg-[#21262d] text-slate-900 dark:text-slate-100 font-semibold border border-slate-300 dark:border-[#30363d]'
+                        ? 'bg-slate-200/80 dark:bg-[#21262d] text-slate-900 dark:text-slate-100 font-bold border border-slate-300 dark:border-[#30363d]'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/80 dark:hover:bg-slate-900/60'
                     }`}
                   >
@@ -130,7 +130,7 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
             <div className="px-3 mb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Management
             </div>
-            <nav className="space-y-0.5">
+            <nav className="space-y-1">
               {managementItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
@@ -141,9 +141,9 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
                       setActiveTab(item.id);
                       if (isMobile && onClose) onClose();
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer group ${
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-[13px] font-medium transition-all duration-150 cursor-pointer group ${
                       isActive
-                        ? 'bg-slate-200/80 dark:bg-[#21262d] text-slate-900 dark:text-slate-100 font-semibold border border-slate-300 dark:border-[#30363d]'
+                        ? 'bg-slate-200/80 dark:bg-[#21262d] text-slate-900 dark:text-slate-100 font-bold border border-slate-300 dark:border-[#30363d]'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/80 dark:hover:bg-slate-900/60'
                     }`}
                   >
