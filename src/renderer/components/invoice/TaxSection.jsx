@@ -122,7 +122,7 @@ export function TaxSection({
           </h3>
           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
             totals.isIntraState 
-              ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800'
+              ? 'bg-[#0078d4]/5 dark:bg-[#0078d4]/20/60 text-[#006cb8] dark:text-[#4cc2ff] border border-[#0078d4]/30 dark:border-[#005fa3]'
               : 'bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800'
           }`}>
             {totals.isIntraState ? 'Intra-State Supply' : 'Inter-State Supply'}
@@ -146,7 +146,7 @@ export function TaxSection({
                     }}
                     className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       isActive
-                        ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                        ? 'bg-[#0078d4] text-white shadow-xs font-bold'
                         : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                   >
@@ -165,7 +165,7 @@ export function TaxSection({
                   <input
                     type="text"
                     inputMode="decimal"
-                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-mono shadow-xs"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4] font-mono shadow-xs"
                     value={cgstInput}
                     onChange={(e) => handleCgstInputChange(e.target.value)}
                     onBlur={handleCgstBlur}
@@ -182,7 +182,7 @@ export function TaxSection({
                   <input
                     type="text"
                     inputMode="decimal"
-                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-mono shadow-xs"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4] font-mono shadow-xs"
                     value={sgstInput}
                     onChange={(e) => handleSgstInputChange(e.target.value)}
                     onBlur={handleSgstBlur}
@@ -226,7 +226,7 @@ export function TaxSection({
                 <input
                   type="text"
                   inputMode="decimal"
-                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-mono shadow-xs"
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4] font-mono shadow-xs"
                   value={igstInput}
                   onChange={(e) => handleIgstInputChange(e.target.value)}
                   onBlur={handleIgstBlur}

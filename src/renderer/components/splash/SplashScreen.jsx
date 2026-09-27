@@ -36,7 +36,7 @@ export function SplashScreen() {
         {/* Glowing Logo Container */}
         <div className="relative flex items-center justify-center">
           {/* Subtle Ambient Glow */}
-          <div className="absolute -inset-2 bg-gradient-to-r from-blue-500/20 to-sky-400/20 rounded-full blur-xl animate-pulse" />
+          <div className="absolute -inset-2 bg-gradient-to-r from-[#0078d4]/20 to-[#4cc2ff]/20 rounded-full blur-xl animate-pulse" />
           
           <div className="relative p-3 rounded-2xl bg-slate-50/80 dark:bg-[#0d1117] border border-slate-100 dark:border-[#30363d] shadow-inner">
             <img
@@ -63,14 +63,14 @@ export function SplashScreen() {
         <div className="w-full space-y-2.5 pt-1">
           <div className="relative w-full h-1.5 bg-slate-100 dark:bg-[#0d1117] rounded-full overflow-hidden border border-slate-200 dark:border-[#30363d]">
             <div
-              className="h-full bg-gradient-to-r from-[#0969da] to-sky-400 rounded-full transition-all duration-300 ease-out shadow-xs"
+              className="h-full bg-gradient-to-r from-[#0969da] to-[#4cc2ff] rounded-full transition-all duration-300 ease-out shadow-xs"
               style={{ width: `${progress}%` }}
             />
           </div>
 
           <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-medium px-0.5">
             <span className="truncate max-w-[200px] flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping inline-block shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0078d4] animate-ping inline-block shrink-0" />
               {stageText}
             </span>
             <span className="font-mono text-[10px] font-bold text-slate-400 dark:text-slate-500">

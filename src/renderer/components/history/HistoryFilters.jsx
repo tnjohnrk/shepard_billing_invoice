@@ -27,7 +27,7 @@ export function HistoryFilters({
         </div>
 
         <div className="inline-flex items-center gap-2 px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 whitespace-nowrap">
-          <FileText className="w-3.5 h-3.5 text-indigo-500" />
+          <FileText className="w-3.5 h-3.5 text-[#0078d4]" />
           <span>Total:</span>
           <span className="font-bold text-slate-900 dark:text-white font-mono px-1.5 py-0.2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-xs">
             {totalCount}

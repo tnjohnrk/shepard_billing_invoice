@@ -275,7 +275,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
         {/* State Banner */}
         {!isDevControlOpen && (
           <div className="mt-4 flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/60 text-xs text-blue-900 dark:text-blue-200 font-medium">
-            <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+            <ShieldCheck className="w-4 h-4 text-[#0078d4] dark:text-[#4cc2ff] shrink-0" />
             <span>Application is locked. Enter your 4-digit PIN to continue.</span>
           </div>
         )}
@@ -305,7 +305,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                             ? 'bg-rose-50 border-2 border-rose-500 text-rose-900 dark:bg-rose-950/80 dark:border-rose-600'
                             : isSuccess
                             ? 'bg-emerald-50 border-2 border-emerald-500 text-emerald-900 dark:bg-emerald-950/80 dark:border-emerald-600'
-                            : 'bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] text-slate-900 dark:text-slate-100 focus:border-blue-500'
+                            : 'bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] text-slate-900 dark:text-slate-100 focus:border-[#0078d4]'
                         }`}
                         autoFocus={index === 0}
                       />
@@ -354,7 +354,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                         if (error) setError('');
                       }}
                       autoFocus
-                      className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2.5 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors font-mono"
+                      className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2.5 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#0078d4] transition-colors font-mono"
                     />
                     <button
                       type="button"
@@ -407,7 +407,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                   }}
                   className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     devActiveTab === 'license'
-                      ? 'bg-white dark:bg-[#161b22] text-blue-600 dark:text-blue-400 shadow-2xs border border-slate-200/80 dark:border-[#30363d]'
+                      ? 'bg-white dark:bg-[#161b22] text-[#0078d4] dark:text-[#4cc2ff] shadow-2xs border border-slate-200/80 dark:border-[#30363d]'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
@@ -423,7 +423,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                   }}
                   className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     devActiveTab === 'password'
-                      ? 'bg-white dark:bg-[#161b22] text-blue-600 dark:text-blue-400 shadow-2xs border border-slate-200/80 dark:border-[#30363d]'
+                      ? 'bg-white dark:bg-[#161b22] text-[#0078d4] dark:text-[#4cc2ff] shadow-2xs border border-slate-200/80 dark:border-[#30363d]'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
@@ -433,7 +433,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
               </div>
             ) : (
               <div className="p-2.5 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-xs font-semibold text-blue-900 dark:text-blue-200 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                <Sparkles className="w-4 h-4 text-[#0078d4] dark:text-[#4cc2ff] shrink-0" />
                 <span>Reactivate System License</span>
               </div>
             )}
@@ -468,17 +468,17 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                     onClick={() => setSelectedLicenseMode('TEST')}
                     className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                       selectedLicenseMode === 'TEST'
-                        ? 'border-blue-500 bg-blue-50/60 dark:bg-blue-950/30 text-blue-950 dark:text-blue-100 ring-2 ring-blue-500/20'
+                        ? 'border-[#0078d4] bg-[#0078d4]/10 dark:bg-[#0078d4]/20 text-[#0078d4] dark:text-[#4cc2ff] ring-2 ring-[#0078d4]/30'
                         : 'border-slate-200 dark:border-[#30363d] bg-slate-50/60 dark:bg-[#0d1117]/50 text-slate-700 dark:text-slate-300 hover:border-slate-300'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 font-bold text-xs sm:text-sm">
-                        <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        <Clock className="w-4 h-4 text-[#0078d4] dark:text-[#4cc2ff]" />
                         <span>Test / Trial Mode</span>
                       </div>
                       {selectedLicenseMode === 'TEST' && (
-                        <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        <CheckCircle2 className="w-4 h-4 text-[#0078d4] dark:text-[#4cc2ff]" />
                       )}
                     </div>
                   </div>
@@ -489,7 +489,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                   <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#30363d] bg-slate-50/60 dark:bg-[#0d1117]/50 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                        <Clock className="w-3.5 h-3.5 text-[#0078d4] dark:text-[#4cc2ff]" />
                         Trial Period
                       </span>
 
@@ -498,14 +498,14 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                         <button
                           type="button"
                           onClick={() => handleApplyPreset(5)}
-                          className="px-2.5 py-0.5 text-xs font-semibold rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 transition-colors cursor-pointer"
+                          className="px-2.5 py-0.5 text-xs font-semibold rounded-lg bg-[#0078d4]/10 hover:bg-[#0078d4]/20 dark:bg-[#0078d4]/20 dark:hover:bg-[#0078d4]/30 text-[#0078d4] dark:text-[#4cc2ff] border border-[#0078d4]/30 transition-colors cursor-pointer"
                         >
                           5 Days
                         </button>
                         <button
                           type="button"
                           onClick={() => handleApplyPreset(10)}
-                          className="px-2.5 py-0.5 text-xs font-semibold rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 transition-colors cursor-pointer"
+                          className="px-2.5 py-0.5 text-xs font-semibold rounded-lg bg-[#0078d4]/10 hover:bg-[#0078d4]/20 dark:bg-[#0078d4]/20 dark:hover:bg-[#0078d4]/30 text-[#0078d4] dark:text-[#4cc2ff] border border-[#0078d4]/30 transition-colors cursor-pointer"
                         >
                           10 Days
                         </button>
@@ -522,7 +522,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                           value={trialStart}
                           onChange={(e) => setTrialStart(e.target.value)}
                           required
-                          className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-slate-300 dark:border-[#30363d] bg-white dark:bg-[#161b22] text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                          className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-slate-300 dark:border-[#30363d] bg-white dark:bg-[#161b22] text-slate-900 dark:text-slate-100 focus:outline-none focus:border-[#0078d4]"
                         />
                       </div>
 
@@ -535,7 +535,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                           value={trialEnd}
                           onChange={(e) => setTrialEnd(e.target.value)}
                           required
-                          className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-slate-300 dark:border-[#30363d] bg-white dark:bg-[#161b22] text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                          className="w-full text-xs font-mono px-3 py-2 rounded-lg border border-slate-300 dark:border-[#30363d] bg-white dark:bg-[#161b22] text-slate-900 dark:text-slate-100 focus:outline-none focus:border-[#0078d4]"
                         />
                       </div>
                     </div>
@@ -587,7 +587,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                       }}
                       autoFocus
                       required
-                      className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors font-mono"
+                      className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#0078d4] transition-colors font-mono"
                     />
                     <button
                       type="button"
@@ -613,7 +613,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                         if (error) setError('');
                       }}
                       required
-                      className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors font-mono"
+                      className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#0078d4] transition-colors font-mono"
                     />
                     <button
                       type="button"

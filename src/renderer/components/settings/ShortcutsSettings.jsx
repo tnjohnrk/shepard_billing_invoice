@@ -19,11 +19,11 @@ export function ShortcutsSettings() {
   const getCategoryIcon = (cat) => {
     switch (cat) {
       case SHORTCUT_CATEGORIES.NAVIGATION:
-        return <Compass className="w-4 h-4 text-indigo-500" />;
+        return <Compass className="w-4 h-4 text-[#0078d4]" />;
       case SHORTCUT_CATEGORIES.INVOICE:
         return <FileText className="w-4 h-4 text-emerald-500" />;
       default:
-        return <FolderKanban className="w-4 h-4 text-sky-500" />;
+        return <FolderKanban className="w-4 h-4 text-[#0078d4]" />;
     }
   };
 
@@ -39,7 +39,7 @@ export function ShortcutsSettings() {
       <div className="p-5 sm:p-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start sm:items-center gap-3.5">
-            <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 shrink-0">
+            <div className="p-2.5 rounded-xl bg-[#0078d4]/5 dark:bg-[#0078d4]/20/60 text-[#0078d4] dark:text-[#4cc2ff] border border-[#0078d4]/30 dark:border-[#005fa3] shrink-0">
               <Keyboard className="w-5 h-5" />
             </div>
             <div>
@@ -47,7 +47,7 @@ export function ShortcutsSettings() {
                 <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
                   Keyboard Shortcuts Reference
                 </h3>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 uppercase">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#0078d4]/5 dark:bg-[#0078d4]/20/60 text-[#006cb8] dark:text-[#4cc2ff] border border-[#0078d4]/30 dark:border-[#005fa3] uppercase">
                   Productivity
                 </span>
               </div>
@@ -66,7 +66,7 @@ export function ShortcutsSettings() {
             placeholder="Search any shortcut by name, description, or key combination..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+            className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#0078d4] focus:ring-2 focus:ring-[#0078d4]/20"
           />
         </div>
       </div>

@@ -210,13 +210,13 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
             onClick={() => handleBuyerTypeChange('COMPANY')}
             className={`p-3 rounded-xl border flex items-center gap-3 transition-all text-left cursor-pointer shadow-xs ${
               buyerType === 'COMPANY'
-                ? 'bg-indigo-50/40 dark:bg-indigo-950/30 border-indigo-600 dark:border-indigo-500 text-indigo-900 dark:text-indigo-200 ring-1 ring-indigo-500/20'
+                ? 'bg-[#0078d4]/5/40 dark:bg-[#0078d4]/20/30 border-[#0078d4] dark:border-[#0078d4] text-[#005fa3] dark:text-[#0078d4]/30 ring-1 ring-[#0078d4]/20'
                 : 'bg-white dark:bg-slate-900/60 border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
             }`}
           >
             <div className={`p-2 rounded-lg border shrink-0 ${
               buyerType === 'COMPANY'
-                ? 'bg-indigo-600 text-white border-indigo-600'
+                ? 'bg-[#0078d4] text-white border-[#0078d4]'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
             }`}>
               <Building2 className="w-4 h-4" />
@@ -224,7 +224,7 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
             <div>
               <div className="text-xs font-bold flex items-center gap-1.5 text-slate-900 dark:text-slate-100">
                 <span>Company / Business</span>
-                {buyerType === 'COMPANY' && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />}
+                {buyerType === 'COMPANY' && <CheckCircle2 className="w-3.5 h-3.5 text-[#0078d4] dark:text-[#4cc2ff]" />}
               </div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400">Registered GST business entity with GSTIN</div>
             </div>
@@ -289,7 +289,7 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
                 <div className="font-bold text-xs text-slate-900 dark:text-slate-100">{c.name}</div>
                 {c.address && <div className="text-[11px] mt-0.5 truncate text-slate-500 dark:text-slate-400">{c.address}</div>}
                 {c.gstin && (
-                  <div className="text-[10px] font-mono mt-1 flex items-center gap-1.5 font-bold text-indigo-600 dark:text-indigo-400">
+                  <div className="text-[10px] font-mono mt-1 flex items-center gap-1.5 font-bold text-[#0078d4] dark:text-[#4cc2ff]">
                     <span className="text-slate-400 dark:text-slate-500">GSTIN:</span>
                     <span>{c.gstin}</span>
                   </div>
@@ -314,7 +314,7 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
               <button
                 type="button"
                 onClick={handleQuickSaveToDirectory}
-                className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0078d4] dark:text-[#4cc2ff] hover:text-[#006cb8] hover:underline cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Save "{formData.buyer_name}" to Details Directory</span>
@@ -332,7 +332,7 @@ export function BuyerDetailsForm({ formData, onChange, errors = {} }) {
         </label>
         <textarea
           rows={3}
-          className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-xs"
+          className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4] transition-all shadow-xs"
           placeholder={buyerType === 'COMPANY' ? 'Enter company unit / street / city / postal address...' : 'Enter customer residence or billing address...'}
           value={formData.buyer_address || ''}
           onChange={(e) => onChange('buyer_address', e.target.value)}

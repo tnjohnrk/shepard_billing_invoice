@@ -12,14 +12,14 @@ export function InvoiceActivityChart({ data = [], title = "Invoice Activity", su
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
         <div>
           <div className="flex items-center gap-1.5">
-            <BarChart2 className="w-3.5 h-3.5 text-indigo-500" />
+            <BarChart2 className="w-3.5 h-3.5 text-[#0078d4]" />
             <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">{title}</h3>
           </div>
           {subtitle && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">{subtitle}</p>}
         </div>
         <div className="flex items-center gap-2.5 text-[11px]">
           <div className="flex items-center gap-1.5 font-medium text-slate-600 dark:text-slate-300">
-            <span className="w-2 h-2 rounded-xs bg-indigo-500 inline-block"></span>
+            <span className="w-2 h-2 rounded-xs bg-[#0078d4] inline-block"></span>
             <span>Tax Invoices</span>
           </div>
           <div className="flex items-center gap-1.5 font-medium text-slate-600 dark:text-slate-300">

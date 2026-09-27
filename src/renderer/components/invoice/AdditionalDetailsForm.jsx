@@ -9,7 +9,7 @@ export function AdditionalDetailsForm({ formData, onChange }) {
         </label>
         <textarea
           rows={4}
-          className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-xs"
+          className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0078d4]/20 focus:border-[#0078d4] transition-all shadow-xs"
           placeholder="Enter optional notes to display on the invoice..."
           value={formData.notes || ''}
           onChange={(e) => onChange('notes', e.target.value)}

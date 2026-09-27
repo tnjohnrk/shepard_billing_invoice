@@ -49,7 +49,7 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
                 <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate flex items-center gap-1">
                   <span>v1.0</span>
                   <span className="text-slate-300 dark:text-slate-700">•</span>
-                  <span className="text-blue-600 dark:text-blue-400 font-semibold">Active</span>
+                  <span className="text-[#0078d4] dark:text-[#4cc2ff] font-semibold">Active</span>
                 </p>
               </div>
             </div>
@@ -109,7 +109,7 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'}`} />
+                      <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-[#0078d4] dark:text-[#4cc2ff]' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'}`} />
                       <span>{item.label}</span>
                     </div>
                     {item.badge ? (
@@ -148,7 +148,7 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'}`} />
+                      <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-[#0078d4] dark:text-[#4cc2ff]' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'}`} />
                       <span>{item.label}</span>
                     </div>
                     {isActive && <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />}

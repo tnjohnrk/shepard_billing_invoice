@@ -69,7 +69,7 @@ export function ItemTable({ items = [], setItems }) {
       <div className="flex items-center justify-between">
         {FEATURE_FLAGS.SINGLE_PAGE_INVOICE_LOCKED && (
           <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
-            <Info className="w-4 h-4 text-sky-500 shrink-0" />
+            <Info className="w-4 h-4 text-[#0078d4] shrink-0" />
             <span>
               Single-page format: {(items || []).length} / {FEATURE_FLAGS.MAX_ITEMS_PER_INVOICE} items added
               {maxReached && ' (Maximum limit reached)'}

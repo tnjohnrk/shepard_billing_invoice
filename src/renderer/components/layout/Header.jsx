@@ -41,7 +41,7 @@ export function Header({ title, subtitle, onLockApp, onToggleMobileMenu, onOpenS
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         {/* Company GSTIN Badge */}
         <div className="hidden md:flex h-9 px-3 rounded-xl bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] items-center gap-2 text-xs text-slate-700 dark:text-slate-300 font-medium shadow-2xs">
-          <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+          <Building2 className="w-4 h-4 text-[#0078d4] dark:text-[#4cc2ff] shrink-0" />
           <span className="font-mono font-bold tracking-wide">GSTIN: {COMPANY_CONFIG?.gstin || '33ABUCS2217H1Z8'}</span>
         </div>
 
@@ -53,7 +53,7 @@ export function Header({ title, subtitle, onLockApp, onToggleMobileMenu, onOpenS
             title="Keyboard Shortcuts Cheat Sheet (F1 or Shift+?)"
             aria-label="Open keyboard shortcuts guide"
           >
-            <Keyboard className="w-4 h-4 text-indigo-500" />
+            <Keyboard className="w-4 h-4 text-[#0078d4]" />
             <span className="hidden xl:inline text-xs text-slate-500 font-mono">F1</span>
           </button>
         )}
@@ -68,7 +68,7 @@ export function Header({ title, subtitle, onLockApp, onToggleMobileMenu, onOpenS
           {theme === 'dark' ? (
             <Sun className="w-4 h-4 text-amber-400" />
           ) : (
-            <Moon className="w-4 h-4 text-blue-600" />
+            <Moon className="w-4 h-4 text-[#0078d4]" />
           )}
         </button>
 

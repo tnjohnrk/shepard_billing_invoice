@@ -37,7 +37,7 @@ export function InvoiceTypeSelector({ selectedType, onSelect }) {
           }}
           className={`group p-5 rounded-xl border cursor-pointer transition-all duration-150 flex flex-col justify-between shadow-xs min-h-[200px] ${
             isNormal
-              ? 'border-indigo-600 bg-indigo-50/40 dark:bg-indigo-950/30 dark:border-indigo-500 ring-1 ring-indigo-500/20'
+              ? 'border-[#0078d4] bg-[#0078d4]/5/40 dark:bg-[#0078d4]/20/30 dark:border-[#0078d4] ring-1 ring-[#0078d4]/20'
               : 'border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700'
           }`}
         >
@@ -46,7 +46,7 @@ export function InvoiceTypeSelector({ selectedType, onSelect }) {
               <div className="flex items-center gap-3">
                 <div className={`p-2.5 rounded-lg border shrink-0 transition-colors ${
                   isNormal
-                    ? 'bg-indigo-600 text-white border-indigo-600'
+                    ? 'bg-[#0078d4] text-white border-[#0078d4]'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                 }`}>
                   <FileText className="w-5 h-5" />
@@ -63,7 +63,7 @@ export function InvoiceTypeSelector({ selectedType, onSelect }) {
 
               <div className="shrink-0 pt-0.5">
                 {isNormal ? (
-                  <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400 fill-indigo-100 dark:fill-indigo-950" />
+                  <CheckCircle2 className="w-4 h-4 text-[#0078d4] dark:text-[#4cc2ff] fill-[#0078d4]/10 dark:fill-[#0078d4]/20" />
                 ) : (
                   <Circle className="w-4 h-4 text-slate-300 dark:text-slate-600" />
                 )}
@@ -78,7 +78,7 @@ export function InvoiceTypeSelector({ selectedType, onSelect }) {
           <div className="flex items-center justify-between mt-5 pt-3 border-t border-slate-200/60 dark:border-slate-800/80">
             <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
               isNormal
-                ? 'bg-indigo-100/80 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
+                ? 'bg-[#0078d4]/10/80 dark:bg-[#0078d4]/20 text-[#005fa3] dark:text-[#4cc2ff] border-[#0078d4]/30 dark:border-[#005fa3]'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
             }`}>
               Official Invoice
@@ -86,7 +86,7 @@ export function InvoiceTypeSelector({ selectedType, onSelect }) {
 
             <span className={`text-xs font-semibold transition-colors ${
               isNormal
-                ? 'text-indigo-600 dark:text-indigo-400'
+                ? 'text-[#0078d4] dark:text-[#4cc2ff]'
                 : 'text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300'
             }`}>
               {isNormal ? '✓ Selected' : 'Click to Select'}

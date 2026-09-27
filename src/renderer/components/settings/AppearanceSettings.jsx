@@ -28,7 +28,7 @@ export function AppearanceSettings() {
     <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-5 shadow-xs">
       <div>
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-indigo-500" />
+          <Sparkles className="w-4 h-4 text-[#0078d4]" />
           <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Appearance & Themes</h3>
         </div>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -47,12 +47,12 @@ export function AppearanceSettings() {
               onClick={() => setTheme(t.id)}
               className={`relative p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between shadow-xs ${
                 isSelected
-                  ? 'border-indigo-600 bg-indigo-50/40 dark:bg-indigo-950/30 dark:border-indigo-500 ring-1 ring-indigo-500/20'
+                  ? 'border-[#0078d4] bg-[#0078d4]/5/40 dark:bg-[#0078d4]/20/30 dark:border-[#0078d4] ring-1 ring-[#0078d4]/20'
                   : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40'
               }`}
             >
               {isSelected && (
-                <div className="absolute top-3.5 right-3.5 flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-100/80 dark:bg-indigo-900/60 border border-indigo-200 dark:border-indigo-700 text-[10px] font-bold text-indigo-700 dark:text-indigo-300">
+                <div className="absolute top-3.5 right-3.5 flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#0078d4]/10/80 dark:bg-[#005fa3]/60 border border-[#0078d4]/30 dark:border-[#006cb8] text-[10px] font-bold text-[#006cb8] dark:text-[#4cc2ff]">
                   <CheckCircle2 className="w-3 h-3" />
                   <span>Active</span>
                 </div>
@@ -63,7 +63,7 @@ export function AppearanceSettings() {
                   <div
                     className={`p-2 rounded-lg ${
                       isSelected
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-[#0078d4] text-white'
                         : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600'
                     }`}
                   >
@@ -99,7 +99,7 @@ export function AppearanceSettings() {
       </div>
 
       <div className="p-3.5 rounded-xl bg-slate-50/60 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 flex items-start gap-2.5 shadow-xs">
-        <Monitor className="w-4 h-4 text-indigo-500 mt-0.5 shrink-0" />
+        <Monitor className="w-4 h-4 text-[#0078d4] mt-0.5 shrink-0" />
         <div className="text-xs text-slate-600 dark:text-slate-400">
           <span className="font-semibold text-slate-800 dark:text-slate-200">Instant Preference Saving:</span> Your theme preference is automatically remembered on this computer across application restarts.
         </div>

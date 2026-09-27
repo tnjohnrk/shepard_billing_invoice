@@ -112,7 +112,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
               alt="Shepherd Enterprises"
               className="w-24 h-24 object-contain mx-auto block mb-1"
             />
-            <span className="absolute -bottom-1 -right-1 p-1.5 bg-blue-600 text-white rounded-full shadow-md">
+            <span className="absolute -bottom-1 -right-1 p-1.5 bg-[#0078d4] text-white rounded-full shadow-md">
               <ShieldCheck className="w-4 h-4" />
             </span>
           </div>
@@ -131,7 +131,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
         <div className="mt-6 flex items-center justify-center gap-2">
           <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all ${
             step === 1 
-              ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' 
+              ? 'bg-[#0078d4] text-white shadow-md shadow-[#0078d4]/20' 
               : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
           }`}>
             {step > 1 ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Key className="w-3.5 h-3.5" />}
@@ -142,7 +142,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
 
           <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all ${
             step === 2 
-              ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' 
+              ? 'bg-[#0078d4] text-white shadow-md shadow-[#0078d4]/20' 
               : step === 3
               ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
               : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500'
@@ -157,7 +157,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
           <div className="mt-6 space-y-5">
             <div className="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-xs text-blue-900 dark:text-blue-200 leading-relaxed">
               <div className="flex items-center gap-2 font-bold mb-1">
-                <Laptop className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                <Laptop className="w-4 h-4 text-[#0078d4] dark:text-[#4cc2ff] shrink-0" />
                 <span>Installation Activation Required</span>
               </div>
               <span>
@@ -168,7 +168,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
             <form onSubmit={handleVerifyProductKey} className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                  <Key className="w-3.5 h-3.5 text-blue-600" />
+                  <Key className="w-3.5 h-3.5 text-[#0078d4]" />
                   Product Activation Key <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
@@ -182,7 +182,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
                     }}
                     autoFocus
                     required
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-3 pr-10 text-sm font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors shadow-none"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-3 pr-10 text-sm font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#0078d4] transition-colors shadow-none"
                   />
                   <button
                     type="button"
@@ -205,7 +205,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
               <Button
                 type="submit"
                 variant="primary"
-                className="w-full justify-center py-3 text-sm font-bold shadow-lg shadow-blue-500/20"
+                className="w-full justify-center py-3 text-sm font-bold shadow-lg shadow-[#0078d4]/20"
                 isLoading={isLoading}
                 icon={Sparkles}
               >
@@ -244,7 +244,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
                     }}
                     autoFocus
                     required
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-3 pr-10 text-sm font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors shadow-none"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-3 pr-10 text-sm font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#0078d4] transition-colors shadow-none"
                   />
                   <button
                     type="button"
@@ -270,7 +270,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
                       if (error) setError('');
                     }}
                     required
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-3 pr-10 text-sm font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors shadow-none"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-3 pr-10 text-sm font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#0078d4] transition-colors shadow-none"
                   />
                   <button
                     type="button"
@@ -292,7 +292,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
               <Button
                 type="submit"
                 variant="primary"
-                className="w-full justify-center py-3 text-sm font-bold shadow-lg shadow-blue-500/20"
+                className="w-full justify-center py-3 text-sm font-bold shadow-lg shadow-[#0078d4]/20"
                 isLoading={isLoading}
                 icon={ArrowRight}
               >
