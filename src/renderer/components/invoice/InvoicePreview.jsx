@@ -531,82 +531,93 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                       </tbody>
                     </table>
 
-                    {/* 6. Bank Details & Tax Summary Row */}
-                    <table className="w-full border-collapse border-b-2 border-black text-[11px]">
-                      <tbody>
-                        <tr>
-                          {/* Left: Bank Details */}
-                          <td className="w-[50%] p-2.5 border-r-[1.5px] border-black align-top space-y-1">
-                            <div className="font-black text-[11.5px] uppercase text-slate-900 mb-1">BANK DETAILS</div>
-                            <div><span className="font-bold">BANK NAME: </span>{COMPANY_CONFIG.bank_name}: {COMPANY_CONFIG.account_number}</div>
-                            <div><span className="font-bold">BRANCH NAME: </span>{(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
-                            <div><span className="font-bold">IFSC CODE: </span>{COMPANY_CONFIG.ifsc_code}</div>
-                          </td>
+                    {/* 6. Bank Details & Tax Summary Row (Unified Single Table) */}
+                    {(() => {
+                      const hasMultiPage = pages.length > 1;
+                      const numTaxRows = totals.isIntraState ? 2 : 1;
+                      const hasRoundOff = fullData.round_off !== 0 && fullData.round_off != null;
+                      const totalRowsCount = (hasMultiPage ? pages.length : 0) + 1 + numTaxRows + (hasRoundOff ? 1 : 0) + 1;
 
-                          {/* Right: Tax Breakdown */}
-                          <td className="w-[50%] p-0 align-top">
-                            <table className="w-full border-collapse text-[11px]">
-                              <tbody>
-                                {pages.length > 1 && pages.map((p) => {
-                                  const pSub = (p.items || []).reduce((sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0), 0);
-                                  return (
-                                    <tr key={p.pageNumber} className="border-b-[1.5px] border-black text-slate-800 bg-slate-50/80 text-[10px]">
-                                      <td className="p-1.5 text-left w-[68%] whitespace-nowrap border-r-[1.5px] border-black">SUB TOTAL</td>
-                                      <td className="p-1.5 text-right w-[32%] font-medium font-mono whitespace-nowrap">
-                                        {pSub.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                      </td>
-                                    </tr>
-                                  );
-                                })}
-                                <tr className="border-b-[1.5px] border-black font-bold">
-                                  <td className="p-1.5 text-left w-[68%] whitespace-nowrap border-r-[1.5px] border-black">TOTAL AMOUNT BEFORE TAX</td>
-                                  <td className="p-1.5 text-right w-[32%] font-bold font-mono whitespace-nowrap">
-                                    {fullData.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      const bankCell = (
+                        <td rowSpan={totalRowsCount} className="w-[50%] p-2.5 border-r-[1.5px] border-black align-top space-y-1">
+                          <div className="font-black text-[11.5px] uppercase text-slate-900 mb-1">BANK DETAILS</div>
+                          <div><span className="font-bold">BANK NAME: </span>{COMPANY_CONFIG.bank_name}: {COMPANY_CONFIG.account_number}</div>
+                          <div><span className="font-bold">BRANCH NAME: </span>{(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
+                          <div><span className="font-bold">IFSC CODE: </span>{COMPANY_CONFIG.ifsc_code}</div>
+                        </td>
+                      );
+
+                      let firstRowRendered = false;
+
+                      return (
+                        <table className="w-full border-collapse border-b-2 border-black text-[11px]">
+                          <tbody>
+                            {hasMultiPage && pages.map((p) => {
+                              const pSub = (p.items || []).reduce((sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0), 0);
+                              const isFirst = !firstRowRendered;
+                              if (isFirst) firstRowRendered = true;
+                              return (
+                                <tr key={p.pageNumber} className="border-b-[1.5px] border-black text-slate-800 bg-slate-50/80 text-[10px]">
+                                  {isFirst && bankCell}
+                                  <td className="p-1.5 text-left w-[34%] whitespace-nowrap border-r-[1.5px] border-black">SUB TOTAL</td>
+                                  <td className="p-1.5 text-right w-[16%] font-medium font-mono whitespace-nowrap">
+                                    {pSub.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                   </td>
                                 </tr>
-                                {totals.isIntraState ? (
-                                  <>
-                                    <tr className="border-b-[1.5px] border-black">
-                                      <td className="p-1.5 text-left whitespace-nowrap border-r-[1.5px] border-black">ADD CGST: {totals.cgstRate}%</td>
-                                      <td className="p-1.5 text-right font-medium font-mono whitespace-nowrap">
-                                        {totals.cgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                      </td>
-                                    </tr>
-                                    <tr className="border-b-[1.5px] border-black">
-                                      <td className="p-1.5 text-left whitespace-nowrap border-r-[1.5px] border-black">ADD SGST: {totals.sgstRate}%</td>
-                                      <td className="p-1.5 text-right font-medium font-mono whitespace-nowrap">
-                                        {totals.sgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                      </td>
-                                    </tr>
-                                  </>
-                                ) : (
-                                  <tr className="border-b-[1.5px] border-black">
-                                    <td className="p-1.5 text-left whitespace-nowrap border-r-[1.5px] border-black">ADD IGST: {totals.igstRate}%</td>
-                                    <td className="p-1.5 text-right font-medium font-mono whitespace-nowrap">
-                                      {totals.igstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                    </td>
-                                  </tr>
-                                )}
-                                {fullData.round_off !== 0 && fullData.round_off != null && (
-                                  <tr className="border-b-[1.5px] border-black">
-                                    <td className="p-1.5 text-left whitespace-nowrap border-r-[1.5px] border-black">ROUND OFF</td>
-                                    <td className="p-1.5 text-right font-medium font-mono whitespace-nowrap">
-                                      {fullData.round_off > 0 ? '+' : ''}{Number(fullData.round_off).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                    </td>
-                                  </tr>
-                                )}
-                                <tr className="bg-slate-50 font-black text-[11.5px]">
-                                  <td className="p-1.5 text-left whitespace-nowrap border-r-[1.5px] border-black">TOTAL AMOUNT AFTER TAX:</td>
-                                  <td className="p-1.5 text-right font-mono whitespace-nowrap">
-                                    {totals.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                              );
+                            })}
+
+                            <tr className="border-b-[1.5px] border-black font-bold">
+                              {!firstRowRendered && (firstRowRendered = true, bankCell)}
+                              <td className="p-1.5 text-left w-[34%] whitespace-nowrap border-r-[1.5px] border-black">TOTAL AMOUNT BEFORE TAX</td>
+                              <td className="p-1.5 text-right w-[16%] font-bold font-mono whitespace-nowrap">
+                                {fullData.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                              </td>
+                            </tr>
+
+                            {totals.isIntraState ? (
+                              <>
+                                <tr className="border-b-[1.5px] border-black">
+                                  <td className="p-1.5 text-left w-[34%] whitespace-nowrap border-r-[1.5px] border-black">ADD CGST: {totals.cgstRate}%</td>
+                                  <td className="p-1.5 text-right w-[16%] font-medium font-mono whitespace-nowrap">
+                                    {totals.cgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                   </td>
                                 </tr>
-                              </tbody>
-                            </table>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                                <tr className="border-b-[1.5px] border-black">
+                                  <td className="p-1.5 text-left w-[34%] whitespace-nowrap border-r-[1.5px] border-black">ADD SGST: {totals.sgstRate}%</td>
+                                  <td className="p-1.5 text-right w-[16%] font-medium font-mono whitespace-nowrap">
+                                    {totals.sgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                  </td>
+                                </tr>
+                              </>
+                            ) : (
+                              <tr className="border-b-[1.5px] border-black">
+                                <td className="p-1.5 text-left w-[34%] whitespace-nowrap border-r-[1.5px] border-black">ADD IGST: {totals.igstRate}%</td>
+                                <td className="p-1.5 text-right w-[16%] font-medium font-mono whitespace-nowrap">
+                                  {totals.igstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                </td>
+                              </tr>
+                            )}
+
+                            {hasRoundOff && (
+                              <tr className="border-b-[1.5px] border-black">
+                                <td className="p-1.5 text-left w-[34%] whitespace-nowrap border-r-[1.5px] border-black">ROUND OFF</td>
+                                <td className="p-1.5 text-right w-[16%] font-medium font-mono whitespace-nowrap">
+                                  {fullData.round_off > 0 ? '+' : ''}{Number(fullData.round_off).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                </td>
+                              </tr>
+                            )}
+
+                            <tr className="bg-slate-50 font-black text-[11.5px]">
+                              <td className="p-1.5 text-left w-[34%] whitespace-nowrap border-r-[1.5px] border-black">TOTAL AMOUNT AFTER TAX:</td>
+                              <td className="p-1.5 text-right font-mono whitespace-nowrap">
+                                {totals.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      );
+                    })()}
 
                     {/* 7. Footer: Terms & Signature inside the overall box */}
                     <table className="w-full border-collapse text-[10px]">

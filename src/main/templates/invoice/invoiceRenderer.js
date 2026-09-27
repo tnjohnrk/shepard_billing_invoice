@@ -260,7 +260,7 @@ export function renderInvoiceHtml(invoiceData) {
 
     let footerSectionHtml = '';
     if (page.hasTotalsAndFooter) {
-      const multiPageBreakdownHtml = pages.length > 1 ? pages.map((p) => {
+      const multiPageBreakdownRows = pages.length > 1 ? pages.map((p) => {
         const pSub = (p.items || []).reduce((sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0), 0);
         return `
           <tr class="page-breakdown-subtotal-row">
@@ -268,7 +268,43 @@ export function renderInvoiceHtml(invoiceData) {
             <td class="tax-num-col">${formatCurrency(pSub)}</td>
           </tr>
         `;
-      }).join('') : '';
+      }) : [];
+
+      const rightRows = [
+        ...multiPageBreakdownRows,
+        `<tr>
+          <td class="tax-title-col font-bold">TOTAL AMOUNT BEFORE TAX</td>
+          <td class="tax-num-col font-bold">${formatCurrency(invoiceData.subtotal)}</td>
+        </tr>`,
+        ...(taxRowsHtml ? [taxRowsHtml] : []),
+        ...(roundOffHtml ? [roundOffHtml] : []),
+        `<tr class="total-after-tax-line">
+          <td class="tax-title-col font-bold">TOTAL AMOUNT AFTER TAX:</td>
+          <td class="tax-num-col font-bold">${formatCurrency(invoiceData.grand_total)}</td>
+        </tr>`
+      ];
+
+      // Clean rightRows by filtering empty and splitting by <tr>
+      const combinedHtmlRows = [];
+      const bankDetailsCellHtml = `
+        <td class="bank-details-cell" rowspan="__ROWSPAN__">
+          <div class="bank-heading font-bold">BANK DETAILS</div>
+          <div class="bank-item"><span class="font-bold">BANK NAME:</span> ${escapeHtml(COMPANY_CONFIG.bank_name)}: ${escapeHtml(COMPANY_CONFIG.account_number)}</div>
+          <div class="bank-item"><span class="font-bold">BRANCH NAME:</span> ${escapeHtml(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony')}</div>
+          <div class="bank-item"><span class="font-bold">IFSC CODE:</span> ${escapeHtml(COMPANY_CONFIG.ifsc_code)}</div>
+        </td>
+      `;
+
+      let rightRowsFlat = rightRows.join('').trim();
+      const trMatches = rightRowsFlat.split(/(?=<tr[\s>])/i).filter(r => r.trim());
+      const totalRowCount = trMatches.length;
+
+      const unifiedBankTaxRowsHtml = trMatches.map((rowStr, idx) => {
+        if (idx === 0) {
+          return rowStr.replace(/<tr([^>]*)>/i, `<tr$1>${bankDetailsCellHtml.replace('__ROWSPAN__', String(totalRowCount))}`);
+        }
+        return rowStr;
+      }).join('');
 
       footerSectionHtml = `
         <div class="bottom-content">
@@ -281,31 +317,9 @@ export function renderInvoiceHtml(invoiceData) {
             </tr>
           </table>
 
-          <!-- 6. Bank Details & Tax Totals Section -->
+          <!-- 6. Bank Details & Tax Totals Section (Unified Single Table) -->
           <table class="bank-tax-table">
-            <tr class="bank-tax-row">
-              <td class="bank-details-cell">
-                <div class="bank-heading font-bold">BANK DETAILS</div>
-                <div class="bank-item"><span class="font-bold">BANK NAME:</span> ${escapeHtml(COMPANY_CONFIG.bank_name)}: ${escapeHtml(COMPANY_CONFIG.account_number)}</div>
-                <div class="bank-item"><span class="font-bold">BRANCH NAME:</span> ${escapeHtml(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony')}</div>
-                <div class="bank-item"><span class="font-bold">IFSC CODE:</span> ${escapeHtml(COMPANY_CONFIG.ifsc_code)}</div>
-              </td>
-              <td class="tax-summary-cell">
-                <table class="tax-breakdown-table">
-                  ${multiPageBreakdownHtml}
-                  <tr>
-                    <td class="tax-title-col font-bold">TOTAL AMOUNT BEFORE TAX</td>
-                    <td class="tax-num-col font-bold">${formatCurrency(invoiceData.subtotal)}</td>
-                  </tr>
-                  ${taxRowsHtml}
-                  ${roundOffHtml}
-                  <tr class="total-after-tax-line">
-                    <td class="tax-title-col font-bold">TOTAL AMOUNT AFTER TAX:</td>
-                    <td class="tax-num-col font-bold">${formatCurrency(invoiceData.grand_total)}</td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
+            ${unifiedBankTaxRowsHtml}
           </table>
 
           <!-- 7. Footer Section -->
