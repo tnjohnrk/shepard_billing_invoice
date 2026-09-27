@@ -286,7 +286,7 @@ button:active:not(:disabled) {
   --primary-blue-active: #1a5ac9;
 }
 
-/* Primary buttons and actions across all themes */
+/* Navigation active items, badges and solid highlights */
 .bg-indigo-600,
 .bg-blue-600,
 .bg-sky-500,
@@ -308,18 +308,52 @@ button:active:not(:disabled) {
   background-color: var(--primary-blue-active) !important;
 }
 
-/* Make primary action gradients use unified clean blue */
-button.bg-gradient-to-r,
-button.bg-gradient-to-br,
-div.bg-gradient-to-r,
-div.bg-gradient-to-br {
-  background-image: none !important;
-  background-color: var(--primary-blue) !important;
+/* Primary Button Styling (Image 1 Style: Light blue pill with blue border & blue text) */
+.light .btn-primary {
+  background-color: #ddf4ff !important;
+  border: 1px solid #54aeff !important;
+  color: #0969da !important;
+  box-shadow: none !important;
 }
 
-button.bg-gradient-to-r:hover,
-button.bg-gradient-to-br:hover {
-  background-color: var(--primary-blue-hover) !important;
+.light .btn-primary:hover {
+  background-color: #b6e3ff !important;
+  border-color: #218bff !important;
+  color: #0550ae !important;
+}
+
+.dark .btn-primary {
+  background-color: rgba(12, 45, 107, 0.6) !important;
+  border: 1px solid rgba(31, 111, 235, 0.6) !important;
+  color: #58a6ff !important;
+  box-shadow: none !important;
+}
+
+.dark .btn-primary:hover {
+  background-color: #0c2d6b !important;
+  border-color: #388bfd !important;
+  color: #79c0ff !important;
+}
+
+/* Solid Button Styling (Image 2 Style: Solid blue button with white text) */
+.light .btn-solid {
+  background-color: #0969da !important;
+  border: 1px solid #0969da !important;
+  color: #ffffff !important;
+}
+
+.light .btn-solid:hover {
+  background-color: #085cc0 !important;
+}
+
+.dark .btn-solid {
+  background-color: #1f6feb !important;
+  border: 1px solid #1f6feb !important;
+  color: #ffffff !important;
+}
+
+.dark .btn-solid:hover {
+  background-color: #388bfd !important;
 }
 
 /* Primary text accents in UI (excluding invoice paper) */
