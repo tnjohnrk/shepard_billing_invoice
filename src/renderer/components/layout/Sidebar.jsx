@@ -8,12 +8,13 @@ import {
   Settings, 
   ShieldCheck, 
   Plus, 
-  ChevronRight
+  ChevronRight,
+  X
 } from 'lucide-react';
 import companyLogo from '../../assets/billing_image.png';
 import { FEATURE_FLAGS } from '../../../shared/constants/featureFlags';
 
-export function Sidebar({ activeTab, setActiveTab }) {
+export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) {
   const operationsItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, badge: null },
     { id: 'create', label: 'Create Invoice', icon: FilePlus2 },
@@ -27,35 +28,51 @@ export function Sidebar({ activeTab, setActiveTab }) {
   ];
 
   return (
-    <aside className="w-64 bg-slate-50 dark:bg-[#161b22] border-r border-slate-200 dark:border-[#30363d] flex flex-col justify-between select-none transition-all duration-200">
+    <aside className="w-64 h-full bg-slate-50 dark:bg-[#161b22] border-r border-slate-200 dark:border-[#30363d] flex flex-col justify-between select-none transition-all duration-200 shrink-0">
       <div className="flex flex-col h-full">
-        {/* Workspace Brand Card */}
-        <div className="p-3.5 border-b border-slate-200 dark:border-[#30363d]">
-          <div className="flex items-center gap-3 p-2 rounded-xl bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] shadow-xs">
-            <img
-              src={companyLogo}
-              alt="Shepherd Enterprises"
-              className="w-8 h-8 rounded-lg object-contain bg-slate-50 dark:bg-[#161b22] p-0.5 border border-slate-100 dark:border-[#30363d] shrink-0"
-            />
-            <div className="overflow-hidden flex-1">
-              <div className="flex items-center justify-between">
-                <h1 className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate tracking-tight">
-                  Shepherd Billing Enterprise
-                </h1>
-                
+        {/* Workspace Brand Header */}
+        <div className="p-3 border-b border-slate-200 dark:border-[#30363d] space-y-2.5">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] shadow-xs flex-1 min-w-0">
+              <img
+                src={companyLogo}
+                alt="Shepherd Enterprises"
+                className="w-8 h-8 rounded-lg object-contain bg-slate-50 dark:bg-[#161b22] p-0.5 border border-slate-100 dark:border-[#30363d] shrink-0"
+              />
+              <div className="overflow-hidden flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <h1 className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate tracking-tight">
+                    Shepherd Billing
+                  </h1>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                </div>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate flex items-center gap-1">
+                  <span>Enterprise v1.0</span>
+                  <span className="text-slate-300 dark:text-slate-700">•</span>
+                  <span className="text-blue-600 dark:text-blue-400 font-semibold">Active</span>
+                </p>
               </div>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate flex items-center gap-1">
-                <span>v1.0</span>
-                <span className="text-slate-300 dark:text-slate-700">•</span>
-                <span className="text-blue-600 dark:text-blue-400 font-semibold">Active</span>
-              </p>
             </div>
+
+            {isMobile && onClose && (
+              <button
+                onClick={onClose}
+                className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+                title="Close Menu"
+                aria-label="Close navigation menu"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
           {/* Quick Create Invoice Action Button */}
           <button
-            onClick={() => setActiveTab('create')}
-            className="w-full mt-2.5 flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer active:scale-[0.99] group"
+            onClick={() => {
+              setActiveTab('create');
+              if (isMobile && onClose) onClose();
+            }}
+            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer active:scale-[0.99] group"
           >
             <div className="flex items-center gap-2">
               <Plus className="w-3.5 h-3.5 transition-transform group-hover:rotate-90 duration-200" />
@@ -81,7 +98,10 @@ export function Sidebar({ activeTab, setActiveTab }) {
                 return (
                   <button
                     key={item.id}
-                    onClick={() => setActiveTab(item.id)}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      if (isMobile && onClose) onClose();
+                    }}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer group ${
                       isActive
                         ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200/80 dark:border-indigo-800/60 shadow-2xs'
@@ -117,7 +137,10 @@ export function Sidebar({ activeTab, setActiveTab }) {
                 return (
                   <button
                     key={item.id}
-                    onClick={() => setActiveTab(item.id)}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      if (isMobile && onClose) onClose();
+                    }}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer group ${
                       isActive
                         ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200/80 dark:border-indigo-800/60 shadow-2xs'
