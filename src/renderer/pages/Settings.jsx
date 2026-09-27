@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '../components/layout/PageContainer';
+import { Button } from '../components/common/Button';
 import { AppearanceSettings } from '../components/settings/AppearanceSettings';
 import { BackupRestore } from '../components/settings/BackupRestore';
 import { RecycleBin } from '../components/settings/RecycleBin';
 import { PinSettings } from '../components/settings/PinSettings';
-import { ShortcutsSettings } from '../components/settings/ShortcutsSettings';
 import { Support } from '../components/settings/Support';
 import { About } from '../components/settings/About';
-import { Palette, HardDrive, Trash2, Shield, Info, Headphones, Keyboard } from 'lucide-react';
+import { Palette, HardDrive, Trash2, Shield, Info, Headphones } from 'lucide-react';
 import { ipcClient } from '../services/ipcClient';
 
 export function Settings({ toast, licenseStatus: initialLicenseStatus }) {
@@ -29,7 +29,6 @@ export function Settings({ toast, licenseStatus: initialLicenseStatus }) {
   const tabs = [
     ...(isLive ? [{ id: 'backup', label: 'Backup & Restore', icon: HardDrive }] : []),
     { id: 'pin', label: 'Security Password', icon: Shield },
-    { id: 'shortcuts', label: 'Keyboard Shortcuts', icon: Keyboard },
     { id: 'bin', label: 'Recycle Bin', icon: Trash2 },
     { id: 'appearance', label: 'Appearance', icon: Palette },
     { id: 'support', label: 'Support', icon: Headphones },
@@ -59,7 +58,7 @@ export function Settings({ toast, licenseStatus: initialLicenseStatus }) {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-[#0969da] dark:bg-[#1f6feb] text-white shadow-xs font-bold'
+                    ? 'bg-indigo-600 text-white shadow-xs font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
                 }`}
               >
@@ -74,7 +73,6 @@ export function Settings({ toast, licenseStatus: initialLicenseStatus }) {
         <div>
           {isLive && activeTab === 'backup' && <BackupRestore toast={toast} />}
           {activeTab === 'pin' && <PinSettings toast={toast} />}
-          {activeTab === 'shortcuts' && <ShortcutsSettings />}
           {activeTab === 'bin' && <RecycleBin toast={toast} />}
           {activeTab === 'appearance' && <AppearanceSettings />}
           {activeTab === 'support' && <Support toast={toast} />}

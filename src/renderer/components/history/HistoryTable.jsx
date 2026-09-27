@@ -37,8 +37,8 @@ export function HistoryTable({ invoices = [], page = 1, pageSize = 15, onView, o
             <td className="px-4 py-3 border-r border-slate-200 dark:border-slate-800">
               <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                 isProforma 
-                  ? 'bg-slate-100 dark:bg-[#21262d] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#30363d]' 
-                  : 'bg-slate-100 dark:bg-[#21262d] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#30363d]'
+                  ? 'bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800' 
+                  : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
               }`}>
                 {isProforma ? 'PROFORMA' : (inv.invoice_type || 'NORMAL')}
               </span>

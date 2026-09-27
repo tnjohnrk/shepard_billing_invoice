@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '../common/Button';
 
 export function ReportSelector({ activeType, onSelectType }) {
   const types = [
@@ -19,7 +20,7 @@ export function ReportSelector({ activeType, onSelectType }) {
             onClick={() => onSelectType(t.id)}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               isActive
-                ? 'bg-[#0969da] dark:bg-[#1f6feb] text-white shadow-xs font-bold'
+                ? 'bg-indigo-600 text-white shadow-xs font-bold'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
             }`}
           >

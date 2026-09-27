@@ -8,7 +8,7 @@ import { Button } from '../components/common/Button';
 import { Input } from '../components/common/Input';
 import { Select } from '../components/common/Select';
 import { Table } from '../components/common/Table';
-import { FileSpreadsheet, Download, Users } from 'lucide-react';
+import { FileSpreadsheet, Download, Users, FileText } from 'lucide-react';
 import { ipcClient } from '../services/ipcClient';
 
 export function Reports({ toast }) {

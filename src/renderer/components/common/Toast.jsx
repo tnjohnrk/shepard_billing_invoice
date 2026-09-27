@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
+import { CheckCircle2, AlertCircle, XCircle, Info, X } from 'lucide-react';
 import { formatHumanReadableError } from '../../../shared/utils/errorHandler';
 
 export function Toast({ type = 'error', message, onClose, duration = 5000 }) {

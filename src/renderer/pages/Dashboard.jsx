@@ -6,7 +6,7 @@ import { BillingAmountChart } from '../components/dashboard/BillingAmountChart';
 import { RecentInvoices } from '../components/dashboard/RecentInvoices';
 import { Loading } from '../components/common/Loading';
 import { ipcClient } from '../services/ipcClient';
-import { CalendarDays, Filter, Clock } from 'lucide-react';
+import { CalendarDays, Filter, Clock, ShieldCheck, AlertCircle } from 'lucide-react';
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const FULL_MONTH_NAMES = [

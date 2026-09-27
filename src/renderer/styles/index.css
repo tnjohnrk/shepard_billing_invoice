@@ -5,7 +5,7 @@
 
 @layer base {
   body {
-    font-family: "Segoe UI Variable Text", "Segoe UI Variable Display", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -121,7 +121,7 @@ button:active:not(:disabled) {
 }
 
 /* ========================================================================= */
-/* LIGHT MODE THEME SYSTEM (Executive Enterprise Styling)                    */
+/* LIGHT MODE THEME SYSTEM (Task Manager Aesthetic)                          */
 /* ========================================================================= */
 
 .light,
@@ -129,377 +129,64 @@ button:active:not(:disabled) {
 .light body,
 .light #root,
 .light main {
-  background-color: #ffffff !important;
+  background-color: #f8fafc;
   color: #0f172a;
 }
 
 /* Layout Root & Backgrounds in Light Mode */
-.light .bg-white,
-.light .bg-slate-900,
-.light .bg-slate-950,
-.light [class*="bg-slate-900"],
-.light [class*="bg-slate-950"],
-.light [class*="bg-slate-800"] {
-  background-color: #ffffff !important;
-}
-
-.light .bg-gradient-to-b {
-  background-image: none !important;
-  background-color: #ffffff !important;
+.light .bg-white {
+  background-color: #ffffff;
 }
 
 /* Sidebar & Navigation in Light Mode */
 .light aside {
-  background-color: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: none !important;
-}
-
-.light aside nav button:not(.bg-sky-500):not(.bg-indigo-600) {
-  color: #475569 !important;
-}
-
-.light aside nav button:not(.bg-sky-500):not(.bg-indigo-600):hover {
-  background-color: #f1f5f9 !important;
-  color: #0f172a !important;
-}
-
-.light aside nav button.bg-sky-500,
-.light aside nav button.bg-indigo-600 {
-  background-color: #0ea5e9 !important; /* Vibrant Light Blue (Sky 500) */
-  color: #ffffff !important;
-  box-shadow: none !important;
-  border-color: #38bdf8 !important;
+  background-color: #ffffff;
+  border-color: #e2e8f0;
 }
 
 /* Header in Light Mode */
 .light header {
-  background-color: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: none !important;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-color: #e2e8f0;
 }
 
 /* Footer / Status Bar in Light Mode */
 .light footer {
-  background-color: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  color: #64748b !important;
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  color: #64748b;
 }
 
 /* Glass Panels and Cards in Light Mode */
-.light .glass-panel {
-  background: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: none !important;
-}
-
+.light .glass-panel,
 .light .glass-card {
-  background: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: none !important;
-}
-
-/* Typography / Text Colors in Light Mode */
-.light .text-slate-100,
-.light .text-slate-200 {
-  color: #0f172a !important;
-}
-
-.light .text-slate-300 {
-  color: #334155 !important;
-}
-
-.light .text-slate-400 {
-  color: #64748b !important;
-}
-
-.light .text-slate-500 {
-  color: #94a3b8 !important;
-}
-
-/* Borders in Light Mode */
-.light .border-slate-900,
-.light .border-slate-800,
-.light .border-slate-700,
-.light [class*="border-slate-900"],
-.light [class*="border-slate-800"],
-.light [class*="border-slate-700"] {
-  border-color: #cbd5e1 !important;
-}
-
-.light .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
-.light .divide-slate-700 > :not([hidden]) ~ :not([hidden]) {
-  border-color: #cbd5e1 !important;
+  background: #ffffff;
+  border-color: #e2e8f0;
 }
 
 /* Form Controls (Inputs, Selects, Textareas) in Light Mode */
 .light input:not([type="checkbox"]):not([type="radio"]),
 .light select,
 .light textarea {
-  background-color: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  color: #0f172a !important;
-  box-shadow: none !important;
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  color: #0f172a;
 }
 
 .light input:not([type="checkbox"]):not([type="radio"]):focus,
 .light select:focus,
 .light textarea:focus {
-  border-color: #0284c7 !important;
-  background-color: #ffffff !important;
-  box-shadow: none !important;
+  border-color: #6366f1;
 }
 
 .light input::placeholder,
 .light textarea::placeholder {
-  color: #94a3b8 !important;
+  color: #94a3b8;
 }
 
 .light select option {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-}
-
-/* ========================================================================= */
-/* Buttons in Light Mode                                                     */
-/* ========================================================================= */
-
-.light .btn-primary {
-  background-color: #e0f2fe !important;
-  border-color: #7dd3fc !important;
-  color: #0369a1 !important;
-  box-shadow: none !important;
-}
-
-.light .btn-primary:hover {
-  background-color: #bae6fd !important;
-  border-color: #38bdf8 !important;
-  color: #0c4a6e !important;
-  box-shadow: none !important;
-}
-
-.light .btn-secondary {
-  background-color: #f1f5f9 !important;
-  color: #334155 !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: none !important;
-}
-
-.light .btn-secondary:hover {
-  background-color: #e2e8f0 !important;
-  color: #0f172a !important;
-  border-color: #94a3b8 !important;
-}
-
-.light .btn-ghost {
-  color: #475569 !important;
-}
-
-.light .btn-ghost:hover {
-  background-color: #f1f5f9 !important;
-  color: #0f172a !important;
-}
-
-.light .btn-accent {
-  background-color: #ecfeff !important;
-  border-color: #a5f3fc !important;
-  color: #0e7490 !important;
-  box-shadow: none !important;
-}
-
-.light .btn-accent:hover {
-  background-color: #cffafe !important;
-  border-color: #67e8f9 !important;
-  color: #155e75 !important;
-}
-
-.light .btn-success {
-  background-color: #ecfdf5 !important;
-  border-color: #a7f3d0 !important;
-  color: #047857 !important;
-  box-shadow: none !important;
-}
-
-.light .btn-success:hover {
-  background-color: #d1fae5 !important;
-  border-color: #6ee7b7 !important;
-  color: #065f46 !important;
-}
-
-.light .btn-danger {
-  background-color: #fff1f2 !important;
-  border-color: #fecdd3 !important;
-  color: #e11d48 !important;
-  box-shadow: none !important;
-}
-
-.light .btn-danger:hover {
-  background-color: #ffe4e6 !important;
-  border-color: #fda4af !important;
-  color: #be123c !important;
-}
-
-/* Generic Fallback for Buttons styled with slate in Light Mode */
-.light button.bg-slate-800:not(.bg-indigo-600):not(.bg-emerald-600):not(.bg-rose-600):not(.bg-cyan-600) {
-  background-color: #f1f5f9 !important;
-  color: #334155 !important;
-  border-color: #cbd5e1 !important;
-}
-
-.light button.bg-slate-800:not(.bg-indigo-600):not(.bg-emerald-600):not(.bg-rose-600):not(.bg-cyan-600):hover {
-  background-color: #e2e8f0 !important;
-  color: #0f172a !important;
-}
-
-/* ========================================================================= */
-/* Badges & Color Tints in Light Mode                                        */
-/* ========================================================================= */
-
-.light [class*="bg-indigo-950"] {
-  background-color: #eef2ff !important;
-  border-color: #c7d2fe !important;
-  color: #4338ca !important;
-}
-
-.light [class*="bg-cyan-950"] {
-  background-color: #ecfeff !important;
-  border-color: #a5f3fc !important;
-  color: #0e7490 !important;
-}
-
-.light [class*="bg-emerald-950"] {
-  background-color: #ecfdf5 !important;
-  border-color: #a7f3d0 !important;
-  color: #047857 !important;
-}
-
-.light [class*="bg-amber-950"] {
-  background-color: #fffbeb !important;
-  border-color: #fde68a !important;
-  color: #b45309 !important;
-}
-
-.light [class*="bg-rose-950"] {
-  background-color: #fff1f2 !important;
-  border-color: #fecdd3 !important;
-  color: #e11d48 !important;
-}
-
-/* ========================================================================= */
-/* Tables in Light Mode                                                      */
-/* ========================================================================= */
-
-.light table {
-  background-color: #ffffff !important;
-  border-collapse: collapse !important;
-}
-
-.light thead tr {
-  background-color: #f8fafc !important;
-  border-color: #cbd5e1 !important;
-}
-
-.light thead th {
-  color: #334155 !important;
-  font-weight: 700 !important;
-  border-bottom: 1px solid #cbd5e1 !important;
-  border-right: 1px solid #cbd5e1 !important;
-}
-
-.light thead th:last-child {
-  border-right: none !important;
-}
-
-.light tbody td {
-  border-bottom: 1px solid #e2e8f0 !important;
-  border-right: 1px solid #e2e8f0 !important;
-}
-
-.light tbody td:last-child {
-  border-right: none !important;
-}
-
-.light tbody tr:hover {
-  background-color: #f8fafc !important;
-}
-
-/* Tables in Dark Mode */
-.dark table thead th {
-  border-bottom: 1px solid #334155;
-  border-right: 1px solid #334155;
-}
-
-.dark table thead th:last-child {
-  border-right: none;
-}
-
-.dark table tbody td {
-  border-bottom: 1px solid #1e293b;
-  border-right: 1px solid #1e293b;
-}
-
-.dark table tbody td:last-child {
-  border-right: none;
-}
-
-/* History Row Action Buttons in Light Mode */
-.light button[title="View / Preview"] {
-  color: #475569 !important;
-}
-.light button[title="View / Preview"]:hover {
-  background-color: #f1f5f9 !important;
-  color: #0f172a !important;
-}
-
-.light button[title="Print Document"] {
-  color: #4f46e5 !important;
-}
-.light button[title="Print Document"]:hover {
-  background-color: #eef2ff !important;
-  color: #4338ca !important;
-}
-
-.light button[title="Export PDF"] {
-  color: #0891b2 !important;
-}
-.light button[title="Export PDF"]:hover {
-  background-color: #ecfeff !important;
-  color: #0e7490 !important;
-}
-
-.light button[title="Export Excel"] {
-  color: #059669 !important;
-}
-.light button[title="Export Excel"]:hover {
-  background-color: #ecfdf5 !important;
-  color: #047857 !important;
-}
-
-.light button[title="Duplicate Invoice"] {
-  color: #d97706 !important;
-}
-.light button[title="Duplicate Invoice"]:hover {
-  background-color: #fffbeb !important;
-  color: #b45309 !important;
-}
-
-.light button[title="Delete (Move to Recycle Bin)"],
-.light button[title="Delete Permanently"] {
-  color: #e11d48 !important;
-}
-.light button[title="Delete (Move to Recycle Bin)"]:hover,
-.light button[title="Delete Permanently"]:hover {
-  background-color: #fff1f2 !important;
-  color: #be123c !important;
-}
-
-/* Modals & Dialogs in Light Mode */
-.light .fixed .glass-panel,
-.light .fixed .bg-slate-900,
-.light .fixed .bg-slate-800 {
-  background-color: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: none !important;
+  background-color: #ffffff;
+  color: #0f172a;
 }
 
 /* Scrollbars in Light Mode */
@@ -517,7 +204,7 @@ button:active:not(:disabled) {
 }
 
 /* ========================================================================= */
-/* DARK MODE THEME SYSTEM (Executive Enterprise Dark Styling)                */
+/* DARK MODE THEME SYSTEM (Task Manager Dark Aesthetic)                      */
 /* ========================================================================= */
 
 .dark {
@@ -527,265 +214,83 @@ button:active:not(:disabled) {
 .dark,
 .dark html,
 .dark body,
-.dark #root {
-  background-color: #0b0f19 !important;
-  color: #f8fafc !important;
+.dark #root,
+.dark main {
+  background-color: #090d16;
+  color: #f8fafc;
 }
 
 /* Layout & Backgrounds in Dark Mode */
-.dark .bg-slate-950,
-.dark main {
-  background-color: #0b0f19 !important;
+.dark .bg-slate-950 {
+  background-color: #090d16;
 }
 
-.dark .bg-white,
 .dark .bg-slate-900 {
-  background-color: #0f172a !important;
-}
-
-.dark .bg-slate-50,
-.dark .bg-slate-100,
-.dark .bg-slate-800 {
-  background-color: #1e293b !important;
-}
-
-.dark .bg-slate-200 {
-  background-color: #334155 !important;
+  background-color: #0f172a;
 }
 
 /* Sidebar & Navigation in Dark Mode */
 .dark aside {
-  background-color: #0b0f19 !important;
-  border-color: #1e293b !important;
-}
-
-.dark aside nav button:not(.bg-sky-500):not(.bg-sky-600) {
-  color: #94a3b8 !important;
-}
-
-.dark aside nav button:not(.bg-sky-500):not(.bg-sky-600):hover {
-  background-color: #1e293b !important;
-  color: #f8fafc !important;
-}
-
-.dark aside nav button.bg-sky-500,
-.dark aside nav button.bg-sky-600 {
-  background-color: #0284c7 !important;
-  border-color: #38bdf8 !important;
-  color: #ffffff !important;
+  background-color: #0c111d;
+  border-color: #1e293b;
 }
 
 /* Header & Status Bar in Dark Mode */
 .dark header {
-  background-color: #0f172a !important;
-  border-color: #1e293b !important;
+  background-color: rgba(15, 23, 42, 0.85);
+  border-color: #1e293b;
 }
 
 .dark footer {
-  background-color: #0b0f19 !important;
-  border-color: #1e293b !important;
-  color: #94a3b8 !important;
+  background-color: #0c111d;
+  border-color: #1e293b;
+  color: #94a3b8;
 }
 
 /* Glass Panels and Cards in Dark Mode */
 .dark .glass-panel,
 .dark .glass-card {
-  background: #0f172a !important;
-  border-color: #334155 !important;
-  box-shadow: none !important;
-}
-
-/* Typography / Text Colors in Dark Mode */
-.dark .text-slate-900,
-.dark .text-slate-800 {
-  color: #f8fafc !important;
-}
-
-.dark .text-slate-700 {
-  color: #e2e8f0 !important;
-}
-
-.dark .text-slate-600 {
-  color: #cbd5e1 !important;
-}
-
-.dark .text-slate-500 {
-  color: #94a3b8 !important;
-}
-
-.dark .text-slate-400 {
-  color: #94a3b8 !important;
-}
-
-/* Borders in Dark Mode */
-.dark .border-slate-300,
-.dark .border-slate-400,
-.dark .border-slate-700 {
-  border-color: #334155 !important;
-}
-
-.dark .border-slate-200,
-.dark .border-slate-800 {
-  border-color: #1e293b !important;
-}
-
-.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]),
-.dark .divide-slate-300 > :not([hidden]) ~ :not([hidden]),
-.dark .divide-slate-700 > :not([hidden]) ~ :not([hidden]),
-.dark .divide-slate-800 > :not([hidden]) ~ :not([hidden]) {
-  border-color: #1e293b !important;
+  background: #0f172a;
+  border-color: #1e293b;
 }
 
 /* Form Controls (Inputs, Selects, Textareas) in Dark Mode */
 .dark input:not([type="checkbox"]):not([type="radio"]),
 .dark select,
 .dark textarea {
-  background-color: #0f172a !important;
-  border-color: #334155 !important;
-  color: #f8fafc !important;
-  box-shadow: none !important;
+  background-color: #0f172a;
+  border-color: #1e293b;
+  color: #f8fafc;
 }
 
 .dark input:not([type="checkbox"]):not([type="radio"]):focus,
 .dark select:focus,
 .dark textarea:focus {
-  border-color: #38bdf8 !important;
-  background-color: #0f172a !important;
-  box-shadow: none !important;
+  border-color: #6366f1;
 }
 
 .dark input::placeholder,
 .dark textarea::placeholder {
-  color: #64748b !important;
+  color: #64748b;
 }
 
 .dark select option {
-  background-color: #0f172a !important;
-  color: #f8fafc !important;
-}
-
-/* Buttons in Dark Mode */
-.dark .btn-primary {
-  background-color: #0284c7 !important;
-  border-color: #0369a1 !important;
-  color: #ffffff !important;
-  box-shadow: none !important;
-}
-
-.dark .btn-primary:hover {
-  background-color: #0369a1 !important;
-  border-color: #0284c7 !important;
-}
-
-.dark .btn-secondary {
-  background-color: #1e293b !important;
-  color: #e2e8f0 !important;
-  border-color: #334155 !important;
-  box-shadow: none !important;
-}
-
-.dark .btn-secondary:hover {
-  background-color: #334155 !important;
-  color: #ffffff !important;
-}
-
-.dark .btn-ghost {
-  color: #94a3b8 !important;
-}
-
-.dark .btn-ghost:hover {
-  background-color: #1e293b !important;
-  color: #ffffff !important;
-}
-
-.dark .btn-success {
-  background-color: #059669 !important;
-  border-color: #047857 !important;
-  color: #ffffff !important;
-}
-
-.dark .btn-success:hover {
-  background-color: #047857 !important;
-}
-
-.dark .btn-danger {
-  background-color: #e11d48 !important;
-  border-color: #be123c !important;
-  color: #ffffff !important;
-}
-
-.dark .btn-danger:hover {
-  background-color: #be123c !important;
-}
-
-.dark .btn-accent {
-  background-color: #0d9488 !important;
-  border-color: #0f766e !important;
-  color: #ffffff !important;
-}
-
-.dark .btn-accent:hover {
-  background-color: #0f766e !important;
-}
-
-/* Badges in Dark Mode */
-.dark [class*="bg-indigo-950"] {
-  background-color: #1e1b4b !important;
-  border-color: #3730a3 !important;
-  color: #c7d2fe !important;
-}
-
-.dark [class*="bg-cyan-950"] {
-  background-color: #083344 !important;
-  border-color: #155e75 !important;
-  color: #a5f3fc !important;
-}
-
-.dark [class*="bg-sky-950"] {
-  background-color: #082f49 !important;
-  border-color: #0369a1 !important;
-  color: #bae6fd !important;
-}
-
-.dark [class*="bg-emerald-950"] {
-  background-color: #022c22 !important;
-  border-color: #065f46 !important;
-  color: #a7f3d0 !important;
-}
-
-.dark [class*="bg-amber-950"] {
-  background-color: #451a03 !important;
-  border-color: #92400e !important;
-  color: #fde68a !important;
-}
-
-.dark [class*="bg-rose-950"] {
-  background-color: #4c0519 !important;
-  border-color: #9f1239 !important;
-  color: #fecdd3 !important;
-}
-
-/* Modals & Dialogs in Dark Mode */
-.dark .fixed .glass-panel,
-.dark .fixed .bg-slate-900,
-.dark .fixed .bg-slate-800 {
-  background-color: #0f172a !important;
-  border-color: #334155 !important;
-  box-shadow: none !important;
+  background-color: #0f172a;
+  color: #f8fafc;
 }
 
 /* Scrollbars in Dark Mode */
 .dark ::-webkit-scrollbar-track {
-  background: #0b0f19;
+  background: #090d16;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #1e293b;
   border-radius: 9999px;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #334155;
 }
 
 @keyframes toast-progress {

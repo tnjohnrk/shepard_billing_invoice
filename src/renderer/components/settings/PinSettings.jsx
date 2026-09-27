@@ -71,6 +71,11 @@ export function PinSettings({ toast }) {
             </p>
           </div>
         </div>
+
+        <span className="px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+          <Lock className="w-3 h-3" />
+          <span>Security Active</span>
+        </span>
       </div>
 
       {/* Main Grid: Form on left, Security Guidelines on right */}

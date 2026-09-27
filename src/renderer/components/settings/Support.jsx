@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Globe, ExternalLink, Copy, Check, Heart, ShieldCheck, Code2 } from 'lucide-react';
+import { Mail, Globe, ExternalLink, Copy, Check, MessageSquare, Heart, ShieldCheck, Code2 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { ipcClient } from '../../services/ipcClient';
 
@@ -49,17 +49,41 @@ export function Support({ toast }) {
     <div className="space-y-6">
       {/* Hero Banner Card */}
       <div className="p-6 sm:p-7 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white shrink-0 shadow-xs">
-            <Code2 className="w-6 h-6" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white shrink-0 shadow-xs">
+              <Code2 className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 mb-1.5">
+                <Heart className="w-3 h-3 fill-indigo-500 text-indigo-500" /> Powered by Vibe2Code
+              </div>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+                Vibe2Code Support &amp; Solutions
+              </h2>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 max-w-xl leading-relaxed">
+                Need help with the billing system, custom invoice templates, feature requests, or technical assistance? Our dedicated engineering team is here to support you.
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
-              Customer Support &amp; Helpdesk
-            </h2>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
-              Need assistance with billing operations, invoice templates, feature requests, or technical troubleshooting? Contact our support channels below.
-            </p>
+
+          <div className="flex sm:flex-col gap-2 shrink-0">
+            <Button
+              variant="primary"
+              icon={Globe}
+              onClick={handleOpenWebsite}
+              className="w-full justify-center"
+            >
+              Visit Website
+            </Button>
+            <Button
+              variant="secondary"
+              icon={Mail}
+              onClick={handleOpenEmail}
+              className="w-full justify-center"
+            >
+              Contact Email
+            </Button>
           </div>
         </div>
       </div>
@@ -84,7 +108,7 @@ export function Support({ toast }) {
             </div>
 
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Send your bug reports, queries, or backup restoration requests directly to our team.
+              Send your bug reports, queries, or backup restoration requests directly to our team. We usually respond promptly.
             </p>
           </div>
 
@@ -131,7 +155,7 @@ export function Support({ toast }) {
             </div>
 
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Visit our official website to discover software updates, services, and business tooling.
+              Visit our official website to discover software updates, custom application development services, and business tooling.
             </p>
           </div>
 
@@ -153,11 +177,11 @@ export function Support({ toast }) {
         </div>
       </div>
 
-      {/* Single Clean Footer Banner */}
+      {/* Information Banner */}
       <div className="p-3.5 rounded-xl bg-slate-50/60 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 flex items-center justify-center shadow-xs">
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
-          <span>This application is engineered and supported by <strong>Vibe2Code</strong>.</span>
+          <span>This application is built, engineered, and powered by <strong>Vibe2Code</strong>.</span>
         </div>
       </div>
     </div>

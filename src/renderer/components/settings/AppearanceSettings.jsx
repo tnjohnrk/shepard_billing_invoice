@@ -8,11 +8,11 @@ export function AppearanceSettings() {
   const themes = [
     {
       id: 'dark',
-      name: 'Dark Mode (GitHub Dimmed)',
-      subtitle: 'Eye-friendly light-black interface with zero glare',
+      name: 'Dark Mode',
+      subtitle: 'High contrast business desktop interface',
       icon: Moon,
-      colors: ['#0d1117', '#161b22', '#1f6feb'],
-      description: 'Gentle charcoal surfaces and subtle borders for effortless billing sessions without eye strain.'
+      colors: ['#0b0f19', '#0f172a', '#0284c7'],
+      description: 'Optimized for low-light environments and long billing sessions.'
     },
     {
       id: 'light',
