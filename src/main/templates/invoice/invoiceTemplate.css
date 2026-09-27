@@ -633,13 +633,13 @@ body {
 .footer-terms-col {
   width: 50%;
   vertical-align: top;
-  padding: 10px;
+  padding: 12px;
   border-right: 1.5px solid #000;
 }
 
 .terms-title {
   font-size: 11px;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   font-weight: bold;
   text-transform: uppercase;
   color: #0f172a;
@@ -647,20 +647,20 @@ body {
 
 .terms-list {
   font-size: 9.5px;
-  line-height: 1.35;
+  line-height: 1.4;
   color: #1e293b;
 }
 
 .notes-text {
   font-size: 9.5px;
   color: #0f172a;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .footer-sign-col {
   width: 50%;
   vertical-align: top;
-  padding: 10px;
+  padding: 12px;
   text-align: center;
 }
 
@@ -680,7 +680,7 @@ body {
 }
 
 .signature-space {
-  height: 40px;
+  height: 64px;
 }
 
 .signatory-label {

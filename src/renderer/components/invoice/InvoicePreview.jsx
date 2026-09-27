@@ -612,25 +612,25 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                     <table className="w-full border-collapse text-[10px]">
                       <tbody>
                         <tr>
-                          <td className="w-[50%] align-top p-2.5 border-r-[1.5px] border-black">
-                            <div className="font-bold uppercase text-[11px] text-slate-900 mb-1">TERMS AND CONDITIONS</div>
-                            <div className="text-[9.5px] text-slate-800 leading-tight">
+                          <td className="w-[50%] align-top p-3 border-r-[1.5px] border-black">
+                            <div className="font-bold uppercase text-[11px] text-slate-900 mb-1.5">TERMS AND CONDITIONS</div>
+                            <div className="text-[9.5px] text-slate-800 leading-relaxed">
                               We declare that this invoice shows the actual value of services described and that all particulars are true and correct.
                             </div>
                             {fullData.notes && (
-                              <div className="text-[9.5px] text-slate-800 mt-1">
+                              <div className="text-[9.5px] text-slate-800 mt-2">
                                 <strong>Notes:</strong> {fullData.notes}
                               </div>
                             )}
                           </td>
-                          <td className="w-[50%] align-top p-2.5 text-center">
+                          <td className="w-[50%] align-top p-3 text-center">
                             <div className="font-bold text-[9.5px] uppercase text-slate-800 mb-1">
                               CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT
                             </div>
                             <div className="font-black text-[12px] text-blue-900 mb-1">
                               For SHEPHERD ENTERPRISES PRIVATE LIMITED
                             </div>
-                            <div className="h-10"></div>
+                            <div className="h-16"></div>
                             <div className="font-bold text-[11.5px] text-right pr-4 text-slate-950">
                               Director
                             </div>
