@@ -68,7 +68,7 @@ export function StatusBar() {
                 : 'bg-rose-500'
             }`} 
           />
-          <span className="text-[10px] font-medium text-slate-600 dark:text-slate-400">SQLite Active</span>
+            
         </div>
         <span className="text-slate-300 dark:text-slate-700">•</span>
         <span className="flex items-center gap-1.5 text-[10px]">
