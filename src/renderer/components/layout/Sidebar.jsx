@@ -27,27 +27,27 @@ export function Sidebar({ activeTab, setActiveTab }) {
   ];
 
   return (
-    <aside className="w-64 bg-slate-50/70 dark:bg-slate-950/90 border-r border-slate-200 dark:border-slate-800/80 flex flex-col justify-between select-none backdrop-blur-md transition-all duration-200">
+    <aside className="w-64 bg-slate-50 dark:bg-[#161b22] border-r border-slate-200 dark:border-[#30363d] flex flex-col justify-between select-none transition-all duration-200">
       <div className="flex flex-col h-full">
         {/* Workspace Brand Card */}
-        <div className="p-3.5 border-b border-slate-200/80 dark:border-slate-800/80">
-          <div className="flex items-center gap-3 p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+        <div className="p-3.5 border-b border-slate-200 dark:border-[#30363d]">
+          <div className="flex items-center gap-3 p-2 rounded-xl bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] shadow-xs">
             <img
               src={companyLogo}
               alt="Shepherd Enterprises"
-              className="w-8 h-8 rounded-lg object-contain bg-slate-50 dark:bg-slate-800 p-0.5 border border-slate-100 dark:border-slate-700 shrink-0"
+              className="w-8 h-8 rounded-lg object-contain bg-slate-50 dark:bg-[#161b22] p-0.5 border border-slate-100 dark:border-[#30363d] shrink-0"
             />
             <div className="overflow-hidden flex-1">
               <div className="flex items-center justify-between">
                 <h1 className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate tracking-tight">
-                  Shepherd Billing Enterprise 
+                  Shepherd Billing Enterprise
                 </h1>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                
               </div>
               <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate flex items-center gap-1">
                 <span>v1.0</span>
                 <span className="text-slate-300 dark:text-slate-700">•</span>
-                <span className="text-indigo-600 dark:text-indigo-400 font-semibold">Active</span>
+                <span className="text-blue-600 dark:text-blue-400 font-semibold">Active</span>
               </p>
             </div>
           </div>

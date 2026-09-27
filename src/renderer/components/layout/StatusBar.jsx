@@ -53,7 +53,7 @@ export function StatusBar() {
   }, []);
 
   return (
-    <footer className="h-6 bg-slate-50/90 dark:bg-slate-950/90 border-t border-slate-200 dark:border-slate-800/80 px-4 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 select-none backdrop-blur-md">
+    <footer className="h-6 bg-slate-50 dark:bg-[#161b22] border-t border-slate-200 dark:border-[#30363d] px-4 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 select-none">
       <div className="flex items-center gap-3">
         {/* SQL Database Symbol with Connection Signal */}
         <div 
