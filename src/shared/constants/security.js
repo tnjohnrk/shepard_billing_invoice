@@ -11,7 +11,5 @@ export const PRODUCT_KEY_CONFIG = {
     'b91eabc1404241120bcb4bd25b689b354da9054b44a81940625a48b68bdc755a',
     // Developer Master Hash
     'b9675a79afaaa683b781cd72ef25274728b743e9038ef254c2d6ceea91c167bc'
-  ],
-  // Developer emergency authentication key
-  DEVELOPER_MASTER_KEY: 'developer@v2c'
+  ]
 };
