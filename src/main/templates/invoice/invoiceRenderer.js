@@ -151,8 +151,8 @@ export function renderInvoiceHtml(invoiceData) {
                 <span class="meta-lbl font-bold" style="margin-left: 10px;">STATE CODE:</span> <span class="meta-txt">${escapeHtml(COMPANY_CONFIG.state_code || '33')}</span>
               </div>
               <div class="buyer-block">
-                <div class="meta-field"><span class="meta-lbl font-bold">BUYER:</span> <span class="meta-txt font-bold">${escapeHtml(invoiceData.buyer_name || '')}</span></div>
-                <div class="meta-field"><span class="meta-lbl font-bold">CUSTOMER ADDRESS:</span> <span class="meta-txt" style="white-space: pre-line;">${escapeHtml(invoiceData.buyer_address || '')}</span></div>
+                <div class="meta-field"><span class="meta-lbl font-bold">BUYER:</span> <span class="meta-txt font-bold buyer-name">${escapeHtml(invoiceData.buyer_name || '')}</span></div>
+                <div class="meta-field"><span class="meta-lbl font-bold">CUSTOMER ADDRESS:</span> <span class="meta-txt buyer-addr" style="white-space: pre-line;">${escapeHtml(invoiceData.buyer_address || '')}</span></div>
               </div>
             </td>
             <td class="meta-right-cell">
@@ -199,6 +199,16 @@ export function renderInvoiceHtml(invoiceData) {
       return `<tr class="item-data-row"><td class="col-desc"><div class="item-desc-text">${formattedDesc}</div>${isFirstOverallItem ? refsHtml : ''}</td><td class="col-hsn">${escapeHtml(item.hsn_sac || '-')}</td><td class="col-qty">${item.quantity || 0}</td><td class="col-rate">${formatCurrency(item.rate)}</td><td class="col-amount">${formatCurrency(item.amount || (item.quantity * item.rate))}</td></tr>`;
     }).join('');
 
+    const fillerRowsHtml = page.hasTotalsAndFooter ? `
+      <tr class="item-data-row filler-row" style="height: 100%;">
+        <td class="col-desc">&nbsp;</td>
+        <td class="col-hsn">&nbsp;</td>
+        <td class="col-qty">&nbsp;</td>
+        <td class="col-rate">&nbsp;</td>
+        <td class="col-amount">&nbsp;</td>
+      </tr>
+    ` : '';
+
     const pageSubtotal = (page.items || []).reduce(
       (sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0),
       0
@@ -211,14 +221,6 @@ export function renderInvoiceHtml(invoiceData) {
           SUB TOTAL:
         </td>
         <td class="col-amount page-subtotal-amount">${formatCurrency(pageSubtotal)}</td>
-      </tr>
-    ` : '';
-
-    const totalWordsRowHtml = page.hasTotalsAndFooter ? `
-      <tr class="amount-words-row">
-        <td colspan="5" class="amount-words-cell">
-          <span class="font-bold">TOTAL AMOUNT IN WORDS:</span> ${escapeHtml(invoiceData.amount_in_words || '')}
-        </td>
       </tr>
     ` : '';
 
@@ -235,8 +237,8 @@ export function renderInvoiceHtml(invoiceData) {
         </thead>
         <tbody>
           ${itemRowsHtml}
+          ${fillerRowsHtml}
           ${pageSubtotalRowHtml}
-          ${totalWordsRowHtml}
         </tbody>
       </table>
     `;
@@ -255,6 +257,15 @@ export function renderInvoiceHtml(invoiceData) {
 
       footerSectionHtml = `
         <div class="bottom-content">
+          <!-- 5. Total Amount in Words Row (Attached directly on top of Bank Details & Tax) -->
+          <table class="words-table">
+            <tr>
+              <td class="amount-words-cell">
+                <span class="font-bold">TOTAL AMOUNT IN WORDS:</span> ${escapeHtml(invoiceData.amount_in_words || '')}
+              </td>
+            </tr>
+          </table>
+
           <!-- 6. Bank Details & Tax Totals Section -->
           <table class="bank-tax-table">
             <tr class="bank-tax-row">

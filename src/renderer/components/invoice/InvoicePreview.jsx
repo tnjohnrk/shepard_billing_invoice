@@ -261,16 +261,18 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                 backgroundColor: '#ffffff',
                 color: '#000000',
                 width: '210mm',
-                minHeight: 'auto',
+                height: '297mm',
+                minHeight: '297mm',
+                maxHeight: '297mm',
                 padding: '8mm',
                 boxSizing: 'border-box'
               }}
-              className="invoice-preview-paper bg-white text-black border border-slate-300 shadow-xl text-left font-sans text-xs flex flex-col overflow-hidden print:w-full print:p-0 print:border-none print:shadow-none print:break-after-avoid print:page-break-after-avoid"
+              className="invoice-preview-paper bg-white text-black border border-slate-300 shadow-xl text-left font-sans text-xs flex flex-col justify-between overflow-hidden print:w-full print:h-[281mm] print:min-h-[281mm] print:p-0 print:border-none print:shadow-none print:break-after-avoid print:page-break-after-avoid"
             >
               {/* Overall Box Layout Frame from Header to Footer (Direct natural attachment) */}
-              <div className="border-2 border-black w-full bg-white text-black flex flex-col">
+              <div className="border-2 border-black w-full h-full bg-white text-black flex flex-col justify-between box-border">
                 
-                <div className="w-full flex flex-col">
+                <div className="w-full flex flex-col flex-1">
                     {/* 1. Header Section (Only on Page 1) */}
                     {page.isFirstPage ? (
                     <>
@@ -436,27 +438,27 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                   )}
 
                   {/* 4. Line Items Table */}
-                  <table className="w-full border-collapse border-b-2 border-black text-left text-[11px]" style={{ tableLayout: 'fixed' }}>
-                    <thead>
-                      <tr className="bg-white border-b-2 border-black font-bold uppercase text-[10.5px]">
-                        <th className="py-2.5 px-3 border-r-[1.5px] border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
-                        <th className="py-2.5 px-2.5 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>HSN</th>
-                        <th className="py-2.5 px-2.5 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>QTY.</th>
-                        <th className="py-2.5 px-2.5 border-r-[1.5px] border-black text-right" style={{ width: '12%' }}>RATE</th>
-                        <th className="py-2.5 px-2.5 text-right" style={{ width: '12%' }}>AMOUNT</th>
+                  <table className="w-full flex-1 border-collapse border-b-2 border-black text-left text-[11px] flex flex-col" style={{ tableLayout: 'fixed' }}>
+                    <thead className="w-full">
+                      <tr className="bg-white border-b-2 border-black font-bold uppercase text-[10.5px] flex w-full">
+                        <th className="py-2 px-3 border-r-[1.5px] border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
+                        <th className="py-2 px-2.5 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>HSN</th>
+                        <th className="py-2 px-2.5 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>QTY.</th>
+                        <th className="py-2 px-2.5 border-r-[1.5px] border-black text-right" style={{ width: '12%' }}>RATE</th>
+                        <th className="py-2 px-2.5 text-right" style={{ width: '12%' }}>AMOUNT</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y-0">
+                    <tbody className="w-full flex-1 flex flex-col divide-y-0">
                       {page.items.map((item, idx) => {
                         const isFirstOverallItem = page.isFirstPage && idx === 0;
                         return (
-                          <tr key={idx} className="align-middle border-b-[1.5px] border-black">
-                            <td className="py-4 px-3 border-r-[1.5px] border-black align-middle" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                              <div className="font-bold uppercase text-slate-950 leading-normal text-[11.5px] whitespace-pre-wrap">
+                          <tr key={idx} className="align-middle border-b-[1.5px] border-black flex w-full min-h-[34px]">
+                            <td className="py-1.5 px-3 border-r-[1.5px] border-black flex flex-col justify-center" style={{ width: '54%', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                              <div className="font-bold uppercase text-slate-950 leading-tight text-[11px] whitespace-pre-wrap">
                                 {item.description}
                               </div>
                               {isFirstOverallItem && (
-                                <div className="mt-2 font-bold text-[9.5px] text-slate-900 leading-tight space-y-0.5">
+                                <div className="mt-1 font-bold text-[9px] text-slate-900 leading-tight space-y-0.5">
                                   {fullData.so_po_number && (
                                     <div>
                                       S.O. No: {fullData.so_po_number}
@@ -472,17 +474,28 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 </div>
                               )}
                             </td>
-                            <td className="py-4 px-2.5 border-r-[1.5px] border-black text-center font-mono font-medium text-[11px] align-middle">{item.hsn_sac || '-'}</td>
-                            <td className="py-4 px-2.5 border-r-[1.5px] border-black text-center font-mono font-medium text-[11px] align-middle">{item.quantity}</td>
-                            <td className="py-4 px-2.5 border-r-[1.5px] border-black text-right font-mono font-medium text-[11px] align-middle">
+                            <td className="py-1.5 px-2.5 border-r-[1.5px] border-black text-center font-mono font-medium text-[11px] flex items-center justify-center" style={{ width: '11%' }}>{item.hsn_sac || '-'}</td>
+                            <td className="py-1.5 px-2.5 border-r-[1.5px] border-black text-center font-mono font-medium text-[11px] flex items-center justify-center" style={{ width: '11%' }}>{item.quantity}</td>
+                            <td className="py-1.5 px-2.5 border-r-[1.5px] border-black text-right font-mono font-medium text-[11px] flex items-center justify-end" style={{ width: '12%' }}>
                               {Number(item.rate).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
-                            <td className="py-4 px-2.5 text-right font-mono font-bold text-[11px] align-middle">
+                            <td className="py-1.5 px-2.5 text-right font-mono font-bold text-[11px] flex items-center justify-end" style={{ width: '12%' }}>
                               {Number(item.amount || (item.quantity * item.rate)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
                           </tr>
                         );
                       })}
+
+                      {/* Extending vertical column grid lines through middle space */}
+                      {page.hasTotalsAndFooter && (
+                        <tr className="flex-1 flex w-full">
+                          <td className="border-r-[1.5px] border-black h-full" style={{ width: '54%' }}>&nbsp;</td>
+                          <td className="border-r-[1.5px] border-black text-center font-mono text-[11px] h-full" style={{ width: '11%' }}>&nbsp;</td>
+                          <td className="border-r-[1.5px] border-black text-center font-mono text-[11px] h-full" style={{ width: '11%' }}>&nbsp;</td>
+                          <td className="border-r-[1.5px] border-black text-right font-mono text-[11px] h-full" style={{ width: '12%' }}>&nbsp;</td>
+                          <td className="text-right font-mono text-[11px] h-full" style={{ width: '12%' }}>&nbsp;</td>
+                        </tr>
+                      )}
                       {/* Page-wise Subtotal Row (When invoice has more than 1 page) */}
                       {page.totalPages > 1 && (
                         <tr className="border-t-2 border-black bg-slate-50 font-bold text-[10.5px]">
@@ -499,16 +512,6 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                           </td>
                         </tr>
                       )}
-
-                      {/* Total Amount in Words Row (On last page, perfectly attached to vertical table lines) */}
-                      {page.hasTotalsAndFooter && (
-                        <tr className="border-t-2 border-black bg-white font-normal text-[11px]">
-                          <td colSpan={5} className="py-2.5 px-3 text-left">
-                            <span className="font-bold">TOTAL AMOUNT IN WORDS: </span>
-                            {fullData.amount_in_words}
-                          </td>
-                        </tr>
-                      )}
                     </tbody>
                   </table>
                 </div>
@@ -516,12 +519,24 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                 {/* Bottom Section (Totals, Bank Details, and Footer on Last Page) */}
                 {page.hasTotalsAndFooter && (
                   <div className="w-full">
+                    {/* 5. Total Amount in Words Row (Slim, compact, attached directly on top of Bank Details & Tax) */}
+                    <table className="w-full border-collapse border-b-2 border-black bg-white font-normal text-[11px]">
+                      <tbody>
+                        <tr>
+                          <td className="py-1.5 px-3 text-left leading-tight">
+                            <span className="font-bold">TOTAL AMOUNT IN WORDS: </span>
+                            {fullData.amount_in_words}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
                     {/* 6. Bank Details & Tax Summary Row */}
                     <table className="w-full border-collapse border-b-2 border-black text-[11px]">
                       <tbody>
                         <tr>
                           {/* Left: Bank Details */}
-                          <td className="w-[52%] p-2.5 border-r-[1.5px] border-black align-top space-y-1">
+                          <td className="w-[50%] p-2.5 border-r-[1.5px] border-black align-top space-y-1">
                             <div className="font-black text-[11.5px] uppercase text-slate-900 mb-1">BANK DETAILS</div>
                             <div><span className="font-bold">BANK NAME: </span>{COMPANY_CONFIG.bank_name}: {COMPANY_CONFIG.account_number}</div>
                             <div><span className="font-bold">BRANCH NAME: </span>{(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
@@ -529,14 +544,14 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                           </td>
 
                           {/* Right: Tax Breakdown */}
-                          <td className="w-[48%] p-0 align-top">
+                          <td className="w-[50%] p-0 align-top">
                             <table className="w-full border-collapse text-[11px]">
                               <tbody>
                                 {pages.length > 1 && pages.map((p) => {
                                   const pSub = (p.items || []).reduce((sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0), 0);
                                   return (
                                     <tr key={p.pageNumber} className="border-b-[1.5px] border-black text-slate-800 bg-slate-50/80 text-[10px]">
-                                      <td className="p-1.5 text-left w-[68%] whitespace-nowrap">SUB TOTAL</td>
+                                      <td className="p-1.5 text-left w-[68%] whitespace-nowrap border-r-[1.5px] border-black">SUB TOTAL</td>
                                       <td className="p-1.5 text-right w-[32%] font-medium font-mono whitespace-nowrap">
                                         {pSub.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
@@ -544,7 +559,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                   );
                                 })}
                                 <tr className="border-b-[1.5px] border-black font-bold">
-                                  <td className="p-1.5 text-left w-[68%] whitespace-nowrap">TOTAL AMOUNT BEFORE TAX</td>
+                                  <td className="p-1.5 text-left w-[68%] whitespace-nowrap border-r-[1.5px] border-black">TOTAL AMOUNT BEFORE TAX</td>
                                   <td className="p-1.5 text-right w-[32%] font-bold font-mono whitespace-nowrap">
                                     {fullData.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                   </td>
@@ -552,13 +567,13 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 {totals.isIntraState ? (
                                   <>
                                     <tr className="border-b-[1.5px] border-black">
-                                      <td className="p-1.5 text-left whitespace-nowrap">ADD CGST: {totals.cgstRate}%</td>
+                                      <td className="p-1.5 text-left whitespace-nowrap border-r-[1.5px] border-black">ADD CGST: {totals.cgstRate}%</td>
                                       <td className="p-1.5 text-right font-medium font-mono whitespace-nowrap">
                                         {totals.cgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
                                     </tr>
                                     <tr className="border-b-[1.5px] border-black">
-                                      <td className="p-1.5 text-left whitespace-nowrap">ADD SGST: {totals.sgstRate}%</td>
+                                      <td className="p-1.5 text-left whitespace-nowrap border-r-[1.5px] border-black">ADD SGST: {totals.sgstRate}%</td>
                                       <td className="p-1.5 text-right font-medium font-mono whitespace-nowrap">
                                         {totals.sgstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                       </td>
@@ -566,7 +581,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                   </>
                                 ) : (
                                   <tr className="border-b-[1.5px] border-black">
-                                    <td className="p-1.5 text-left whitespace-nowrap">ADD IGST: {totals.igstRate}%</td>
+                                    <td className="p-1.5 text-left whitespace-nowrap border-r-[1.5px] border-black">ADD IGST: {totals.igstRate}%</td>
                                     <td className="p-1.5 text-right font-medium font-mono whitespace-nowrap">
                                       {totals.igstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                     </td>
@@ -574,14 +589,14 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 )}
                                 {fullData.round_off !== 0 && fullData.round_off != null && (
                                   <tr className="border-b-[1.5px] border-black">
-                                    <td className="p-1.5 text-left whitespace-nowrap">ROUND OFF</td>
+                                    <td className="p-1.5 text-left whitespace-nowrap border-r-[1.5px] border-black">ROUND OFF</td>
                                     <td className="p-1.5 text-right font-medium font-mono whitespace-nowrap">
                                       {fullData.round_off > 0 ? '+' : ''}{Number(fullData.round_off).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                     </td>
                                   </tr>
                                 )}
                                 <tr className="bg-slate-50 font-black text-[11.5px]">
-                                  <td className="p-1.5 text-left whitespace-nowrap">TOTAL AMOUNT AFTER TAX:</td>
+                                  <td className="p-1.5 text-left whitespace-nowrap border-r-[1.5px] border-black">TOTAL AMOUNT AFTER TAX:</td>
                                   <td className="p-1.5 text-right font-mono whitespace-nowrap">
                                     {totals.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                   </td>
