@@ -72,13 +72,13 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
               setActiveTab('create');
               if (isMobile && onClose) onClose();
             }}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer active:scale-[0.99] group"
+            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold bg-[#0969da] hover:bg-[#085ac5] dark:bg-[#1f6feb] dark:hover:bg-[#388bfd] text-white shadow-none transition-all duration-150 cursor-pointer active:scale-[0.99] group"
           >
             <div className="flex items-center gap-2">
               <Plus className="w-3.5 h-3.5 transition-transform group-hover:rotate-90 duration-200" />
               <span>New Invoice</span>
             </div>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-800/60 text-indigo-200 border border-indigo-500/30">
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-black/20 text-white/90 border border-white/20">
               ALT + 2
             </span>
           </button>
@@ -104,20 +104,20 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer group ${
                       isActive
-                        ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200/80 dark:border-indigo-800/60 shadow-2xs'
+                        ? 'bg-slate-200/80 dark:bg-[#21262d] text-slate-900 dark:text-slate-100 font-semibold border border-slate-300 dark:border-[#30363d]'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/80 dark:hover:bg-slate-900/60'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'}`} />
+                      <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'}`} />
                       <span>{item.label}</span>
                     </div>
                     {item.badge ? (
-                      <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                      <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-slate-200 dark:bg-[#30363d] text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-[#484f58]">
                         {item.badge}
                       </span>
                     ) : isActive ? (
-                      <ChevronRight className="w-3.5 h-3.5 text-indigo-500/60" />
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                     ) : null}
                   </button>
                 );
@@ -143,15 +143,15 @@ export function Sidebar({ activeTab, setActiveTab, isMobile = false, onClose }) 
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer group ${
                       isActive
-                        ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200/80 dark:border-indigo-800/60 shadow-2xs'
+                        ? 'bg-slate-200/80 dark:bg-[#21262d] text-slate-900 dark:text-slate-100 font-semibold border border-slate-300 dark:border-[#30363d]'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/80 dark:hover:bg-slate-900/60'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'}`} />
+                      <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'}`} />
                       <span>{item.label}</span>
                     </div>
-                    {isActive && <ChevronRight className="w-3.5 h-3.5 text-indigo-500/60" />}
+                    {isActive && <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />}
                   </button>
                 );
               })}
