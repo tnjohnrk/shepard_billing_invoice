@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Package, Search, Plus, Edit2, Trash2, Hash, IndianRupee } from 'lucide-react';
+import { Package, Search, Plus, Edit2, Trash2 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { Dialog } from '../common/Dialog';
@@ -7,7 +7,6 @@ import { Table } from '../common/Table';
 import { EmptyState } from '../common/EmptyState';
 import { Loading } from '../common/Loading';
 import { ipcClient } from '../../services/ipcClient';
-import { FEATURE_FLAGS } from '../../../shared/constants/featureFlags';
 
 export function ProductDetailsTab({ toast }) {
   const [products, setProducts] = useState([]);

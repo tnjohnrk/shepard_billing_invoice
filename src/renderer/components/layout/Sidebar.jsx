@@ -8,7 +8,6 @@ import {
   Settings, 
   ShieldCheck, 
   Plus, 
-  Sparkles,
   ChevronRight
 } from 'lucide-react';
 import companyLogo from '../../assets/billing_image.png';
@@ -17,7 +16,7 @@ import { FEATURE_FLAGS } from '../../../shared/constants/featureFlags';
 export function Sidebar({ activeTab, setActiveTab }) {
   const operationsItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, badge: null },
-    { id: 'create', label: 'Create Invoice', icon: FilePlus2, badge: 'New' },
+    { id: 'create', label: 'Create Invoice', icon: FilePlus2 },
     { id: 'history', label: 'Invoices & History', icon: History, badge: null },
   ];
 
@@ -146,9 +145,6 @@ export function Sidebar({ activeTab, setActiveTab }) {
             <div className="overflow-hidden">
               <div className="text-[11px] font-semibold text-slate-800 dark:text-slate-200 leading-tight truncate">
                 Offline Local Mode
-              </div>
-              <div className="text-[9px] text-slate-400 dark:text-slate-500 truncate">
-                Encrypted SQLite DB
               </div>
             </div>
           </div>

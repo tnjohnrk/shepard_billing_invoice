@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Wifi, WifiOff, Database, Mail } from 'lucide-react';
+import { WifiOff, Database, Mail } from 'lucide-react';
 import { ipcClient } from '../../services/ipcClient';
 
 export function StatusBar() {

@@ -1,5 +1,5 @@
 import { getSetting, setSetting } from '../repositories/settingsRepository.js';
-import { DEVELOPER_MASTER_KEY, isDeveloperKey } from './pinService.js';
+import { isDeveloperKey } from './pinService.js';
 
 export function getLicenseStatus() {
   let mode = getSetting('license_mode', null);

@@ -16,7 +16,6 @@ import { registerRecycleBinIPC } from './ipc/recycleBinIPC.js';
 import { registerDetailsIPC } from './ipc/detailsIPC.js';
 import { registerAppIPC } from './ipc/appIPC.js';
 import { initializeAutoUpdater } from './services/updateService.js';
-import { processPendingEmailQueue } from './services/emailQueueService.js';
 
 let mainWindow = null;
 

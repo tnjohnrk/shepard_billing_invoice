@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '../components/layout/PageContainer';
-import { Button } from '../components/common/Button';
 import { AppearanceSettings } from '../components/settings/AppearanceSettings';
 import { BackupRestore } from '../components/settings/BackupRestore';
 import { RecycleBin } from '../components/settings/RecycleBin';

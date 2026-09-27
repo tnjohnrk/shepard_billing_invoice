@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from '../common/Button';
 
 export function ReportSelector({ activeType, onSelectType }) {
   const types = [

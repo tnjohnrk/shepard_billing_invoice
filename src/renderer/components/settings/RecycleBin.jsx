@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, RotateCcw, AlertTriangle, Search, RefreshCw, Trash } from 'lucide-react';
+import { Trash2, RotateCcw, Search, RefreshCw, Trash } from 'lucide-react';
 import { Table } from '../common/Table';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';

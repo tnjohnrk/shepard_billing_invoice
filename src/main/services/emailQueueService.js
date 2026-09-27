@@ -1,7 +1,6 @@
 import fs from 'fs';
 import { 
   enqueueEmail, 
-  getPendingEmails,
   getPendingEmailsBatch,
   updateEmailQueueStatus, 
   getEmailQueueSummary as repoGetSummary,

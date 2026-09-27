@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Table } from '../common/Table';
-import { Search, Filter, X, ArrowUpRight, FileText } from 'lucide-react';
+import { Search, X, ArrowUpRight, FileText } from 'lucide-react';
 
 export function RecentInvoices({ invoices = [], onViewInvoice }) {
   const [docTypeFilter, setDocTypeFilter] = useState('ALL'); // 'ALL' | 'TAX' | 'PROFORMA'

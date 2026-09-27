@@ -1,5 +1,4 @@
 import React from 'react';
-import { ShieldAlert, Building, CheckCircle2 } from 'lucide-react';
 import { COMPANY_CONFIG } from '../../../main/config/companyConfig';
 
 export function About() {

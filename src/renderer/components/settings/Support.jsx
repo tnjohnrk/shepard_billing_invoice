@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Globe, ExternalLink, Copy, Check, MessageSquare, Heart, ShieldCheck, Code2 } from 'lucide-react';
+import { Mail, Globe, ExternalLink, Copy, Check, Heart, ShieldCheck, Code2 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { ipcClient } from '../../services/ipcClient';
 

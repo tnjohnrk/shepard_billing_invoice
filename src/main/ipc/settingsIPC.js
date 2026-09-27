@@ -3,7 +3,6 @@ import { fetchAppSettings, saveAppSetting } from '../services/settingsService.js
 import { isPinProtected, verifyPin, setSecurityPin, disableSecurityPin } from '../services/pinService.js';
 import { getLicenseStatus, setLicenseMode } from '../services/licenseService.js';
 import { getCompanyProfile } from '../services/companyService.js';
-import { findCustomers, saveCustomerInfo } from '../services/customerService.js';
 import { processPendingEmailQueue, getEmailQueueStatus, clearSentEmailQueue } from '../services/emailQueueService.js';
 import { testSmtpConnection, translateSmtpError } from '../services/emailService.js';
 import { getActivationDetails, activateProductKey, createInitialPassword } from '../services/activationService.js';

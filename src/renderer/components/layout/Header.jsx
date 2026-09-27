@@ -1,5 +1,5 @@
 import React from 'react';
-import { Building2, Lock, Sun, Moon, Search, Command } from 'lucide-react';
+import { Building2, Lock, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { COMPANY_CONFIG } from '../../../main/config/companyConfig';
 

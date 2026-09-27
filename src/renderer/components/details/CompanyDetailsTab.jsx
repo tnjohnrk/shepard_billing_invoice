@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Building2, Search, Plus, Edit2, Trash2, MapPin, Hash, Sparkles } from 'lucide-react';
+import { Building2, Search, Plus, Edit2, Trash2 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { Select } from '../common/Select';

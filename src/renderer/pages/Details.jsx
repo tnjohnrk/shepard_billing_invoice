@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PageContainer } from '../components/layout/PageContainer';
 import { CompanyDetailsTab } from '../components/details/CompanyDetailsTab';
 import { ProductDetailsTab } from '../components/details/ProductDetailsTab';
-import { Building2, Package, Sparkles } from 'lucide-react';
+import { Building2, Package } from 'lucide-react';
 
 export function Details({ toast }) {
   const [activeSubTab, setActiveSubTab] = useState('companies'); // 'companies' | 'products'
