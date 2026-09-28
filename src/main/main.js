@@ -28,6 +28,13 @@ function createMainWindow() {
   ];
   const iconPath = possibleIconPaths.find(p => fs.existsSync(p));
   const appIcon = iconPath ? iconPath : undefined;
+  const preloadPathCandidates = [
+    path.join(__dirname, 'preload.cjs'),
+    path.join(app.getAppPath(), 'dist/main/preload.cjs'),
+    path.join(__dirname, 'dist/main/preload.cjs'),
+    path.join(__dirname, '../../dist/main/preload.cjs')
+  ];
+  const preloadPath = preloadPathCandidates.find(p => fs.existsSync(p)) || path.join(app.getAppPath(), 'dist/main/preload.cjs');
 
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -37,13 +44,14 @@ function createMainWindow() {
     title: 'Shepherd Enterprises Private Limited - Billing System',
     icon: appIcon,
     show: false,
+    backgroundColor: '#0f172a',
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.cjs'),
+      preload: preloadPath,
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
-      devTools: !app.isPackaged
+      devTools: true
     }
   });
 
@@ -63,17 +71,25 @@ function createMainWindow() {
     return { action: 'allow' };
   });
 
-  const distPath = path.join(__dirname, '../../dist/renderer/index.html');
-  const hasDist = fs.existsSync(distPath);
-  const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
+  const distPathCandidates = [
+    path.join(app.getAppPath(), 'dist/renderer/index.html'),
+    path.join(__dirname, '../renderer/index.html'),
+    path.join(__dirname, '../../dist/renderer/index.html'),
+    path.join(__dirname, 'renderer/index.html')
+  ];
+  const distPath = distPathCandidates.find(p => fs.existsSync(p)) || path.join(app.getAppPath(), 'dist/renderer/index.html');
+  const isDev = process.env.NODE_ENV === 'development' || (!app.isPackaged && !process.env.TEST_PROD);
   const devServerUrl = process.env.VITE_DEV_SERVER_URL || 'http://localhost:5173';
 
-  if (!isDev) {
-    mainWindow.loadFile(distPath);
+  if (!isDev || app.isPackaged) {
+    console.log(`[Electron] Loading production index: ${distPath}`);
+    mainWindow.loadFile(distPath).catch((err) => {
+      console.error(`[Electron] Failed to loadFile (${distPath}):`, err);
+    });
   } else {
     mainWindow.loadURL(devServerUrl).catch((err) => {
       console.warn(`[Electron] Could not connect to dev server at ${devServerUrl} (${err.code || err.message}).`);
-      if (hasDist) {
+      if (fs.existsSync(distPath)) {
         console.log(`[Electron] Falling back to built bundle at: ${distPath}`);
         mainWindow.loadFile(distPath);
       } else {
@@ -156,15 +172,11 @@ function createMainWindow() {
 
   mainWindow.webContents.on('before-input-event', (event, input) => {
     if ((input.control && input.shift && input.key.toLowerCase() === 'i') || input.key === 'F12') {
-      if (isDev) {
-        mainWindow.webContents.toggleDevTools();
-      }
+      mainWindow.webContents.toggleDevTools();
       event.preventDefault();
     }
     if ((input.control && input.key.toLowerCase() === 'r') || input.key === 'F5') {
-      if (isDev) {
-        mainWindow.reload();
-      }
+      mainWindow.reload();
       event.preventDefault();
     }
   });
@@ -172,6 +184,12 @@ function createMainWindow() {
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
+
+  setTimeout(() => {
+    if (mainWindow && !mainWindow.isVisible()) {
+      mainWindow.show();
+    }
+  }, 1000);
 
   mainWindow.on('closed', () => {
     mainWindow = null;
