@@ -226,29 +226,7 @@ export function Sidebar({
             </nav>
           </div>
         </div>
-
-        {/* Footer Offline & Security Badge */}
-        <div className={`border-t border-slate-200/80 dark:border-slate-800/80 bg-white/50 dark:bg-slate-900/50 ${isCollapsed ? 'p-2' : 'p-3'}`}>
-          <div 
-            className={`rounded-xl bg-slate-100/80 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center ${
-              isCollapsed 
-                ? 'w-11 h-10 mx-auto justify-center' 
-                : 'p-2.5 gap-2.5'
-            }`}
-            title={isCollapsed ? "Offline Local Mode" : undefined}
-          >
-            <div className="w-6 h-6 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center shrink-0 border border-emerald-500/20">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            </div>
-            {!isCollapsed && (
-              <div className="overflow-hidden">
-                <div className="text-[11px] font-semibold text-slate-800 dark:text-slate-200 leading-tight truncate">
-                  Offline Local Mode
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        
       </div>
     </aside>
   );
