@@ -75,5 +75,7 @@ describe('invoiceRenderer HTML generation', () => {
     expect(html).toContain('TOTAL AMOUNT IN WORDS:');
     expect(html).toContain('Five Hundred Sixty Six Rupees Only');
     expect(html).toContain('TOTAL AMOUNT AFTER TAX:');
+    expect(html).toContain('BANK NAME:');
+    expect(html).toContain('ACCOUNT NUMBER:');
   });
 });
