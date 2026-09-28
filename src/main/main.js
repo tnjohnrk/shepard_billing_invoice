@@ -36,7 +36,15 @@ function createMainWindow() {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: false
+      sandbox: false,
+      devTools: !app.isPackaged
+    }
+  });
+
+  // Security: Prevent unapproved window navigations
+  mainWindow.webContents.on('will-navigate', (event, navigationUrl) => {
+    if (!navigationUrl.startsWith('http://localhost') && !navigationUrl.startsWith('file://')) {
+      event.preventDefault();
     }
   });
 

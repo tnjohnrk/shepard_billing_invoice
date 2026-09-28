@@ -12,9 +12,15 @@ export function getDatabase(dbPathOverride = null) {
   const { databaseDir } = ensureDirectoriesExist();
   const dbPath = dbPathOverride || path.join(databaseDir, 'invoices.db');
 
-  const db = new Database(dbPath);
+  const db = new Database(dbPath, {
+    timeout: 5000
+  });
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
+  db.pragma('synchronous = NORMAL');
+  db.pragma('busy_timeout = 5000');
+  db.pragma('temp_store = MEMORY');
+  db.pragma('cache_size = -64000');
 
   if (!dbPathOverride) {
     dbInstance = db;

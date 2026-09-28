@@ -1,15 +1,66 @@
 import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
 import { getSetting, setSetting } from '../repositories/settingsRepository.js';
 import { PRODUCT_KEY_CONFIG } from '../../shared/constants/security.js';
 import { isPinProtected, hashPin } from './pinService.js';
+import { ensureDirectoriesExist } from '../utils/filesystem.js';
+
+const ACTIVATION_SECRET = 'V2C_SHEPHERD_SEC_KEY_9921_ENC';
+
+function getActivationFilePath() {
+  const { settingsDir } = ensureDirectoriesExist();
+  return path.join(settingsDir, 'activation.dat');
+}
 
 export function hashString(str) {
   return crypto.createHash('sha256').update(String(str || '').trim()).digest('hex').toLowerCase();
 }
 
+function encryptToken(payload) {
+  const iv = crypto.randomBytes(16);
+  const key = crypto.createHash('sha256').update(ACTIVATION_SECRET).digest();
+  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+  let encrypted = cipher.update(JSON.stringify(payload), 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return `${iv.toString('hex')}:${encrypted}`;
+}
+
+function decryptToken(tokenStr) {
+  try {
+    const [ivHex, encHex] = tokenStr.split(':');
+    if (!ivHex || !encHex) return null;
+    const iv = Buffer.from(ivHex, 'hex');
+    const key = crypto.createHash('sha256').update(ACTIVATION_SECRET).digest();
+    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+    let decrypted = decipher.update(encHex, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return JSON.parse(decrypted);
+  } catch {
+    return null;
+  }
+}
+
 export function isProductActivated() {
-  const isActivated = getSetting('product_key_activated', 'false');
-  return isActivated === 'true' || isActivated === true;
+  const activationFile = getActivationFilePath();
+  if (!fs.existsSync(activationFile)) {
+    return false;
+  }
+
+  try {
+    const rawContent = fs.readFileSync(activationFile, 'utf8').trim();
+    const token = decryptToken(rawContent);
+    if (!token || !token.keyHash || !token.activatedAt) {
+      return false;
+    }
+    const isHashMatch = PRODUCT_KEY_CONFIG.VALID_KEY_HASHES.map(h => h.toLowerCase()).includes(token.keyHash.toLowerCase());
+    if (!isHashMatch) {
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function getActivationDetails() {
@@ -39,10 +90,21 @@ export function activateProductKey(inputKey) {
     throw new Error('Invalid Product Key. Please contact the developer for installation activation.');
   }
 
-  // Persist product activation state in SQLite settings
+  const now = new Date().toISOString();
+
+  // 1. Save SQLite settings
   setSetting('product_key_activated', 'true');
-  setSetting('product_key_activated_at', new Date().toISOString());
+  setSetting('product_key_activated_at', now);
   setSetting('product_key_hash_used', keyHash);
+
+  // 2. Encrypt and save hardware/machine activation token to activation.dat
+  const activationFile = getActivationFilePath();
+  const encryptedPayload = encryptToken({
+    keyHash,
+    activatedAt: now,
+    status: 'ACTIVE'
+  });
+  fs.writeFileSync(activationFile, encryptedPayload, 'utf8');
 
   return {
     success: true,

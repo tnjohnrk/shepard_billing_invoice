@@ -4,3 +4,10 @@
   !define MUI_FINISHPAGE_TITLE "Installation Complete"
   !define MUI_FINISHPAGE_TEXT "Shepherd Enterprises Billing System has been successfully installed on your computer.\r\n\r\nPowered by Vibe2Code (vibe2codeteam@gmail.com | vibe2code.in)\r\n\r\nClick Finish to exit this wizard."
 !macroend
+
+!macro customUnInstall
+  Delete "$LOCALAPPDATA\ShepherdInvoice\settings\activation.dat"
+  Delete "$LOCALAPPDATA\ShepherdInvoice\settings\activation.lic"
+  Delete "$LOCALAPPDATA\ShepherdInvoice\.license_token"
+!macroend
+

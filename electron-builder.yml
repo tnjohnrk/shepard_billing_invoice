@@ -23,17 +23,17 @@ win:
     - target: portable
       arch:
         - x64
-  icon: src/renderer/assets/logo.png
+  icon: src/renderer/assets/billing_image.png
 
 nsis:
   oneClick: false
   perMachine: false
   allowElevation: true
   allowToChangeInstallationDirectory: true
-  installerSidebar: src/renderer/assets/v2c.jpeg
-  uninstallerSidebar: src/renderer/assets/v2c.jpeg
-  installerHeader: src/renderer/assets/v2c.jpeg
-  installerHeaderIcon: src/renderer/assets/logo.png
+  installerSidebar: src/renderer/assets/billing_image.png
+  uninstallerSidebar: src/renderer/assets/billing_image.png
+  installerHeader: src/renderer/assets/billing_image.png
+  installerHeaderIcon: src/renderer/assets/billing_image.png
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: Shepherd Invoice Billing
@@ -45,4 +45,3 @@ publish:
   provider: github
   owner: shepherd-enterprises
   repo: shepherd-invoice
-
