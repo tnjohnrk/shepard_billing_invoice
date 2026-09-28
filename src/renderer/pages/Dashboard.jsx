@@ -6,7 +6,7 @@ import { BillingAmountChart } from '../components/dashboard/BillingAmountChart';
 import { RecentInvoices } from '../components/dashboard/RecentInvoices';
 import { Loading } from '../components/common/Loading';
 import { ipcClient } from '../services/ipcClient';
-import { CalendarDays, Filter, Clock } from 'lucide-react';
+import { CalendarDays, Filter, Clock, Receipt, FileText, IndianRupee, Activity } from 'lucide-react';
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const FULL_MONTH_NAMES = [
@@ -457,25 +457,25 @@ export function Dashboard({ onViewInvoice, onNavigateCreate, licenseStatus: prop
           title="Tax Invoices"
           value={stats.totalTaxInvoices}
           subtitle={`Issued in ${periodLabel}`}
-          badge={`${stats.totalAllTaxInvoices} All-Time`}
+          icon={Receipt}
         />
         <StatCard
           title="Proformas"
           value={stats.totalProformas}
           subtitle={`Estimates in ${periodLabel}`}
-          badge={`${stats.totalAllProformas} All-Time`}
+          icon={FileText}
         />
         <StatCard
           title="Billing Revenue"
           value={`₹${Math.round(stats.billingRevenue).toLocaleString('en-IN')}`}
-          subtitle={`${stats.totalTaxInvoices} invoices billed`}
-          badge={periodLabel}
+          subtitle={`${stats.totalTaxInvoices} invoice${stats.totalTaxInvoices !== 1 ? 's' : ''} billed`}
+          icon={IndianRupee}
         />
         <StatCard
           title="Total Activity"
           value={`${stats.totalActivityDocs} Docs`}
           subtitle={`Avg: ₹${stats.avgInvoiceValue.toLocaleString('en-IN')}/inv`}
-          badge={periodLabel}
+          icon={Activity}
         />
       </div>
 
