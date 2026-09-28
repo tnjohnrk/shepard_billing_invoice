@@ -44,5 +44,6 @@ export const invoiceSchema = z.object({
   grand_total: z.number().min(0),
   amount_in_words: z.string(),
 
-  notes: z.string().optional().nullable()
+  notes: z.string().max(65, 'Notes cannot exceed 65 characters').optional().nullable()
 });
+
