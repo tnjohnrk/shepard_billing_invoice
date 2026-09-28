@@ -55,7 +55,8 @@ export function renderInvoiceHtml(invoiceData) {
 
   // Build Tax Rows HTML
   let taxRowsHtml = '';
-  if (invoiceData.cgst_amount > 0 || invoiceData.sgst_amount > 0) {
+  const isIntraState = (invoiceData.cgst_amount > 0 || invoiceData.sgst_amount > 0) || !invoiceData.igst_amount || Number(invoiceData.igst_amount) === 0;
+  if (isIntraState) {
     taxRowsHtml += `
       <tr>
         <td class="tax-title-col">ADD CGST: ${invoiceData.cgst_rate || 9}%</td>
@@ -66,7 +67,7 @@ export function renderInvoiceHtml(invoiceData) {
         <td class="tax-num-col">${formatCurrency(invoiceData.sgst_amount)}</td>
       </tr>
     `;
-  } else if (invoiceData.igst_amount > 0) {
+  } else {
     taxRowsHtml += `
       <tr>
         <td class="tax-title-col">ADD IGST: ${invoiceData.igst_rate || 18}%</td>
@@ -302,7 +303,7 @@ export function renderInvoiceHtml(invoiceData) {
         <td class="bank-details-cell" rowspan="__ROWSPAN__">
           <div class="bank-heading font-bold">BANK DETAILS</div>
           <div class="bank-item"><span class="font-bold">BANK NAME:</span> ${escapeHtml(COMPANY_CONFIG.bank_name)}: ${escapeHtml(COMPANY_CONFIG.account_number)}</div>
-          <div class="bank-item"><span class="font-bold">BRANCH NAME:</span> ${escapeHtml(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony')}</div>
+          <div class="bank-item"><span class="font-bold">BRANCH NAME:</span> ${escapeHtml((COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase())}</div>
           <div class="bank-item"><span class="font-bold">IFSC CODE:</span> ${escapeHtml(COMPANY_CONFIG.ifsc_code)}</div>
         </td>
       `;
