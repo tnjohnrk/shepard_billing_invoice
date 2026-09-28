@@ -324,6 +324,9 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
       if (step === 5) {
         e.preventDefault();
         const currentItems = formData.items || [];
+        if (FEATURE_FLAGS.SINGLE_PAGE_INVOICE_LOCKED && currentItems.length >= FEATURE_FLAGS.MAX_ITEMS_PER_INVOICE) {
+          return;
+        }
         handleFieldChange('items', [
           ...currentItems,
           { description: '', hsn_sac: '', quantity: 1, rate: 0 }
