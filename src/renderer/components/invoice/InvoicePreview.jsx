@@ -462,14 +462,14 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                   )}
 
                   {/* 4. Line Items Table */}
-                  <table className="w-full flex-1 border-collapse border-b-2 border-black text-left text-[11px] flex flex-col" style={{ tableLayout: 'fixed' }}>
-                    <thead className="w-full">
-                      <tr className="bg-white border-b-2 border-black font-bold uppercase text-[10.5px] flex w-full">
-                        <th className="py-2 px-3 border-r-[1.5px] border-black text-left" style={{ width: '54%' }}>DESCRIPTION</th>
-                        <th className="py-2 px-2.5 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>HSN</th>
-                        <th className="py-2 px-2.5 border-r-[1.5px] border-black text-center" style={{ width: '11%' }}>QTY.</th>
-                        <th className="py-2 px-2.5 border-r-[1.5px] border-black text-right" style={{ width: '12%' }}>RATE</th>
-                        <th className="py-2 px-2.5 text-right" style={{ width: '12%' }}>AMOUNT</th>
+                  <table className="items-table w-full flex-1 border-collapse border-b-2 border-black text-left text-[11px] flex flex-col" style={{ tableLayout: 'fixed', backgroundColor: '#ffffff', color: '#000000' }}>
+                    <thead className="w-full" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
+                      <tr className="items-head-row bg-white border-b-2 border-black font-bold uppercase text-[10.5px] flex w-full" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
+                        <th className="py-2 px-3 border-r-[1.5px] border-black text-left col-desc" style={{ width: '54%', backgroundColor: '#ffffff', color: '#000000' }}>DESCRIPTION</th>
+                        <th className="py-2 px-2.5 border-r-[1.5px] border-black text-center col-hsn" style={{ width: '11%', backgroundColor: '#ffffff', color: '#000000' }}>HSN</th>
+                        <th className="py-2 px-2.5 border-r-[1.5px] border-black text-center col-qty" style={{ width: '11%', backgroundColor: '#ffffff', color: '#000000' }}>QTY.</th>
+                        <th className="py-2 px-2.5 border-r-[1.5px] border-black text-right col-rate" style={{ width: '12%', backgroundColor: '#ffffff', color: '#000000' }}>RATE</th>
+                        <th className="py-2 px-2.5 text-right col-amount" style={{ width: '12%', backgroundColor: '#ffffff', color: '#000000' }}>AMOUNT</th>
                       </tr>
                     </thead>
                     <tbody className="w-full flex-1 flex flex-col divide-y-0">
