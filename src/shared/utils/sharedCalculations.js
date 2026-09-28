@@ -13,7 +13,9 @@ export function calculateLineAmount(quantity, rate) {
 }
 
 export function calculateSubtotal(items = []) {
-  const total = items.reduce((acc, item) => {
+  const safeItems = Array.isArray(items) ? items : [];
+  const total = safeItems.reduce((acc, item) => {
+    if (!item) return acc;
     const amount = item.amount !== undefined 
       ? parseFloat(item.amount) 
       : calculateLineAmount(item.quantity, item.rate);
@@ -28,9 +30,12 @@ export function calculateTax(subtotal, sellerStateCode, customerStateCode, taxRa
   const cCode = String(customerStateCode || '27').padStart(2, '0');
 
   const isIntraState = sCode === cCode;
+  const defaultRate = (taxRatePercent !== undefined && taxRatePercent !== null && !isNaN(parseFloat(taxRatePercent))) 
+    ? parseFloat(taxRatePercent) 
+    : 18;
 
   if (isIntraState) {
-    const defaultHalf = (parseFloat(taxRatePercent) || 18) / 2;
+    const defaultHalf = defaultRate / 2;
     const cgstRate = customCgstRate !== null && customCgstRate !== undefined && customCgstRate !== '' 
       ? parseFloat(customCgstRate) 
       : defaultHalf;
@@ -51,7 +56,6 @@ export function calculateTax(subtotal, sellerStateCode, customerStateCode, taxRa
       igstAmount: 0
     };
   } else {
-    const defaultRate = parseFloat(taxRatePercent) || 18;
     const igstRate = customIgstRate !== null && customIgstRate !== undefined && customIgstRate !== '' 
       ? parseFloat(customIgstRate) 
       : defaultRate;
@@ -113,9 +117,9 @@ function convertChunk(num) {
 
 export function numberToWordsIndian(amount) {
   const rounded = Math.round(parseFloat(amount) || 0);
-  if (rounded === 0) return 'Zero Rupees Only';
+  if (rounded <= 0 || isNaN(rounded)) return 'Zero Rupees Only';
 
-  let num = Math.abs(rounded);
+  let num = rounded;
   let words = '';
 
   const crore = Math.floor(num / 10000000);
