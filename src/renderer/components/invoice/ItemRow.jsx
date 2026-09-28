@@ -35,8 +35,9 @@ export function ItemRow({
           type="text"
           inputMode="numeric"
           pattern="[0-9]*"
+          maxLength={8}
           placeholder="HSN Code *"
-          title="HSN Code (Digits Only, Mandatory)"
+          title="HSN Code (Max 8 Digits, Mandatory)"
           className={`w-full bg-slate-50/70 dark:bg-slate-800/70 border rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-left placeholder-slate-400 focus:outline-none shadow-xs font-mono font-bold transition-colors ${
             !item.hsn_sac || !String(item.hsn_sac).trim()
               ? 'border-rose-400 dark:border-rose-600 bg-rose-50/40 dark:bg-rose-950/30 ring-1 ring-rose-500/20 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/40' 
@@ -44,7 +45,7 @@ export function ItemRow({
           }`}
           value={item.hsn_sac || ''}
           onChange={(e) => {
-            const onlyDigits = e.target.value.replace(/\D/g, '');
+            const onlyDigits = e.target.value.replace(/\D/g, '').slice(0, 8);
             onChange(index, 'hsn_sac', onlyDigits);
           }}
           onKeyDown={(e) => {

@@ -242,9 +242,13 @@ export function ProductDetailsTab({ toast }) {
                 <div>
                   <Input
                     label="HSN / SAC Code *"
-                    placeholder="e.g. 9983"
+                    placeholder="e.g. 9983 (max 8 digits)"
+                    maxLength={8}
                     value={form.hsn_sac}
-                    onChange={(e) => setForm(prev => ({ ...prev, hsn_sac: e.target.value }))}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, '').slice(0, 8);
+                      setForm(prev => ({ ...prev, hsn_sac: digits }));
+                    }}
                     error={errors.hsn_sac}
                     className="font-mono"
                   />
