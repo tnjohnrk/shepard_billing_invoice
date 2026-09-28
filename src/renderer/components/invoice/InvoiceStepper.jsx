@@ -7,7 +7,7 @@ export function InvoiceStepper({ currentStep, setStep, steps }) {
   const isLight = theme === 'light';
 
   return (
-    <nav aria-label="Invoice Creation Steps" className="w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-2 rounded-xl border border-slate-200/80 dark:border-slate-800 mb-4 select-none shadow-xs overflow-hidden">
+    <nav aria-label="Invoice Creation Steps" className="w-full bg-white/80 dark:bg-[#161b22] backdrop-blur-sm p-2 rounded-xl border border-slate-200/80 dark:border-[#30363d] mb-4 select-none shadow-xs overflow-hidden">
       <ol className="flex items-center justify-between overflow-x-auto gap-1 py-0.5 no-scrollbar">
         {steps.map((step, idx) => {
           const stepNum = idx + 1;
@@ -26,9 +26,9 @@ export function InvoiceStepper({ currentStep, setStep, steps }) {
                   isCurrent
                     ? 'bg-[#0969da] dark:bg-[#1f6feb] text-white shadow-xs'
                     : isCompleted
-                    ? 'bg-blue-50 dark:bg-blue-950/40 text-[#0969da] dark:text-[#388bfd] border border-blue-200/60 dark:border-blue-900/60 hover:bg-blue-100 dark:hover:bg-blue-900/40'
+                    ? 'bg-slate-100 dark:bg-[#21262d] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#30363d] hover:bg-slate-200 dark:hover:bg-[#30363d]'
                     : canNavigate
-                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    ? 'bg-slate-100 dark:bg-[#21262d] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#30363d] hover:bg-slate-200 dark:hover:bg-[#30363d]'
                     : 'bg-transparent text-slate-400 dark:text-slate-600 border border-transparent cursor-not-allowed'
                 }`}
               >
@@ -37,8 +37,8 @@ export function InvoiceStepper({ currentStep, setStep, steps }) {
                     isCurrent
                       ? 'bg-white text-[#0969da] dark:text-[#1f6feb] font-extrabold'
                       : isCompleted
-                      ? 'bg-[#0969da] dark:bg-[#1f6feb] text-white'
-                      : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                      ? 'bg-slate-900 dark:bg-[#30363d] text-white'
+                      : 'bg-slate-200 dark:bg-[#30363d] text-slate-600 dark:text-slate-400'
                   }`}
                 >
                   {isCompleted ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : stepNum}
@@ -51,8 +51,8 @@ export function InvoiceStepper({ currentStep, setStep, steps }) {
                   aria-hidden="true"
                   className={`w-3 h-[2px] hidden lg:block rounded-full ${
                     isCompleted
-                      ? 'bg-[#0969da] dark:bg-[#1f6feb]'
-                      : 'bg-slate-200 dark:bg-slate-800'
+                      ? 'bg-slate-400 dark:bg-[#30363d]'
+                      : 'bg-slate-200 dark:bg-[#21262d]'
                   }`}
                 />
               )}

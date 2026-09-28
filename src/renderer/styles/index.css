@@ -242,7 +242,7 @@ button:active:not(:disabled) {
   box-shadow: none !important;
 }
 
-/* Eliminate glowing semi-transparent badges and card highlights */
+/* Eliminate glowing semi-transparent badges, navy/blue tints and card highlights */
 .dark .bg-indigo-950\/30,
 .dark .bg-indigo-900\/60,
 .dark .bg-indigo-500\/10,
@@ -251,22 +251,37 @@ button:active:not(:disabled) {
 .dark .bg-sky-500\/20,
 .dark .bg-blue-500\/10,
 .dark .bg-blue-500\/20,
+.dark .bg-blue-950,
+.dark .bg-blue-950\/40,
+.dark .bg-blue-950\/60,
+.dark .bg-indigo-950,
 .dark .bg-emerald-500\/10,
 .dark .bg-amber-500\/10,
 .dark .bg-amber-500\/20,
-.dark .bg-rose-500\/10 {
-  background-color: #1c2128 !important;
+.dark .bg-rose-500\/10,
+.dark [class*="dark:bg-indigo-950"],
+.dark [class*="dark:bg-blue-950"],
+.dark [class*="dark:bg-cyan-950"] {
+  background-color: #21262d !important;
 }
 
 .dark .border-indigo-500,
 .dark .border-indigo-500\/20,
 .dark .border-indigo-500\/30,
 .dark .border-indigo-700,
+.dark .border-indigo-800,
+.dark .border-indigo-900,
 .dark .border-sky-500\/30,
 .dark .border-blue-500\/30,
+.dark .border-blue-800,
+.dark .border-blue-900,
+.dark .border-blue-900\/60,
 .dark .border-emerald-500\/30,
 .dark .border-amber-500\/20,
-.dark .border-rose-500\/20 {
+.dark .border-rose-500\/20,
+.dark [class*="dark:border-indigo-"],
+.dark [class*="dark:border-blue-9"],
+.dark [class*="dark:border-cyan-"] {
   border-color: #30363d !important;
 }
 
@@ -374,43 +389,80 @@ body:not(.invoice-preview-paper) .text-sky-600 {
   color: #58a6ff !important;
 }
 
-/* Layout & Backgrounds in Dark Mode */
+/* Layout & Backgrounds in Dark Mode (Pure Light-Black / Charcoal - Zero Blue Tint) */
 .dark .bg-slate-950,
 .dark .bg-slate-950\/90,
-.dark .bg-slate-950\/80 {
+.dark .bg-slate-950\/80,
+.dark [class*="dark:bg-slate-950"],
+.dark [class*="dark:bg-[#0d1117]"],
+.dark [class*="dark:bg-[#090d13]"] {
   background-color: #0d1117 !important;
 }
 
 .dark .bg-slate-900,
+.dark .bg-slate-900\/90,
 .dark .bg-slate-900\/80,
+.dark .bg-slate-900\/70,
 .dark .bg-slate-900\/60,
 .dark .bg-slate-900\/50,
 .dark .bg-white\/80,
-.dark .bg-white\/90 {
+.dark .bg-white\/90,
+.dark [class*="dark:bg-slate-900"],
+.dark [class*="dark:bg-[#161b22]"],
+.dark [class*="dark:bg-zinc-900"] {
   background-color: #161b22 !important;
 }
 
 .dark .bg-slate-800,
+.dark .bg-slate-800\/80,
+.dark .bg-slate-800\/70,
 .dark .bg-slate-800\/60,
+.dark .bg-slate-800\/50,
 .dark .bg-slate-800\/40,
 .dark .bg-slate-50\/50,
-.dark .bg-slate-50\/60 {
-  background-color: #161b22 !important;
+.dark .bg-slate-50\/60,
+.dark [class*="dark:bg-slate-800"],
+.dark [class*="dark:bg-[#21262d]"],
+.dark [class*="dark:bg-zinc-800"] {
+  background-color: #21262d !important;
 }
 
 .dark .hover\:bg-slate-800:hover,
 .dark .hover\:bg-slate-800\/60:hover,
-.dark .hover\:bg-slate-700\/60:hover {
+.dark .hover\:bg-slate-700\/60:hover,
+.dark [class*="dark:hover:bg-slate-800"]:hover,
+.dark [class*="dark:hover:bg-slate-700"]:hover,
+.dark [class*="dark:hover:bg-[#21262d]"]:hover {
+  background-color: #282e38 !important;
+}
+
+/* Table Headers & Rows in Dark Mode (Light-Black / Matte Charcoal) */
+.dark table thead tr:not(.items-head-row),
+.dark table thead th:not([class*="col-"]),
+.dark .dark\:bg-slate-800\/60 {
+  background-color: #21262d !important;
+  border-color: #30363d !important;
+  color: #8b949e !important;
+}
+
+.dark table:not([class*="invoice-preview-paper"] table) tbody tr:hover {
   background-color: #21262d !important;
 }
 
-/* Borders in Dark Mode (Soft, relaxed border without eye clash) */
+/* Borders in Dark Mode (Soft, neutral border without blue tint) */
 .dark .border-slate-800,
+.dark .border-slate-800\/90,
 .dark .border-slate-800\/80,
+.dark .border-slate-800\/60,
 .dark .border-slate-700,
+.dark .border-slate-700\/80,
 .dark .border-slate-700\/60,
 .dark .border-slate-200\/80,
-.dark .border-slate-300 {
+.dark .border-slate-300,
+.dark [class*="dark:border-slate-800"],
+.dark [class*="dark:border-slate-700"],
+.dark [class*="dark:border-slate-600"],
+.dark [class*="dark:border-[#30363d]"] {
   border-color: #30363d !important;
 }
 

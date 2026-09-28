@@ -17,7 +17,7 @@ export function BillingAmountChart({ data = [], title = "Billing Revenue Trend (
   };
 
   return (
-    <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800/90 shadow-2xs flex flex-col justify-between">
+    <div className="p-4 bg-white dark:bg-[#161b22] rounded-xl border border-slate-200 dark:border-[#30363d] shadow-xs flex flex-col justify-between">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
         <div>
           <div className="flex items-center gap-1.5">
@@ -26,7 +26,7 @@ export function BillingAmountChart({ data = [], title = "Billing Revenue Trend (
           </div>
           {subtitle && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">{subtitle}</p>}
         </div>
-        <div className="flex items-center gap-1.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200/80 dark:border-emerald-800/60 self-start sm:self-auto">
+        <div className="flex items-center gap-1.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200/80 dark:border-emerald-800/40 self-start sm:self-auto">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
           <span>Billed Revenue</span>
         </div>
@@ -41,20 +41,20 @@ export function BillingAmountChart({ data = [], title = "Billing Revenue Trend (
                 <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke={isLight ? '#f1f5f9' : '#1e293b'} vertical={false} />
-            <XAxis dataKey="month" stroke={isLight ? '#94a3b8' : '#64748b'} fontSize={10} tickLine={false} minTickGap={16} />
+            <CartesianGrid strokeDasharray="3 3" stroke={isLight ? '#f1f5f9' : '#21262d'} vertical={false} />
+            <XAxis dataKey="month" stroke={isLight ? '#94a3b8' : '#6e7681'} fontSize={10} tickLine={false} minTickGap={16} />
             <YAxis 
-              stroke={isLight ? '#94a3b8' : '#64748b'} 
+              stroke={isLight ? '#94a3b8' : '#6e7681'} 
               fontSize={10} 
               tickLine={false}
               tickFormatter={formatYTick} 
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: isLight ? '#ffffff' : '#0f172a',
-                borderColor: isLight ? '#e2e8f0' : '#1e293b',
+                backgroundColor: isLight ? '#ffffff' : '#161b22',
+                borderColor: isLight ? '#e2e8f0' : '#30363d',
                 borderRadius: '8px',
-                color: isLight ? '#0f172a' : '#f8fafc',
+                color: isLight ? '#0f172a' : '#f0f6fc',
                 fontSize: '11px',
                 boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.08)'
               }}
