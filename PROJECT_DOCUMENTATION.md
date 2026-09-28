@@ -1,197 +1,192 @@
 # Shepherd Enterprises Billing System — Developer Onboarding & Architecture Guide
 
-Welcome to the **Shepherd Enterprises Private Limited Billing System** codebase! This comprehensive documentation is designed so that any new engineer can instantly understand the project's purpose, design principles, full directory and file structure, business workflows, and step-by-step instructions for development and maintenance.
+Welcome to the **Shepherd Enterprises Private Limited Billing System** codebase. This documentation serves as the single source of truth for software engineers, architects, and maintainers. It covers the system's architecture, file structure, domain business logic, licensing engine, security protocols, database schemas, automated testing, and developer workflows.
 
 ---
 
 ## Table of Contents
 1. [Project Overview & Core Objective](#1-project-overview--core-objective)
 2. [Technology Stack & Core Decisions](#2-technology-stack--core-decisions)
-3. [System Architecture & Data Flow](#3-system-architecture--data-flow)
-4. [File-by-File Catalog (Purpose & Usage)](#4-file-by-file-catalog-purpose--usage)
-   - [Root Configuration Files](#root-configuration-files)
-   - [Documentation & Testing](#documentation--testing)
+3. [System Architecture & Security Model](#3-system-architecture--security-model)
+4. [Complete File-by-File Catalog](#4-complete-file-by-file-catalog)
+   - [Root Configuration & Build Scripts](#root-configuration--build-scripts)
    - [Main Process (`src/main`)](#main-process-srcmain)
    - [Shared Layer (`src/shared`)](#shared-layer-srcshared)
    - [Renderer Process (`src/renderer`)](#renderer-process-srcrenderer)
+   - [Automated Test Suite (`tests/`)](#automated-test-suite-tests)
 5. [Key Business Logic & Core Workflows](#5-key-business-logic--core-workflows)
-   - [Invoice Generation Wizard](#invoice-generation-wizard)
-   - [GST Calculation & Tax Splitting](#gst-calculation--tax-splitting)
-   - [Locked A4 HTML/CSS Printing & PDF Generation](#locked-a4-htmlcss-printing--pdf-generation)
+   - [Invoice & Proforma 8-Step Wizard](#invoice--proforma-8-step-wizard)
+   - [Indian GST Calculation & Tax Engine](#indian-gst-calculation--tax-engine)
+   - [Licensing, Trial Management & Machine Lock](#licensing-trial-management--machine-lock)
+   - [4-Digit Security PIN & Developer Emergency Access](#4-digit-security-pin--developer-emergency-access)
+   - [Locked A4 Print & Vector PDF Engine](#locked-a4-print--vector-pdf-engine)
    - [Offline-First Email Backup Queue](#offline-first-email-backup-queue)
-   - [Security PIN Authorization](#security-pin-authorization)
-6. [Developer Onboarding & How-To Guide](#6-developer-onboarding--how-to-guide)
-   - [Prerequisites & Local Setup](#prerequisites--local-setup)
+   - [Database Management, Migrations & Safe Restores](#database-management-migrations--safe-restores)
+6. [Testing & Quality Assurance](#6-testing--quality-assurance)
+7. [Build, Packaging & Windows Deployment](#7-build-packaging--windows-deployment)
+8. [Developer Onboarding & Step-by-Step Recipes](#8-developer-onboarding--step-by-step-recipes)
+   - [Prerequisites & Local Environment Setup](#prerequisites--local-environment-setup)
    - [Common Developer Recipes](#common-developer-recipes)
-   - [Troubleshooting & Native Module Notes](#troubleshooting--native-module-notes)
+   - [Troubleshooting & Windows Native Modules](#troubleshooting--windows-native-modules)
 
 ---
 
 ## 1. Project Overview & Core Objective
 
 ### Primary Objective
-The **Shepherd Enterprises Billing System** is an **offline-first Windows desktop application** built for **Shepherd Enterprises Private Limited** (an industrial supply and service enterprise in Thane, Maharashtra). Its primary goal is to generate, print, store, and manage **GST-compliant Tax Invoices** and **Proforma Invoices (Quotations)** reliably without needing a continuous internet connection.
+The **Shepherd Enterprises Billing System** is an **offline-first Windows desktop application** built for **Shepherd Enterprises Private Limited** (an industrial supply and service enterprise located in Poonamallee / Tiruvallur, Tamil Nadu / Thane, Maharashtra). Its primary purpose is to generate, print, store, and manage **GST-compliant Tax Invoices** and **Proforma Invoices (Quotations)** reliably with zero cloud latency and complete offline resilience.
 
 ### Core Problems Solved
-1. **Audit & Compliance Safety**: Uses a developer-locked, pixel-perfect A4 invoice template that prevents unauthorized modifications to company information (GSTIN, bank details, legal declarations).
-2. **Offline Independence**: All records (customers, invoices, items, settings) are persisted locally in a high-performance SQLite database on the machine.
-3. **Automated Redundancy**: Every time an invoice is finalized, a backup zip archive is created and a PDF copy is queued to be emailed to management (`tnjohnrk@gmail.com`). If internet is unavailable, an automatic retry queue handles delivery when connection returns.
-4. **GST Accuracy**: Calculates Indian GST splits based on buyer state code (Intra-state: CGST + SGST vs. Inter-state: IGST).
-5. **Role & PIN Protection**: Sensitive actions (viewing financial reports, database reset, restoring backups) are protected by a 4-digit SHA-256 hashed PIN.
+1. **Audit & Regulatory Compliance**: Enforces a developer-locked, pixel-perfect A4 invoice template that prevents unauthorized changes to legal declarations, GSTIN numbers, and bank settlement details.
+2. **Offline Independence**: All records (customers, invoices, products, quotes, settings, recycle bin) reside in a local SQLite database with Write-Ahead Logging (WAL).
+3. **Automated Redundancy & Disaster Recovery**: Finalizing any invoice automatically generates a timestamped `.zip` database snapshot and queues an email containing the PDF and database backup to management (`tnjohnrk@gmail.com`).
+4. **GST Accuracy**: Automatically computes Intra-state (CGST 50% + SGST 50%) versus Inter-state (IGST 100%) splits based on buyer state code comparison with supplier state.
+5. **Role & Hardware Security**: Features machine-locked licensing (SHA-256 Machine ID), 30-day trial modes, 4-digit PIN access control, and a developer master recovery console.
 
 ---
 
 ## 2. Technology Stack & Core Decisions
 
-| Technology | Role | Why It Was Chosen |
-| :--- | :--- | :--- |
-| **Electron** (v34) | Desktop Container | Provides native OS integration (silent printing, A4 PDF generation via Chromium, local file system, offline capability) on Windows. |
-| **Node.js** | Backend Runtime | Powers background services, SQLite transactions, ZIP archiving, and SMTP email delivery. |
-| **SQLite (`better-sqlite3`)** | Local Database | Fast synchronous SQLite driver for Node. Supports WAL (Write-Ahead Logging) and zero-network overhead. |
-| **React** (v19) | User Interface | Declarative UI state management for multi-step wizards, interactive tables, charts, and modal dialogs. |
-| **Vite** (v6) | Frontend Bundler | Fast Hot Module Replacement (HMR) during development and optimized frontend bundling. |
-| **Tailwind CSS** (v4) | Styling & Design System | Utility-first CSS configured with a sleek dark slate & indigo theme matching modern desktop productivity tools. |
-| **Lucide React** | Iconography | Consistent, lightweight SVG icon set without emojis. |
-| **Recharts** | Analytics & Graphs | Declarative SVG charting for revenue trends, monthly sales, and invoice activity. |
-| **ExcelJS** | Data Export | Formats and exports financial reports and invoice summaries directly into `.xlsx` spreadsheets. |
-| **Nodemailer** | Backup Emailing | Dispatches backup ZIP archives and PDF invoices via SMTP. |
-| **Adm-Zip** | Backup Compression | Compresses and extracts database backups without external system dependencies. |
-| **Zod** | Validation | Runtime schema validation for buyer details, invoice items, and tax numbers. |
-| **Vitest** | Unit & Integration Testing | Fast test runner for GST calculation logic and database integration tests. |
+| Layer / Library | Technology | Version | Purpose & Architectural Decision |
+| :--- | :--- | :--- | :--- |
+| **Desktop Shell** | Electron | `^34.x` | Native OS integration on Windows: silent physical printing, Chromium vector PDF rendering, local filesystem access, and process isolation. |
+| **Backend Runtime** | Node.js | `^20.x` | Coordinates background workers, native database connections, cryptographic hashing, and SMTP network dispatch. |
+| **Database Engine** | SQLite (`better-sqlite3`) | `^11.x` | High-performance synchronous SQLite driver with WAL mode enabled. Zero-network latency and ACID compliance. |
+| **Frontend Framework** | React | `^19.x` | Declarative UI state management for multi-step invoice generation, live calculations, charts, and modal dialogs. |
+| **Frontend Bundler** | Vite | `^6.x` | Rapid Hot Module Replacement (HMR) in development and optimized production asset compilation. |
+| **Styling System** | Tailwind CSS | `^4.x` | Modern, responsive dark-slate design system engineered specifically for desktop productivity applications. |
+| **Iconography** | Lucide React | `^1.x` | Clean, lightweight SVG icon system across all UI views. |
+| **Data Analytics** | Recharts | `^2.x` | Declarative SVG charting for monthly revenue trajectories and invoice volume trends. |
+| **Excel Export** | ExcelJS | `^4.x` | Generates formatted, multi-column `.xlsx` audit reports directly from invoice queries. |
+| **Email Delivery** | Nodemailer | `^6.x` | Asynchronous SMTP delivery for offline-queued PDF attachments and database backup archives. |
+| **Archive Utilities** | Adm-Zip | `^0.5.x` | In-memory and file-based `.zip` compression for automated and manual database snapshots. |
+| **Data Validation** | Zod | `^3.x` | Strict runtime schema validation for buyer records, line items, tax numbers, and invoice payloads. |
+| **Testing Suite** | Vitest | `^3.x` | Fast unit and integration testing framework executing 64 automated test assertions. |
 
 ---
 
-## 3. System Architecture & Data Flow
+## 3. System Architecture & Security Model
 
-```text
+The system strictly adheres to Electron's security best practices: **`contextIsolation: true`**, **`nodeIntegration: false`**, and typed communication over IPC.
+
+```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       ELECTRON RENDERER (Vite + React)                      │
+│                    ELECTRON RENDERER PROCESS (React 19 + Vite)              │
 │                                                                             │
-│  [Pages: Dashboard, CreateInvoice, History, Reports, Settings]             │
-│        │                                                                    │
-│        ▼                                                                    │
-│  [src/renderer/services/ipcClient.js]                                       │
-└──────────────────────────────────────┬──────────────────────────────────────┘
-                                       │ window.electronAPI (Typed IPC bridge)
-                                       ▼
+│  [Views: Dashboard, CreateInvoice, History, Details, Reports, Settings]     │
+│  [Auth: LockScreen, ProductKeyActivation, TrialExpiredOverlay]              │
+│  [Error Handling: Top-Level Global React ErrorBoundary]                     │
+│                                │                                            │
+│                                ▼                                            │
+│                    [src/renderer/services/ipcClient.js]                     │
+└────────────────────────────────┬────────────────────────────────────────────┘
+                                 │ window.electronAPI (Exposed via contextBridge)
+                                 ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     PRELOAD SCRIPT (src/main/preload.js)                    │
+│                     PRELOAD SCRIPT (src/main/preload.cjs / .js)             │
 │   contextBridge.exposeInMainWorld('electronAPI', { ... })                   │
-│   (Enforces contextIsolation: true, nodeIntegration: false)                 │
-└──────────────────────────────────────┬──────────────────────────────────────┘
-                                       │ ipcRenderer.invoke / ipcMain.handle
-                                       ▼
+│   (Typed IPC Invocation Bridge - No Direct Node Access in DOM)              │
+└────────────────────────────────┬────────────────────────────────────────────┘
+                                 │ ipcRenderer.invoke / ipcMain.handle
+                                 ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                    ELECTRON MAIN PROCESS (Node.js Backend)                  │
 │                                                                             │
 │  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │ IPC Handlers (`src/main/ipc/*.js`)                                    │  │
+│  │ IPC Layer (`src/main/ipc/*.js`)                                       │  │
 │  │ [invoiceIPC, proformaIPC, reportIPC, backupIPC, settingsIPC, etc.]    │  │
 │  └───────────────────────────────────┬───────────────────────────────────┘  │
 │                                      │                                       │
 │  ┌───────────────────────────────────▼───────────────────────────────────┐  │
-│  │ Service Layer (`src/main/services/*.js`)                              │  │
-│  │ [invoiceService, calculationService, pdfService, backupService, etc.] │  │
+│  │ Services Layer (`src/main/services/*.js`)                             │  │
+│  │ [invoiceService, calculationService, activationService, pdfService]   │  │
 │  └───────────────────────────────────┬───────────────────────────────────┘  │
 │                                      │                                       │
 │  ┌───────────────────────────────────▼───────────────────────────────────┐  │
-│  │ Repository Layer (`src/main/repositories/*.js`)                       │  │
-│  │ [invoiceRepository, proformaRepository, customerRepository, etc.]    │  │
+│  │ Repositories Layer (`src/main/repositories/*.js`)                     │  │
+│  │ [invoiceRepository, customerRepository, emailQueueRepository, etc.]   │  │
 │  └───────────────────────────────────┬───────────────────────────────────┘  │
 │                                      │                                       │
 │  ┌───────────────────────────────────▼───────────────────────────────────┐  │
-│  │ SQLite Database (`better-sqlite3`)                                    │  │
-│  │ Path: %LOCALAPPDATA%\ShepherdInvoice\database\invoices.db             │  │
+│  │ SQLite Database (`better-sqlite3` in WAL Mode)                        │  │
+│  │ Location: %LOCALAPPDATA%\ShepherdInvoice\database\invoices.db         │  │
 │  └───────────────────────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 4. File-by-File Catalog (Purpose & Usage)
+## 4. Complete File-by-File Catalog
 
-### Root Configuration Files
+### Root Configuration & Build Scripts
 
-| File | Purpose & Why It Is Used |
+| File | Purpose & Architectural Usage |
 | :--- | :--- |
-| **`package.json`** | Defines project metadata, dependencies (React 19, Electron 34, better-sqlite3, ExcelJS, Tailwind, etc.), and npm scripts (`npm run dev`, `npm run electron:dev`, `npm run build`, `npm test`, `npm run dist`). |
-| **`vite.config.js`** | Configuration for Vite dev server and React bundler. Configured with `@vitejs/plugin-react` and `@tailwindcss/vite`, serving on port 5173. |
-| **`electron-builder.yml`** | Packaging configuration for generating Windows portable executables or NSIS installers targeting x64 architectures. |
-| **`vitest.config.js`** | Configuration for Vitest test runner to execute unit and calculation test suites. |
-| **`README.md`** | Quick-start documentation and project overview for getting started. |
-| **`.gitignore`** | Specifies ignored paths including `node_modules`, `dist`, local builds, SQLite temp files, and logs. |
-
----
-
-### Documentation & Testing
-
-| File | Purpose & Why It Is Used |
-| :--- | :--- |
-| **`docs/architecture.md`** | High-level architectural notes on process isolation and security boundaries. |
-| **`docs/database.md`** | Specification of SQLite engine parameters (`WAL` mode, foreign keys) and table definitions. |
-| **`tests/unit/calculation/sharedCalculations.test.js`** | Unit tests for GST calculation, tax splits (CGST/SGST vs IGST), discount applications, and rounding rules. |
-| **`tests/integration/database/database.test.js`** | Automated tests checking database initialization, schema migrations, and CRUD operations. |
+| **`package.json`** | Defines project metadata, npm scripts (`dev:all`, `build`, `dist`, `test`), and dependencies. |
+| **`vite.config.js`** | Configures Vite React plugin, Tailwind CSS v4 compiler, base path resolution (`./`), and dev server port 5173. |
+| **`electron-builder.yml`** | Defines Electron packaging targets for Windows (NSIS installer & portable `.exe` with custom icon and installation scripts). |
+| **`scripts/build-electron.js`** | Custom Node.js build pipeline that triggers Vite bundling and executes `electron-builder` with production asset validation. |
+| **`installer/installer.nsh`** | Custom NSIS installer script handling Windows installation hooks, shortcut creation, and registry registrations. |
+| **`vitest.config.js`** | Configuration for Vitest test execution covering unit and integration test directories. |
+| **`README.md`** | High-level quickstart and feature overview guide for developers. |
+| **`PROJECT_DOCUMENTATION.md`** | This comprehensive developer onboarding, architecture, and maintenance guide. |
 
 ---
 
 ### Main Process (`src/main`)
 
-The Main process runs Node.js and controls OS-level features, database access, background queues, and native windows.
+#### Entry & Security Bridge
+- **`src/main/main.js`**: Main Electron process entry point. Handles single-instance lock (`app.requestSingleInstanceLock()`), initializes SQLite database and runs migrations, registers all IPC handler modules, creates the main `BrowserWindow`, sets up the offline email queue timer (60s interval), and manages window state.
+- **`src/main/preload.js`** / **`src/main/preload.cjs`**: Preload scripts exposing safe, typed APIs to the renderer via `contextBridge.exposeInMainWorld('electronAPI', ...)`.
 
-#### Core Entry & Preload
-- **`src/main/main.js`**:
-  - The entry point for Electron.
-  - Initializes the SQLite database, runs migrations, registers all IPC handler modules, and launches the BrowserWindow.
-  - Starts background services: online/offline network monitor, auto-backup timers, and the offline email queue worker.
-- **`src/main/preload.js`**:
-  - The secure bridge between Electron's Node runtime and the browser Renderer.
-  - Uses `contextBridge.exposeInMainWorld('electronAPI', ...)` to expose strictly typed methods (`getInvoices`, `saveInvoice`, `printInvoice`, `exportPDF`, etc.) without exposing `ipcRenderer` directly.
-
-#### Configuration (`src/main/config/`)
-- **`companyConfig.js`**: Contains developer-locked, uneditable company constants for Shepherd Enterprises Private Limited (Name, Address: `No.4 & 5 Jenila nagar, Thirumullaivayol salai, Kovilpadagai, Poonamallee, Tiruvallur- 600062`, GSTIN `27AAACS1234F1Z5`, State Code `27`, Bank Details, and management backup email `tnjohnrk@gmail.com`).
+#### Configuration & Constants
+- **`src/main/config/companyConfig.js`**: Developer-locked company details for Shepherd Enterprises Private Limited (Name, Address, GSTIN `27AAACS1234F1Z5`, State Code `27`, Bank Name, Account Number, IFSC Code, and management backup email `tnjohnrk@gmail.com`).
 
 #### Database & Migrations (`src/main/database/`)
-- **`connection.js`**: Initializes `better-sqlite3` connecting to `%LOCALAPPDATA%\ShepherdInvoice\database\invoices.db`. Enables WAL journal mode and foreign key constraints.
-- **`database.js`**: Wraps database lifecycle management, transaction execution helpers, and closing hooks.
-- **`migrations/migrationRunner.js`**: Automatically checks and executes SQL schema migration files in order, recording applied versions in `schema_migrations`.
-- **`schema/001_initial.sql`**: Initial database schema definition creating `companies`, `customers`, `invoices`, `invoice_items`, `proformas`, `proforma_items`, `email_queue`, `settings`, and indexes.
+- **`connection.js`**: Initializes the `better-sqlite3` database instance at `%LOCALAPPDATA%\ShepherdInvoice\database\invoices.db`. Enables `journal_mode = WAL` and `foreign_keys = ON`.
+- **`database.js`**: Wraps database lifecycle hooks, transactions, and graceful shutdown handlers.
+- **`migrations/migrationRunner.js`**: Discovers SQL files in `schema/`, applies pending migrations sequentially inside a transaction, and updates `schema_migrations`.
+- **`schema/001_initial.sql`**: Initial database schema defining `companies`, `customers`, `products`, `invoices`, `invoice_items`, `proformas`, `proforma_items`, `email_queue`, `settings`, and indexing structures.
 
 #### IPC Handlers (`src/main/ipc/`)
-Each file listens to `ipcMain.handle` requests from the renderer and calls the appropriate service:
-- **`appIPC.js`**: System and window operations (minimize, maximize, close, get app version, check online status).
-- **`invoiceIPC.js`**: Tax invoice operations (get invoices, search, get next sequential invoice number `INV-XXX`, save invoice, delete invoice).
-- **`proformaIPC.js`**: Proforma invoice operations (get proformas, get next number `PRO-XXX`, save proforma, convert proforma to tax invoice).
-- **`reportIPC.js`**: Financial and GST report generation (Daily, Monthly, Financial Year, Customer summaries, and Excel export trigger).
-- **`backupIPC.js`**: Database backup creation, manual backup export to chosen file path, and database restore from a zip file.
-- **`printIPC.js`**: Native printing via hidden `webContents` and PDF export via `printToPDF`.
-- **`settingsIPC.js`**: Fetching and updating application settings, PIN verification, and PIN reset.
+- **`appIPC.js`**: Window actions (minimize, maximize, close), version information, and online status queries.
+- **`invoiceIPC.js`**: Tax invoice management (get next invoice number `INV-XXX`, save, search, fetch by ID, delete to recycle bin).
+- **`proformaIPC.js`**: Proforma invoice operations (get next number `PRO-XXX`, save, convert to tax invoice).
+- **`detailsIPC.js`**: Handles company information updates and product catalog management.
+- **`recycleBinIPC.js`**: Manages soft-deleted invoices, restoration, and permanent purge operations.
+- **`reportIPC.js`**: Aggregates date-range financial summaries and triggers Excel workbook generation.
+- **`backupIPC.js`**: Creates manual database backup exports and handles safe database restoration from `.zip` files.
+- **`printIPC.js`**: Manages silent physical printing and Chromium vector A4 PDF export.
+- **`settingsIPC.js`**: Reads/writes key-value application settings, PIN verification, product key activation, and developer overrides.
 
 #### Services Layer (`src/main/services/`)
-Encapsulates business rules:
-- **`invoiceService.js`**: Validates invoice data, computes final totals, persists the invoice and line items in a transaction, initiates automatic zip backup, and queues email backup.
-- **`proformaService.js`**: Handles quotation lifecycle, status transitions (DRAFT, SENT, CONVERTED, CANCELLED), and conversion to official tax invoices.
-- **`calculationService.js`**: Server-side tax computations: taxable amounts, CGST/SGST/IGST breakdown, round-off, and number-to-words currency formatting.
-- **`customerService.js`**: Manages the buyer directory and provides search/autofill suggestions.
-- **`pdfService.js`**: Renders the locked HTML/CSS template with invoice data in a background window and outputs an A4 PDF stream or file.
-- **`printService.js`**: Coordinates physical printer dispatching using Electron's `webContents.print()`.
-- **`emailService.js`**: Configures Nodemailer transport to dispatch emails with PDF/ZIP attachments.
-- **`emailQueueService.js`**: Scans the `email_queue` table every 60 seconds; if network connectivity is detected, attempts re-sending failed/pending emails and marks them completed.
-- **`backupService.js`**: Creates timestamped zip archives containing the SQLite database and exports/restores snapshots.
-- **`excelService.js`**: Uses `ExcelJS` to build styled multi-column Excel workbooks for tax audits and date-range billing reports.
-- **`reportService.js`**: Queries and aggregates invoice data by date ranges, tax slabs, and customer GSTINs.
-- **`pinService.js`**: Implements 4-digit security PIN checking using SHA-256 hashing.
-- **`companyService.js`**: Provides locked company profile information to templates and reports.
-- **`settingsService.js`**: Reads and writes key-value configuration values in the `settings` table.
+- **`activationService.js`**: Handles hardware-tied Machine ID generation (SHA-256), product key activation (`V2C-XXXX-XXXX-XXXX`), 30-day trial status calculation, and developer master password overrides.
+- **`licenseService.js`**: Cryptographic validation and storage of `license.dat` using HMAC-SHA256 signature verification.
+- **`pinService.js`**: Manages 4-digit security PIN setup, SHA-256 salted hashing, verification, and rate-limiting lockouts.
+- **`invoiceService.js`**: Validates invoice payloads, executes transactional database insertions, triggers auto-backup `.zip`, and enqueues offline emails.
+- **`proformaService.js`**: Manages quotation lifecycles (`DRAFT`, `SENT`, `CONVERTED`, `CANCELLED`) and handles one-click conversion to Tax Invoices.
+- **`calculationService.js`**: Backend tax calculation engine: taxable subtotal, CGST/SGST/IGST breakdown, commercial rounding, and Indian currency words formatting.
+- **`customerService.js`**: Manages buyer records, search suggestions, and GSTIN auto-fill.
+- **`productService.js`**: Product and HSN/SAC catalog management.
+- **`pdfService.js`**: Renders locked A4 HTML templates in a hidden `BrowserWindow` and generates vector PDF files via `printToPDF`.
+- **`printService.js`**: Dispatches print jobs to physical printers using Electron's `webContents.print()`.
+- **`emailService.js`**: Dispatches SMTP emails with attached PDF invoices and database backup files via Nodemailer.
+- **`emailQueueService.js`**: Scans the `email_queue` table every 60 seconds; if network connectivity is detected, attempts delivery with exponential backoff.
+- **`backupService.js`**: Generates timestamped `.zip` archives containing the SQLite database and handles safe restores with pre-restore safety backups.
+- **`excelService.js`**: Builds multi-sheet, formatted Excel workbooks (`.xlsx`) via `ExcelJS` for tax audits and date-range billing reports.
+- **`reportService.js`**: Queries and aggregates financial metrics by day, month, financial year, and customer GSTIN.
+- **`companyService.js`**: Supplies locked company profile information to rendering engines and reports.
+- **`settingsService.js`**: Key-value store abstraction over the `settings` table.
 - **`updateService.js`**: Integrates `electron-updater` for desktop software update checks.
 
 #### Repositories Layer (`src/main/repositories/`)
-Performs SQL queries via `better-sqlite3`:
-- **`invoiceRepository.js`**: Inserts, queries, filters, and deletes records in `invoices` and `invoice_items`.
+- **`invoiceRepository.js`**: CRUD operations and SQL queries on `invoices` and `invoice_items`.
 - **`proformaRepository.js`**: CRUD operations on `proformas` and `proforma_items`.
-- **`customerRepository.js`**: Reads and updates buyer profiles in `customers`.
-- **`companyRepository.js`**: Database access to the `companies` table.
-- **`emailQueueRepository.js`**: Enqueues email backup tasks, retrieves pending tasks, and updates retry counts/status.
-- **`settingsRepository.js`**: Reads and stores key-value pairs in the `settings` table.
+- **`customerRepository.js`**: Queries and updates buyer profiles in `customers`.
+- **`productRepository.js`**: Queries and updates items in `products`.
+- **`companyRepository.js`**: Queries and updates records in `companies`.
+- **`emailQueueRepository.js`**: Enqueues email backup tasks, retrieves pending tasks, and updates status/retry counts.
+- **`settingsRepository.js`**: Key-value persistence in the `settings` table.
 
 #### Templates & Rendering (`src/main/templates/invoice/`)
 - **`invoiceTemplate.html`**: The fixed, audit-compliant A4 invoice layout. Displays company header, buyer details, tax tables, HSN breakdown, bank details, terms, and authorized signature section.
@@ -200,125 +195,151 @@ Performs SQL queries via `better-sqlite3`:
 - **`templateConfig.js`**: Template layout rules, margins, and paper dimension definitions.
 
 #### Utilities (`src/main/utils/`)
-- **`filesystem.js`**: Ensures application directories (`%LOCALAPPDATA%\ShepherdInvoice\backups`, `\database`, `\temp`) exist and handles safe file reading/writing.
+- **`filesystem.js`**: Ensures application directories (`%LOCALAPPDATA%\ShepherdInvoice\backups`, `\database`, `\temp`) exist and handles safe file I/O.
 
 ---
 
 ### Shared Layer (`src/shared`)
 
-Shared across both Main and Renderer processes:
-- **`constants/application.js`**: Global app constants, list of 38 Indian State Codes (Maharashtra `27`, Gujarat `24`, etc.), and default configuration.
-- **`constants/invoiceTypes.js`**: Invoice type definitions (`NORMAL` vs `PROFORMA`).
+Shared code utilized by both Main and Renderer processes:
+- **`constants/application.js`**: Global app constants, list of 38 Indian State Codes (Maharashtra `27`, Gujarat `24`, Tamil Nadu `33`, etc.), and default configuration.
+- **`constants/companyLogo.js`**: Base64 encoded company logo asset for zero-filesystem-dependency rendering.
 - **`constants/copyTypes.js`**: GST copy indicators (`ORIGINAL` for Recipient, `DUPLICATE` for Transporter, `TRIPLICATE` for Supplier).
+- **`constants/invoiceTypes.js`**: Document type definitions (`NORMAL` vs `PROFORMA`).
 - **`constants/proformaStatuses.js`**: Status enums for proformas (`DRAFT`, `SENT`, `CONVERTED`, `CANCELLED`).
+- **`constants/security.js`**: Security configurations and rate limiting constants.
+- **`constants/shortcuts.js`**: Global desktop keyboard shortcut definitions.
 - **`schemas/buyerSchema.js`**: Zod validation schema for buyer name, address, state, and 15-character GSTIN format.
-- **`schemas/itemSchema.js`**: Zod validation schema for invoice line items (description, HSN/SAC code, quantity, rate, discount).
-- **`schemas/invoiceSchema.js`**: Schema for complete invoice payloads.
-- **`schemas/proformaSchema.js`**: Schema for proforma payloads.
-- **`utils/sharedCalculations.js`**: Unified calculation logic for item subtotals, tax rate calculations, and rounding, guaranteeing identical calculations in both frontend preview and backend storage.
+- **`schemas/itemSchema.js`**: Zod validation schema for invoice line items enforcing 8-digit numeric HSN/SAC codes, quantities, and rates.
+- **`schemas/invoiceSchema.js`**: Zod schema for full tax invoice payloads (notes limit: 120 chars).
+- **`schemas/proformaSchema.js`**: Zod schema for proforma invoice payloads (remarks limit: 120 chars).
+- **`utils/errorHandler.js`**: Centralized error formatting and user-friendly message mapping.
+- **`utils/invoicePagination.js`**: Pagination helper for multi-page print layout calculations.
+- **`utils/sharedCalculations.js`**: Single source of truth for GST calculation, tax splits, discounts, and rounding across frontend and backend.
 
 ---
 
 ### Renderer Process (`src/renderer`)
 
-The React frontend single-page application:
-
 #### Entry & Core Setup
-- **`src/renderer/index.html`**: HTML wrapper loaded by Vite and Electron.
-- **`src/renderer/main.jsx`**: React root rendering `<App />`.
-- **`src/renderer/App.jsx`**: Main application component managing active views (`dashboard`, `create`, `history`, `reports`, `settings`), PIN lock protection, and toast notifications.
-- **`src/renderer/services/ipcClient.js`**: Type-safe client service wrapping all calls to `window.electronAPI`.
-- **`src/renderer/styles/index.css`**: Tailwind CSS imports, custom scrollbar styling, glassmorphic card utilities, and dark theme definitions.
-- **`src/renderer/styles/print.css`**: Print-specific stylesheet hiding navigation bars and adjusting margins during browser printing.
+- **`src/renderer/index.html`**: HTML entry loaded by Vite and Electron.
+- **`src/renderer/main.jsx`**: React root rendering `<App />` protected by a top-level **`ErrorBoundary`** to prevent white screens on runtime exceptions.
+- **`src/renderer/App.jsx`**: Main application container managing active views, authentication screens, trial status, and notifications.
+- **`src/renderer/services/ipcClient.js`**: Typed client service wrapping all calls to `window.electronAPI`.
+- **`src/renderer/styles/index.css`**: Tailwind CSS v4 design system, glassmorphism cards, and dark theme definitions.
+- **`src/renderer/styles/print.css`**: Dedicated print stylesheet optimizing A4 output.
+
+#### Authentication & Security Components (`src/renderer/components/auth/`)
+- **`ProductKeyActivation.jsx`**: Initial setup screen for entering product keys (`V2C-XXXX-XXXX-XXXX`), starting 30-day trials, and setting up initial 4-digit security PINs with individual digit input boxes.
+- **`LockScreen.jsx`**: Desktop security lockscreen featuring 4-digit individual PIN input boxes, auto-focus, paste handling, and a Developer Emergency PIN Reset modal.
+- **`TrialExpiredOverlay.jsx`**: Blocking modal shown when a 30-day trial expires, with a Developer Master Panel (preset buttons for `5 Days`, `10 Days`, custom extensions, and instant license activation).
 
 #### Layout Components (`src/renderer/components/layout/`)
 - **`AppLayout.jsx`**: Main shell combining Sidebar, Header, PageContainer, and StatusBar.
-- **`Header.jsx`**: Top application bar showing current company GSTIN badge, system lock status, and online connectivity indicator.
-- **`Sidebar.jsx`**: Navigation menu with routes for Dashboard, Create Invoice, History, Reports, and Settings.
+- **`Header.jsx`**: Top application bar displaying company GSTIN badge, system lock status, trial days remaining indicator, and online connectivity badge.
+- **`Sidebar.jsx`**: Left navigation menu for Dashboard, Create Invoice, History, Details, Reports, and Settings.
 - **`PageContainer.jsx`**: Standard container providing consistent padding and transitions across pages.
-- **`StatusBar.jsx`**: Bottom status bar displaying current database status, offline email queue pending count, and app version.
-
-#### Common UI Components (`src/renderer/components/common/`)
-- **`Button.jsx`**: Reusable button with variants (`primary`, `secondary`, `danger`, `success`), icon support, and loading states.
-- **`Input.jsx`**: Accessible form input with labels, error states, and keyboard support.
-- **`Select.jsx`**: Dropdown select component styled for dark theme.
-- **`Table.jsx`**: Data table with sorting headers, empty states, and pagination.
-- **`Modal.jsx`**: Accessible modal overlay for confirmations and popups.
-- **`Dialog.jsx`**: Confirmation dialog for destructive actions (e.g. database restore, deleting records).
-- **`Toast.jsx`**: Floating alert notifications (`success`, `error`, `info`, `warning`).
-- **`Loading.jsx`**: Loading spinner and skeleton placeholders.
-- **`EmptyState.jsx`**: Visual placeholder shown when tables or search results are empty.
+- **`StatusBar.jsx`**: Bottom status bar displaying database connectivity, pending offline email queue items, and application version.
 
 #### Invoice Creation Components (`src/renderer/components/invoice/`)
-- **`InvoiceStepper.jsx`**: 8-step wizard progress bar allowing navigation between completed steps.
-- **`InvoiceTypeSelector.jsx`**: Step 1 selector between **Tax Invoice (Normal)** and **Proforma Invoice (Estimate)**. Clicking either card immediately selects it and advances to Step 2.
-- **`InvoiceDetailsForm.jsx`**: Step 2 form for document number, invoice date, copy type, and transportation details (Vehicle No, Mode, Date of Supply).
+- **`InvoiceStepper.jsx`**: Modern connected-pipeline 8-step wizard progress bar with status checkmarks and responsive navigation.
+- **`InvoiceTypeSelector.jsx`**: Step 1 selector between **Tax Invoice** and **Proforma Invoice** (instantly advances on card click).
+- **`InvoiceDetailsForm.jsx`**: Step 2 form for document number, invoice date, copy type, and transport details.
 - **`BuyerDetailsForm.jsx`**: Step 3 form for Buyer Name, Address, GSTIN, and State Code dropdown with instant GSTIN format validation.
-- **`ReferenceDetailsForm.jsx`**: Step 4 form for PO Number, PO Date, GeM Contract Number (`gemc_number`), and additional references.
+- **`ReferenceDetailsForm.jsx`**: Step 4 form for PO Number, PO Date, GeM Contract Number, and additional references.
 - **`ItemTable.jsx`**: Step 5 dynamic line-item grid supporting row addition, deletion, and recalculations.
-- **`ItemRow.jsx`**: Individual row component for item description, HSN/SAC code, quantity, and rate.
-- **`TaxSection.jsx`**: Displays automated GST computation, CGST + SGST vs IGST split, and customizable tax rates (5%, 12%, 18%, 28%).
-- **`AdditionalDetailsForm.jsx`**: Step 6 form for optional notes, payment terms, and remarks.
+- **`ItemRow.jsx`**: Individual row component with strict 8-digit numeric HSN/SAC validation, quantity, rate, and discount.
+- **`TaxSection.jsx`**: Displays automated GST computation, CGST + SGST vs IGST split, and customizable tax rates.
+- **`AdditionalDetailsForm.jsx`**: Step 6 form for payment terms, bank details, and notes/remarks with a 120-character visual counter.
 - **`InvoiceReview.jsx`**: Step 7 pre-generation summary reviewing buyer, items, and tax totals before creating the final invoice.
 - **`InvoicePreview.jsx`**: Step 8 rendered view of the finalized A4 invoice with buttons for **Print Invoice**, **Download PDF**, and **Back to Dashboard**.
 
-#### Dashboard Components (`src/renderer/components/dashboard/`)
-- **`StatCard.jsx`**: Metrics card displaying Total Revenue, Total Invoices Created, Proformas Issued, and Pending Queue items.
+#### Dashboard & Analytics (`src/renderer/components/dashboard/`)
+- **`StatCard.jsx`**: Metric cards for Total Revenue, Invoices Issued, Proformas Created, and Queue Items.
 - **`BillingAmountChart.jsx`**: Recharts Bar/Area chart showing monthly revenue trends.
 - **`InvoiceActivityChart.jsx`**: Line chart showing invoice generation frequency.
 - **`RecentInvoices.jsx`**: Quick-access table displaying the most recently issued invoices.
 
-#### History Components (`src/renderer/components/history/`)
+#### History & Archive (`src/renderer/components/history/`)
 - **`HistoryTable.jsx`**: Searchable, paginated table of all saved Tax and Proforma Invoices.
 - **`HistorySearch.jsx`**: Real-time search bar filtering by Invoice Number, Buyer Name, or GSTIN.
 - **`HistoryFilters.jsx`**: Date range and document type filter controls.
 - **`HistoryActions.jsx`**: Row action buttons (View, Print, Download PDF, Convert Proforma to Invoice).
 
-#### Reports Components (`src/renderer/components/reports/`)
+#### Reports & Audits (`src/renderer/components/reports/`)
 - **`ReportSelector.jsx`**: Report period selector (Daily, Monthly, Financial Year, or Custom Date Range).
 - **`ReportSummary.jsx`**: High-level tax summaries (Total Taxable Value, CGST, SGST, IGST, Gross Total).
-- **`ReportTable.jsx`**: Detailed breakdown of invoices within the selected period with an **Export to Excel** button.
+- **`ReportTable.jsx`**: Detailed breakdown of invoices with an **Export to Excel** button.
 
-#### Settings Components (`src/renderer/components/settings/`)
-- **`PinSettings.jsx`**: Setup, change, or remove the 4-digit security PIN.
-- **`BackupRestore.jsx`**: Trigger manual SQLite database backup exports or restore from a previous `.zip` backup.
+#### Settings & Maintenance (`src/renderer/components/settings/`)
+- **`PinSettings.jsx`**: Modern 4-digit PIN setup, change, or removal screen using individual digit boxes.
+- **`BackupRestore.jsx`**: Trigger manual SQLite database backup exports or restore from previous `.zip` snapshots.
+- **`RecycleBin.jsx`**: View soft-deleted invoices with one-click restore or permanent deletion.
 - **`AppearanceSettings.jsx`**: Theme and visual preferences.
-- **`About.jsx`**: App version, developer credits, and system paths.
+- **`ShortcutsSettings.jsx`**: Overview of desktop keyboard shortcuts.
+- **`About.jsx`**: System information, software version, and database file paths.
 
-#### Security & Splash
-- **`SplashScreen.jsx`**: PIN unlock screen displayed on application startup when PIN protection is enabled.
+---
+
+### Automated Test Suite (`tests/`)
+
+- **`tests/unit/calculation/sharedCalculations.test.js`**: Tests GST splits (CGST/SGST vs IGST), discount applications, taxable subtotals, and commercial rounding.
+- **`tests/unit/calculation/invoicePagination.test.js`**: Tests item pagination logic for multi-page invoice printing.
+- **`tests/unit/services/activationService.test.js`**: Tests Machine ID generation, product key validation, trial calculation, and developer master password verification.
+- **`tests/unit/services/licenseService.test.js`**: Tests cryptographic signature verification and license persistence.
+- **`tests/unit/services/pinService.test.js`**: Tests PIN hashing, verification, lockout counters, and rate limiting.
+- **`tests/unit/services/emailService.test.js`**: Tests email transport configuration, attachment formatting, and error handling.
+- **`tests/unit/templates/invoiceRenderer.test.js`**: Tests A4 HTML template rendering, bank details presence, and GST table population.
+- **`tests/unit/utils/errorHandler.test.js`**: Tests error normalization and user-friendly error string extraction.
+- **`tests/integration/database/database.test.js`**: Tests SQLite database initialization, table creation, migrations, and CRUD operations.
 
 ---
 
 ## 5. Key Business Logic & Core Workflows
 
-### Invoice Generation Wizard
-The invoice wizard consists of 8 linear steps:
-1. **Select Type**: Click **Tax Invoice** or **Proforma Invoice** (instantly advances to step 2).
-2. **Invoice Details**: Auto-generates the next sequential number (`INV-XXX` or `PRO-XXX`) and captures supply/transport information.
-3. **Buyer Details**: Captures customer details; validating state code against Maharashtra (`27`).
-4. **References**: Purchase Order (PO) & GeM contract details.
-5. **Items & Tax**: Line items with automatic subtotal, CGST+SGST or IGST tax calculations, and round-off.
-6. **Additional Details**: Custom notes and remarks.
-7. **Review**: Comprehensive audit of data before submission.
-8. **Generate & Preview**: Persists invoice to SQLite, triggers automatic backup zip, queues email, and opens the print/PDF view.
+### Invoice & Proforma 8-Step Wizard
+1. **Document Type**: Choose between **Tax Invoice (Normal)** or **Proforma Invoice (Estimate)**.
+2. **Document Details**: Auto-generates sequential numbering (`INV-XXX` or `PRO-XXX`), sets issue date, copy type, and supply/vehicle details.
+3. **Buyer Details**: Captures Buyer Name, Address, GSTIN, and State Code dropdown with instant GSTIN format validation.
+4. **References**: Captures PO Number, PO Date, GeM Contract Number (`gemc_number`), and additional references.
+5. **Items & Pricing**: Line item table enforcing **8-digit numeric HSN/SAC codes**, quantities, rates, discounts, and GST rates (0%, 5%, 12%, 18%, 28%).
+6. **Additional Details**: Custom notes and remarks limited to **120 characters** with an interactive character counter.
+7. **Review & Verify**: Pre-submission audit summary calculating all tax splits and gross totals.
+8. **Finalize & Preview**: Persists invoice to SQLite, creates an automatic `.zip` backup, enqueues an offline email, and opens the print/PDF preview.
 
-### GST Calculation & Tax Splitting
-Indian GST rules require determining whether a transaction is **Intra-state** or **Inter-state**:
-- **Supplier State**: Shepherd Enterprises is located in **Maharashtra (State Code: 27)**.
-- **Intra-state (`buyer_state_code == '27'`)**:
-  - GST is split equally into **CGST (Central GST)** and **SGST (State GST)**.
-  - Example (18% tax): `CGST = 9%`, `SGST = 9%`, `IGST = 0%`.
-- **Inter-state (`buyer_state_code != '27'`)**:
-  - Entire tax is levied as **IGST (Integrated GST)**.
-  - Example (18% tax): `CGST = 0%`, `SGST = 0%`, `IGST = 18%`.
-- **Rounding**: Invoices are rounded to the nearest integer rupee using standard commercial rounding (`Round-Off Amount = Math.round(Total) - Total`).
+### Indian GST Calculation & Tax Engine
+GST rules are computed based on the comparison of the buyer's state code against the supplier's state code (**Maharashtra - State Code: 27**):
 
-### Locked A4 HTML/CSS Printing & PDF Generation
-To prevent tampering and ensure legal compliance:
-- The template (`src/main/templates/invoice/invoiceTemplate.html`) is rendered inside a hidden Electron `BrowserWindow`.
-- For printing: `win.webContents.print()` sends the rendered page directly to the physical printer.
-- For PDF: `win.webContents.printToPDF({ pageSize: 'A4', marginsType: 0 })` generates a high-resolution vector PDF saved to disk.
+- **Intra-state (`buyer_state_code === '27'`)**:
+  - Tax is split 50/50 between **CGST** and **SGST**.
+  - Example (18% GST on ₹10,000): `CGST = ₹900 (9%)`, `SGST = ₹900 (9%)`, `IGST = ₹0 (0%)`.
+- **Inter-state (`buyer_state_code !== '27'`)**:
+  - Entire tax is levied as **IGST**.
+  - Example (18% GST on ₹10,000): `CGST = ₹0 (0%)`, `SGST = ₹0 (0%)`, `IGST = ₹1,800 (18%)`.
+- **Commercial Rounding**:
+  $$\text{Round-Off Amount} = \text{Math.round}(\text{Gross Total}) - \text{Gross Total}$$
+- **Number to Words**: Automatically converts the rounded total into Indian currency text (e.g., `INR 11,800` $\rightarrow$ *"Rupees Eleven Thousand Eight Hundred Only"*).
+
+### Licensing, Trial Management & Machine Lock
+- **Machine Identification**: Computes a SHA-256 hash of the system's hostname, architecture, and network profile to bind licenses to specific hardware.
+- **Product Key Format**: Validates product keys matching `V2C-XXXX-XXXX-XXXX`.
+- **30-Day Trial Mode**: When first started without a key, the system activates a 30-day trial with live days-remaining tracking in the UI header.
+- **Trial Expiration & Blocking Overlay**: When the trial reaches 0 days, a blocking modal prevents further billing until activated or extended.
+- **Developer Master Console**:
+  - Protected by developer master password `VIBE2CODE_DEV_2025`.
+  - Provides quick-extension presets (`5 Days`, `10 Days`, custom days).
+  - Allows direct emergency PIN reset and full permanent license activation.
+
+### 4-Digit Security PIN & Developer Emergency Access
+- **Storage**: Salted SHA-256 hash stored in SQLite's `settings` table (`security_pin`).
+- **UI UX**: Modern 4-digit individual input boxes with automatic focus progression, backspace backward focus, arrow navigation, and numeric paste support.
+- **Rate-Limiting Protection**: Locks the user out after consecutive failed attempts to prevent brute-force attacks.
+- **Developer Override**: Allows instant PIN resetting using the developer master password.
+
+### Locked A4 Print & Vector PDF Engine
+- **Tamper Prevention**: Uses a fixed HTML/CSS template (`src/main/templates/invoice/invoiceTemplate.html`) rendered in a hidden Chromium `BrowserWindow`.
+- **Physical Printing**: Dispatches directly to connected printers via `webContents.print()`.
+- **PDF Generation**: Generates high-resolution vector A4 PDFs via `webContents.printToPDF({ pageSize: 'A4', marginsType: 0 })`.
 
 ### Offline-First Email Backup Queue
 - When an invoice is created, a background task saves an entry into `email_queue` with status `'PENDING'`.
@@ -326,63 +347,107 @@ To prevent tampering and ensure legal compliance:
 - When online, it uses `nodemailer` to dispatch the PDF invoice and database snapshot to `tnjohnrk@gmail.com`.
 - If sending fails, retry counter increments up to 5 times with exponential backoff before being flagged.
 
-### Security PIN Authorization
-- Stored as a salted SHA-256 hash in SQLite's `settings` table (`security_pin`).
-- Required on startup (if enabled) and before sensitive operations (database restoration, clearing data).
+### Database Management, Migrations & Safe Restores
+- **WAL Journaling**: Enables SQLite Write-Ahead Logging for non-blocking concurrent reads and writes.
+- **Automated Backups**: Creates a `.zip` archive in `%LOCALAPPDATA%\ShepherdInvoice\backups\` on every invoice generation.
+- **Safe Restores**: Automatically creates a pre-restore safety backup before applying an imported backup file, ensuring zero data loss if a corrupted archive is uploaded.
 
 ---
 
-## 6. Developer Onboarding & How-To Guide
+## 6. Testing & Quality Assurance
 
-### Prerequisites & Local Setup
-1. **Node.js**: Recommended Node.js LTS (v18 or v20+).
-2. **Windows Build Tools**: Because `better-sqlite3` is a C++ native addon, ensure Python and Visual Studio C++ build tools are installed (or run with prebuilt binaries matching Electron).
+The codebase includes an automated test suite executed via **Vitest** covering **64 tests across 8 test suites**:
 
-#### Installation Steps
 ```bash
-# 1. Clone or open the repository in terminal
-cd d:\billing_system
+# Run all unit and calculation tests
+npm test
+
+# Run tests with graphical browser UI
+npm run test:ui
+```
+
+### Test Coverage Summary
+1. **`sharedCalculations.test.js`** (18 tests): Validates taxable values, CGST/SGST/IGST tax splits, discount calculations, and commercial rounding.
+2. **`errorHandler.test.js`** (11 tests): Validates structured error responses, boundary exceptions, and user-friendly error mappings.
+3. **`pinService.test.js`** (9 tests): Validates PIN hashing, verification, lockout counters, and rate limiting.
+4. **`activationService.test.js`** (7 tests): Validates machine ID generation, trial countdowns, product key format, and developer master password validation.
+5. **`licenseService.test.js`** (7 tests): Validates cryptographic license signatures, tampering detection, and license persistence.
+6. **`invoiceRenderer.test.js`** (4 tests): Validates HTML template rendering, bank details presence, and table structures.
+7. **`emailService.test.js`** (4 tests): Validates email payload construction and attachment handling.
+8. **`invoicePagination.test.js`** (4 tests): Validates multi-page item splitting for large invoices.
+
+---
+
+## 7. Build, Packaging & Windows Deployment
+
+### Production Packaging Pipeline
+The project uses `scripts/build-electron.js` and `electron-builder` to produce production-ready Windows installers and portable executables:
+
+```bash
+# 1. Compile frontend assets with Vite and package with electron-builder
+npm run dist
+```
+
+### Output Artifacts (Generated in `dist_electron/`):
+- **`Shepherd-Invoice-Setup-1.0.0.exe`**: Full Windows NSIS installer with desktop shortcuts and uninstaller.
+- **`Shepherd-Invoice-1.0.0.exe`**: Standalone portable Windows executable.
+
+### Production Path Resolution & Singleton Lock
+- Normalizes application paths using `app.isPackaged ? app.getAppPath() : process.cwd()` to ensure HTML templates, preload scripts, and assets resolve correctly inside `app.asar`.
+- Windows Singleton Lock (`app.requestSingleInstanceLock()`) ensures that secondary process launches focus the existing running instance rather than creating orphaned zombie locks.
+
+---
+
+## 8. Developer Onboarding & Step-by-Step Recipes
+
+### Prerequisites & Local Environment Setup
+1. **Node.js**: Node.js LTS (`v20.x` or `v22.x` recommended).
+2. **Build Tools**: Visual Studio C++ Build Tools and Python (required for compiling native `better-sqlite3` on Windows).
+
+```bash
+# 1. Clone repository and navigate to project directory
+cd c:\Main_Projects\Vibe-2-Code\Vibe2Code-Billing
 
 # 2. Install all dependencies
 npm install
 
-# 3. If better-sqlite3 throws a NODE_MODULE_VERSION mismatch with Electron:
+# 3. If native modules need rebuilding for Electron:
 npm run rebuild
 
-# 4. Start the Vite React development server
-npm run dev
-
-# 5. In a second terminal window, start the Electron desktop app
-npm run electron:dev
+# 4. Start both Vite and Electron concurrently
+npm run dev:all
 ```
+
+---
 
 ### Common Developer Recipes
 
-#### A. Adding a New Column to Invoices
-1. Add a new migration script in `src/main/database/migrations/` (e.g., `002_add_field.sql`).
-2. Update the Zod validation schema in `src/shared/schemas/invoiceSchema.js`.
-3. Update `src/main/repositories/invoiceRepository.js` SQL query parameters.
-4. Add the form input in the corresponding form component in `src/renderer/components/invoice/`.
-5. Update `src/main/templates/invoice/invoiceTemplate.html` to display the field in print/PDF.
+#### A. Adding a New Field to Invoices
+1. **Database Schema**: Add a new migration script in `src/main/database/schema/` or update migration runner.
+2. **Schema Validation**: Update `src/shared/schemas/invoiceSchema.js` with the new Zod field definition.
+3. **Repository Layer**: Update SQL insert and select queries in `src/main/repositories/invoiceRepository.js`.
+4. **Frontend Form**: Add the input field in the relevant form under `src/renderer/components/invoice/`.
+5. **HTML Template**: Update `src/main/templates/invoice/invoiceTemplate.html` and `invoiceRenderer.js` to render the field in A4 print/PDF.
 
 #### B. Adding a New IPC Channel
-1. In `src/main/ipc/<feature>IPC.js`, register `ipcMain.handle('feature:action', async (event, args) => { ... })`.
-2. In `src/main/preload.js`, expose the method under `electronAPI`.
-3. In `src/renderer/services/ipcClient.js`, add the typed wrapper method.
-4. Call it from your React component.
+1. **Main Process Handler**: Register `ipcMain.handle('domain:action', async (event, args) => { ... })` in `src/main/ipc/<feature>IPC.js`.
+2. **Preload Exposure**: Add the typed method to `src/main/preload.js` and `src/main/preload.cjs`.
+3. **Client Wrapper**: Add the corresponding invocation wrapper in `src/renderer/services/ipcClient.js`.
+4. **Renderer Consumption**: Call `ipcClient.<feature>.<method>()` from your React component.
 
-#### C. Running Tests
-```bash
-# Run unit tests
-npm test
-```
+#### C. Updating Company Default Details
+- Edit `src/main/config/companyConfig.js` to update locked company legal information, bank details, or backup recipient emails.
 
-#### D. Packaging for Windows Production
-```bash
-# Build the production executable installer
-npm run dist
-```
-Output files will be generated in `dist/`.
+---
+
+### Troubleshooting & Windows Native Modules
+
+- **`NODE_MODULE_VERSION` Mismatch**: Run `npm run rebuild` to recompile `better-sqlite3` against Electron's internal Node ABI.
+- **Zombie Electron Processes**: If the database is locked by an old instance, terminate background Electron processes via PowerShell:
+  ```powershell
+  Stop-Process -Name "electron", "Shepherd-Invoice" -Force -ErrorAction SilentlyContinue
+  ```
+- **White Screen on Launch**: Check `src/renderer/main.jsx` ErrorBoundary logs or verify that `npm run build` generated `dist/index.html`.
 
 ---
 
