@@ -369,27 +369,27 @@ export function Dashboard({ onViewInvoice, onNavigateCreate, licenseStatus: prop
     <PageContainer>
       {/* Test Mode Banner Box (Visible when Test Mode is Active) */}
       {isTestMode && (
-        <div className="p-3.5 px-4 rounded-xl border border-amber-300 dark:border-amber-800/60 bg-amber-500/10 dark:bg-amber-950/30 text-slate-900 dark:text-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
+        <div className="p-3.5 px-4 rounded-xl border border-amber-500/25 dark:border-amber-500/20 bg-amber-500/5 dark:bg-amber-950/20 text-slate-900 dark:text-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/20 dark:bg-amber-500/30 flex items-center justify-center shrink-0 border border-amber-500/30 text-amber-600 dark:text-amber-400">
+            <div className="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-500/15 flex items-center justify-center shrink-0 border border-amber-500/20 text-amber-700/80 dark:text-amber-300/80">
               <Clock className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-amber-500 text-white dark:bg-amber-600 shadow-xs">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 dark:bg-amber-500/20 text-amber-900 dark:text-amber-200 border border-amber-500/30 shadow-2xs">
                   Test / Trial Mode Active
                 </span>
-                <span className="text-xs font-bold text-amber-700 dark:text-amber-300 font-mono">
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-mono">
                   {getRemainingTimeText(licenseStatus?.endDateTime)}
                 </span>
               </div>
               <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-slate-600 dark:text-slate-400">
                 <span>
-                  <strong className="text-slate-700 dark:text-slate-200">Started:</strong> {formatDateTime(licenseStatus?.startDateTime)}
+                  <strong className="text-slate-700 dark:text-slate-300">Started:</strong> {formatDateTime(licenseStatus?.startDateTime)}
                 </span>
                 <span>•</span>
                 <span>
-                  <strong className="text-slate-700 dark:text-slate-200">Trial Ends:</strong> {formatDateTime(licenseStatus?.endDateTime)}
+                  <strong className="text-slate-700 dark:text-slate-300">Trial Ends:</strong> {formatDateTime(licenseStatus?.endDateTime)}
                 </span>
               </div>
             </div>
