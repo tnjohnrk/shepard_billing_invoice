@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Key, ShieldCheck, Lock, CheckCircle2, ArrowRight, ShieldAlert, Sparkles, Laptop, Shield } from 'lucide-react';
+import { Key, ShieldCheck, Lock, CheckCircle2, ArrowRight, ShieldAlert, Sparkles, Laptop, Shield, Eye, EyeOff } from 'lucide-react';
 import companyLogo from '../../assets/app_icon.png';
 import { Button } from '../common/Button';
 import { Toast } from '../common/Toast';
