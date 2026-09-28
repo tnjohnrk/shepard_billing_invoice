@@ -42,6 +42,7 @@ export const proformaSchema = z.object({
   grand_total: z.number().min(0),
   amount_in_words: z.string(),
 
-  notes: z.string().max(65, 'Notes cannot exceed 65 characters').optional().nullable()
+  notes: z.string().max(120, 'Notes cannot exceed 120 characters').optional().nullable()
 });
+
 
