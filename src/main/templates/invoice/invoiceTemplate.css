@@ -279,6 +279,34 @@ body {
   font-weight: normal;
 }
 
+.meta-field-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+}
+
+.meta-field-table td {
+  padding: 0;
+  vertical-align: top;
+  border: none !important;
+}
+
+.meta-field-lbl {
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 1.35;
+  padding-right: 4px !important;
+}
+
+.meta-field-txt {
+  vertical-align: top;
+  font-size: 11px;
+  line-height: 1.35;
+  white-space: pre-line;
+}
+
 .buyer-block {
   margin-top: 4px;
 }

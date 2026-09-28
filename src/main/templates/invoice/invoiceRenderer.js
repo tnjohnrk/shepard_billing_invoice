@@ -150,14 +150,19 @@ export function renderInvoiceHtml(invoiceData) {
                 <span class="meta-lbl font-bold">STATE:</span> <span class="meta-txt uppercase">${escapeHtml(COMPANY_CONFIG.state || 'TAMIL NADU')}</span>
                 <span class="meta-lbl font-bold" style="margin-left: 10px;">STATE CODE:</span> <span class="meta-txt">${escapeHtml(COMPANY_CONFIG.state_code || '33')}</span>
               </div>
-              <div class="buyer-block">
-                <table class="buyer-layout-table">
+              <div class="meta-field" style="margin-top: 4px;">
+                <table class="meta-field-table">
                   <tr>
-                    <td class="buyer-lbl-cell"><span class="meta-lbl font-bold">BUYER:</span></td>
-                    <td class="buyer-content-cell">
-                      <div class="meta-txt font-bold buyer-name">${escapeHtml(invoiceData.buyer_name || '')}</div>
-                      ${invoiceData.buyer_address ? `<div class="meta-txt buyer-addr">${escapeHtml(invoiceData.buyer_address)}</div>` : ''}
-                    </td>
+                    <td class="meta-field-lbl"><span class="meta-lbl font-bold">BUYER:</span></td>
+                    <td class="meta-field-txt"><span class="meta-txt font-bold buyer-name">${escapeHtml(invoiceData.buyer_name || '')}</span></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="meta-field">
+                <table class="meta-field-table">
+                  <tr>
+                    <td class="meta-field-lbl"><span class="meta-lbl font-bold">CUSTOMER ADDRESS:</span></td>
+                    <td class="meta-field-txt"><span class="meta-txt buyer-addr">${escapeHtml(invoiceData.buyer_address || '-')}</span></td>
                   </tr>
                 </table>
               </div>
@@ -166,7 +171,14 @@ export function renderInvoiceHtml(invoiceData) {
               <div class="meta-field"><span class="meta-lbl font-bold">TRANSPORTATION MODE:</span> <span class="meta-txt">${escapeHtml(invoiceData.transportation_mode || '-')}</span></div>
               <div class="meta-field"><span class="meta-lbl font-bold">VEHICLE NO:</span> <span class="meta-txt">${escapeHtml(invoiceData.vehicle_number || '-')}</span></div>
               <div class="meta-field"><span class="meta-lbl font-bold">DATE OF SUPPLY:</span> <span class="meta-txt font-medium">${escapeHtml(formatSupplyDates(invoiceData.date_of_supply_from, invoiceData.date_of_supply_to, invoiceData.date_of_supply || docDate))}</span></div>
-              <div class="meta-field"><span class="meta-lbl font-bold">DELIVERY ADDRESS:</span> <span class="meta-txt">${escapeHtml(deliveryAddress)}</span></div>
+              <div class="meta-field">
+                <table class="meta-field-table">
+                  <tr>
+                    <td class="meta-field-lbl"><span class="meta-lbl font-bold">DELIVERY ADDRESS:</span></td>
+                    <td class="meta-field-txt"><span class="meta-txt">${escapeHtml(deliveryAddress)}</span></td>
+                  </tr>
+                </table>
+              </div>
             </td>
           </tr>
           <tr class="customer-info-row">

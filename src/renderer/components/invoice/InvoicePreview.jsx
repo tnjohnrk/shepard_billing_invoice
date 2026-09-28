@@ -347,15 +347,31 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                 <span className="font-bold ml-2">STATE CODE: </span>
                                 <span>{COMPANY_CONFIG.state_code || '33'}</span>
                               </div>
-                              <div className="pt-1">
-                                <div className="leading-tight">
-                                  <span className="font-bold">BUYER: </span>
-                                  <span className="font-black text-slate-950 text-[12px]">{fullData.buyer_name}</span>
-                                </div>
-                                <div className="leading-tight mt-1">
-                                  <span className="font-bold">CUSTOMER ADDRESS: </span>
-                                  <span className="text-[10.5px] text-slate-900 whitespace-pre-line font-medium">{fullData.buyer_address}</span>
-                                </div>
+                              <div className="pt-0.5 space-y-1">
+                                <table className="w-full border-collapse m-0 p-0">
+                                  <tbody>
+                                    <tr>
+                                      <td className="align-top font-bold whitespace-nowrap pr-1 w-[1%] text-[11px] p-0 border-none">
+                                        BUYER:
+                                      </td>
+                                      <td className="align-top font-black text-slate-950 text-[11.5px] p-0 border-none leading-tight">
+                                        {fullData.buyer_name}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <table className="w-full border-collapse m-0 p-0">
+                                  <tbody>
+                                    <tr>
+                                      <td className="align-top font-bold whitespace-nowrap pr-1 w-[1%] text-[11px] p-0 border-none">
+                                        CUSTOMER ADDRESS:
+                                      </td>
+                                      <td className="align-top text-[10.5px] text-slate-900 whitespace-pre-line font-medium p-0 border-none leading-tight">
+                                        {fullData.buyer_address}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
                               </div>
                             </td>
 
@@ -392,10 +408,18 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                                   })()}
                                 </span>
                               </div>
-                              <div className="leading-tight">
-                                <span className="font-bold">DELIVERY ADDRESS: </span>
-                                <span>{fullData.delivery_address || fullData.buyer_address || '-'}</span>
-                              </div>
+                              <table className="w-full border-collapse m-0 p-0">
+                                <tbody>
+                                  <tr>
+                                    <td className="align-top font-bold whitespace-nowrap pr-1 w-[1%] text-[11px] p-0 border-none">
+                                      DELIVERY ADDRESS:
+                                    </td>
+                                    <td className="align-top text-[10.5px] text-slate-900 whitespace-pre-line font-medium p-0 border-none leading-tight">
+                                      {fullData.delivery_address || fullData.buyer_address || '-'}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
                             </td>
                           </tr>
 

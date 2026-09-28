@@ -1,26 +1,38 @@
 import React from 'react';
-import { Building2, Lock, Sun, Moon, Menu, Keyboard } from 'lucide-react';
+import { Building2, Lock, Sun, Moon, Keyboard, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { COMPANY_CONFIG } from '../../../main/config/companyConfig';
 
-export function Header({ title, subtitle, onLockApp, onToggleMobileMenu, onOpenShortcuts }) {
+export function Header({ 
+  title, 
+  subtitle, 
+  isSidebarCollapsed, 
+  onToggleSidebar, 
+  onLockApp, 
+  onOpenShortcuts 
+}) {
   const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="h-16 bg-white dark:bg-[#161b22] border-b border-slate-200 dark:border-[#30363d] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 select-none transition-colors">
-      {/* Mobile Menu Toggle & Breadcrumb / Title Area */}
+      {/* Sidebar Toggle & Breadcrumb / Title Area */}
       <div className="flex items-center gap-3 min-w-0">
-        {onToggleMobileMenu && (
+        {onToggleSidebar && (
           <button
             type="button"
-            onClick={onToggleMobileMenu}
-            className="lg:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#21262d] border border-slate-200 dark:border-[#30363d] cursor-pointer shrink-0"
-            title="Toggle Navigation Menu"
-            aria-label="Toggle navigation menu"
+            onClick={onToggleSidebar}
+            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#21262d] border border-slate-200 dark:border-[#30363d] cursor-pointer shrink-0 transition-all active:scale-95 shadow-2xs"
+            title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            aria-label={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
-            <Menu className="w-4 h-4" />
+            {isSidebarCollapsed ? (
+              <PanelLeftOpen className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+            ) : (
+              <PanelLeftClose className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+            )}
           </button>
         )}
+
         <div className="flex items-center gap-2 min-w-0">
           <span className="hidden sm:inline-block text-xs font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider shrink-0">
             Workspace
