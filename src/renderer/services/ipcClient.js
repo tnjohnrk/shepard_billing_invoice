@@ -202,7 +202,8 @@ function renderClientInvoiceHtml(data) {
             <tr>
               <td rowspan="__ROWSPAN__" style="width: 50%; border-right: 1.5px solid #000; padding: 8px 8px; vertical-align: top;">
                 <div style="font-weight: 900; font-size: 11.5px; margin-bottom: 4px;">BANK DETAILS</div>
-                <div style="font-size: 11px; line-height: 1.35; margin-bottom: 3px;"><strong>BANK NAME:</strong> ${COMPANY_CONFIG.bank_name}: ${COMPANY_CONFIG.account_number}</div>
+                <div style="font-size: 11px; line-height: 1.35; margin-bottom: 3px;"><strong>BANK NAME:</strong> ${COMPANY_CONFIG.bank_name}</div>
+                <div style="font-size: 11px; line-height: 1.35; margin-bottom: 3px;"><strong>ACCOUNT NUMBER:</strong> ${COMPANY_CONFIG.account_number}</div>
                 <div style="font-size: 11px; line-height: 1.35; margin-bottom: 3px;"><strong>BRANCH NAME:</strong> ${(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
                 <div style="font-size: 11px; line-height: 1.35;"><strong>IFSC CODE:</strong> ${COMPANY_CONFIG.ifsc_code}</div>
               </td>

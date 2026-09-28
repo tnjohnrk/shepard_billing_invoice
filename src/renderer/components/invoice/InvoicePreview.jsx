@@ -565,7 +565,8 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                       const bankCell = (
                         <td rowSpan={totalRowsCount} className="w-[50%] p-2.5 border-r-[1.5px] border-black align-top space-y-1">
                           <div className="font-black text-[11.5px] uppercase text-slate-900 mb-1">BANK DETAILS</div>
-                          <div><span className="font-bold">BANK NAME: </span>{COMPANY_CONFIG.bank_name}: {COMPANY_CONFIG.account_number}</div>
+                          <div><span className="font-bold">BANK NAME: </span>{COMPANY_CONFIG.bank_name}</div>
+                          <div><span className="font-bold">ACCOUNT NUMBER: </span>{COMPANY_CONFIG.account_number}</div>
                           <div><span className="font-bold">BRANCH NAME: </span>{(COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase()}</div>
                           <div><span className="font-bold">IFSC CODE: </span>{COMPANY_CONFIG.ifsc_code}</div>
                         </td>

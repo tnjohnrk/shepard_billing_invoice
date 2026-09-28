@@ -302,7 +302,8 @@ export function renderInvoiceHtml(invoiceData) {
       const bankDetailsCellHtml = `
         <td class="bank-details-cell" rowspan="__ROWSPAN__">
           <div class="bank-heading font-bold">BANK DETAILS</div>
-          <div class="bank-item"><span class="font-bold">BANK NAME:</span> ${escapeHtml(COMPANY_CONFIG.bank_name)}: ${escapeHtml(COMPANY_CONFIG.account_number)}</div>
+          <div class="bank-item"><span class="font-bold">BANK NAME:</span> ${escapeHtml(COMPANY_CONFIG.bank_name)}</div>
+          <div class="bank-item"><span class="font-bold">ACCOUNT NUMBER:</span> ${escapeHtml(COMPANY_CONFIG.account_number)}</div>
           <div class="bank-item"><span class="font-bold">BRANCH NAME:</span> ${escapeHtml((COMPANY_CONFIG.branch_name || 'Ambattur - Officer Colony').toUpperCase())}</div>
           <div class="bank-item"><span class="font-bold">IFSC CODE:</span> ${escapeHtml(COMPANY_CONFIG.ifsc_code)}</div>
         </td>
