@@ -20,7 +20,7 @@ import { initializeAutoUpdater } from './services/updateService.js';
 let mainWindow = null;
 
 function createMainWindow() {
-  const iconPath = path.join(__dirname, '../renderer/assets/billing_image.png');
+  const iconPath = path.join(__dirname, '../renderer/assets/app_icon.png');
   const appIcon = fs.existsSync(iconPath) ? iconPath : undefined;
 
   mainWindow = new BrowserWindow({

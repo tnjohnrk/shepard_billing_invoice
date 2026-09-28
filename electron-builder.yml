@@ -7,15 +7,11 @@ directories:
   buildResources: build
 
 files:
-  - src/main/**/*
-  - src/shared/**/*
-  - dist/renderer/**/*
+  - dist/**/*
   - package.json
   - node_modules/**/*
 
 win:
-  signAndEditExecutable: false
-  forceCodeSigning: false
   target:
     - target: nsis
       arch:
@@ -23,7 +19,7 @@ win:
     - target: portable
       arch:
         - x64
-  icon: src/renderer/assets/billing_image.png
+  icon: src/renderer/assets/app_icon.ico
 
 nsis:
   oneClick: false
@@ -33,7 +29,9 @@ nsis:
   installerSidebar: src/renderer/assets/billing_image.png
   uninstallerSidebar: src/renderer/assets/billing_image.png
   installerHeader: src/renderer/assets/billing_image.png
-  installerHeaderIcon: src/renderer/assets/billing_image.png
+  installerHeaderIcon: src/renderer/assets/app_icon.ico
+  installerIcon: src/renderer/assets/app_icon.ico
+  uninstallerIcon: src/renderer/assets/app_icon.ico
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: Shepherd Invoice Billing
