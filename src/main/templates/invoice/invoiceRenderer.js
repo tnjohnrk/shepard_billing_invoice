@@ -8,13 +8,786 @@ import { COMPANY_CONFIG } from '../../config/companyConfig.js';
 import { TEMPLATE_CONFIG } from './templateConfig.js';
 import { getCopyTypeLabel } from '../../../shared/constants/copyTypes.js';
 import { paginateInvoiceItems } from '../../../shared/utils/invoicePagination.js';
+import { COMPANY_LOGO_DATA_URI } from '../../../shared/constants/companyLogo.js';
+
+// Embedded bulletproof fallback CSS ensuring PDF and Print are 100% styled in all bundled and packaged environments
+export const DEFAULT_INVOICE_CSS = `
+/* Exact Hardcoded Print & PDF Layout for Shepherd Enterprises Private Limited */
+@page {
+  size: A4 portrait;
+  margin: 8mm;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  line-height: 1.25;
+  color: #000;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.invoice-container {
+  width: 100%;
+  max-width: 194mm;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.invoice-page {
+  width: 100%;
+  max-width: 194mm;
+  height: 281mm;
+  min-height: 281mm;
+  max-height: 281mm;
+  page-break-after: avoid;
+  break-after: avoid;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.invoice-page.is-last-page,
+.invoice-page:last-child {
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+.invoice-box-frame {
+  width: 100%;
+  height: 100%;
+  min-height: 281mm;
+  border: 2px solid #000;
+  background: #fff;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.top-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+}
+
+.bottom-content {
+  width: 100%;
+}
+
+@media print {
+  .invoice-page {
+    width: 100%;
+    max-width: 194mm;
+    height: 281mm !important;
+    min-height: 281mm !important;
+    max-height: 281mm !important;
+    margin: 0;
+    padding: 0;
+    page-break-after: avoid;
+    break-after: avoid;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    overflow: hidden !important;
+  }
+
+  .invoice-box-frame {
+    width: 100%;
+    height: 100% !important;
+    min-height: 281mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+}
+
+/* 1. Header Section */
+.header-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-bottom: 2px solid #000;
+}
+
+.header-left-col {
+  width: 24%;
+  vertical-align: middle;
+  text-align: center;
+  padding: 10px 8px;
+  border-right: 1.5px solid #000;
+}
+
+.header-logo-img {
+  width: 125px;
+  height: 125px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+.company-sub-brand {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-top: 6px;
+  letter-spacing: 0.5px;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.company-upi-tag {
+  font-size: 8px;
+  font-family: monospace;
+  font-weight: 700;
+  color: #1e293b;
+  word-break: break-all;
+  line-height: 1.25;
+  margin-top: 4px;
+  max-width: 155px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.header-center-col {
+  width: 76%;
+  vertical-align: middle;
+  text-align: center;
+  padding: 12px;
+}
+
+.company-brand-title {
+  font-size: 42px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 12px;
+  color: #1e3a8a;
+  line-height: 1;
+  margin: 0;
+  padding-left: 12px;
+  white-space: nowrap;
+}
+
+.company-sub-title {
+  font-size: 19px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 7px;
+  color: #1e3a8a;
+  line-height: 1.15;
+  margin-top: 6px;
+  padding-left: 7px;
+  white-space: nowrap;
+}
+
+.company-address-line {
+  font-size: 8.8px;
+  font-weight: bold;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  line-height: 1.3;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+
+.company-contact-line {
+  font-size: 9.5px;
+  font-weight: bold;
+  color: #020617;
+  line-height: 1.3;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+/* 2. Sub Header Row Table */
+.sub-header-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-bottom: 2px solid #000;
+  font-size: 11px;
+}
+
+.sub-header-row td {
+  padding: 8px;
+  vertical-align: middle;
+}
+
+.cell-gstin {
+  width: 38%;
+  font-size: 12px;
+  font-weight: bold;
+  border-right: 1.5px solid #000;
+}
+
+.cell-doc-title {
+  width: 24%;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #1e3a8a;
+  border-right: 1.5px solid #000;
+}
+
+.cell-copy-type {
+  width: 38%;
+  text-align: right;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cont-sub-header {
+  background: #f8fafc;
+}
+
+/* 3. Meta Grid Table */
+.meta-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-bottom: 2px solid #000;
+  font-size: 11px;
+}
+
+.meta-left-cell {
+  width: 50%;
+  border-right: 1.5px solid #000;
+  border-bottom: 1.5px solid #000;
+  padding: 8px;
+  vertical-align: top;
+}
+
+.meta-right-cell {
+  width: 50%;
+  border-bottom: 1.5px solid #000;
+  padding: 8px;
+  vertical-align: top;
+}
+
+.meta-field {
+  font-size: 11px;
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+
+.meta-lbl {
+  font-weight: bold;
+}
+
+.meta-txt {
+  font-weight: normal;
+}
+
+.meta-field-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+}
+
+.meta-field-table td {
+  padding: 0;
+  vertical-align: top;
+  border: none !important;
+}
+
+.meta-field-lbl {
+  width: 1%;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 1.25;
+  padding-right: 4px !important;
+}
+
+.meta-field-txt {
+  vertical-align: top;
+  font-size: 10.5px;
+  line-height: 1.25;
+  white-space: pre-line;
+}
+
+.buyer-block {
+  margin-top: 4px;
+}
+
+.buyer-layout-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+}
+
+.buyer-layout-table td {
+  padding: 0;
+  vertical-align: top;
+  border: none !important;
+}
+
+.buyer-lbl-cell {
+  width: 1%;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 1.25;
+  padding-right: 4px !important;
+}
+
+.buyer-content-cell {
+  vertical-align: top;
+}
+
+.buyer-name {
+  font-size: 11.5px;
+  font-weight: 900;
+  color: #020617;
+  line-height: 1.25;
+}
+
+.buyer-addr {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #0f172a;
+  white-space: pre-line;
+  line-height: 1.25;
+}
+
+/* Customer GSTIN Row */
+.customer-info-row td {
+  padding: 8px;
+  vertical-align: middle;
+}
+
+.cust-gstin-cell {
+  width: 50%;
+  border-right: 1.5px solid #000;
+  font-size: 11.5px;
+  font-weight: bold;
+}
+
+.cust-state-cell {
+  width: 50%;
+  font-size: 11px;
+}
+
+/* 4. Items Grid Table */
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border-bottom: 2px solid #000;
+  font-size: 11px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.items-table thead {
+  width: 100%;
+}
+
+.items-head-row {
+  display: flex;
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 2px solid #000;
+  font-size: 10.5px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.items-head-row th {
+  border-right: 1.5px solid #000;
+  border-bottom: none;
+  background: #ffffff;
+  font-size: 10.5px;
+  font-weight: bold;
+  padding: 8px 10px;
+  box-sizing: border-box;
+}
+
+.items-head-row th.col-desc {
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.items-head-row th.col-amount {
+  border-right: none;
+  text-align: right;
+}
+
+.items-table tbody {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-data-row {
+  display: flex;
+  width: 100%;
+  min-height: 34px;
+  border-bottom: 1.5px solid #000;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+.item-data-row td {
+  border-right: 1.5px solid #000;
+  border-bottom: none;
+  padding: 6px 10px;
+  font-size: 11px;
+  box-sizing: border-box;
+}
+
+.item-data-row td.col-desc {
+  padding: 6px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.item-data-row td.col-hsn {
+  text-align: center;
+  font-family: monospace;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-data-row td.col-qty {
+  text-align: center;
+  font-family: monospace;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-data-row td.col-rate {
+  text-align: right;
+  font-family: monospace;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.item-data-row td.col-amount {
+  border-right: none;
+  text-align: right;
+  font-family: monospace;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.filler-row {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  border-bottom: none;
+}
+
+.filler-row td {
+  border-right: 1.5px solid #000;
+  border-bottom: none;
+  padding: 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.filler-row td.col-amount {
+  border-right: none;
+}
+
+.col-desc {
+  width: 54%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.col-hsn {
+  width: 11%;
+}
+
+.col-qty {
+  width: 11%;
+}
+
+.col-rate {
+  width: 12%;
+}
+
+.col-amount {
+  width: 12%;
+}
+
+.item-desc-text {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 11px;
+  line-height: 1.35;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  text-align: left;
+  white-space: pre-wrap;
+  color: #020617;
+}
+
+.item-refs-block {
+  margin-top: 4px;
+  font-size: 9px;
+  font-weight: bold;
+  line-height: 1.35;
+  color: #0f172a;
+}
+
+/* Page-wise Subtotal Row (Multi-page invoices) */
+.page-subtotal-row {
+  display: flex;
+  width: 100%;
+  border-top: 2px solid #000;
+  background: #f8fafc;
+  font-size: 10.5px;
+  font-weight: bold;
+}
+
+.page-subtotal-row td {
+  padding: 8px 10px;
+}
+
+.page-subtotal-label {
+  width: 88%;
+  text-align: right;
+  border-right: 1.5px solid #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.page-subtotal-amount {
+  width: 12%;
+  text-align: right;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.cont-notice {
+  float: left;
+  font-size: 9px;
+  font-style: italic;
+  font-weight: normal;
+  color: #475569;
+}
+
+.page-breakdown-subtotal-row td {
+  font-size: 10px !important;
+  background: #f8fafc;
+}
+
+/* 5. Words Row Table */
+.words-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-bottom: 2px solid #000;
+  background: #ffffff;
+  font-size: 11px;
+}
+
+.amount-words-cell {
+  padding: 6px 12px !important;
+  font-size: 11px !important;
+  font-weight: normal !important;
+  text-align: left !important;
+  line-height: 1.3 !important;
+  background: #ffffff !important;
+}
+
+/* 6. Bank Details & Tax Section */
+.bank-tax-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-bottom: 2px solid #000;
+  font-size: 11px;
+}
+
+.bank-tax-table td {
+  border-bottom: 1.5px solid #000;
+  padding: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.bank-details-cell {
+  width: 50% !important;
+  border-right: 1.5px solid #000 !important;
+  border-bottom: none !important;
+  padding: 10px !important;
+  vertical-align: top !important;
+  white-space: normal !important;
+}
+
+.bank-heading {
+  font-size: 11.5px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  margin-bottom: 4px !important;
+}
+
+.bank-item {
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  margin-bottom: 3px !important;
+}
+
+.tax-title-col {
+  width: 34% !important;
+  text-align: left !important;
+  border-right: 1.5px solid #000 !important;
+  white-space: nowrap !important;
+}
+
+.tax-num-col {
+  width: 16% !important;
+  text-align: right !important;
+  font-family: monospace !important;
+  white-space: nowrap !important;
+}
+
+.total-after-tax-line td {
+  font-size: 11.5px !important;
+  font-weight: 900 !important;
+  background: #f8fafc !important;
+  border-bottom: none !important;
+  white-space: nowrap !important;
+}
+
+/* 7. Footer Section */
+.footer-layout-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+
+.footer-terms-col {
+  width: 50%;
+  vertical-align: top;
+  padding: 12px;
+  border-right: 1.5px solid #000;
+}
+
+.terms-title {
+  font-size: 11px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #0f172a;
+}
+
+.terms-list {
+  font-size: 9.5px;
+  line-height: 1.4;
+  color: #1e293b;
+}
+
+.notes-text {
+  font-size: 9.5px;
+  color: #0f172a;
+  margin-top: 6px;
+}
+
+.footer-sign-col {
+  width: 50%;
+  vertical-align: top;
+  padding: 12px;
+  text-align: center;
+}
+
+.certify-text {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  font-weight: bold;
+  color: #1e293b;
+}
+
+.company-sign-title {
+  font-size: 12px;
+  color: #1e3a8a;
+  margin-bottom: 4px;
+  font-weight: 900;
+}
+
+.signature-space {
+  height: 88px;
+}
+
+.signatory-label {
+  font-size: 11.5px;
+  font-weight: bold;
+  text-align: right;
+  padding-right: 16px;
+  color: #020617;
+}
+
+/* Utilities */
+.font-bold { font-weight: bold; }
+.uppercase { text-transform: uppercase; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+`;
+
+function resolveFile(fileName) {
+  const candidatePaths = [
+    path.join(__dirname, fileName),
+    path.join(__dirname, 'templates', 'invoice', fileName),
+    path.join(__dirname, '..', 'templates', 'invoice', fileName),
+    path.join(__dirname, '..', 'src', 'main', 'templates', 'invoice', fileName),
+    path.join(process.cwd(), 'src', 'main', 'templates', 'invoice', fileName),
+    path.join(process.cwd(), 'dist', 'main', 'templates', 'invoice', fileName),
+    path.join(process.cwd(), 'dist', 'main', fileName),
+    path.join(process.cwd(), fileName)
+  ];
+
+  for (const p of candidatePaths) {
+    try {
+      if (fs.existsSync(p)) {
+        return p;
+      }
+    } catch {}
+  }
+  return null;
+}
 
 export function renderInvoiceHtml(invoiceData) {
-  const htmlPath = path.join(__dirname, 'invoiceTemplate.html');
-  const cssPath = path.join(__dirname, 'invoiceTemplate.css');
-
-  let htmlTemplate = fs.existsSync(htmlPath) ? fs.readFileSync(htmlPath, 'utf8') : '';
-  let cssContent = fs.existsSync(cssPath) ? fs.readFileSync(cssPath, 'utf8') : '';
+  const resolvedCssPath = resolveFile('invoiceTemplate.css');
+  let cssContent = '';
+  if (resolvedCssPath) {
+    try {
+      cssContent = fs.readFileSync(resolvedCssPath, 'utf8');
+    } catch {}
+  }
+  if (!cssContent || cssContent.trim().length === 0) {
+    cssContent = DEFAULT_INVOICE_CSS;
+  }
 
   const isProforma = String(invoiceData.invoice_type).toUpperCase() === 'PROFORMA';
   const docType = isProforma ? 'PROFORMA INVOICE' : 'INVOICE';
@@ -22,13 +795,19 @@ export function renderInvoiceHtml(invoiceData) {
   const docDate = (isProforma ? invoiceData.proforma_date : invoiceData.invoice_date) || invoiceData.invoice_date || invoiceData.proforma_date || '';
   const copyTypeLabel = getCopyTypeLabel(invoiceData.copy_type, isProforma);
 
-  // Read and encode company logo to base64 Data URI
-  const logoPath = path.join(__dirname, 'logo.png');
-  let logoHtml = '';
-  if (fs.existsSync(logoPath)) {
-    const logoBase64 = fs.readFileSync(logoPath).toString('base64');
-    logoHtml = `<img src="data:image/png;base64,${logoBase64}" alt="Shepherd Enterprises" class="header-logo-img" />`;
+  // Read and encode company logo to base64 Data URI with fallbacks
+  let logoDataUri = COMPANY_LOGO_DATA_URI;
+  const resolvedLogoPath = resolveFile('logo.png');
+  if (resolvedLogoPath) {
+    try {
+      const logoBuffer = fs.readFileSync(resolvedLogoPath);
+      logoDataUri = `data:image/png;base64,${logoBuffer.toString('base64')}`;
+    } catch {}
   }
+
+  const logoHtml = logoDataUri
+    ? `<img src="${logoDataUri}" alt="Shepherd Enterprises" class="header-logo-img" />`
+    : '';
 
   const upiId = COMPANY_CONFIG.upi_id || 'msshepherdenterprisesprivatelimited.eazypay@icici';
   const deliveryAddress = invoiceData.delivery_address || invoiceData.buyer_address || '-';
@@ -377,7 +1156,7 @@ export function renderInvoiceHtml(invoiceData) {
   <meta charset="UTF-8">
   <title>${escapeHtml(docType)} - ${escapeHtml(docNum)}</title>
   <style>
-    ${cssContent}
+${cssContent}
   </style>
 </head>
 <body>

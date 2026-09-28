@@ -28,12 +28,18 @@ execSync(
   { cwd: rootDir, stdio: 'inherit' }
 );
 
-// 3. Copy template assets to dist/main/templates/invoice
+// 3. Copy template assets to dist/main/templates/invoice and dist/main/
 const templateSrc = path.join(rootDir, 'src', 'main', 'templates', 'invoice');
 const templateDest = path.join(rootDir, 'dist', 'main', 'templates', 'invoice');
 if (fs.existsSync(templateSrc)) {
   fs.mkdirSync(templateDest, { recursive: true });
   fs.cpSync(templateSrc, templateDest, { recursive: true });
+  // Also copy directly to dist/main/ for flat bundled access
+  fs.cpSync(templateSrc, distMainDir, { recursive: true });
+  // Also copy to root dist/templates/invoice
+  const rootTemplateDest = path.join(rootDir, 'dist', 'templates', 'invoice');
+  fs.mkdirSync(rootTemplateDest, { recursive: true });
+  fs.cpSync(templateSrc, rootTemplateDest, { recursive: true });
 }
 
 // 4. Copy renderer image assets to dist/renderer/assets & dist/main/
