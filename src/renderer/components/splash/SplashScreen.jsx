@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import companyLogo from '../../assets/billing_image.png';
+import companyLogo from '../../assets/app_icon.png';
 import { ShieldCheck, Sparkles, Database, CheckCircle2 } from 'lucide-react';
 
 export function SplashScreen() {

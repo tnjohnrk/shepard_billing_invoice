@@ -36,4 +36,13 @@ if (fs.existsSync(templateSrc)) {
   fs.cpSync(templateSrc, templateDest, { recursive: true });
 }
 
+// 4. Copy renderer image assets to dist/renderer/assets & dist/main/
+const rendererAssetsSrc = path.join(rootDir, 'src', 'renderer', 'assets');
+const rendererAssetsDest = path.join(rootDir, 'dist', 'renderer', 'assets');
+if (fs.existsSync(rendererAssetsSrc)) {
+  fs.mkdirSync(rendererAssetsDest, { recursive: true });
+  fs.cpSync(rendererAssetsSrc, rendererAssetsDest, { recursive: true });
+  fs.cpSync(rendererAssetsSrc, distMainDir, { recursive: true });
+}
+
 console.log('✨ Build complete: All source code compiled and minified in dist/');

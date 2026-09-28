@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Key, ShieldCheck, Lock, Eye, EyeOff, CheckCircle2, ArrowRight, ShieldAlert, Sparkles, Laptop, Shield } from 'lucide-react';
-import companyLogo from '../../assets/billing_image.png';
+import React, { useState, useRef } from 'react';
+import { Key, ShieldCheck, Lock, CheckCircle2, ArrowRight, ShieldAlert, Sparkles, Laptop, Shield } from 'lucide-react';
+import companyLogo from '../../assets/app_icon.png';
 import { Button } from '../common/Button';
 import { Toast } from '../common/Toast';
 import { ipcClient } from '../../services/ipcClient';
@@ -11,11 +11,11 @@ export function ProductKeyActivation({ onActivationComplete }) {
   const [productKey, setProductKey] = useState('');
   const [showProductKey, setShowProductKey] = useState(false);
 
-  // Password creation state
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  // 4-Digit PIN creation state
+  const [newPin, setNewPin] = useState(['', '', '', '']);
+  const [confirmPin, setConfirmPin] = useState(['', '', '', '']);
+  const newPinRefs = useRef([]);
+  const confirmPinRefs = useRef([]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -29,6 +29,59 @@ export function ProductKeyActivation({ onActivationComplete }) {
       .replace(/^Error invoking remote method '.*?': /i, '')
       .replace(/^Error: /i, '')
       .trim();
+  };
+
+  const handlePinChange = (type, index, val) => {
+    const digit = val.slice(-1).replace(/\D/g, '');
+    const isNew = type === 'new';
+    const currentList = isNew ? [...newPin] : [...confirmPin];
+    const refs = isNew ? newPinRefs : confirmPinRefs;
+
+    currentList[index] = digit;
+    if (isNew) {
+      setNewPin(currentList);
+    } else {
+      setConfirmPin(currentList);
+    }
+    if (error) setError('');
+
+    if (digit && index < 3) {
+      refs.current[index + 1]?.focus();
+    } else if (digit && index === 3 && isNew) {
+      confirmPinRefs.current[0]?.focus();
+    }
+  };
+
+  const handlePinKeyDown = (type, index, e) => {
+    const isNew = type === 'new';
+    const currentList = isNew ? newPin : confirmPin;
+    const refs = isNew ? newPinRefs : confirmPinRefs;
+
+    if (e.key === 'Backspace' && !currentList[index] && index > 0) {
+      refs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePinPaste = (type, e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').slice(0, 4).replace(/\D/g, '');
+    if (pastedData) {
+      const isNew = type === 'new';
+      const updated = isNew ? [...newPin] : [...confirmPin];
+      const refs = isNew ? newPinRefs : confirmPinRefs;
+
+      for (let i = 0; i < pastedData.length; i++) {
+        updated[i] = pastedData[i];
+      }
+      if (isNew) {
+        setNewPin(updated);
+      } else {
+        setConfirmPin(updated);
+      }
+      if (error) setError('');
+      const focusIndex = Math.min(pastedData.length, 3);
+      refs.current[focusIndex]?.focus();
+    }
   };
 
   // Step 1: Submit Product Key
@@ -57,6 +110,9 @@ export function ProductKeyActivation({ onActivationComplete }) {
           setTimeout(() => {
             setStep(2);
             setIsLoading(false);
+            setTimeout(() => {
+              newPinRefs.current[0]?.focus();
+            }, 300);
           }, 600);
         }
       }
@@ -66,19 +122,19 @@ export function ProductKeyActivation({ onActivationComplete }) {
     }
   };
 
-  // Step 2: Create Mandatory Password
+  // Step 2: Create Mandatory 4-Digit Security PIN
   const handleCreatePassword = async (e) => {
     if (e) e.preventDefault();
-    const p1 = newPassword.trim();
-    const p2 = confirmPassword.trim();
+    const p1 = newPin.join('');
+    const p2 = confirmPin.join('');
 
-    if (p1.length < 4) {
-      setError('Security password must be at least 4 characters long.');
+    if (p1.length !== 4) {
+      setError('Security PIN must be exactly 4 digits.');
       return;
     }
 
     if (p1 !== p2) {
-      setError('Passwords do not match. Please re-enter.');
+      setError('4-digit PINs do not match. Please re-enter.');
       return;
     }
 
@@ -88,7 +144,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
     try {
       await ipcClient.createInitialPassword(p1);
       setStep(3);
-      setToastState({ type: 'success', message: 'Security password configured successfully!' });
+      setToastState({ type: 'success', message: '4-digit security PIN configured successfully!' });
 
       setTimeout(() => {
         sessionStorage.setItem('session_unlocked', 'true');
@@ -215,75 +271,65 @@ export function ProductKeyActivation({ onActivationComplete }) {
           </div>
         )}
 
-        {/* STEP 2: Mandatory Password Creation */}
+        {/* STEP 2: Mandatory 4-Digit Security PIN Creation */}
         {step === 2 && (
           <div className="mt-6 space-y-5">
             <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-200 leading-relaxed">
               <div className="flex items-center gap-2 font-bold mb-1">
                 <Shield className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                <span>Mandatory Security Password Setup</span>
+                <span>Mandatory 4-Digit Security PIN Setup</span>
               </div>
               <span>
-                To secure your billing and tax records, create a security password. You will use this password every day to open and use the application.
+                To secure your billing and tax records, create a 4-digit security PIN. You will use this PIN every day to unlock the application.
               </span>
             </div>
 
             <form onSubmit={handleCreatePassword} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                  Create Security Password <span className="text-rose-500">*</span>
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 block text-center">
+                  Create 4-Digit Security PIN <span className="text-rose-500">*</span>
                 </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter password (min. 4 characters or PIN)"
-                    value={newPassword}
-                    onChange={(e) => {
-                      setNewPassword(e.target.value);
-                      if (error) setError('');
-                    }}
-                    autoFocus
-                    required
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-3 pr-10 text-sm font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors shadow-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+                <div className="flex justify-center gap-2.5 sm:gap-3">
+                  {[0, 1, 2, 3].map((index) => (
+                    <input
+                      key={`new-${index}`}
+                      ref={(el) => (newPinRefs.current[index] = el)}
+                      type="password"
+                      maxLength={1}
+                      value={newPin[index]}
+                      onChange={(e) => handlePinChange('new', index, e.target.value)}
+                      onKeyDown={(e) => handlePinKeyDown('new', index, e)}
+                      onPaste={(e) => handlePinPaste('new', e)}
+                      className="w-11 h-13 sm:w-12 sm:h-14 font-mono text-center text-2xl font-bold rounded-xl bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-none transition-all shadow-2xs"
+                      autoFocus={index === 0}
+                    />
+                  ))}
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                  Confirm Security Password <span className="text-rose-500">*</span>
+              <div className="space-y-2 pt-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 block text-center">
+                  Confirm 4-Digit Security PIN <span className="text-rose-500">*</span>
                 </label>
-                <div className="relative">
-                  <input
-                    type={showConfirm ? 'text' : 'password'}
-                    placeholder="Re-enter password"
-                    value={confirmPassword}
-                    onChange={(e) => {
-                      setConfirmPassword(e.target.value);
-                      if (error) setError('');
-                    }}
-                    required
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-3 pr-10 text-sm font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors shadow-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirm(!showConfirm)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
-                  >
-                    {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+                <div className="flex justify-center gap-2.5 sm:gap-3">
+                  {[0, 1, 2, 3].map((index) => (
+                    <input
+                      key={`confirm-${index}`}
+                      ref={(el) => (confirmPinRefs.current[index] = el)}
+                      type="password"
+                      maxLength={1}
+                      value={confirmPin[index]}
+                      onChange={(e) => handlePinChange('confirm', index, e.target.value)}
+                      onKeyDown={(e) => handlePinKeyDown('confirm', index, e)}
+                      onPaste={(e) => handlePinPaste('confirm', e)}
+                      className="w-11 h-13 sm:w-12 sm:h-14 font-mono text-center text-2xl font-bold rounded-xl bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-none transition-all shadow-2xs"
+                    />
+                  ))}
                 </div>
               </div>
 
               {error && (
-                <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
+                <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-300 flex items-center justify-center gap-2">
                   <ShieldAlert className="w-4 h-4 shrink-0" />
                   <span>{error}</span>
                 </div>
@@ -296,7 +342,7 @@ export function ProductKeyActivation({ onActivationComplete }) {
                 isLoading={isLoading}
                 icon={ArrowRight}
               >
-                Save Password &amp; Open Billing System
+                Save 4-Digit PIN &amp; Open Billing System
               </Button>
             </form>
           </div>

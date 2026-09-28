@@ -11,7 +11,7 @@ import {
   PanelLeftOpen,
   X
 } from 'lucide-react';
-import companyLogo from '../../assets/billing_image.png';
+import companyLogo from '../../assets/app_icon.png';
 import { FEATURE_FLAGS } from '../../../shared/constants/featureFlags';
 
 export function Sidebar({ 

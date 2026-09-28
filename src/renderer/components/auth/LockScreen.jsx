@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Eye, EyeOff, ShieldCheck, KeyRound, ArrowRight, Clock, Sparkles, CheckCircle2 } from 'lucide-react';
-import companyLogo from '../../assets/billing_image.png';
+import companyLogo from '../../assets/app_icon.png';
 import { Button } from '../common/Button';
 import { Toast } from '../common/Toast';
 import { ipcClient } from '../../services/ipcClient';
@@ -27,11 +27,11 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
   const [trialStart, setTrialStart] = useState('');
   const [trialEnd, setTrialEnd] = useState('');
 
-  // Tab 2: Password Reset State
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showNew, setShowNew] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  // Tab 2: PIN Reset State
+  const [devNewPin, setDevNewPin] = useState(['', '', '', '']);
+  const [devConfirmPin, setDevConfirmPin] = useState(['', '', '', '']);
+  const devNewPinRefs = useRef([]);
+  const devConfirmPinRefs = useRef([]);
 
   const formatCleanError = (err, fallback = 'Verification failed.') => {
     if (!err) return fallback;
@@ -207,15 +207,18 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
     }
   };
 
-  // Developer saves new Password (Tab 2)
+  // Developer saves new 4-Digit PIN (Tab 2)
   const handleSaveNewPassword = async (e) => {
     if (e) e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      setError('New password and confirm password do not match.');
+    const p1 = devNewPin.join('');
+    const p2 = devConfirmPin.join('');
+
+    if (p1.length !== 4) {
+      setError('PIN must be exactly 4 digits.');
       return;
     }
-    if (newPassword.trim().length < 4) {
-      setError('Password must be at least 4 digits/characters long.');
+    if (p1 !== p2) {
+      setError('New PIN and Confirm PIN do not match.');
       return;
     }
 
@@ -223,13 +226,13 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
     setError('');
 
     try {
-      await ipcClient.setSecurityPin('developer@v2c', newPassword.trim());
-      setSuccessMsg('New security password saved successfully!');
+      await ipcClient.setSecurityPin('developer@v2c', p1);
+      setSuccessMsg('New 4-digit security PIN saved successfully!');
       setTimeout(async () => {
-        await onUnlock(newPassword.trim());
+        await onUnlock(p1);
       }, 700);
     } catch (err) {
-      setError(err.message || 'Failed to save new password.');
+      setError(err.message || 'Failed to save new PIN.');
       setIsVerifying(false);
     }
   };
@@ -344,27 +347,17 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                   <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                     Developer Master Password
                   </label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter developer password"
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                        if (error) setError('');
-                      }}
-                      autoFocus
-                      className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2.5 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors font-mono"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 cursor-pointer"
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
+                  <input
+                    type="password"
+                    placeholder="Enter developer password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (error) setError('');
+                    }}
+                    autoFocus
+                    className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors font-mono"
+                  />
                 </div>
 
                 <Button
@@ -569,59 +562,75 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
               </form>
             )}
 
-            {/* TAB 2: Password Reset */}
+            {/* TAB 2: PIN Reset */}
             {devActiveTab === 'password' && (
-              <form onSubmit={handleSaveNewPassword} className="space-y-3.5">
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                    Create New Password / PIN
+              <form onSubmit={handleSaveNewPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block text-center uppercase tracking-wider">
+                    Create New 4-Digit PIN
                   </label>
-                  <div className="relative">
-                    <input
-                      type={showNew ? 'text' : 'password'}
-                      placeholder="Enter new PIN / password (min. 4 chars)"
-                      value={newPassword}
-                      onChange={(e) => {
-                        setNewPassword(e.target.value);
-                        if (error) setError('');
-                      }}
-                      autoFocus
-                      required
-                      className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors font-mono"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowNew(!showNew)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
-                    >
-                      {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+                  <div className="flex justify-center gap-2.5 sm:gap-3">
+                    {[0, 1, 2, 3].map((index) => (
+                      <input
+                        key={`dev-new-${index}`}
+                        ref={(el) => (devNewPinRefs.current[index] = el)}
+                        type="password"
+                        maxLength={1}
+                        value={devNewPin[index]}
+                        onChange={(e) => {
+                          const digit = e.target.value.slice(-1).replace(/\D/g, '');
+                          const updated = [...devNewPin];
+                          updated[index] = digit;
+                          setDevNewPin(updated);
+                          if (error) setError('');
+                          if (digit && index < 3) {
+                            devNewPinRefs.current[index + 1]?.focus();
+                          } else if (digit && index === 3) {
+                            devConfirmPinRefs.current[0]?.focus();
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Backspace' && !devNewPin[index] && index > 0) {
+                            devNewPinRefs.current[index - 1]?.focus();
+                          }
+                        }}
+                        className="w-11 h-13 sm:w-12 sm:h-14 font-mono text-center text-2xl font-bold rounded-xl bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-none transition-all shadow-2xs"
+                        autoFocus={index === 0}
+                      />
+                    ))}
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                    Confirm New Password / PIN
+                <div className="space-y-2 pt-1">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block text-center uppercase tracking-wider">
+                    Confirm New 4-Digit PIN
                   </label>
-                  <div className="relative">
-                    <input
-                      type={showConfirm ? 'text' : 'password'}
-                      placeholder="Re-enter new password / PIN"
-                      value={confirmPassword}
-                      onChange={(e) => {
-                        setConfirmPassword(e.target.value);
-                        if (error) setError('');
-                      }}
-                      required
-                      className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] rounded-xl px-3.5 py-2 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors font-mono"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirm(!showConfirm)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
-                    >
-                      {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+                  <div className="flex justify-center gap-2.5 sm:gap-3">
+                    {[0, 1, 2, 3].map((index) => (
+                      <input
+                        key={`dev-confirm-${index}`}
+                        ref={(el) => (devConfirmPinRefs.current[index] = el)}
+                        type="password"
+                        maxLength={1}
+                        value={devConfirmPin[index]}
+                        onChange={(e) => {
+                          const digit = e.target.value.slice(-1).replace(/\D/g, '');
+                          const updated = [...devConfirmPin];
+                          updated[index] = digit;
+                          setDevConfirmPin(updated);
+                          if (error) setError('');
+                          if (digit && index < 3) {
+                            devConfirmPinRefs.current[index + 1]?.focus();
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Backspace' && !devConfirmPin[index] && index > 0) {
+                            devConfirmPinRefs.current[index - 1]?.focus();
+                          }
+                        }}
+                        className="w-11 h-13 sm:w-12 sm:h-14 font-mono text-center text-2xl font-bold rounded-xl bg-slate-50 dark:bg-[#0d1117] border border-slate-300 dark:border-[#30363d] text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-none transition-all shadow-2xs"
+                      />
+                    ))}
                   </div>
                 </div>
 
@@ -633,7 +642,7 @@ export function LockScreen({ onUnlock, initialLicenseStatus }) {
                     isLoading={isVerifying}
                     icon={KeyRound}
                   >
-                    Save New Password
+                    Save New 4-Digit PIN
                   </Button>
 
                   <button
