@@ -150,8 +150,10 @@ export function numberToWordsIndian(amount) {
 }
 
 export function computeCompleteInvoiceTotals(items, sellerStateCode, customerStateCode, taxRatePercent = 18, customCgstRate = null, customSgstRate = null, customIgstRate = null) {
-  const calculatedItems = items.map((item, idx) => ({
+  const calculatedItems = (items || []).map((item, idx) => ({
     ...item,
+    quantity: parseFloat(item.quantity) || 0,
+    rate: parseFloat(item.rate) || 0,
     sort_order: item.sort_order ?? (idx + 1),
     amount: calculateLineAmount(item.quantity, item.rate)
   }));

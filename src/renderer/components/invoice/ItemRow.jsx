@@ -18,14 +18,15 @@ export function ItemRow({
         {index + 1}
       </td>
 
-      {/* 2. Description (Manual entry, fluid wrapping, no character limit) */}
+      {/* 2. Description (Manual entry, max 90 characters) */}
       <td className="px-3 py-2.5 border-r border-slate-200/80 dark:border-slate-800">
         <input
           type="text"
-          placeholder="Description of Goods / Services"
+          maxLength={90}
+          placeholder="Description of Goods / Services (Max 90 chars)"
           className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-xs font-medium"
           value={item.description || ''}
-          onChange={(e) => onChange(index, 'description', e.target.value)}
+          onChange={(e) => onChange(index, 'description', e.target.value.slice(0, 90))}
         />
       </td>
 
@@ -73,11 +74,11 @@ export function ItemRow({
         <input
           type="number"
           step="any"
-          min="0"
+          min="0.0001"
           placeholder="Qty"
           className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-right placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-xs font-mono"
-          value={item.quantity || ''}
-          onChange={(e) => onChange(index, 'quantity', parseFloat(e.target.value) || 0)}
+          value={item.quantity !== undefined && item.quantity !== null ? item.quantity : ''}
+          onChange={(e) => onChange(index, 'quantity', e.target.value)}
         />
       </td>
 
@@ -89,8 +90,8 @@ export function ItemRow({
           min="0"
           placeholder="Rate"
           className="w-full bg-slate-50/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 text-right placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-xs font-mono font-medium"
-          value={item.rate || ''}
-          onChange={(e) => onChange(index, 'rate', parseFloat(e.target.value) || 0)}
+          value={item.rate !== undefined && item.rate !== null ? item.rate : ''}
+          onChange={(e) => onChange(index, 'rate', e.target.value)}
         />
       </td>
 

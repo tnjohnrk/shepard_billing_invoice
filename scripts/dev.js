@@ -61,7 +61,7 @@ async function start() {
     await checkViteReady();
     console.log('⚡ Vite dev server is ready! Launching Electron...');
 
-    const electronProcess = spawn('npx electron .', {
+    const electronProcess = spawn('npx electron src/main/main.js', {
       stdio: 'inherit',
       shell: true
     });

@@ -258,9 +258,9 @@ export function CreateInvoice({ initialData = null, toast, onInvoiceSaved, onNav
         toast('error', 'HSN / SAC code is mandatory for all items. Please enter an HSN code to proceed.');
         return false;
       }
-      const invalidItem = formData.items.find(i => !i.description || i.quantity <= 0 || i.rate < 0);
+      const invalidItem = formData.items.find(i => !i.description || isNaN(parseFloat(i.quantity)) || parseFloat(i.quantity) <= 0 || isNaN(parseFloat(i.rate)) || parseFloat(i.rate) < 0);
       if (invalidItem) {
-        toast('error', 'Please ensure all line items have valid descriptions, quantities, and rates.');
+        toast('error', 'Please ensure all line items have valid descriptions, quantities (> 0), and non-negative rates.');
         return false;
       }
     }

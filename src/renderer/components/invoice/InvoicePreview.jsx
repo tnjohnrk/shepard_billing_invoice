@@ -462,7 +462,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                   )}
 
                   {/* 4. Line Items Table */}
-                  <table className="items-table w-full flex-1 border-collapse border-b-2 border-black text-left text-[11px] flex flex-col" style={{ tableLayout: 'fixed', backgroundColor: '#ffffff', color: '#000000' }}>
+                  <table className="items-table w-full border-collapse border-b-2 border-black text-left text-[11px] flex flex-col" style={{ tableLayout: 'fixed', backgroundColor: '#ffffff', color: '#000000' }}>
                     <thead className="w-full" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
                       <tr className="items-head-row bg-white border-b-2 border-black font-bold uppercase text-[10.5px] flex w-full" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
                         <th className="py-2 px-3 border-r-[1.5px] border-black text-left col-desc" style={{ width: '54%', backgroundColor: '#ffffff', color: '#000000' }}>DESCRIPTION</th>
@@ -472,7 +472,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                         <th className="py-2 px-2.5 text-right col-amount" style={{ width: '12%', backgroundColor: '#ffffff', color: '#000000' }}>AMOUNT</th>
                       </tr>
                     </thead>
-                    <tbody className="w-full flex-1 flex flex-col divide-y-0">
+                    <tbody className="w-full flex flex-col divide-y-0">
                       {page.items.map((item, idx) => {
                         const isFirstOverallItem = page.isFirstPage && idx === 0;
                         return (
@@ -509,17 +509,6 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                           </tr>
                         );
                       })}
-
-                      {/* Extending vertical column grid lines through middle space */}
-                      {page.hasTotalsAndFooter && (
-                        <tr className="flex-1 flex w-full">
-                          <td className="border-r-[1.5px] border-black h-full" style={{ width: '54%' }}>&nbsp;</td>
-                          <td className="border-r-[1.5px] border-black text-center font-mono text-[11px] h-full" style={{ width: '11%' }}>&nbsp;</td>
-                          <td className="border-r-[1.5px] border-black text-center font-mono text-[11px] h-full" style={{ width: '11%' }}>&nbsp;</td>
-                          <td className="border-r-[1.5px] border-black text-right font-mono text-[11px] h-full" style={{ width: '12%' }}>&nbsp;</td>
-                          <td className="text-right font-mono text-[11px] h-full" style={{ width: '12%' }}>&nbsp;</td>
-                        </tr>
-                      )}
                       {/* Page-wise Subtotal Row (When invoice has more than 1 page) */}
                       {page.totalPages > 1 && (
                         <tr className="border-t-2 border-black bg-slate-50 font-bold text-[10.5px]">
@@ -648,7 +637,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                     <table className="w-full border-collapse text-[10px]">
                       <tbody>
                         <tr>
-                          <td className="w-[50%] align-top p-3 border-r-[1.5px] border-black">
+                          <td className="w-[40%] align-top p-3 border-r-[1.5px] border-black">
                             <div className="font-bold uppercase text-[11px] text-slate-900 mb-1.5">TERMS AND CONDITIONS</div>
                             <div className="text-[9.5px] text-slate-800 leading-relaxed">
                               We declare that this invoice shows the actual value of services described and that all particulars are true and correct.
@@ -659,7 +648,7 @@ export function InvoicePreview({ formData, onBack, onSaveSuccess, onGoHome, onNe
                               </div>
                             )}
                           </td>
-                          <td className="w-[50%] align-top p-3 text-center">
+                          <td className="w-[60%] align-top p-3 text-center">
                             <div className="font-bold text-[9.5px] uppercase text-slate-800 mb-1">
                               CERTIFIED THAT ABOVE INFORMATION ARE TRUE AND CORRECT
                             </div>

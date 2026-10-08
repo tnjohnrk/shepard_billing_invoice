@@ -25,13 +25,14 @@ export const DEFAULT_INVOICE_CSS = `
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   font-size: 11px;
-  line-height: 1.25;
+  line-height: 1.35;
   color: #000;
   background: #fff;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -392,7 +393,6 @@ body {
   table-layout: fixed;
   border-bottom: 2px solid #000;
   font-size: 11px;
-  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -433,7 +433,6 @@ body {
 
 .items-table tbody {
   width: 100%;
-  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -497,25 +496,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-}
-
-.filler-row {
-  display: flex;
-  width: 100%;
-  flex: 1;
-  border-bottom: none;
-}
-
-.filler-row td {
-  border-right: 1.5px solid #000;
-  border-bottom: none;
-  padding: 0;
-  height: 100%;
-  box-sizing: border-box;
-}
-
-.filler-row td.col-amount {
-  border-right: none;
 }
 
 .col-desc {
@@ -688,7 +668,7 @@ body {
 }
 
 .footer-terms-col {
-  width: 50%;
+  width: 40%;
   vertical-align: top;
   padding: 12px;
   border-right: 1.5px solid #000;
@@ -715,7 +695,7 @@ body {
 }
 
 .footer-sign-col {
-  width: 50%;
+  width: 60%;
   vertical-align: top;
   padding: 12px;
   text-align: center;
@@ -1006,16 +986,6 @@ export function renderInvoiceHtml(invoiceData) {
       return `<tr class="item-data-row"><td class="col-desc">${descHtml}${isFirstOverallItem ? refsHtml : ''}</td><td class="col-hsn">${hsnHtml}</td><td class="col-qty">${qtyHtml}</td><td class="col-rate">${rateHtml}</td><td class="col-amount">${amountHtml}</td></tr>`;
     }).join('');
 
-    const fillerRowsHtml = page.hasTotalsAndFooter ? `
-      <tr class="item-data-row filler-row" style="height: 100%;">
-        <td class="col-desc">&nbsp;</td>
-        <td class="col-hsn">&nbsp;</td>
-        <td class="col-qty">&nbsp;</td>
-        <td class="col-rate">&nbsp;</td>
-        <td class="col-amount">&nbsp;</td>
-      </tr>
-    ` : '';
-
     const pageSubtotal = (page.items || []).reduce(
       (sum, it) => sum + Number(it.amount || (it.quantity * it.rate) || 0),
       0
@@ -1044,7 +1014,6 @@ export function renderInvoiceHtml(invoiceData) {
         </thead>
         <tbody>
           ${itemRowsHtml}
-          ${fillerRowsHtml}
           ${pageSubtotalRowHtml}
         </tbody>
       </table>
@@ -1155,6 +1124,9 @@ export function renderInvoiceHtml(invoiceData) {
 <head>
   <meta charset="UTF-8">
   <title>${escapeHtml(docType)} - ${escapeHtml(docNum)}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
 ${cssContent}
   </style>

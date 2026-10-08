@@ -44,10 +44,19 @@ export async function generateInvoicePdf(invoiceData, targetFilePathOverride = n
     // Wait until document layout, images, and fonts are completely rendered
     await win.webContents.executeJavaScript(`
       new Promise(resolve => {
+        const onReady = async () => {
+          try {
+            if (document.fonts && document.fonts.ready) {
+              await document.fonts.ready;
+            }
+          } catch {}
+          setTimeout(resolve, 300);
+        };
+
         if (document.readyState === 'complete') {
-          setTimeout(resolve, 250);
+          onReady();
         } else {
-          window.addEventListener('load', () => setTimeout(resolve, 250));
+          window.addEventListener('load', onReady);
         }
       })
     `);

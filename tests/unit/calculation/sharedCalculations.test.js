@@ -11,7 +11,9 @@ import {
 
 describe('sharedCalculations - High-Intensity Hard Tests & Edge Cases', () => {
   describe('Line Amount & Subtotal Multiplications', () => {
-    it('calculates line amount with rounding to 2 decimals', () => {
+    it('calculates line amount with rounding to 2 decimals including decimal quantities', () => {
+      expect(calculateLineAmount(0.5, 100)).toBe(50);
+      expect(calculateLineAmount('0.5', '100')).toBe(50);
       expect(calculateLineAmount(2.5, 100)).toBe(250);
       expect(calculateLineAmount(3, 33.333)).toBe(100);
       expect(calculateLineAmount(0, 500)).toBe(0);
